@@ -1,0 +1,19 @@
+Todo-ASM86.md
+
+* cookLine=remove CR,LF replace tab with blank   add `0, length
+Special cases:
+    remove comments except strings
+    directives
+    (multiple) labels
+    remove space except after Operation
+
+
+**EBNF X86**
+Line::=Label?: Operation Operand?"," Operand?
+Operand::=Reg | [Memory] | Data Reg | Data "PTR"[Memory] | Data? Literal
+Data::=Byte | Word | DWord
+Literal::=n | "-"n | "0x"n | "0X"n | n"h" | n"H" | `(0,n,r) 
+
+For MAC **OSX** only:
+Boxer: CPU Max, Drive C:= usr/DOS/AS/
+Github Desktop with Atom or SourceTree with UltraEdit
