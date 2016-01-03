@@ -5,7 +5,7 @@ Special cases:
     directives
     (multiple) labels
     remove space except after Operation and in strings
-    remove comments except strings
+    remove whitespace and comments, except in strings
 
     remove   0xF1 in opcodes
 
