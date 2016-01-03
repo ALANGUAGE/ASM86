@@ -8,7 +8,7 @@ int parse() {
     setTokeType();// getCode in SymbolUpper, set TokeType, set isLabel by getName
     if (TokeType == ALNUM) {
       if (isLabel) {
-        storeLabel(LABEL); 
+        storeLabel(LABEL);
         InputPtr++;//remove :
         setTokeType();
       }
@@ -73,6 +73,20 @@ int getVariable() { char c;
   else errorexit("DB,DW,DD or RESB,W,D expected");
 }
 // helper functions XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+int letterX(char c) {
+  if (digit(c)) return 1;
+  if (c=='_') return 1;
+  if (c=='.') return 1;
+  if (c> 'z') return 0;
+  if (c< '@') return 0; // at included
+  if (c> 'Z') { if (c< 'a') return 0; }
+  return 1;
+}
+int alnumX(char c) {
+  if (digit(c)) return 1;
+  if (letterX(c)) return 1;
+  return 0; 
+}
 int getLine() {// make ASCIIZ, skip LF=10 and CR=13
   InputPtr= &InputBuf;
   *InputPtr=0;//if last line is empty
@@ -80,7 +94,7 @@ int getLine() {// make ASCIIZ, skip LF=10 and CR=13
     DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
     if (DOS_ERR) errorexit("Reading Source");
     if (DOS_NoBytes == 0) return;
-    *InputPtr = DOS_ByteRead; 
+    *InputPtr = DOS_ByteRead;
     InputPtr++;
   } while (ifEOL(DOS_ByteRead) == 0);
   InputPtr--;
@@ -88,8 +102,8 @@ int getLine() {// make ASCIIZ, skip LF=10 and CR=13
 }
 int ifEOL(char c) {
   if (c == 10) return 1;
-  if (c == 13) { 
-    DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1); 
+  if (c == 13) {
+    DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
     return 1;}
   return 0;
 }
@@ -336,7 +350,7 @@ int printIntU(unsigned int n) { unsigned int e;
 /*int printLineHex(unsigned char *s) { int L; char c;
   L = strlen(s);
   prs(" L:");
-  printIntU(L);  
+  printIntU(L);
   if (L <= 0) return;
   if (L > 80) errorexit("Line > 80 char");
   while ( *s ) {
@@ -352,7 +366,7 @@ int error1(char *s) { LIST=1; ErrorCount++;
 int allowederror(){error1("not allowed here"); }
 int implmerror(){error1("not implemented");}
 int indexerror (){error1("invalid index register");}
-int numbererror(){error1("number expected");}  
+int numbererror(){error1("number expected");}
 int regmemerror(){error1("only register or memory allowed");}
 int segregerror(){error1("segment register not allowed");}
 int syntaxerror(){error1("syntax");}

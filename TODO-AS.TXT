@@ -1,20 +1,55 @@
-Todo AS.C, AS1.C
-Boxer, CPU Max, Drive C:= Dropbox/AS/ oder usr/DOS/AS/
-ULtraEdit
-Github Desktop Pullrequest to master
-SOurceTree für Github
+Todo ASM86
 
+DECL.C
+OPTABL.C
+TE.S
+MANUAL.TXT
+letterX with _ . @
+alnumX
+
+
+Special cases:
+    (multiple) labels
+    remove 0xF1 in opcodes, fix 2 bytes (CodeType, Opcode)
 
 EBNF X86
-Line::=Label?: Operation Operand? Operand?
-Operand::=Reg | [Memory] | Data Reg | Data "PTR"[Memory] | Data? Literal
-Data::=Byte | Word | DWord
-Literal::=n | "-"n | "0x"n | "0X"n | n"h" | n"H" | `(0,n,r) 
+Line::=Label?: Operation Operand?"," Operand
+Literal::=n | "-"n | "0x"n | "0X"n | n"h" | n"H" | `(0,n,r)
 
-cookLine=remove CR,LF replace tab with blank   add `0, length
-Special cases:
-    remove comments except strings
-    directives
-    (multiple) labels
+operand::=
+  none
+  ac  (al, ax, eax)
+  r   (b, w, s, d)
+  [m] (b, w, d)
+  i   (b, w)
+  disp(b, w)
 
-SeparateOps=Operation Operand1 "," Operand2
+For MAC OSX only:
+Boxer: CPU Max, Drive C:= usr/DOS/AS/
+Github Desktop with Atom or SourceTree with UltraEdit
+Print with UltraEdit and Linenumbers
+
+Hierarchical software diagram
+main:  getarg. parse epilog. end1.
+parse:
+  getLine
+  getToken storeLabel
+  searchLabel
+  lookCode
+  process
+  getVariable
+  printLine
+
+getToken: skipBlank. getDigit. getName.
+process:
+  genInstruction
+  getToken testReg
+  genAddr16.
+genInstruction:
+  genCode8.
+getVariable:
+  storeLabel
+  getToken lookCode
+  skipBlank
+  isToken
+  genAddr16
