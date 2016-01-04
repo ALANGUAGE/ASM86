@@ -3,7 +3,7 @@
                         //  at - pipe  \   '   "   ;   ,   [   {        PROMPT.C
 /*unsigned char KeybGer1[]={64,45,124,92, 39, 34, 59, 58, 91,123};
   unsigned char Keybtmp1[]="yYzZ#^&*()_\]}/?><";
-                        //   "  \   >  <   ä   Ä   ö   Ö   ü   Ü
+                        //   "  \   >  <   ï¿½   ï¿½   ï¿½   ï¿½   ï¿½   ï¿½
 /*unsigned char KeybGer2[]={34,92, 62,60,132,142,148,153,129,154};
   unsigned char Keybtmp2[]="zZyY$&/()=?<+*-_:;";
   char direcord[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};// do not change
@@ -105,12 +105,12 @@ int isin  (char *s, char c) { while(*s) { if (*s==c) return s; s++;}  return 0;}
 int instr1(char *s, char c) { while(*s) { if (*s==c) return 1; s++;}  return 0;}
 int instr2(char *s, char c) { while(*s) { if (*s==c) return &s; s++;} return 0;}
 int digit(char c){ if(c<'0') return 0; if(c>'9') return 0; return 1; }
-int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1;
+int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1; //XXXXXXXXXX
   if (c> 'z') return 0; if (c< '@') return 0;
   if (c> 'Z') { if (c< 'a') return 0; }  return 1; }
 int alnum(char c) { if (digit(c)) return 1; if (c=='_') return 1;
   if (c> 'z') return 0; if (c< '@') return 0;
-  if (c> 'Z') { if (c< 'a') return 0; }  return 1; }//same as letter
+  if (c> 'Z') { if (c< 'a') return 0; }  return 1; }//same as letter  XXXXXXXXX
 int eqstr(char *p, char *q) { while(*p) {
     if (*p != *q) return 0; p++; q++; }
     if(*q) return 0; return 1; }
@@ -182,7 +182,7 @@ int ultoaR(int lo1, int hi1, char *s ) {
   mov si,10     ;Divisor
   mov bx,ax     ;AX retten
   div1:
-  mov ax,dx     ;für erste Division
+  mov ax,dx     ;fï¿½r erste Division
   xor dx,dx
   or  ax,ax     ;Ende High-Teil
   jz  div2
@@ -203,7 +203,7 @@ int ultoaR(int lo1, int hi1, char *s ) {
   mov ax,dx     ;AX = High
   or  ax,bx     ;Ende?
   jnz div1
-  inc di        ; neu eingeführt
+  inc di        ; neu eingefï¿½hrt
   mov ax,di
 }  }
 int ultoa2(unsigned int l, unsigned int h, char *s) { int i;
