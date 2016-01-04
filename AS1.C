@@ -85,7 +85,7 @@ int letterX(char c) {
 int alnumX(char c) {
   if (digit(c)) return 1;
   if (letterX(c)) return 1;
-  return 0; 
+  return 0;
 }
 int getLine() {// make ASCIIZ, skip LF=10 and CR=13
   InputPtr= &InputBuf;
@@ -375,8 +375,6 @@ int errorexit(char *s) { error1(s); end1(1);}
 int addrexit(){errorexit("illegal addres");}
 int internexit(){errorexit("intern compiler error");}
 
-//int main() {getarg(); parse(); epilog(); end1();}//NB AS, AS TE
-char *arglen=0x80; char *argv=0x82;
 int getarg() { int arglen1; int i; char *c;
   arglen1=*arglen;
   if (arglen1==0) {
