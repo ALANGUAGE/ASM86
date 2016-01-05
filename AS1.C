@@ -5,34 +5,33 @@ int parse() {
     PCStart=PC; OpSize=0; OpPrintIndex=0; PrReloc=' ';
     getLine();
     InputPtr = &InputBuf;
-    setTokeType();// getCode in SymbolUpper, set TokeType, set isLabel by getName
-    if (TokeType == ALNUM) {
-      if (isLabel) {
-        storeLabel(LABEL);
+    getTokeType();// getCode in SymbolUpper,set TokeType,set isLabel by getName
+    if (TokeType == ALNUME) {
+      if (isLabel) { //set in getName
+        storeLabel();
         InputPtr++;//remove :
-        setTokeType();
+        getTokeType();
       }
     }
-    if (TokeType == ALNUM) {
+    if (TokeType == ALNUME) {
       lookCode();// and OpCodePtr
       if(CodeType) process();
       else getVariable();
       skipRest();
     }
-    else if (TokeType >  ALNUM) error1("Label or instruction expected");
+    else if (TokeType >  ALNUME) error1("Label or instruction expected");
     else if (TokeType == DIGIT) error1("No digit allowed at start of line");
     printLine();
   } while (DOS_NoBytes != 0 );
 }
-int storeLabel(char LabType) {
-  if(searchLabel(LabType)) error1("duplicate symbol");
+int storeLabel() {
+  if(searchLabel()) error1("duplicate symbol");
   LabelNamePtr=strcpy(LabelNamePtr, Symbol);
   LabelNamePtr++;
   LabelMaxIx++;
-  LabelType[LabelMaxIx] = LabType;// 1=LABEL, 2=VARIABLE
   LabelAddr[LabelMaxIx] = PC;
 }
-int searchLabel(char searchType) {
+int searchLabel() {
   int LIx; char *p; int j;
   p = &LabelNames;
   LIx=1;
@@ -44,13 +43,13 @@ int searchLabel(char searchType) {
   return 0;
 }
 int getVariable() { char c;
-  storeLabel(VARIABLE);
-  setTokeType(); if(TokeType==ALNUM) {// getName
+  storeLabel();
+  getTokeType(); if(TokeType==ALNUME) {// getName
     lookCode();
     if (CodeType < 200) errorexit("D or RES B,W,D expected");
     if (CodeType > 207) errorexit("D or RES B,W,D expected");
     if (CodeType== 200) {// DB
-      do { setTokeType();
+      do { getTokeType();
         if (TokeType ==DIGIT) genCode8(SymbolInt);
         else {
           skipBlank();
@@ -65,7 +64,7 @@ int getVariable() { char c;
       } while (isToken(','));
     }
     if (CodeType== 201) {// DW
-      do { setTokeType();
+      do { getTokeType();
         if (TokeType ==DIGIT) genCode16(SymbolInt);
       } while (isToken(','));
     }
@@ -73,20 +72,7 @@ int getVariable() { char c;
   else errorexit("DB,DW,DD or RESB,W,D expected");
 }
 // helper functions XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-int letterX(char c) {
-  if (digit(c)) return 1;
-  if (c=='_') return 1;
-  if (c=='.') return 1;
-  if (c> 'z') return 0;
-  if (c< '@') return 0; // at included
-  if (c> 'Z') { if (c< 'a') return 0; }
-  return 1;
-}
-int alnumX(char c) {
-  if (digit(c)) return 1;
-  if (letterX(c)) return 1;
-  return 0;
-}
+
 int getLine() {// make ASCIIZ, skip LF=10 and CR=13
   InputPtr= &InputBuf;
   *InputPtr=0;//if last line is empty
@@ -112,6 +98,20 @@ int skipBlank() {
     if (*InputPtr == ' ') { InputPtr++; goto skipblank1; }
     if (*InputPtr == 9  ) { InputPtr++; goto skipblank1; }
 }
+int letterE(char c) {
+  if (digit(c)) return 1;
+  if (c=='_') return 1;
+  if (c=='.') return 1;
+  if (c> 'z') return 0;
+  if (c< '@') return 0; // at included
+  if (c> 'Z') { if (c< 'a') return 0; }
+  return 1;
+}
+int alnumE(char c) {
+  if (digit(c)) return 1;
+  if (letterE(c)) return 1;
+  return 0;
+}
 int getDigit(unsigned char c) {//ret: SymbolInt
   unsigned int CastInt;
   SymbolInt=0;
@@ -129,7 +129,7 @@ int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
   p = &Symbol;
   *p = c;
   p++;
-  while (alnum(c)) {
+  while (alnumE(c)) {
     InputPtr++;
     c = *InputPtr;
     *p = c;
@@ -289,7 +289,7 @@ char I_RESW[]= {'R','E','S','W',0,    206,        0xF1};
 char I_RESD[]= {'R','E','S','D',0,    207,        0xF1};
 char I_END=0;// end of table char
 
-int lookCode() { // ret: CodeType, OpCodePtr
+int lookCode() { // ret: CodeType, *OpCodePtr
   CodeType=0;
   OpCodePtr= &I_START;
   OpCodePtr++;
@@ -390,11 +390,11 @@ int getarg() { int arglen1; int i; char *c;
 
   LIST=1; DOS_ERR=0; PC=0; ErrorCount=0;
   asm_fd=openR (namein);
-  if(DOS_ERR){cputs("Source file missing: "); cputs(namein); exitR(1); }
+  if(DOS_ERR){cputs("Source file missing: ");cputs(namein); exitR(1); }
   lst_fd=creatR(namelst);
-  if(DOS_ERR){cputs("List file not creatable: ");cputs(namelst);exitR(2);}
+  if(DOS_ERR){cputs("List file not create: ");cputs(namelst);exitR(2);}
   bin_fd=creatR(namebin);
-  if(DOS_ERR){cputs("COM file not creatable: ");cputs(namebin);exitR(2);}
+  if(DOS_ERR){cputs("COM file not create: ");cputs(namebin);exitR(2);}
   prs(";");prs(Version1);
   prs(", Source: "); prs(namein);  prs(", Output: "); prs(namelst);
   prs(", "); prs(namebin);
@@ -413,12 +413,8 @@ int epilog() { int i; int j; char c;
     LabelNamePtr= &LabelNames;
     do {
       prs(LabelNamePtr); prc(' ');
- /*     j=LabelType[i]; //printIntU(j);
-      if (j == 1) prc('L');
-      if (j == 2) prc('V');
-      prc('.'); */
       j=LabelAddr[i]; printhex16(j); prs(",  ");
-      j=strlen(LabelNamePtr);//get end of act. name
+      j=strlen(LabelNamePtr);//get end of actual name
       LabelNamePtr=LabelNamePtr+j;
       LabelNamePtr++;
       i++;
@@ -435,15 +431,9 @@ int epilog() { int i; int j; char c;
     i++;
   } while (i < BinLen);
 }
-int end1(int n) {fcloseR(asm_fd); fcloseR(lst_fd); fcloseR(bin_fd);exitR(n);
+int end1(int n) {
+  fcloseR(asm_fd);
+  fcloseR(lst_fd);
+  fcloseR(bin_fd);
+  exitR(n);
 }
-/*
-Hierarchical software diagram, except string & DOS functions,  .=end
-main:  getarg. parse epilog. end1.
-parse: getLine. getToken storeLabel. searchLabel. lookCode. process
-       getVariable printLine.
-getToken: skipBlank. getDigit. getName.
-process: genInstruction getToken testReg. genAddr16.
-genInstruction: genCode8.
-getVariable: storeLabel. getToken lookCode. skipBlank. isToken. genAddr16.
-*/

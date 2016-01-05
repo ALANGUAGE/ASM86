@@ -1,8 +1,9 @@
-int main() {getarg(); parse(); epilog(); end1();}//BAS   AS TE
-char Version1[]="AS.C V0.06 4.1.2015";//alt-re 5[  7|  8{  N~  7Caps \ //
+int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
+char Version1[]="AS.C V0.07 5.1.2016";
 #include "DECL.C"
+
 int process() { int i; char c;
-  setTokeType();
+  getTokeType();
   OpSize=getCodeSize();
 
   if (CodeType ==  1) {//1 byte opcode
@@ -34,14 +35,14 @@ int process() { int i; char c;
 }
 
 // scan code .....................................
-int setTokeType() { char c; //set: TokeType
+int getTokeType() { char c;
   skipBlank();
   c = *InputPtr;
   if (c == 0)   {TokeType=0; return; }//last line or empty line
   if (c == ';') {TokeType=0; return; }//comment
   if (digit(c)) {getDigit(c); TokeType=DIGIT; return;}//ret:1=SymbolInt
-  if (alnum (c)) {getName(c); TokeType=ALNUM; return;}//ret:2=Symbol
-  TokeType=3; return;               //no alnum
+  if (letterE (c)) {getName(c); TokeType=ALNUME; return;}//ret:2=Symbol
+  TokeType=NOALNUME; return;
 }
 int Ops() {
 //O2=rr,rm,ri,mr,mi
@@ -88,10 +89,10 @@ int getOp1() {//scan for a single operand
   //set:Op1, imme, disp, RegType, TegNo, reg
   if (TokeType == 0)      return 0;
   if (TokeType == DIGIT)  return IMM;// 1
-  if (TokeType == ALNUM) {
+  if (TokeType == ALNUME) {
     RegNo=testReg();//set global RegType
     if (RegType)          return REG;// 2
-    LabelIx=searchLabel(VARIABLE);//disp=LabelAddr[LabelIx];
+    LabelIx=searchLabel();//disp=LabelAddr[LabelIx];
     if (LabelIx)          return DIR;// 3
     else error1("variable not found"); }
   return 0;
@@ -99,13 +100,13 @@ int getOp1() {//scan for a single operand
 int getIND() {//set: disp, reg, RegType          e.g.  [array+bp+si-4]
   char op2; char r1;  disp=0; r1=0; RegType=0;//because reg=0 is BX+DI
   do {
-    setTokeType();// 0, DIGIT, ALNUM, no alnum
+    getTokeType();
     op2=getOp1();
     if (op2 ==   0) syntaxerror();
     if (op2 == IMM) disp=disp+SymbolInt;
     if (op2 == REG) if (r1) r1=getIndReg2(r1); else r1=getIndReg1();
     if (op2 == DIR) disp=disp+LabelAddr[LabelIx];//is IND variable
-    if (isToken('-')) {setTokeType();
+    if (isToken('-')) {getTokeType();
       if (TokeType != DIGIT) numbererror(); disp=disp-SymbolInt;}
   } while (isToken('+'));
   if (isToken(']') == 0) errorexit("] expected");
@@ -131,10 +132,10 @@ int getIndReg2(char r1) {char m; m=4;//because m=0 is BX+DI
 }
 
 int getCodeSize() {
-  if (TokeType ==ALNUM) {
-    if (eqstr(SymbolUpper,"BYTE")) {setTokeType(); return BYTE;}
-    if (eqstr(SymbolUpper,"WORD")) {setTokeType(); return WORD;}
-    if (eqstr(SymbolUpper,"DWORD")){setTokeType(); return DWORD;}
+  if (TokeType ==ALNUME) {
+    if (eqstr(SymbolUpper,"BYTE")) {getTokeType(); return BYTE;}
+    if (eqstr(SymbolUpper,"WORD")) {getTokeType(); return WORD;}
+    if (eqstr(SymbolUpper,"DWORD")){getTokeType(); return DWORD;}
   } return 0;
 }
 int isToken(char c) {
@@ -142,12 +143,8 @@ int isToken(char c) {
   if (*InputPtr == c) {
     InputPtr++; return 1;} return 0;
 }
-/*int need(char c) {
-  if (isToken(c) == 0) {
-    prs("\n; ************** expected >> "); prc(c);
-    prs(" <<\\n"); errorexit("token expected"); }  }*/
 int skipRest() {
-  setTokeType(); if (TokeType != 0) prs("\n; ********** extra char ignored");
+  getTokeType(); if (TokeType != 0) prs("\n; ********** extra char ignored");
 }
 // generate code ...........................................................
 int gen66h() {genCode8(0x66);}
