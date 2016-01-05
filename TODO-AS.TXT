@@ -2,6 +2,8 @@ Todo ASM86
 
 MANUAL.TXT
 remove 0xF1 in opcodes, fix 2 bytes (CodeType, Opcode)
+rem SymbolUpper in getName
+set SymbolUpper in testReg, lookCode, getCodeSize
 
 EBNF X86
 Line::=Label?: Operation Operand?"," Operand

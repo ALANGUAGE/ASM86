@@ -1,6 +1,7 @@
 int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
 char Version1[]="AS.C V0.07 5.1.2016";
 #include "DECL.C"
+#include "OPTABL.C"
 /*
 process:
   getOpcode1
@@ -203,6 +204,5 @@ mov      [VA+bx], al ;88 87 [300F]
 //#include "AS1.C"
 #include "PARSE.C"
 #include "HELPER.C"
-#include "OPTABL.C"
 #include "OUTPUT.C"
 #include "MAIN.C"
