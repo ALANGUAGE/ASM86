@@ -6,15 +6,11 @@ TE.S
 MANUAL.TXT
 letterX with _ . @
 alnumX
-
-
-Special cases:
-    (multiple) labels
-    remove 0xF1 in opcodes, fix 2 bytes (CodeType, Opcode)
+remove 0xF1 in opcodes, fix 2 bytes (CodeType, Opcode)
 
 EBNF X86
 Line::=Label?: Operation Operand?"," Operand
-Literal::=n | "-"n | "0x"n | "0X"n | n"h" | n"H" | `(0,n,r)
+Literal::=n | "0x"n | "0X"n | n"h" | n"H" | `(0,n,r)
 
 operand::=
   none
@@ -31,25 +27,22 @@ Print with UltraEdit and Linenumbers
 
 Hierarchical software diagram
 main:  getarg. parse epilog. end1.
-parse:
-  getLine
-  getToken storeLabel
-  searchLabel
-  lookCode
-  process
-  getVariable
-  printLine
 
-getToken: skipBlank. getDigit. getName.
+parse:
+  do
+    getLine
+    do
+      getToken (setTokeType)
+      if (! letterX) error
+      checkOpcode
+      if (! Codetype) storeLabel
+    while (! CodeType)
+    if (CodeType) process
+    skipRest
+    printLine
+  while (DOS_NoBytes !=0)
+
 process:
+  getOpcode1
+  if (,) getOpcode2
   genInstruction
-  getToken testReg
-  genAddr16.
-genInstruction:
-  genCode8.
-getVariable:
-  storeLabel
-  getToken lookCode
-  skipBlank
-  isToken
-  genAddr16
