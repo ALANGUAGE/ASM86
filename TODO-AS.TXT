@@ -1,48 +1,13 @@
 Todo ASM86
 
-DECL.C
-OPTABL.C
-TE.S
 MANUAL.TXT
-letterX with _ . @
-alnumX
 remove 0xF1 in opcodes, fix 2 bytes (CodeType, Opcode)
 
 EBNF X86
 Line::=Label?: Operation Operand?"," Operand
 Literal::=n | "0x"n | "0X"n | n"h" | n"H" | `(0,n,r)
 
-operand::=
-  none
-  ac  (al, ax, eax)
-  r   (b, w, s, d)
-  [m] (b, w, d)
-  i   (b, w)
-  disp(b, w)
-
 For MAC OSX only:
 Boxer: CPU Max, Drive C:= usr/DOS/AS/
 Github Desktop with Atom or SourceTree with UltraEdit
 Print with UltraEdit and Linenumbers
-
-Hierarchical software diagram
-main:  getarg. parse epilog. end1.
-
-parse:
-  do
-    getLine
-    do
-      getToken (setTokeType)
-      if (! letterX) error
-      checkOpcode
-      if (! Codetype) storeLabel
-    while (! CodeType)
-    if (CodeType) process
-    skipRest
-    printLine
-  while (DOS_NoBytes !=0)
-
-process:
-  getOpcode1
-  if (,) getOpcode2
-  genInstruction

@@ -1,7 +1,12 @@
 int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
 char Version1[]="AS.C V0.07 5.1.2016";
 #include "DECL.C"
-
+/*
+process:
+  getOpcode1
+  if (,) getOpcode2
+  genInstruction
+*/
 int process() { int i; char c;
   getTokeType();
   OpSize=getCodeSize();
@@ -44,7 +49,15 @@ int getTokeType() { char c;
   if (letterE (c)) {getName(c); TokeType=ALNUME; return;}//ret:2=Symbol
   TokeType=NOALNUME; return;
 }
-int Ops() {
+/*
+operand::=
+  none
+  ac  (al, ax, eax)
+  r   (b, w, s, d)
+  [m] (b, w, d)
+  i   (b, w)
+  disp(b, w)
+
 //O2=rr,rm,ri,mr,mi
 //NumOprns==2, seg reg not allowed only mov and push
 //size: 1.declaration CodeSize, 2.reg size, 3.error1
@@ -54,7 +67,7 @@ int Ops() {
 //3. reg, rm  02  if (dest==reg) set direction bit; else default;
 //4. rm , reg 00
 //5. error1(mem2mem)
-}
+*/
 int LeftOpwCheck() {
   getLeftOp();
   if (RegType == SEGREG) {segregerror(); return;}//only move,push,pop
@@ -187,4 +200,9 @@ VA dw 8
 mov byte [bp- 4], al ;88 46 FC
 mov      [VA+bx], al ;88 87 [300F]
 }  }
-#include "AS1.C"
+//#include "AS1.C"
+#include "PARSE.C"
+#include "HELPER.C"
+#include "OPTABL.C"
+#include "OUTPUT.C"
+#include "MAIN.C"
