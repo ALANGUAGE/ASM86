@@ -2,6 +2,15 @@ int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
 char Version1[]="AS.C V0.07 5.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
+int test1() { __asm {
+inc byte [Version1]   ;FE 06 [1000]
+add bx, ax    ;01 C3
+add ax, bx    ;01 D8
+add word ax, [bx] ;03 07
+VA dw 8
+mov byte [bp- 4], al ;88 46 FC
+mov      [VA+bx], al ;88 87 [300F]
+}  }
 /*
 int process1(); NumOprns=0;
   getOpcode1(); NumOprns=1;
@@ -20,7 +29,7 @@ int process() { int i; char c;
   if (CodeType ==  2) {//inc, dec
     LeftOpwCheck();
     	if (Op1 == REG) {
-        if (RegType == WORD) {genInstruction(RegNo, 3); return; }//short form
+        if (RegType == WORD) {genInstruction(RegNo, 3); return; }//short
         if (RegType ==DWORD) {genInstruction(RegNo, 3); return; } }
       genInstruction(wflag, 1); genCodeInREG(); return;
   }
@@ -31,7 +40,8 @@ int process() { int i; char c;
   }
 
   if (CodeType==  8) {// ret
-    if (TokeType == DIGIT) {genInstruction(0, 2); genCode16(SymbolInt);return;}
+    if (TokeType == DIGIT) {
+        genInstruction(0, 2); genCode16(SymbolInt);return;}
     genInstruction(0, 1); return;
   }
 
@@ -168,15 +178,7 @@ int writeEA(char xxx) { char len; //need: Op1, disp, RegNo, reg
   if (len == 1) genCode8 (disp);
   if (len == 2) genCode16(disp);
 }
-int test1() { __asm {
-inc byte [Version1]   ;FE 06 [1000]
-add bx, ax    ;01 C3
-add ax, bx    ;01 D8
-add word ax, [bx] ;03 07
-VA dw 8
-mov byte [bp- 4], al ;88 46 FC
-mov      [VA+bx], al ;88 87 [300F]
-}  }
+
 //#include "AS1.C"
 #include "PARSE.C"
 #include "HELPER.C"
