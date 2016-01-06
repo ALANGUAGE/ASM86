@@ -1,6 +1,6 @@
 char LIST;              // listing on/off
-char Symbol[80];        //next symbol to decode
-char SymbolUpper[80];   //set toupper in getName
+char Symbol[31];        //next symbol to decode
+char SymbolUpper[31];   //set toupper in getName
 unsigned int SymbolInt; //integer value set in getDigit
 char InputBuf[128];     //filled in getLine, no overflow test
 unsigned char *InputPtr;//position in InputBuf
@@ -33,7 +33,7 @@ char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 #define DIR      3      //VALUE  ,var1  mod=00, r/m=110
 #define IND      4      //indirec,[var1],[BX+SI],[table+BX],[bp-4] disp 0,8,16
 char Op1;               //0, IMM, REG, DIR, IND
-char CodeType;          //1-207 by searchSymbol(), must be byte size 
+char CodeType;          //1-207 by searchSymbol(), must be byte size
 
 char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
 char RegNo;             //0 - 7 AL, CL, ...  by testReg()

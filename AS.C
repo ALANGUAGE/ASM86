@@ -39,17 +39,6 @@ int process() { int i; char c;
   }
   error1("unknown CodeType");
 }
-
-// scan code .....................................
-int getTokeType() { char c;
-  skipBlank();
-  c = *InputPtr;
-  if (c == 0)   {TokeType=0; return; }//last line or empty line
-  if (c == ';') {TokeType=0; return; }//comment
-  if (digit(c)) {getDigit(c); TokeType=DIGIT; return;}//ret:1=SymbolInt
-  if (letterE (c)) {getName(c); TokeType=ALNUME; return;}//ret:2=Symbol
-  TokeType=NOALNUME; return;
-}
 /*
 operand::=
   none
@@ -145,21 +134,6 @@ int getIndReg2(char r1) {char m; m=4;//because m=0 is BX+DI
   return m;
 }
 
-int getCodeSize() {
-  if (TokeType ==ALNUME) {
-    if (eqstr(SymbolUpper,"BYTE")) {getTokeType(); return BYTE;}
-    if (eqstr(SymbolUpper,"WORD")) {getTokeType(); return WORD;}
-    if (eqstr(SymbolUpper,"DWORD")){getTokeType(); return DWORD;}
-  } return 0;
-}
-int isToken(char c) {
-  skipBlank();
-  if (*InputPtr == c) {
-    InputPtr++; return 1;} return 0;
-}
-int skipRest() {
-  getTokeType(); if (TokeType != 0) prs("\n; ********** extra char ignored");
-}
 // generate code ...........................................................
 int gen66h() {genCode8(0x66);}
 int genCode8(char c) {//ret: BinLen++, OpPrintIndex++

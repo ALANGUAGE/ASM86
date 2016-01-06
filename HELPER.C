@@ -26,6 +26,8 @@ int skipBlank() {
 int letterE(char c) {
   if (c=='_') return 1;
   if (c=='.') return 1;
+  if (c=='?') return 1;
+  if (c=='$') return 1;
   if (c> 'z') return 0;
   if (c< '@') return 0; // at included
   if (c> 'Z') { if (c< 'a') return 0; }

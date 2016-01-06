@@ -54,5 +54,5 @@ int segregerror(){error1("segment register not allowed");}
 int syntaxerror(){error1("syntax");}
 
 int errorexit(char *s) { error1(s); end1(1);}
-int addrexit(){errorexit("illegal addres");}
+int addrexit(){errorexit("illegal address");}
 int internexit(){errorexit("intern compiler error");}
