@@ -3,10 +3,12 @@ char Version1[]="AS.C V0.07 5.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
 /*
-process:
-  getOpcode1
-  if (,) getOpcode2
-  genInstruction
+int process1(); NumOprns=0;
+  getOpcode1(); NumOprns=1;
+  if (isToken(',')) {
+    getOpcode2(); NumOprns=2;
+  }
+  genInstruction();
 */
 int process() { int i; char c;
   getTokeType();

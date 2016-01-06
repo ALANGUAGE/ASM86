@@ -1,18 +1,3 @@
-/*
-parse:
-  do
-    getLine
-    do
-      getToken (getTokeType)
-      if (! letterX) error
-      checkOpcode
-      if (! Codetype) storeLabel
-    while (! CodeType)
-    if (CodeType) process
-    skipRest
-    printLine
-  while (DOS_NoBytes !=0)
-*/
 int parse() {
   LabelNamePtr= &LabelNames;
   do {
