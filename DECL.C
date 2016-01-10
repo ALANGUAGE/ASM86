@@ -32,9 +32,9 @@ char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 //char CodeSize;          //0, BYTE, WORD, DWORD
 #define IMM      1      //const  ,123
 #define REG      2      //       ,BX    mode=11
-#define DIR      3      //VALUE  ,var1  mod=00, r/m=110
-#define IND      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
-char Op1;               //0, IMM, REG, DIR, IND
+#define ADR      3      //VALUE  ,var1  mod=00, r/m=110
+#define MEM      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
+char Op1;               //0, IMM, REG, ADR, MEM
 char CodeType;          //1-207 by searchSymbol(), must be byte size
 
 char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
