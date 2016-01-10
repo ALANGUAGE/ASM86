@@ -27,271 +27,286 @@ Version1 db "AS.C V0.07 5.1.2016",0
 
 LIST db 0
 
-;-2 char Symbol[31];        //next symbol to decode
+;-2 #define SYMBOLMAX    31
+
+
+;-3 char Symbol[SYMBOLMAX]; //next symbol to decode
 
 section .bss
 absolute 30000
 Symbol resb 31
 section .text
 
-;-3 char SymbolUpper[31];   //set toupper in getName
+;-4 char SymbolUpper[SYMBOLMAX];//set toupper in getName
 
 section .bss
 absolute 30031
 SymbolUpper resb 31
 section .text
 
-;-4 unsigned int SymbolInt; //integer value set in getDigit
+;-5 unsigned int SymbolInt; //integer value set in getDigit
 
 SymbolInt dw 0
 
-;-5 char InputBuf[128];     //filled in getLine, no overflow test
+;-6 #define INPUTBUFMAX 127
+
+
+;-7 char InputBuf[INPUTBUFMAX];//filled in getLine, no overflow test
 
 section .bss
 absolute 30062
-InputBuf resb 128
+InputBuf resb 127
 section .text
 
-;-6 unsigned char *InputPtr;//position in InputBuf
+;-8 unsigned char *InputPtr;//position in InputBuf
 
 InputPtr dw 0
 
-;-7 char namein [67];       //input file name  .S
+;-9 char namein [67];       //input file name  .S
 
 section .bss
-absolute 30190
+absolute 30189
 namein resb 67
 section .text
 
-;-8 char namelst[67];       //list file name   .LST
+;-10 char namelst[67];       //list file name   .LST
 
 section .bss
-absolute 30257
+absolute 30256
 namelst resb 67
 section .text
 
-;-9 char namebin[67];       //output file name .COM
+;-11 char namebin[67];       //output file name .COM
 
 section .bss
-absolute 30324
+absolute 30323
 namebin resb 67
 section .text
 
-;-10 int  asm_fd;            //input file descriptor
+;-12 int  asm_fd;            //input file descriptor
 
 asm_fd dw 0
 
-;-11 int lst_fd;             //list file descriptor
+;-13 int lst_fd;             //list file descriptor
 
 lst_fd dw 0
 
-;-12 int bin_fd;             //output file descriptor
+;-14 int bin_fd;             //output file descriptor
 
 bin_fd dw 0
 
-;-13 int DOS_ERR;            //global var
+;-15 int DOS_ERR;            //global var
 
 DOS_ERR dw 0
 
-;-14 int ErrorCount;         //number of errors
+;-16 int ErrorCount;         //number of errors
 
 ErrorCount dw 0
 
-;-15 int DOS_NoBytes;        //number of bytes read (0 or 1)
+;-17 int DOS_NoBytes;        //number of bytes read (0 or 1)
 
 DOS_NoBytes dw 0
 
-;-16 char DOS_ByteRead;      //the byte just read by DOS
+;-18 char DOS_ByteRead;      //the byte just read by DOS
 
 DOS_ByteRead db 0
 
-;-17 
+;-19 
 
 
-;-18 unsigned int PC;        //program counter, ORG nn
+;-20 unsigned int PC;        //program counter, ORG nn
 
 PC dw 0
 
-;-19 unsigned int PCStart;   //PC at start of line by PrintLine()
+;-21 unsigned int PCStart;   //PC at start of line by PrintLine()
 
 PCStart dw 0
 
-;-20 char isLabel;           //by getName()
+;-22 char isLabel;           //by getName()
 
 isLabel db 0
 
-;-21 #define DIGIT    1      //0-9
+;-23 #define DIGIT    1      //0-9
 
 
-;-22 #define LETTERE  2      //a-z A-Z @ . _
+;-24 #define LETTERE  2      //a-z A-Z @ . _
 
 
-;-23 #define ALNUME   3      //a-z A-Z @ . _  0-9
+;-25 #define ALNUME   3      //a-z A-Z @ . _  0-9
 
 
-;-24 #define NOALNUME 4      //other char
+;-26 #define NOALNUME 4      //other char
 
 
-;-25 char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
+;-27 char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 
 TokeType db 0
 
-;-26 #define BYTE     1
+;-28 #define BYTE     1
 
 
-;-27 #define WORD     2
+;-29 #define WORD     2
 
 
-;-28 #define DWORD    3
+;-30 #define DWORD    3
 
 
-;-29 #define SEGREG   4
+;-31 #define SEGREG   4
 
 
-;-30 //char CodeSize;          //0, BYTE, WORD, DWORD
+;-32 //char CodeSize;          //0, BYTE, WORD, DWORD
 
 
-;-31 #define IMM      1      //const  ,123
+;-33 #define IMM      1      //const  ,123
 
 
-;-32 #define REG      2      //       ,BX    mode=11
+;-34 #define REG      2      //       ,BX    mode=11
 
 
-;-33 #define DIR      3      //VALUE  ,var1  mod=00, r/m=110
+;-35 #define DIR      3      //VALUE  ,var1  mod=00, r/m=110
 
 
-;-34 #define IND      4      //indirec,[var1],[BX+SI],[table+BX],[bp-4] disp 0,8,16
+;-36 #define IND      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
 
 
-;-35 char Op1;               //0, IMM, REG, DIR, IND
+;-37 char Op1;               //0, IMM, REG, DIR, IND
 
 Op1 db 0
 
-;-36 char CodeType;          //1-207 by searchSymbol(), must be byte size
+;-38 char CodeType;          //1-207 by searchSymbol(), must be byte size
 
 CodeType db 0
 
-;-37 
+;-39 
 
 
-;-38 char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
+;-40 char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
 
 RegType db 0
 
-;-39 char RegNo;             //0 - 7 AL, CL, ...  by testReg()
+;-41 char RegNo;             //0 - 7 AL, CL, ...  by testReg()
 
 RegNo db 0
 
-;-40 char OpSize;            //0, BYTE, WORD, DWORD
+;-42 char OpSize;            //0, BYTE, WORD, DWORD
 
 OpSize db 0
 
-;-41 //char AddrSize;          //67h:
+;-43 //char AddrSize;          //67h:
 
 
-;-42 char NumOprns;          //0-2
+;-44 char NumOprns;          //0-2
 
 NumOprns db 0
 
-;-43 char wflag;             //0=byte, 1=word/dword
+;-45 char wflag;             //0=byte, 1=word/dword
 
 wflag db 0
 
-;-44 char dflag;             //0=source is reg,  1=dest is reg
+;-46 char dflag;             //0=source is reg,  1=dest is reg
 
 dflag db 0
 
-;-45 //char modrm;           //mod, r/m
+;-47 //char modrm;           //mod, r/m
 
 
-;-46 char reg;               //combination of index and base reg
+;-48 char reg;               //combination of index and base reg
 
 reg db 0
 
-;-47 int disp;               //displacement      0-8 bytes
+;-49 int disp;               //displacement      0-8 bytes
 
 disp dw 0
 
-;-48 int imme;               //immediate         0-8 bytes
+;-50 int imme;               //immediate         0-8 bytes
 
 imme dw 0
 
-;-49 
+;-51 
 
 
-;-50 #define OPMAXLEN  5
+;-52 #define OPMAXLEN 5
 
 
-;-51 char OpPos[OPMAXLEN];   //array for one opcode to list
+;-53 char OpPos[OPMAXLEN];   //array for one opcode to list
 
 section .bss
-absolute 30391
+absolute 30390
 OpPos resb 5
 section .text
 
-;-52 int OpPrintIndex;       //0-OPMAXLEN, Position to print opcode, by genCode8()
+;-54 int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
 
 OpPrintIndex dw 0
 
-;-53 char *OpCodePtr;        //position in OpCodeTable by searchSymbol(), div.
+;-55 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
 
 OpCodePtr dw 0
 
-;-54 char PrReloc;           //print 'R' if relocative
+;-56 char PrReloc;           //print 'R' if relocative
 
 PrReloc db 0
 
-;-55 
+;-57 
 
 
-;-56 char LabelNames[1000];  //space for names of all labels
+;-58 #define LABELNAMESMAX 969//next number - 31
+
+
+;-59 char LabelNames[1000];  //space for names of all labels
 
 section .bss
-absolute 30396
+absolute 30395
 LabelNames resb 1000
 section .text
 
-;-57 char *LabelNamePtr;     // first free position
+;-60 char *LabelNamePtr;     // first free position
 
 LabelNamePtr dw 0
 
-;-58 unsigned int LabelAddr[100];//addr of each label
+;-61 #define LABELADRMAX 100
+
+
+;-62 unsigned int LabelAddr[LABELADRMAX];//addr of each label
 
 section .bss
-absolute 31396
+absolute 31395
 LabelAddr resw 100
 section .text
 
-;-59 int LabelMaxIx=0;       //actual number of stored labels
+;-63 int LabelMaxIx=0;       //actual number of stored labels
 
 LabelMaxIx dw 0
 
-;-60 int LabelIx;            //actual number of just searched label
+;-64 int LabelIx;            //actual number of just searched label
 
 LabelIx dw 0
 
-;-61 
+;-65 
 
 
-;-62 char FileBin  [2000];   //output binary file
+;-66 #define FILEBINMAX 1990 //next number - max. oplemgth
+
+
+;-67 char FileBin  [2000];   //output binary file
 
 section .bss
-absolute 31596
+absolute 31595
 FileBin resb 2000
 section .text
 
-;-63 unsigned int BinLen=0;  //length of binary file
+;-68 unsigned int BinLen=0;  //length of binary file
 
 BinLen dw 0
 
-;-64 
+;-69 
 
 
-;-65 char *arglen=0x80;      // for main only
+;-70 char *arglen=0x80;      // for main only
 
 arglen dw 128
 
-;-66 char *argv=0x82;        // for main only
+;-71 char *argv=0x82;        // for main only
 
 argv dw 130
 ;Back to main program: AS.C
@@ -5401,189 +5416,194 @@ ret
 
 ;    1 arr sign byte     2    2        0 Version1[19]
 ;    2 var sign byte     1    3        0 LIST
-;    3 arr sign byte     2    7    30000 Symbol[31]
-;    4 arr sign byte     3   36    30031 SymbolUpper[31]
-;    5 var unsg word     4   12        0 SymbolInt
-;    6 arr sign byte     5    3    30062 InputBuf[128]
-;    7 ptr unsg byte     6   23        0 InputPtr
-;    8 arr sign byte     7    5    30190 namein[67]
-;    9 arr sign byte     8    5    30257 namelst[67]
-;   10 arr sign byte     9    5    30324 namebin[67]
-;   11 var sign word    10    4        0 asm_fd
-;   12 var sign word    11    3        0 lst_fd
-;   13 var sign word    12    3        0 bin_fd
-;   14 var sign word    13    6        0 DOS_ERR
-;   15 var sign word    14    4        0 ErrorCount
-;   16 var sign word    15    4        0 DOS_NoBytes
-;   17 var sign byte    16    4        0 DOS_ByteRead
-;   18 var unsg word    18    5        0 PC
-;   19 var unsg word    19    2        0 PCStart
-;   20 var sign byte    20    3        0 isLabel
-;   21 def unsg byte    21    -        0 DIGIT=1
-;   22 def unsg byte    22    -        0 LETTERE=2
-;   23 def unsg byte    23    -        0 ALNUME=3
-;   24 def unsg byte    24    -        0 NOALNUME=4
-;   25 var sign byte    25   20        0 TokeType
-;   26 def unsg byte    26    -        0 BYTE=1
-;   27 def unsg byte    27    -        0 WORD=2
-;   28 def unsg byte    28    -        0 DWORD=3
-;   29 def unsg byte    29    -        0 SEGREG=4
-;   30 def unsg byte    31    -        0 IMM=1
-;   31 def unsg byte    32    -        0 REG=2
-;   32 def unsg byte    33    -        0 DIR=3
-;   33 def unsg byte    34    -        0 IND=4
-;   34 var sign byte    35   13        0 Op1
-;   35 var sign byte    36   12        0 CodeType
-;   36 var sign byte    38   17        0 RegType
-;   37 var sign byte    39   10        0 RegNo
-;   38 var sign byte    40   10        0 OpSize
-;   39 var sign byte    42 NULL        0 NumOprns
-;   40 var sign byte    43    5        0 wflag
-;   41 var sign byte    44 NULL        0 dflag
-;   42 var sign byte    46    4        0 reg
-;   43 var sign word    47   13        0 disp
-;   44 var sign word    48    2        0 imme
-;   45 def unsg byte    50    -        0 OPMAXLEN=5
-;   46 arr sign byte    51    2    30391 OpPos[5]
-;   47 var sign word    52    6        0 OpPrintIndex
-;   48 ptr sign byte    53   16        0 OpCodePtr
-;   49 var sign byte    54    2        0 PrReloc
-;   50 arr sign byte    56    3    30396 LabelNames[1000]
-;   51 ptr sign byte    57   10        0 LabelNamePtr
-;   52 arr unsg word    58    4    31396 LabelAddr[100]
-;   53 var sign word    59    5        0 LabelMaxIx
-;   54 var sign word    60    4        0 LabelIx
-;   55 arr sign byte    62    3    31596 FileBin[2000]
-;   56 var unsg word    63    5        0 BinLen
-;   57 ptr sign byte    65    1        0 arglen
-;   58 ptr sign byte    66    4        0 argv
-;   59 var sign byte     1    1        0 I_START
-;   60 arr sign byte     4 NULL        0 I_PUSHA[9]
-;   61 arr sign byte     5 NULL        0 I_POPA[8]
-;   62 arr sign byte     6 NULL        0 I_NOP[7]
-;   63 arr sign byte     7 NULL        0 I_CBW[7]
-;   64 arr sign byte     8 NULL        0 I_CWDE[8]
-;   65 arr sign byte     9 NULL        0 I_CWD[7]
-;   66 arr sign byte    10 NULL        0 I_CDQ[7]
-;   67 arr sign byte    11 NULL        0 I_WAIT[8]
-;   68 arr sign byte    12 NULL        0 I_PUSHF[9]
-;   69 arr sign byte    13 NULL        0 I_POPF[8]
-;   70 arr sign byte    14 NULL        0 I_SAHF[8]
-;   71 arr sign byte    15 NULL        0 I_LAHF[8]
-;   72 arr sign byte    16 NULL        0 I_MOVSB[9]
-;   73 arr sign byte    17 NULL        0 I_MOVSW[9]
-;   74 arr sign byte    18 NULL        0 I_CMPSB[9]
-;   75 arr sign byte    19 NULL        0 I_CMPSW[9]
-;   76 arr sign byte    20 NULL        0 I_STOSB[9]
-;   77 arr sign byte    21 NULL        0 I_STOSW[9]
-;   78 arr sign byte    22 NULL        0 I_LODSB[9]
-;   79 arr sign byte    23 NULL        0 I_LODSW[9]
-;   80 arr sign byte    24 NULL        0 I_SCASB[9]
-;   81 arr sign byte    25 NULL        0 I_SCASW[9]
-;   82 arr sign byte    26 NULL        0 I_LEAVE[9]
-;   83 arr sign byte    27 NULL        0 I_IRET[8]
-;   84 arr sign byte    28 NULL        0 I_XLAT[8]
-;   85 arr sign byte    29 NULL        0 I_LOCK[8]
-;   86 arr sign byte    30 NULL        0 I_REPNE[9]
-;   87 arr sign byte    31 NULL        0 I_REPNZ[9]
-;   88 arr sign byte    32 NULL        0 I_REPE[8]
-;   89 arr sign byte    33 NULL        0 I_REPZ[8]
-;   90 arr sign byte    34 NULL        0 I_HLT[7]
-;   91 arr sign byte    35 NULL        0 I_CLC[7]
-;   92 arr sign byte    36 NULL        0 I_STC[7]
-;   93 arr sign byte    37 NULL        0 I_CLI[7]
-;   94 arr sign byte    38 NULL        0 I_STI[7]
-;   95 arr sign byte    39 NULL        0 I_CLD[7]
-;   96 arr sign byte    40 NULL        0 I_STD[7]
-;   97 arr sign byte    42 NULL        0 I_INC[9]
-;   98 arr sign byte    43 NULL        0 I_DEC[9]
-;   99 arr sign byte    45 NULL        0 I_NOT[8]
-;  100 arr sign byte    46 NULL        0 I_NEG[8]
-;  101 arr sign byte    47 NULL        0 I_MUL[8]
-;  102 arr sign byte    48 NULL        0 I_IMUL[9]
-;  103 arr sign byte    49 NULL        0 I_DIV[8]
-;  104 arr sign byte    50 NULL        0 I_IDIV[9]
-;  105 arr sign byte    52 NULL        0 I_LES[7]
-;  106 arr sign byte    53 NULL        0 I_LDS[7]
-;  107 arr sign byte    54 NULL        0 I_LEA[7]
-;  108 arr sign byte    56 NULL        0 I_ADD[7]
-;  109 arr sign byte    57 NULL        0 I_OR[6]
-;  110 arr sign byte    58 NULL        0 I_ADC[7]
-;  111 arr sign byte    59 NULL        0 I_SBB[7]
-;  112 arr sign byte    60 NULL        0 I_AND[7]
-;  113 arr sign byte    61 NULL        0 I_SUB[7]
-;  114 arr sign byte    62 NULL        0 I_XOR[7]
-;  115 arr sign byte    63 NULL        0 I_CMP[7]
-;  116 arr sign byte    65 NULL        0 I_MOV[6]
-;  117 arr sign byte    66 NULL        0 I_MOVSX[9]
-;  118 arr sign byte    67 NULL        0 I_MOVZX[9]
-;  119 arr sign byte    69 NULL        0 I_JO[6]
-;  120 arr sign byte    70 NULL        0 I_JNO[7]
-;  121 arr sign byte    71 NULL        0 I_JB[6]
-;  122 arr sign byte    72 NULL        0 I_JC[6]
-;  123 arr sign byte    73 NULL        0 I_JNB[7]
-;  124 arr sign byte    74 NULL        0 I_JAE[7]
-;  125 arr sign byte    75 NULL        0 I_JNC[7]
-;  126 arr sign byte    76 NULL        0 I_JE[6]
-;  127 arr sign byte    77 NULL        0 I_JZ[6]
-;  128 arr sign byte    78 NULL        0 I_JNE[7]
-;  129 arr sign byte    79 NULL        0 I_JNZ[7]
-;  130 arr sign byte    80 NULL        0 I_JBE[7]
-;  131 arr sign byte    81 NULL        0 I_JNA[7]
-;  132 arr sign byte    82 NULL        0 I_JA[6]
-;  133 arr sign byte    83 NULL        0 I_JS[6]
-;  134 arr sign byte    84 NULL        0 I_JNS[7]
-;  135 arr sign byte    85 NULL        0 I_JP[6]
-;  136 arr sign byte    86 NULL        0 I_JPE[7]
-;  137 arr sign byte    87 NULL        0 I_JNP[7]
-;  138 arr sign byte    88 NULL        0 I_JPO[7]
-;  139 arr sign byte    89 NULL        0 I_JL[6]
-;  140 arr sign byte    90 NULL        0 I_JNL[7]
-;  141 arr sign byte    91 NULL        0 I_JGE[7]
-;  142 arr sign byte    92 NULL        0 I_JLE[7]
-;  143 arr sign byte    93 NULL        0 I_JNG[7]
-;  144 arr sign byte    94 NULL        0 I_JG[6]
-;  145 arr sign byte    96 NULL        0 I_JMP[8]
-;  146 arr sign byte    97 NULL        0 I_CALL[9]
-;  147 arr sign byte    99 NULL        0 I_RET[8]
-;  148 arr sign byte   100 NULL        0 I_RETF[9]
-;  149 arr sign byte   102 NULL        0 I_PUSH[8]
-;  150 arr sign byte   103 NULL        0 I_POP[7]
-;  151 arr sign byte   105 NULL        0 I_ROL[7]
-;  152 arr sign byte   106 NULL        0 I_ROR[7]
-;  153 arr sign byte   107 NULL        0 I_RCL[7]
-;  154 arr sign byte   108 NULL        0 I_RCR[7]
-;  155 arr sign byte   109 NULL        0 I_SHL[7]
-;  156 arr sign byte   110 NULL        0 I_SAL[7]
-;  157 arr sign byte   111 NULL        0 I_SHR[7]
-;  158 arr sign byte   112 NULL        0 I_SAR[7]
-;  159 arr sign byte   114 NULL        0 I_INT[8]
-;  160 arr sign byte   115 NULL        0 I_INTO[8]
-;  161 arr sign byte   117 NULL        0 I_IN[7]
-;  162 arr sign byte   118 NULL        0 I_INSB[8]
-;  163 arr sign byte   119 NULL        0 I_INSW[8]
-;  164 arr sign byte   120 NULL        0 I_INSD[8]
-;  165 arr sign byte   121 NULL        0 I_OUT[8]
-;  166 arr sign byte   122 NULL        0 I_OUTSB[8]
-;  167 arr sign byte   123 NULL        0 I_OUTSW[8]
-;  168 arr sign byte   124 NULL        0 I_OUTSD[8]
-;  169 arr sign byte   126 NULL        0 I_XCHG[9]
-;  170 arr sign byte   128 NULL        0 I_LOOPNZ[10]
-;  171 arr sign byte   129 NULL        0 I_LOOPNE[10]
-;  172 arr sign byte   130 NULL        0 I_LOOPZ[9]
-;  173 arr sign byte   131 NULL        0 I_LOOPE[9]
-;  174 arr sign byte   132 NULL        0 I_LOOP[8]
-;  175 arr sign byte   133 NULL        0 I_JCXZ[8]
-;  176 arr sign byte   134 NULL        0 I_JECXZ[9]
-;  177 arr sign byte   136 NULL        0 I_ENTER[9]
-;  178 arr sign byte   138 NULL        0 I_ORG[6]
-;  179 arr sign byte   139 NULL        0 I_DB[5]
-;  180 arr sign byte   140 NULL        0 I_DW[5]
-;  181 arr sign byte   141 NULL        0 I_DD[5]
-;  182 arr sign byte   142 NULL        0 I_RESB[7]
-;  183 arr sign byte   143 NULL        0 I_RESW[7]
-;  184 arr sign byte   144 NULL        0 I_RESD[7]
-;  185 var sign byte   145 NULL        0 I_END
+;    3 def unsg byte     2    -        0 SYMBOLMAX=31
+;    4 arr sign byte     3    7    30000 Symbol[31]
+;    5 arr sign byte     4   36    30031 SymbolUpper[31]
+;    6 var unsg word     5   12        0 SymbolInt
+;    7 def unsg byte     6    -        0 INPUTBUFMAX=127
+;    8 arr sign byte     7    3    30062 InputBuf[127]
+;    9 ptr unsg byte     8   23        0 InputPtr
+;   10 arr sign byte     9    5    30189 namein[67]
+;   11 arr sign byte    10    5    30256 namelst[67]
+;   12 arr sign byte    11    5    30323 namebin[67]
+;   13 var sign word    12    4        0 asm_fd
+;   14 var sign word    13    3        0 lst_fd
+;   15 var sign word    14    3        0 bin_fd
+;   16 var sign word    15    6        0 DOS_ERR
+;   17 var sign word    16    4        0 ErrorCount
+;   18 var sign word    17    4        0 DOS_NoBytes
+;   19 var sign byte    18    4        0 DOS_ByteRead
+;   20 var unsg word    20    5        0 PC
+;   21 var unsg word    21    2        0 PCStart
+;   22 var sign byte    22    3        0 isLabel
+;   23 def unsg byte    23    -        0 DIGIT=1
+;   24 def unsg byte    24    -        0 LETTERE=2
+;   25 def unsg byte    25    -        0 ALNUME=3
+;   26 def unsg byte    26    -        0 NOALNUME=4
+;   27 var sign byte    27   20        0 TokeType
+;   28 def unsg byte    28    -        0 BYTE=1
+;   29 def unsg byte    29    -        0 WORD=2
+;   30 def unsg byte    30    -        0 DWORD=3
+;   31 def unsg byte    31    -        0 SEGREG=4
+;   32 def unsg byte    33    -        0 IMM=1
+;   33 def unsg byte    34    -        0 REG=2
+;   34 def unsg byte    35    -        0 DIR=3
+;   35 def unsg byte    36    -        0 IND=4
+;   36 var sign byte    37   13        0 Op1
+;   37 var sign byte    38   12        0 CodeType
+;   38 var sign byte    40   17        0 RegType
+;   39 var sign byte    41   10        0 RegNo
+;   40 var sign byte    42   10        0 OpSize
+;   41 var sign byte    44 NULL        0 NumOprns
+;   42 var sign byte    45    5        0 wflag
+;   43 var sign byte    46 NULL        0 dflag
+;   44 var sign byte    48    4        0 reg
+;   45 var sign word    49   13        0 disp
+;   46 var sign word    50    2        0 imme
+;   47 def unsg byte    52    -        0 OPMAXLEN=5
+;   48 arr sign byte    53    2    30390 OpPos[5]
+;   49 var sign word    54    6        0 OpPrintIndex
+;   50 ptr sign byte    55   16        0 OpCodePtr
+;   51 var sign byte    56    2        0 PrReloc
+;   52 def unsg byte    58    -        0 LABELNAMESMAX=969
+;   53 arr sign byte    59    3    30395 LabelNames[1000]
+;   54 ptr sign byte    60   10        0 LabelNamePtr
+;   55 def unsg byte    61    -        0 LABELADRMAX=100
+;   56 arr unsg word    62    4    31395 LabelAddr[100]
+;   57 var sign word    63    5        0 LabelMaxIx
+;   58 var sign word    64    4        0 LabelIx
+;   59 def unsg byte    66    -        0 FILEBINMAX=1990
+;   60 arr sign byte    67    3    31595 FileBin[2000]
+;   61 var unsg word    68    5        0 BinLen
+;   62 ptr sign byte    70    1        0 arglen
+;   63 ptr sign byte    71    4        0 argv
+;   64 var sign byte     1    1        0 I_START
+;   65 arr sign byte     4 NULL        0 I_PUSHA[9]
+;   66 arr sign byte     5 NULL        0 I_POPA[8]
+;   67 arr sign byte     6 NULL        0 I_NOP[7]
+;   68 arr sign byte     7 NULL        0 I_CBW[7]
+;   69 arr sign byte     8 NULL        0 I_CWDE[8]
+;   70 arr sign byte     9 NULL        0 I_CWD[7]
+;   71 arr sign byte    10 NULL        0 I_CDQ[7]
+;   72 arr sign byte    11 NULL        0 I_WAIT[8]
+;   73 arr sign byte    12 NULL        0 I_PUSHF[9]
+;   74 arr sign byte    13 NULL        0 I_POPF[8]
+;   75 arr sign byte    14 NULL        0 I_SAHF[8]
+;   76 arr sign byte    15 NULL        0 I_LAHF[8]
+;   77 arr sign byte    16 NULL        0 I_MOVSB[9]
+;   78 arr sign byte    17 NULL        0 I_MOVSW[9]
+;   79 arr sign byte    18 NULL        0 I_CMPSB[9]
+;   80 arr sign byte    19 NULL        0 I_CMPSW[9]
+;   81 arr sign byte    20 NULL        0 I_STOSB[9]
+;   82 arr sign byte    21 NULL        0 I_STOSW[9]
+;   83 arr sign byte    22 NULL        0 I_LODSB[9]
+;   84 arr sign byte    23 NULL        0 I_LODSW[9]
+;   85 arr sign byte    24 NULL        0 I_SCASB[9]
+;   86 arr sign byte    25 NULL        0 I_SCASW[9]
+;   87 arr sign byte    26 NULL        0 I_LEAVE[9]
+;   88 arr sign byte    27 NULL        0 I_IRET[8]
+;   89 arr sign byte    28 NULL        0 I_XLAT[8]
+;   90 arr sign byte    29 NULL        0 I_LOCK[8]
+;   91 arr sign byte    30 NULL        0 I_REPNE[9]
+;   92 arr sign byte    31 NULL        0 I_REPNZ[9]
+;   93 arr sign byte    32 NULL        0 I_REPE[8]
+;   94 arr sign byte    33 NULL        0 I_REPZ[8]
+;   95 arr sign byte    34 NULL        0 I_HLT[7]
+;   96 arr sign byte    35 NULL        0 I_CLC[7]
+;   97 arr sign byte    36 NULL        0 I_STC[7]
+;   98 arr sign byte    37 NULL        0 I_CLI[7]
+;   99 arr sign byte    38 NULL        0 I_STI[7]
+;  100 arr sign byte    39 NULL        0 I_CLD[7]
+;  101 arr sign byte    40 NULL        0 I_STD[7]
+;  102 arr sign byte    42 NULL        0 I_INC[9]
+;  103 arr sign byte    43 NULL        0 I_DEC[9]
+;  104 arr sign byte    45 NULL        0 I_NOT[8]
+;  105 arr sign byte    46 NULL        0 I_NEG[8]
+;  106 arr sign byte    47 NULL        0 I_MUL[8]
+;  107 arr sign byte    48 NULL        0 I_IMUL[9]
+;  108 arr sign byte    49 NULL        0 I_DIV[8]
+;  109 arr sign byte    50 NULL        0 I_IDIV[9]
+;  110 arr sign byte    52 NULL        0 I_LES[7]
+;  111 arr sign byte    53 NULL        0 I_LDS[7]
+;  112 arr sign byte    54 NULL        0 I_LEA[7]
+;  113 arr sign byte    56 NULL        0 I_ADD[7]
+;  114 arr sign byte    57 NULL        0 I_OR[6]
+;  115 arr sign byte    58 NULL        0 I_ADC[7]
+;  116 arr sign byte    59 NULL        0 I_SBB[7]
+;  117 arr sign byte    60 NULL        0 I_AND[7]
+;  118 arr sign byte    61 NULL        0 I_SUB[7]
+;  119 arr sign byte    62 NULL        0 I_XOR[7]
+;  120 arr sign byte    63 NULL        0 I_CMP[7]
+;  121 arr sign byte    65 NULL        0 I_MOV[6]
+;  122 arr sign byte    66 NULL        0 I_MOVSX[9]
+;  123 arr sign byte    67 NULL        0 I_MOVZX[9]
+;  124 arr sign byte    69 NULL        0 I_JO[6]
+;  125 arr sign byte    70 NULL        0 I_JNO[7]
+;  126 arr sign byte    71 NULL        0 I_JB[6]
+;  127 arr sign byte    72 NULL        0 I_JC[6]
+;  128 arr sign byte    73 NULL        0 I_JNB[7]
+;  129 arr sign byte    74 NULL        0 I_JAE[7]
+;  130 arr sign byte    75 NULL        0 I_JNC[7]
+;  131 arr sign byte    76 NULL        0 I_JE[6]
+;  132 arr sign byte    77 NULL        0 I_JZ[6]
+;  133 arr sign byte    78 NULL        0 I_JNE[7]
+;  134 arr sign byte    79 NULL        0 I_JNZ[7]
+;  135 arr sign byte    80 NULL        0 I_JBE[7]
+;  136 arr sign byte    81 NULL        0 I_JNA[7]
+;  137 arr sign byte    82 NULL        0 I_JA[6]
+;  138 arr sign byte    83 NULL        0 I_JS[6]
+;  139 arr sign byte    84 NULL        0 I_JNS[7]
+;  140 arr sign byte    85 NULL        0 I_JP[6]
+;  141 arr sign byte    86 NULL        0 I_JPE[7]
+;  142 arr sign byte    87 NULL        0 I_JNP[7]
+;  143 arr sign byte    88 NULL        0 I_JPO[7]
+;  144 arr sign byte    89 NULL        0 I_JL[6]
+;  145 arr sign byte    90 NULL        0 I_JNL[7]
+;  146 arr sign byte    91 NULL        0 I_JGE[7]
+;  147 arr sign byte    92 NULL        0 I_JLE[7]
+;  148 arr sign byte    93 NULL        0 I_JNG[7]
+;  149 arr sign byte    94 NULL        0 I_JG[6]
+;  150 arr sign byte    96 NULL        0 I_JMP[8]
+;  151 arr sign byte    97 NULL        0 I_CALL[9]
+;  152 arr sign byte    99 NULL        0 I_RET[8]
+;  153 arr sign byte   100 NULL        0 I_RETF[9]
+;  154 arr sign byte   102 NULL        0 I_PUSH[8]
+;  155 arr sign byte   103 NULL        0 I_POP[7]
+;  156 arr sign byte   105 NULL        0 I_ROL[7]
+;  157 arr sign byte   106 NULL        0 I_ROR[7]
+;  158 arr sign byte   107 NULL        0 I_RCL[7]
+;  159 arr sign byte   108 NULL        0 I_RCR[7]
+;  160 arr sign byte   109 NULL        0 I_SHL[7]
+;  161 arr sign byte   110 NULL        0 I_SAL[7]
+;  162 arr sign byte   111 NULL        0 I_SHR[7]
+;  163 arr sign byte   112 NULL        0 I_SAR[7]
+;  164 arr sign byte   114 NULL        0 I_INT[8]
+;  165 arr sign byte   115 NULL        0 I_INTO[8]
+;  166 arr sign byte   117 NULL        0 I_IN[7]
+;  167 arr sign byte   118 NULL        0 I_INSB[8]
+;  168 arr sign byte   119 NULL        0 I_INSW[8]
+;  169 arr sign byte   120 NULL        0 I_INSD[8]
+;  170 arr sign byte   121 NULL        0 I_OUT[8]
+;  171 arr sign byte   122 NULL        0 I_OUTSB[8]
+;  172 arr sign byte   123 NULL        0 I_OUTSW[8]
+;  173 arr sign byte   124 NULL        0 I_OUTSD[8]
+;  174 arr sign byte   126 NULL        0 I_XCHG[9]
+;  175 arr sign byte   128 NULL        0 I_LOOPNZ[10]
+;  176 arr sign byte   129 NULL        0 I_LOOPNE[10]
+;  177 arr sign byte   130 NULL        0 I_LOOPZ[9]
+;  178 arr sign byte   131 NULL        0 I_LOOPE[9]
+;  179 arr sign byte   132 NULL        0 I_LOOP[8]
+;  180 arr sign byte   133 NULL        0 I_JCXZ[8]
+;  181 arr sign byte   134 NULL        0 I_JECXZ[9]
+;  182 arr sign byte   136 NULL        0 I_ENTER[9]
+;  183 arr sign byte   138 NULL        0 I_ORG[6]
+;  184 arr sign byte   139 NULL        0 I_DB[5]
+;  185 arr sign byte   140 NULL        0 I_DW[5]
+;  186 arr sign byte   141 NULL        0 I_DD[5]
+;  187 arr sign byte   142 NULL        0 I_RESB[7]
+;  188 arr sign byte   143 NULL        0 I_RESW[7]
+;  189 arr sign byte   144 NULL        0 I_RESD[7]
+;  190 var sign byte   145 NULL        0 I_END
 
 
 ;   # Calls Line Width  Name   list of functions
@@ -5667,247 +5687,247 @@ ret
 ;    1    12 parse
 ;    2    18 epilog
 ;    3    25 end1
-;    4  1318 getTokeType
-;    5  1330 getCodeSize
-;    6  1342 genInstruction
-;    7  1357 LeftOpwCheck
-;    8  1370 genInstruction
-;    9  1385 genInstruction
-;   10  1400 genInstruction
-;   11  1415 genCodeInREG
-;   12  1428 LeftOpwCheck
-;   13  1441 genInstruction
-;   14  1456 genCodeInREG
-;   15  1469 genInstruction
-;   16  1484 genCode16
-;   17  1494 genInstruction
-;   18  1509 error1
-;   19  1516 error1
-;   20  1536 getLeftOp
-;   21  1546 segregerror
-;   22  1558 setwflag
-;   23  1567 error1
-;   24  1574 error1
-;   25  1581 error1
-;   26  1598 getOp1
-;   27  1605 isToken
-;   28  1613 getIND
-;   29  1620 error1
-;   30  1627 error1
-;   31  1643 gen66h
-;   32  1657 testReg
-;   33  1665 searchLabel
-;   34  1677 error1
-;   35  1698 getTokeType
-;   36  1710 getOp1
-;   37  1717 syntaxerror
-;   38  1729 getIndReg2
-;   39  1740 getIndReg1
-;   40  1751 isToken
-;   41  1759 getTokeType
-;   42  1771 numbererror
-;   43  1783 isToken
-;   44  1791 isToken
-;   45  1799 errorexit
-;   46  1822 indexerror
-;   47  1833 indexerror
-;   48  1860 indexerror
-;   49  1871 indexerror
-;   50  1889 genCode8
-;   51  1921 genCode8
-;   52  1930 genCode8
-;   53  1963 genCode8
-;   54  1987 writeEA
-;   55  2007 writeEA
-;   56  2031 addrexit
-;   57  2040 genCode8
-;   58  2049 genCode8
-;   59  2058 genCode16
-;   60  2074 getLine
-;   61  2082 getTokeType
-;   62  2094 storeLabel
-;   63  2105 getTokeType
-;   64  2117 lookCode
-;   65  2126 process
-;   66  2134 getVariable
-;   67  2146 skipRest
-;   68  2155 error1
-;   69  2162 error1
-;   70  2169 printLine
-;   71  2193 skipBlank
-;   72  2203 digit
-;   73  2209 getDigit
-;   74  2218 letterE
-;   75  2226 getName
-;   76  2245 searchLabel
-;   77  2257 error1
-;   78  2264 strcpy
-;   79  2291 eqstr
-;   80  2297 strlen
-;   81  2318 storeLabel
-;   82  2329 getTokeType
-;   83  2341 lookCode
-;   84  2350 errorexit
-;   85  2360 errorexit
-;   86  2370 getTokeType
-;   87  2382 genCode8
-;   88  2391 skipBlank
-;   89  2401 isToken
-;   90  2409 genCode8
-;   91  2418 isToken
-;   92  2426 getTokeType
-;   93  2438 genCode16
-;   94  2448 isToken
-;   95  2456 errorexit
-;   96  2475 eqstr
-;   97  2493 eqstr
-;   98  2499 getTokeType
-;   99  2511 eqstr
-;  100  2517 getTokeType
-;  101  2529 eqstr
-;  102  2535 getTokeType
-;  103  2557 skipBlank
-;  104  2576 getTokeType
-;  105  2588 prs
-;  106  2600 readRL
-;  107  2607 errorexit
-;  108  2617 ifEOL
-;  109  2631 readRL
-;  110  2667 digit
-;  111  2673 letterE
-;  112  2700 digit
-;  113  2718 alnumE
-;  114  2725 strcpy
-;  115  2732 toupper
-;  116  2748 strlen
-;  117  2755 strlen
-;  118  2762 eqstr
-;  119  2768 eqstr
-;  120  2774 eqstr
-;  121  2780 eqstr
-;  122  2786 eqstr
-;  123  2792 eqstr
-;  124  2798 eqstr
-;  125  2804 eqstr
-;  126  2810 eqstr
-;  127  2816 eqstr
-;  128  2822 eqstr
-;  129  2828 eqstr
-;  130  2834 eqstr
-;  131  2840 eqstr
-;  132  2846 eqstr
-;  133  2852 eqstr
-;  134  2858 eqstr
-;  135  2864 eqstr
-;  136  2870 eqstr
-;  137  2876 eqstr
-;  138  2882 eqstr
-;  139  2888 eqstr
-;  140  2894 eqstr
-;  141  2900 eqstr
-;  142  2906 eqstr
-;  143  2912 eqstr
-;  144  2918 eqstr
-;  145  2924 eqstr
-;  146  2930 eqstr
-;  147  2936 eqstr
-;  148  2956 prs
-;  149  2960 printhex16
-;  150  2971 prs
-;  151  2975 prc
-;  152  2979 printhex8a
-;  153  2990 prc
-;  154  2994 prs
-;  155  2998 prscomment
-;  156  3015 writetty
-;  157  3024 writetty
-;  158  3033 fputcR
-;  159  3055 prc
-;  160  3071 prc
-;  161  3092 prc
-;  162  3096 prc
-;  163  3118 printhex8a
-;  164  3129 printhex8a
-;  165  3154 printIntU
-;  166  3164 prc
-;  167  3177 prs
-;  168  3181 prs
-;  169  3185 prs
-;  170  3189 prs
-;  171  3206 error1
-;  172  3224 error1
-;  173  3242 error1
-;  174  3261 error1
-;  175  3280 error1
-;  176  3299 error1
-;  177  3318 error1
-;  178  3337 error1
-;  179  3344 end1
-;  180  3358 errorexit
-;  181  3379 errorexit
-;  182  3408 cputs
-;  183  3414 cputs
-;  184  3420 exitR
-;  185  3426 toupper
-;  186  3434 strcpy
-;  187  3441 strcat1
-;  188  3449 strcpy
-;  189  3456 strcat1
-;  190  3464 strcpy
-;  191  3471 strcat1
-;  192  3479 openR
-;  193  3485 cputs
-;  194  3491 cputs
-;  195  3497 exitR
-;  196  3503 creatR
-;  197  3510 cputs
-;  198  3516 cputs
-;  199  3522 exitR
-;  200  3528 creatR
-;  201  3535 cputs
-;  202  3541 cputs
-;  203  3547 exitR
-;  204  3553 prs
-;  205  3557 prs
-;  206  3561 prs
-;  207  3565 prs
-;  208  3569 prs
-;  209  3573 prs
-;  210  3577 prs
-;  211  3581 prs
-;  212  3585 prs
-;  213  3602 prs
-;  214  3606 printIntU
-;  215  3616 prs
-;  216  3620 prs
-;  217  3624 prs
-;  218  3628 prc
-;  219  3632 printhex16
-;  220  3643 prs
-;  221  3647 strlen
-;  222  3654 prs
-;  223  3658 printIntU
-;  224  3668 prs
-;  225  3672 prc
-;  226  3676 printhex8a
-;  227  3687 fputcR
-;  228  3701 fcloseR
-;  229  3709 fcloseR
-;  230  3717 fcloseR
-;  231  3725 exitR
-;  232  3750 putch
-;  233  3818 strcpy
-;  234  3833 DosInt
-;  235  3849 DosInt
-;  236  3872 DosInt
-;  237  3891 DosInt
-;  238  3925 writetty
-;  239  3934 writetty
+;    4  1377 getTokeType
+;    5  1389 getCodeSize
+;    6  1401 genInstruction
+;    7  1416 LeftOpwCheck
+;    8  1429 genInstruction
+;    9  1444 genInstruction
+;   10  1459 genInstruction
+;   11  1474 genCodeInREG
+;   12  1487 LeftOpwCheck
+;   13  1500 genInstruction
+;   14  1515 genCodeInREG
+;   15  1528 genInstruction
+;   16  1543 genCode16
+;   17  1553 genInstruction
+;   18  1568 error1
+;   19  1575 error1
+;   20  1595 getLeftOp
+;   21  1605 segregerror
+;   22  1617 setwflag
+;   23  1626 error1
+;   24  1633 error1
+;   25  1640 error1
+;   26  1657 getOp1
+;   27  1664 isToken
+;   28  1672 getIND
+;   29  1679 error1
+;   30  1686 error1
+;   31  1702 gen66h
+;   32  1716 testReg
+;   33  1724 searchLabel
+;   34  1736 error1
+;   35  1757 getTokeType
+;   36  1769 getOp1
+;   37  1776 syntaxerror
+;   38  1788 getIndReg2
+;   39  1799 getIndReg1
+;   40  1810 isToken
+;   41  1818 getTokeType
+;   42  1830 numbererror
+;   43  1842 isToken
+;   44  1850 isToken
+;   45  1858 errorexit
+;   46  1881 indexerror
+;   47  1892 indexerror
+;   48  1919 indexerror
+;   49  1930 indexerror
+;   50  1948 genCode8
+;   51  1980 genCode8
+;   52  1989 genCode8
+;   53  2022 genCode8
+;   54  2046 writeEA
+;   55  2066 writeEA
+;   56  2090 addrexit
+;   57  2099 genCode8
+;   58  2108 genCode8
+;   59  2117 genCode16
+;   60  2133 getLine
+;   61  2141 getTokeType
+;   62  2153 storeLabel
+;   63  2164 getTokeType
+;   64  2176 lookCode
+;   65  2185 process
+;   66  2193 getVariable
+;   67  2205 skipRest
+;   68  2214 error1
+;   69  2221 error1
+;   70  2228 printLine
+;   71  2252 skipBlank
+;   72  2262 digit
+;   73  2268 getDigit
+;   74  2277 letterE
+;   75  2285 getName
+;   76  2304 searchLabel
+;   77  2316 error1
+;   78  2323 strcpy
+;   79  2350 eqstr
+;   80  2356 strlen
+;   81  2377 storeLabel
+;   82  2388 getTokeType
+;   83  2400 lookCode
+;   84  2409 errorexit
+;   85  2419 errorexit
+;   86  2429 getTokeType
+;   87  2441 genCode8
+;   88  2450 skipBlank
+;   89  2460 isToken
+;   90  2468 genCode8
+;   91  2477 isToken
+;   92  2485 getTokeType
+;   93  2497 genCode16
+;   94  2507 isToken
+;   95  2515 errorexit
+;   96  2534 eqstr
+;   97  2552 eqstr
+;   98  2558 getTokeType
+;   99  2570 eqstr
+;  100  2576 getTokeType
+;  101  2588 eqstr
+;  102  2594 getTokeType
+;  103  2616 skipBlank
+;  104  2635 getTokeType
+;  105  2647 prs
+;  106  2659 readRL
+;  107  2666 errorexit
+;  108  2676 ifEOL
+;  109  2690 readRL
+;  110  2726 digit
+;  111  2732 letterE
+;  112  2759 digit
+;  113  2777 alnumE
+;  114  2784 strcpy
+;  115  2791 toupper
+;  116  2807 strlen
+;  117  2814 strlen
+;  118  2821 eqstr
+;  119  2827 eqstr
+;  120  2833 eqstr
+;  121  2839 eqstr
+;  122  2845 eqstr
+;  123  2851 eqstr
+;  124  2857 eqstr
+;  125  2863 eqstr
+;  126  2869 eqstr
+;  127  2875 eqstr
+;  128  2881 eqstr
+;  129  2887 eqstr
+;  130  2893 eqstr
+;  131  2899 eqstr
+;  132  2905 eqstr
+;  133  2911 eqstr
+;  134  2917 eqstr
+;  135  2923 eqstr
+;  136  2929 eqstr
+;  137  2935 eqstr
+;  138  2941 eqstr
+;  139  2947 eqstr
+;  140  2953 eqstr
+;  141  2959 eqstr
+;  142  2965 eqstr
+;  143  2971 eqstr
+;  144  2977 eqstr
+;  145  2983 eqstr
+;  146  2989 eqstr
+;  147  2995 eqstr
+;  148  3015 prs
+;  149  3019 printhex16
+;  150  3030 prs
+;  151  3034 prc
+;  152  3038 printhex8a
+;  153  3049 prc
+;  154  3053 prs
+;  155  3057 prscomment
+;  156  3074 writetty
+;  157  3083 writetty
+;  158  3092 fputcR
+;  159  3114 prc
+;  160  3130 prc
+;  161  3151 prc
+;  162  3155 prc
+;  163  3177 printhex8a
+;  164  3188 printhex8a
+;  165  3213 printIntU
+;  166  3223 prc
+;  167  3236 prs
+;  168  3240 prs
+;  169  3244 prs
+;  170  3248 prs
+;  171  3265 error1
+;  172  3283 error1
+;  173  3301 error1
+;  174  3320 error1
+;  175  3339 error1
+;  176  3358 error1
+;  177  3377 error1
+;  178  3396 error1
+;  179  3403 end1
+;  180  3417 errorexit
+;  181  3438 errorexit
+;  182  3467 cputs
+;  183  3473 cputs
+;  184  3479 exitR
+;  185  3485 toupper
+;  186  3493 strcpy
+;  187  3500 strcat1
+;  188  3508 strcpy
+;  189  3515 strcat1
+;  190  3523 strcpy
+;  191  3530 strcat1
+;  192  3538 openR
+;  193  3544 cputs
+;  194  3550 cputs
+;  195  3556 exitR
+;  196  3562 creatR
+;  197  3569 cputs
+;  198  3575 cputs
+;  199  3581 exitR
+;  200  3587 creatR
+;  201  3594 cputs
+;  202  3600 cputs
+;  203  3606 exitR
+;  204  3612 prs
+;  205  3616 prs
+;  206  3620 prs
+;  207  3624 prs
+;  208  3628 prs
+;  209  3632 prs
+;  210  3636 prs
+;  211  3640 prs
+;  212  3644 prs
+;  213  3661 prs
+;  214  3665 printIntU
+;  215  3675 prs
+;  216  3679 prs
+;  217  3683 prs
+;  218  3687 prc
+;  219  3691 printhex16
+;  220  3702 prs
+;  221  3706 strlen
+;  222  3713 prs
+;  223  3717 printIntU
+;  224  3727 prs
+;  225  3731 prc
+;  226  3735 printhex8a
+;  227  3746 fputcR
+;  228  3760 fcloseR
+;  229  3768 fcloseR
+;  230  3776 fcloseR
+;  231  3784 exitR
+;  232  3809 putch
+;  233  3877 strcpy
+;  234  3892 DosInt
+;  235  3908 DosInt
+;  236  3931 DosInt
+;  237  3950 DosInt
+;  238  3984 writetty
+;  239  3993 writetty
 ;Input: AS.C, List: AS.S,  Lines:  210
-;Glob. variables:  185 max.:  200
+;Glob. variables:  190 max.:  200
 ;Local variables:    3 max.:  100, in 'genInstruction'
 ;Functions      :   72 max.:  300
-;Calls          :  240 max.: 2000, NameField: 3966 max.:    65535
+;Calls          :  240 max.: 2000, NameField: 4025 max.:    65535
 ;Code until     :26009 max.: 30000, free: 3991
-;Data (HeapEnd) :33596, resting stacksize: 31939
+;Data (HeapEnd) :33595, resting stacksize: 31940
 ;Max. Const in 'testReg' :  658 max. 3000, free: 2342
