@@ -45,7 +45,7 @@ char NumOprns;          //0-2
 char wflag;             //0=byte, 1=word/dword
 char dflag;             //0=source is reg,  1=dest is reg
 //char modrm;           //mod, r/m
-char reg;               //combination of index and base reg
+char regindexbase;      //combination of index and base reg
 int disp;               //displacement      0-8 bytes
 int imme;               //immediate         0-8 bytes
 

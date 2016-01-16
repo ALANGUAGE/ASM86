@@ -1,18 +1,18 @@
 int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
-char Version1[]="AS.C V0.07 10.1.2016";
+char Version1[]="AS.C V0.07 15.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
 
 int process() { int i; char c;
   getTokeType();
-  OpSize=getCodeSize();
+  OpSize=getCodeSize();////
 
   if (CodeType ==  1) {//1 byte opcode
     genInstruction(0, 1);
     return;
   }
   if (CodeType ==  2) {//inc, dec
-    LeftOpwCheck();
+    checkLeftOp(1);
     	if (Op1 == REG) {
         if (RegType == WORD) {genInstruction(RegNo, 3); return; }//short
         if (RegType ==DWORD) {genInstruction(RegNo, 3); return; }
@@ -23,7 +23,7 @@ int process() { int i; char c;
   }
 
   if (CodeType ==  52) {//not,neg,mul,div,idiv, no ext. imul
-    LeftOpwCheck();
+    checkLeftOp(2);
     genInstruction(wflag, 1);
     genCodeInREG();
     return;
@@ -44,6 +44,7 @@ int process() { int i; char c;
   }
   error1("unknown CodeType");
 }
+
 int setwflag() {//only Op1 (first operand)
   wflag=0;
   if (OpSize == 0) {//do not override OpSize
@@ -55,17 +56,11 @@ int setwflag() {//only Op1 (first operand)
   if (OpSize  == DWORD) {gen66h(); wflag=1;}
   if (OpSize  ==  WORD) wflag=1;
 }
-//NumOprns==2, seg reg not allowed only mov and push
-//size: reg size or declaration CodeSize
-//1. acc, imm 04  if (imm) acc,imm; else rm,imm(sign extended);
-//2. rm , imm 80
-//2a sign ext 83
-//3. reg, rm  02  if (dest==reg) set direction bit; else default;
-//4. rm , reg 00
-//5. error1(mem2mem)
 
-int LeftOpwCheck() {
-  getLeftOp();
+int Check2Op(char left, char rigth) {
+}
+int checkLeftOp(char mode) {
+  getOp();
   if (RegType == SEGREG) {segregerror(); return;}//only move,push,pop
   setwflag();
   if (OpSize == 0) error1("no op size declared");
@@ -75,9 +70,24 @@ int LeftOpwCheck() {
   if (RegType==0) error1("no register defined");
 }
 
-int getLeftOp() {//0,IMM,REG,ADR,MEM(disp,reg,RegType)
-//set: op1, disp->imm, reg, regt->size
-  disp=0; imme=0; reg=0;
+int saveLeftOp(){
+}
+int checkRightOp(char mode){
+}
+
+/*        Op      = 0, IMM, REG, ADR, MEM
+IMM       imme    = 0, SymbolInt    
+MEM,ADR   disp    = 0,LabelAddr[LabelIx]
+REG     R RegNo   = 0 - 7
+REG     R RegType = 0, BYTE, WORD, DWORD, SEGREG 
+MEM       regindexbase = 0 - 7
+
+          OpSize  = 0, BYTE, WORD, DWORD (set wflag)
+*/
+int getOp() {
+//set: op1=0,IMM,REG,ADR,MEM(disp,reg,RegType) 
+//disp->imm, reg, regt->size
+  disp=0; imme=0; regindexbase=0;
 
   Op1=getOp1();
   if (isToken('[')) {Op1 = MEM; getMEM();  return;} //4
@@ -87,6 +97,7 @@ int getLeftOp() {//0,IMM,REG,ADR,MEM(disp,reg,RegType)
   if (Op1 == ADR) {disp=LabelAddr[LabelIx];return;} //3
   error1("Name of operand expected #1");
 }
+
 int getOp1() {//scan for a single operand
 //return:0, IMM, REG, ADR (not MEM)
 //set   :RegType, RegNo by testReg
@@ -101,17 +112,18 @@ int getOp1() {//scan for a single operand
     else error1("variable not found"); }
   return 0;
 }
+
 int getMEM() {//   e.g. [array+bp+si-4]
-//set: disp, reg, RegType
-  char op2; char r1;
-  disp=0; r1=0; RegType=0;
+//set: disp, regindexbase, RegType
+  char op2;
+  disp=0; regindexbase=0; RegType=0;
   do {
     getTokeType();
     op2=getOp1();
     if (op2 ==   0) syntaxerror();
     if (op2 == IMM) disp=disp+SymbolInt;
-    if (op2 == REG) if (r1) r1=getIndReg2(r1);
-                    else    r1=getIndReg1(  );
+    if (op2 == REG) if (regindexbase) regindexbase=getIndReg2();
+                    else regindexbase=getIndReg1();
     if (op2 == ADR) disp=disp+LabelAddr[LabelIx];//is MEM variable
     if (isToken('-')) {
       getTokeType();
@@ -120,7 +132,6 @@ int getMEM() {//   e.g. [array+bp+si-4]
     }
   } while (isToken('+'));
   if (isToken(']') == 0) errorexit("] expected");
-  reg=r1;
 }
 int getIndReg1() {char m; m=0;
   if (RegType !=WORD) indexerror();
@@ -131,12 +142,12 @@ int getIndReg1() {char m; m=0;
   if (m    ==0) indexerror();
   return m;
 }
-int getIndReg2(char r1) {char m; m=4;//because m=0 is BX+DI
+int getIndReg2() {char m; m=4;//because m=0 is BX+DI
   if (RegType !=WORD) indexerror();
-  if (RegNo==7) if (r1==6) m=3;//BP+DI
-           else if (r1==7) m=1;//BX+DI
-  if (RegNo==6) if (r1==6) m=2;//BP+SI
-           else if (r1==7) m=0;//BX+DI
+  if (RegNo==7) if (regindexbase==6) m=3;//BP+DI
+           else if (regindexbase==7) m=1;//BX+DI
+  if (RegNo==6) if (regindexbase==6) m=2;//BP+SI
+           else if (regindexbase==7) m=0;//BX+DI
   if (m > 3) indexerror();
   return m;
 }
@@ -168,16 +179,16 @@ int genCodeInREG() {char x; //get Code for second byte
   x= *OpCodePtr;
   writeEA(x);
 }
-int genModRegRM(){ writeEA(reg);//todo
+int genModRegRM(){ writeEA(regindexbase);//todo
 }
-int writeEA(char xxx) {//need: Op1, disp, RegNo, reg
+int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase
   char len;
   len=0;
-  xxx = xxx << 3;//in reg field of mod r/m
+  xxx = xxx << 3;//in regindexbase field of mod r/m
   if (Op1 ==   0) addrexit();
-  if (Op1 == REG) {xxx |= 0xC0; xxx = xxx + RegNo;}  //2
-  if (Op1 == ADR) {xxx |= 6; len=2; }                //3
-  if (Op1 == MEM) { xxx = xxx + reg;                 //4
+  if (Op1 == REG) {xxx |= 0xC0; xxx = xxx + RegNo;} //2
+  if (Op1 == ADR) {xxx |= 6; len=2; }               //3
+  if (Op1 == MEM) { xxx = xxx + regindexbase;       //4
     if (disp) {
       disp;
       if(ax > 127) len=2;
