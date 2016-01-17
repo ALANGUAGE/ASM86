@@ -27,10 +27,6 @@ int epilog() { int i; int j; char c;
   prs("\n;END Errors: "); printIntU(ErrorCount);
   if (ErrorCount) prs(" ***ERROR*** ");
   prs(", Label & Var: ");
-/*  i= &LabelNames; i=LabelNamePtr-i; printIntU(i); prs(". >>");
-  i= &LabelNames;
-  do { c=*i; if (c==0) c=' '; prc(c); i++;
-  } while (i < LabelNamePtr); prs("<< \n"); */
   if (LabelMaxIx) {
     i = 1;
     LabelNamePtr= &LabelNames;

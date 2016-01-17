@@ -2,7 +2,7 @@ int printLine() { int i; char c;
   prs("\n"); printhex16(PCStart);
   if (OpPrintIndex == 0) prs("                ");
   else {
-    prc(PrReloc);
+    prc(PrintR);
     i=0;
     do {
       c=OpPos[i];

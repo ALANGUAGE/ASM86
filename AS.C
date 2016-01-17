@@ -1,5 +1,5 @@
 int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
-char Version1[]="AS.C V0.07 15.1.2016";
+char Version1[]="AS.C V0.07 16.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
 
@@ -77,24 +77,23 @@ int checkRightOp(char mode){
 
 /*        Op      = 0, IMM, REG, ADR, MEM
 IMM       imme    = 0, SymbolInt    
-MEM,ADR   disp    = 0,LabelAddr[LabelIx]
 REG     R RegNo   = 0 - 7
 REG     R RegType = 0, BYTE, WORD, DWORD, SEGREG 
+MEM,ADR   disp    = 0,LabelAddr[LabelIx]
 MEM       regindexbase = 0 - 7
 
           OpSize  = 0, BYTE, WORD, DWORD (set wflag)
 */
 int getOp() {
-//set: op1=0,IMM,REG,ADR,MEM(disp,reg,RegType) 
-//disp->imm, reg, regt->size
+//set: op1=0,IMM,REG,ADR,MEM
   disp=0; imme=0; regindexbase=0;
 
   Op1=getOp1();
-  if (isToken('[')) {Op1 = MEM; getMEM();  return;} //4
+  if (isToken('[')) {Op1 = MEM; getMEM();  return;}
   if (Op1 == 0) error1("Name of operand expected");
-  if (Op1 == IMM) {imme=SymbolInt;         return;} //1
-  if (Op1 == REG)                          return;  //2
-  if (Op1 == ADR) {disp=LabelAddr[LabelIx];return;} //3
+  if (Op1 == IMM) {imme=SymbolInt;         return;}
+  if (Op1 == REG)                          return;
+  if (Op1 == ADR) {disp=LabelAddr[LabelIx];return;}
   error1("Name of operand expected #1");
 }
 
@@ -103,17 +102,18 @@ int getOp1() {//scan for a single operand
 //set   :RegType, RegNo by testReg
 //set   :LabelIx by searchLabel
   if (TokeType == 0)      return 0;
-  if (TokeType == DIGIT)  return IMM; //1
+  if (TokeType == DIGIT)  return IMM;
   if (TokeType == ALNUME) {
     RegNo=testReg();
-    if (RegType)          return REG; //2
+    if (RegType)          return REG;
     LabelIx=searchLabel();
-    if (LabelIx)          return ADR; //3
-    else error1("variable not found"); }
+    if (LabelIx)          return ADR;
+    else error1("variable not found"); 
+  }
   return 0;
 }
 
-int getMEM() {//   e.g. [array+bp+si-4]
+int getMEM() {// e.g. [array+bp+si-4]
 //set: disp, regindexbase, RegType
   char op2;
   disp=0; regindexbase=0; RegType=0;
@@ -121,10 +121,10 @@ int getMEM() {//   e.g. [array+bp+si-4]
     getTokeType();
     op2=getOp1();
     if (op2 ==   0) syntaxerror();
-    if (op2 == IMM) disp=disp+SymbolInt;
     if (op2 == REG) if (regindexbase) regindexbase=getIndReg2();
-                    else regindexbase=getIndReg1();
-    if (op2 == ADR) disp=disp+LabelAddr[LabelIx];//is MEM variable
+                    else getIndReg1();
+    if (op2 == ADR) disp=disp+LabelAddr[LabelIx];
+    if (op2 == IMM) disp=disp+SymbolInt;
     if (isToken('-')) {
       getTokeType();
       if (TokeType != DIGIT) numbererror();
@@ -133,27 +133,33 @@ int getMEM() {//   e.g. [array+bp+si-4]
   } while (isToken('+'));
   if (isToken(']') == 0) errorexit("] expected");
 }
-int getIndReg1() {char m; m=0;
+int getIndReg1() {
   if (RegType !=WORD) indexerror();
-  if (RegNo==3) m=7;//BX
-  if (RegNo==5) m=6;//BP change to BP+0
-  if (RegNo==7) m=5;//DI
-  if (RegNo==6) m=4;//SI
-  if (m    ==0) indexerror();
-  return m;
+  if (RegNo==3) regindexbase=7;//BX
+  if (RegNo==5) regindexbase=6;//BP, change to BP+0
+  if (RegNo==7) regindexbase=5;//DI
+  if (RegNo==6) regindexbase=4;//SI
+  if (regindexbase==0) indexerror();
 }
 int getIndReg2() {char m; m=4;//because m=0 is BX+DI
   if (RegType !=WORD) indexerror();
   if (RegNo==7) if (regindexbase==6) m=3;//BP+DI
            else if (regindexbase==7) m=1;//BX+DI
   if (RegNo==6) if (regindexbase==6) m=2;//BP+SI
-           else if (regindexbase==7) m=0;//BX+DI
+           else if (regindexbase==7) m=0;//BX+SI
   if (m > 3) indexerror();
   return m;
 }
 
 // generate code ...........................................................
-int gen66h() {genCode8(0x66);}
+int genInstruction(char No, int loc) {
+  char c;//add OpCodePtr with loc, emits contents  + No
+  if(loc) OpCodePtr=OpCodePtr+loc;
+  c= *OpCodePtr + No;
+  genCode8(c);
+}
+int gen66h() {genCode8(0x66);
+}
 int genCode8(char c) {
 //set: BinLen++, OpPrintIndex++
   FileBin[BinLen]=c;
@@ -167,12 +173,6 @@ int genCode8(char c) {
 int genCode16(int i) {
   genCode8(i); i=i >> 8;
   genCode8(i);
-}
-int genInstruction(char No, int loc) {
-  char c;//set: OpCodePtr++
-  if(loc) OpCodePtr=OpCodePtr+loc;
-  c= *OpCodePtr + No;
-  genCode8(c);
 }
 int genCodeInREG() {char x; //get Code for second byte
   OpCodePtr++;
@@ -210,8 +210,8 @@ add word ax, [bx] ;03 07
 VA dw 8
 mov byte [bp- 4], al ;88 46 FC
 mov      [VA+bx], al ;88 87 [300F]
-}  }
-//#include "AS1.C"
+}  
+}
 #include "PARSE.C"
 #include "HELPER.C"
 #include "OUTPUT.C"

@@ -1,7 +1,7 @@
 int parse() {
   LabelNamePtr= &LabelNames;
   do {
-    PCStart=PC; OpSize=0; OpPrintIndex=0; PrReloc=' ';
+    PCStart=PC; OpSize=0; OpPrintIndex=0; PrintR=' ';
     getLine();
     InputPtr = &InputBuf;
     getTokeType();//getCode in SymbolUpper,set TokeType,isLabel by getName
@@ -107,5 +107,5 @@ int isToken(char c) {
     InputPtr++; return 1;} return 0;
 }
 int skipRest() {
-  getTokeType(); if(TokeType!=0)prs("\n; ******** extra char ignored");
+  getTokeType(); if(TokeType!=0)error1("extra char ignored");
 }
