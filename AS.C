@@ -1,41 +1,38 @@
 int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
-char Version1[]="AS.C V0.07 16.1.2016";
+char Version1[]="AS.C V0.07 17.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
 
 int process() { int i; char c;
   getTokeType();
-  OpSize=getCodeSize();////
+  OpSize=getCodeSize();
+  getCodes();//set: Code1, Code2, Code3
 
   if (CodeType ==  1) {//1 byte opcode
-    genInstruction(0, 1);
+    genCode8(Code1);
     return;
   }
-  if (CodeType ==  2) {//inc, dec
-    checkLeftOp(1);
+  if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv
+    checkLeftOp();
+      if (Code2 <= 1) {//inc,dec
     	if (Op1 == REG) {
-        if (RegType == WORD) {genInstruction(RegNo, 3); return; }//short
-        if (RegType ==DWORD) {genInstruction(RegNo, 3); return; }
+        if (RegType == WORD) {genCode(Code3, RegNo); return; }//short
+        if (RegType ==DWORD) {genCode(Code3, RegNo); return; }
+        }
       }
-      genInstruction(wflag, 1);
-      genCodeInREG();
+      genCode(Code1, wflag);
+      writeEA(Code2);
       return;
   }
-
-  if (CodeType ==  52) {//not,neg,mul,div,idiv, no ext. imul
-    checkLeftOp(2);
-    genInstruction(wflag, 1);
-    genCodeInREG();
-    return;
-  }
-
-  if (CodeType==  8) {// ret
+ 
+  if (CodeType ==  8) {//ret,retf
     if (TokeType == DIGIT) {
-      genInstruction(0, 2);
+      genCode8(Code2);
       genCode16(SymbolInt);
       return;
     }
-    genInstruction(0, 1); return;
+    genCode8(Code1); 
+    return;
   }
 
   if (CodeType==101) {// ORG nn
@@ -59,7 +56,7 @@ int setwflag() {//only Op1 (first operand)
 
 int Check2Op(char left, char rigth) {
 }
-int checkLeftOp(char mode) {
+int checkLeftOp() {
   getOp();
   if (RegType == SEGREG) {segregerror(); return;}//only move,push,pop
   setwflag();
@@ -151,14 +148,20 @@ int getIndReg2() {char m; m=4;//because m=0 is BX+DI
   return m;
 }
 
-// generate code ...........................................................
-int genInstruction(char No, int loc) {
-  char c;//add OpCodePtr with loc, emits contents  + No
-  if(loc) OpCodePtr=OpCodePtr+loc;
-  c= *OpCodePtr + No;
-  genCode8(c);
+// generate code ........................................
+int getCodes() {
+  OpCodePtr ++;
+  Code1 = *OpCodePtr;
+  OpCodePtr ++;
+  Code2 = *OpCodePtr;
+  OpCodePtr ++;
+  Code3 = *OpCodePtr;
 }
 int gen66h() {genCode8(0x66);
+}
+int genCode(char c, char d) {
+    c = c + d;
+    genCode8(c);
 }
 int genCode8(char c) {
 //set: BinLen++, OpPrintIndex++
@@ -173,13 +176,6 @@ int genCode8(char c) {
 int genCode16(int i) {
   genCode8(i); i=i >> 8;
   genCode8(i);
-}
-int genCodeInREG() {char x; //get Code for second byte
-  OpCodePtr++;
-  x= *OpCodePtr;
-  writeEA(x);
-}
-int genModRegRM(){ writeEA(regindexbase);//todo
 }
 int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase
   char len;

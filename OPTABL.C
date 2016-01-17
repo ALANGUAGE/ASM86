@@ -38,16 +38,15 @@ char I_CLI[]=  {'C','L','I',0,          1,0xFA,   0xF1};//clear interrupt
 char I_STI[]=  {'S','T','I',0,          1,0xFB,   0xF1};//set interrupt
 char I_CLD[]=  {'C','L','D',0,          1,0xFC,   0xF1};//clear direction
 char I_STD[]=  {'S','T','D',0,          1,0xFD,   0xF1};//set direction
-//  2: inc,dec
+// 52: mem reg 16 bit
 char I_INC[]=  {'I','N','C',0,          2,0xFE, 0,0x40,0xF1};
 char I_DEC[]=  {'D','E','C',0,          2,0xFE, 1,0x48,0xF1};
-// 52: mem reg 16 bit
-char I_NOT[]=  {'N','O','T',0,         52,0xF6, 2,0xF1};
-char I_NEG[]=  {'N','E','G',0,         52,0xF6, 3,0xF1};
-char I_MUL[]=  {'M','U','L',0,         52,0xF6, 4,0xF1};
-char I_IMUL[]= {'I','M','U','L',0,     52,0xF6, 5,0xF1};//only acc
-char I_DIV[]=  {'D','I','V',0,         52,0xF6, 6,0xF1};
-char I_IDIV[]= {'I','D','I','V',0,     52,0xF6, 7,0xF1};
+char I_NOT[]=  {'N','O','T',0,          2,0xF6, 2,0xF1};
+char I_NEG[]=  {'N','E','G',0,          2,0xF6, 3,0xF1};
+char I_MUL[]=  {'M','U','L',0,          2,0xF6, 4,0xF1};
+char I_IMUL[]= {'I','M','U','L',0,      2,0xF6, 5,0xF1};//only acc
+char I_DIV[]=  {'D','I','V',0,          2,0xF6, 6,0xF1};
+char I_IDIV[]= {'I','D','I','V',0,      2,0xF6, 7,0xF1};
 //  3: les, lda, lea
 char I_LES[]=  {'L','E','S',0,          3,0xC4,   0xF1};// /r, a16
 char I_LDS[]=  {'L','D','S',0,          3,0xC5,   0xF1};// /r, a16

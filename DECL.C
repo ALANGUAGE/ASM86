@@ -36,7 +36,9 @@ char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 #define MEM      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
 char Op1;               //0, IMM, REG, ADR, MEM
 char CodeType;          //1-207 by searchSymbol(), must be byte size
-
+char Code1;             // first  Opcode
+char Code2;             // second Opcode
+char Code3;             // third  Opcode
 char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
 char RegNo;             //0 - 7 AL, CL, ...  by testReg()
 char OpSize;            //0, BYTE, WORD, DWORD by getCodeSize()
