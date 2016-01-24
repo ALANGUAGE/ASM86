@@ -1,5 +1,5 @@
 int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
-char Version1[]="AS.C V0.07 17.1.2016";
+char Version1[]="AS.C V0.07 18.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
 
@@ -150,12 +150,9 @@ int getIndReg2() {char m; m=4;//because m=0 is BX+DI
 
 // generate code ........................................
 int getCodes() {
-  OpCodePtr ++;
-  Code1 = *OpCodePtr;
-  OpCodePtr ++;
-  Code2 = *OpCodePtr;
-  OpCodePtr ++;
-  Code3 = *OpCodePtr;
+  OpCodePtr ++; Code1 = *OpCodePtr;
+  OpCodePtr ++; Code2 = *OpCodePtr;
+  OpCodePtr ++; Code3 = *OpCodePtr;
 }
 int gen66h() {genCode8(0x66);
 }
@@ -178,13 +175,23 @@ int genCode16(int i) {
   genCode8(i);
 }
 int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase
+//mod-byte: mode76, reg/opcode543, r/m210    
   char len;
   len=0;
-  xxx = xxx << 3;//in regindexbase field of mod r/m
+  prs("\nxxx:"); printhex8a(xxx);
+  xxx = xxx << 3;//in reg/opcode field
+  prs(" xx:"); printhex8a(xxx);
   if (Op1 ==   0) addrexit();
-  if (Op1 == REG) {xxx |= 0xC0; xxx = xxx + RegNo;} //2
-  if (Op1 == ADR) {xxx |= 6; len=2; }               //3
-  if (Op1 == MEM) { xxx = xxx + regindexbase;       //4
+  if (Op1 == REG) {xxx |= 0xC0; xxx = xxx + RegNo;} 
+  if (Op1 == ADR) {xxx = xxx + 6; len=2; }            
+  if (Op1 == MEM) {xxx = xxx + regindexbase;   
+  prs(" x:"); printhex8a(xxx);
+  prs(" Op1:"); printhex8a(Op1);
+  prs(" regindexbase:"); printhex8a(regindexbase);
+    if (regindexbase == 6) {//[BP+00]
+      len=1;
+      xxx |= 0x40;
+    }
     if (disp) {
       disp;
       if(ax > 127) len=2;
