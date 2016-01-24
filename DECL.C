@@ -29,7 +29,6 @@ char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 #define WORD     2
 #define DWORD    3
 #define SEGREG   4
-//char CodeSize;          //0, BYTE, WORD, DWORD
 #define IMM      1      //const  ,123
 #define REG      2      //       ,BX    mode=11
 #define ADR      3      //VALUE  ,var1  mod=00, r/m=110
@@ -48,6 +47,7 @@ char wflag;             //0=byte, 1=word/dword
 //char dflag;             //0=source is reg,  1=dest is reg
 //char modrm;           //mod, r/m
 char regindexbase;      //combination of index and base reg
+char isDirect;          //is direct addressing
 int disp;               //displacement      0-8 bytes
 int imme;               //immediate         0-8 bytes
 

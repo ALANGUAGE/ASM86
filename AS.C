@@ -1,11 +1,11 @@
 int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
-char Version1[]="AS.C V0.07 18.1.2016";
+char Version1[]="AS.C V0.07 24.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
 
-int process() { int i; char c;
-  getTokeType();
-  OpSize=getCodeSize();
+int process() {
+  getTokeType();//0, DIGIT, ALNUME, NOALNUME
+  OpSize=getCodeSize();//0, BYTE, WORD, DWORD
   getCodes();//set: Code1, Code2, Code3
 
   if (CodeType ==  1) {//1 byte opcode
@@ -58,6 +58,7 @@ int Check2Op(char left, char rigth) {
 }
 int checkLeftOp() {
   getOp();
+  if (Op1 == ADR) implmerror();
   if (RegType == SEGREG) {segregerror(); return;}//only move,push,pop
   setwflag();
   if (OpSize == 0) error1("no op size declared");
@@ -71,7 +72,6 @@ int saveLeftOp(){
 }
 int checkRightOp(char mode){
 }
-
 /*        Op      = 0, IMM, REG, ADR, MEM
 IMM       imme    = 0, SymbolInt    
 REG     R RegNo   = 0 - 7
@@ -83,7 +83,7 @@ MEM       regindexbase = 0 - 7
 */
 int getOp() {
 //set: op1=0,IMM,REG,ADR,MEM
-  disp=0; imme=0; regindexbase=0;
+  disp=0; imme=0; regindexbase=0; isDirect=1;
 
   Op1=getOp1();
   if (isToken('[')) {Op1 = MEM; getMEM();  return;}
@@ -118,8 +118,10 @@ int getMEM() {// e.g. [array+bp+si-4]
     getTokeType();
     op2=getOp1();
     if (op2 ==   0) syntaxerror();
-    if (op2 == REG) if (regindexbase) regindexbase=getIndReg2();
-                    else getIndReg1();
+    if (op2 == REG) {isDirect=0;
+                      if (regindexbase) regindexbase=getIndReg2();
+                      else getIndReg1();
+                    }
     if (op2 == ADR) disp=disp+LabelAddr[LabelIx];
     if (op2 == IMM) disp=disp+SymbolInt;
     if (isToken('-')) {
@@ -178,26 +180,30 @@ int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase
 //mod-byte: mode76, reg/opcode543, r/m210    
   char len;
   len=0;
-  prs("\nxxx:"); printhex8a(xxx);
+//  prs("\nxxx:"); printhex8a(xxx);
   xxx = xxx << 3;//in reg/opcode field
-  prs(" xx:"); printhex8a(xxx);
   if (Op1 ==   0) addrexit();
   if (Op1 == REG) {xxx |= 0xC0; xxx = xxx + RegNo;} 
-  if (Op1 == ADR) {xxx = xxx + 6; len=2; }            
-  if (Op1 == MEM) {xxx = xxx + regindexbase;   
-  prs(" x:"); printhex8a(xxx);
-  prs(" Op1:"); printhex8a(Op1);
-  prs(" regindexbase:"); printhex8a(regindexbase);
-    if (regindexbase == 6) {//[BP+00]
-      len=1;
-      xxx |= 0x40;
+  if (Op1 == ADR) error1("writeEA");           
+  if (Op1 == MEM) {
+    if (isDirect) {
+        xxx |= 6;
+        len = 2;
     }
-    if (disp) {
-      disp;
-      if(ax > 127) len=2;
-      else len=1;
-      if (len == 1) xxx |= 0x40;
-      else xxx |= 0x80;
+    else { 
+      xxx = xxx + regindexbase;   
+      if (regindexbase == 6) {//make [BP+00]
+        len=1;
+        if (disp == 0) xxx |= 0x40;
+      }
+
+      if (disp) {
+        ax = disp;
+        if(ax > 127) len=2;
+        else len=1;
+        if (len == 1) xxx |= 0x40;
+        else xxx |= 0x80;
+      }
     }
   }
   genCode8(xxx);// gen second byte
@@ -205,16 +211,6 @@ int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase
   if (len == 2) genCode16(disp);
 }
 
-int testx() { __asm {
-inc byte [Version1]   ;FE 06 [1000]
-add bx, ax    ;01 C3
-add ax, bx    ;01 D8
-add word ax, [bx] ;03 07
-VA dw 8
-mov byte [bp- 4], al ;88 46 FC
-mov      [VA+bx], al ;88 87 [300F]
-}  
-}
 #include "PARSE.C"
 #include "HELPER.C"
 #include "OUTPUT.C"

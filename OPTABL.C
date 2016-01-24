@@ -135,6 +135,10 @@ char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
 char I_ENTER[]={'E','N','T','E','R',0, 30, 0xC8,  0xF1};
 // 100: directives
 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
+// section, segment .TEXT .DATA .BSS
+char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
+char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
+char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};
 char I_DB[]=   {'D','B',0,            200,        0xF1};
 char I_DW[]=   {'D','W',0,            201,        0xF1};
 char I_DD[]=   {'D','D',0,            202,        0xF1};

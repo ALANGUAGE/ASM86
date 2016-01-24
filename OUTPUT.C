@@ -48,6 +48,7 @@ int error1(char *s) { LIST=1; ErrorCount++;
 int allowederror(){error1("not allowed here"); }
 int implmerror(){error1("not implemented");}
 int indexerror (){error1("invalid index register");}
+int invaloperror (){error1("invalid operands");}
 int numbererror(){error1("number expected");}
 int regmemerror(){error1("only register or memory allowed");}
 int segregerror(){error1("segment register not allowed");}

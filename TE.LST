@@ -1,52 +1,42 @@
-;AS.C V0.07 18.1.2016, Source: TE.S, Output: TE.LST, TE.COM
+;AS.C V0.07 24.1.2016, Source: TE.S, Output: TE.LST, TE.COM
 
+0000                ;inc 0             dec 1
 0000                org 256
 0100 90             nop                ;90
-0101                ;next line empty
-0101                
-0101 08 00          VA dw 8            ;08 00
-0103 41 06          VB db "A",6        ;41 06
-xxx:01 xx:08
-0105 FE C9          L1: dec byte cl    ;FE C9
-0107 49             dec word cx        ;49
-xxx:00 xx:00 x:07 Op1:04 regindexbase:07
-0108 FE 07          inc byte [bx]      ;FE 07
-xxx:01 xx:08 x:0F Op1:04 regindexbase:07
-010A FE 0F          dec byte [bx]      ;FE 0F
-xxx:01 xx:08 x:0F Op1:04 regindexbase:07
-010C FE 4F 03       dec byte [bx+3]    ;FE 4F 03
-xxx:01 xx:08 x:0F Op1:04 regindexbase:07
-010F FE 4F FC       dec byte [bx-4]    ;FE 4F FC
-xxx:02 xx:10
-0112 F6 D1          not cl             ;F6 D1
-xxx:01 xx:08
-0114 FE C9          dec cl             ;FE C9
-0116 66 49          dec ecx            ;66 49
-xxx:01 xx:08 x:0F Op1:04 regindexbase:07
-0118 FE 0F          dec byte [bx]      ;FE 0F
-xxx:01 xx:08 x:0F Op1:04 regindexbase:07
-011A FE 4F 03       dec byte [bx+3]    ;FE 4F 03
-xxx:01 xx:08 x:0F Op1:04 regindexbase:07
-011D FE 8F 02 01    dec byte [bx+258]  ;FE 8F 02 01
-xxx:01 xx:08 x:0F Op1:04 regindexbase:07
-0121 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
-0124                ;dec word [cx];invalid effective address
-0124                ;inc word  VA ;invalid comb opcode+operands
-xxx:00 xx:00 x:00 Op1:04 regindexbase:00
-0124 FE 80 01 01    inc byte [VA]      ;FE 06 01 00
-xxx:00 xx:00 x:00 Op1:04 regindexbase:00
-0128 FF 80 03 01    inc word [VB]      ;FF 06 03 00
-xxx:00 xx:00 x:00 Op1:04 regindexbase:00
-012C FF 80 06 01    inc word [VB+3]    ;FF 06 06 00
-0130                ;inc      [VB];no opsize declared
-xxx:00 xx:00 x:06 Op1:04 regindexbase:06
-0130 FE 46 00       inc byte [bp]      ;FE 46 00  special case
-xxx:00 xx:00 x:06 Op1:04 regindexbase:06
-0133 FE 46 04       inc byte [bp+4]    ;FE 46 04
-xxx:00 xx:00 x:06 Op1:04 regindexbase:06
-0136 FE C6 02 01    inc byte [bp+258]  ;FE 86 02 01
-xxx:00 xx:00 x:06 Op1:04 regindexbase:06
-013A FE 46 FC       inc byte [bp-4]    ;FE 46 FC
-013D                
-;END Errors: 0, Label & Var: VA 0101,  VB 0103,  L1 0105,  
-;COM file 61 bytes: 90 08 00 41 06 FE C9 49 FE 07 FE 0F FE 4F 03 FE 4F FC F6 D1 FE C9 66 49 FE 0F FE 4F 03 FE 8F 02 01 FE 4F FC FE 80 01 01 FF 80 03 01 FF 80 06 01 FE 46 00 FE 46 04 FE C6 02 01 FE 46 FC
+0101 41 42 00       AB db "AB",0       ;41 42 00
+0104                
+0104 08 00          VA dw 8            ;08 00
+0106 41 06          VB db "A",6        ;41 06
+0108                ;add bx, ax         ;01 C3
+0108                ;add ax, bx         ;01 D8
+0108                ;add word ax, [bx]  ;03 07
+0108                ;mov al, [bp-4]     ;8A 46 FC
+0108                ;mov al, [VB+bx]    ;8A 87 06 00
+0108 FE C9          L1: dec byte cl    ;FE C9
+010A 49             dec word cx        ;49
+010B FE 07          inc byte [bx]      ;FE 07
+010D FE 0F          dec byte [bx]      ;FE 0F
+010F FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0112 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0115 F6 D1          not cl             ;F6 D1
+0117 FE C9          dec cl             ;FE C9
+0119 66 49          dec ecx            ;66 49
+011B FE 0F          dec byte [bx]      ;FE 0F
+011D FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0120 FE 8F 02 01    dec byte [bx+258]  ;FE 8F 02 01
+0124 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0127                ;dec word [cx];invalid effective address
+0127                ;inc word  VA ;invalid comb opcode+operands
+0127 FE 06 04 01    inc byte [VA]      ;FE 06 04 00
+012B FF 06 06 01    inc word [VB]      ;FF 06 06 00
+012F FF 06 0A 01    inc word [VB+4]    ;FF 06 0A 00
+0133                ;inc      [VB];no opsize declared
+0133 FE 46 00       inc byte [bp]      ;FE 46 00  special case
+0136 FE 46 04       inc byte [bp+4]    ;FE 46 04
+0139 FE 86 02 01    inc byte [bp+258]  ;FE 86 02 01
+013D FE 81 02 01    inc byte [bx+di+258];FE81 02 01
+0141 FE 46 FC       inc byte [bp-4]    ;FE 46 FC
+0144 FE 01          inc byte [bx+di]   ;FE 01
+0146 FE 41 FC       inc byte [bx+di-4] ;FE 41 FC
+;END Errors: 0, Label & Var: AB 0101,  VA 0104,  VB 0106,  L1 0108,  
+;COM file 73 bytes: 90 41 42 00 08 00 41 06 FE C9 49 FE 07 FE 0F FE 4F 03 FE 4F FC F6 D1 FE C9 66 49 FE 0F FE 4F 03 FE 8F 02 01 FE 4F FC FE 06 04 01 FF 06 06 01 FF 06 0A 01 FE 46 00 FE 46 04 FE 86 02 01 FE 81 02 01 FE 46 FC FE 01 FE 41 FC
