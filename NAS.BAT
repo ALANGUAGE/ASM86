@@ -1,0 +1,1 @@
+NASM.EXE -o T.COM -f bin -l T.LS -O1 -t TE.S 

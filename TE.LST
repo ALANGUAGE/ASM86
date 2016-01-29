@@ -1,4 +1,4 @@
-;AS.C V0.07 24.1.2016, Source: TE.S, Output: TE.LST, TE.COM
+;AS.C V0.07 29.1.2016, Source: TE.S, Output: TE.LST, TE.COM
 
 0000                ;inc 0             dec 1
 0000                org 256
@@ -25,8 +25,8 @@
 011D FE 4F 03       dec byte [bx+3]    ;FE 4F 03
 0120 FE 8F 02 01    dec byte [bx+258]  ;FE 8F 02 01
 0124 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
-0127                ;dec word [cx];invalid effective address
-0127                ;inc word  VA ;invalid comb opcode+operands
+0127                ;dec word [cx];inv effective adr
+0127                ;inc word  VA ;inv comb opcode+operands
 0127 FE 06 04 01    inc byte [VA]      ;FE 06 04 00
 012B FF 06 06 01    inc word [VB]      ;FF 06 06 00
 012F FF 06 0A 01    inc word [VB+4]    ;FF 06 0A 00
@@ -38,5 +38,67 @@
 0141 FE 46 FC       inc byte [bp-4]    ;FE 46 FC
 0144 FE 01          inc byte [bx+di]   ;FE 01
 0146 FE 41 FC       inc byte [bx+di-4] ;FE 41 FC
-;END Errors: 0, Label & Var: AB 0101,  VA 0104,  VB 0106,  L1 0108,  
-;COM file 73 bytes: 90 41 42 00 08 00 41 06 FE C9 49 FE 07 FE 0F FE 4F 03 FE 4F FC F6 D1 FE C9 66 49 FE 0F FE 4F 03 FE 8F 02 01 FE 4F FC FE 06 04 01 FF 06 06 01 FF 06 0A 01 FE 46 00 FE 46 04 FE 86 02 01 FE 81 02 01 FE 46 FC FE 01 FE 41 FC
+0149 F6 D0          not al             ;F6 D0
+014B F7 D0          not ax             ;F7 D0
+014D F7 D1          not cx             ;F7 D1
+014F F6 97 02 01    not byte [bx+258]  ;F6 
+0153 F6 11          not byte [bx+di]   ;F6
+0155 F6 51 FC       not byte [bx+di-4] ;F6
+0158 F6 16 04 01    not byte [VA]      ;F6
+015C F7 16 04 01    not word [VA]      ;F7
+0160 F6 D8          neg al             ;F6 
+0162 F7 D8          neg ax             ;F7
+0164 F7 D9          neg cx             ;F7
+0166 F6 9F 02 01    neg byte [bx+258]  ;F6
+016A F6 19          neg byte [bx+di]   ;F6
+016C F6 59 FC       neg byte [bx+di-4] ;F6
+016F F6 1E 04 01    neg byte [VA]      ;F6
+0173 F7 1E 04 01    neg word [VA]      ;F7
+0177 F6 E0          mul al             ;F6 
+0179 F7 E0          mul ax             ;F7
+017B F7 E1          mul cx             ;F7
+017D F6 A7 02 01    mul byte [bx+258]  ;F6
+0181 F6 21          mul byte [bx+di]   ;F6
+0183 F6 61 FC       mul byte [bx+di-4] ;F6
+0186 F6 26 04 01    mul byte [VA]      ;F6
+018A F7 26 04 01    mul word [VA]      ;F7
+018E F6 F0          div al             ;F6 
+0190 F7 F0          div ax             ;F7
+0192 F7 F1          div cx             ;F7
+0194 F6 B7 02 01    div byte [bx+258]  ;F6
+0198 F6 31          div byte [bx+di]   ;F6
+019A F6 71 FC       div byte [bx+di-4] ;F6
+019D F6 36 04 01    div byte [VA]      ;F6
+01A1 F7 36 04 01    div word [VA]      ;F7
+01A5 F6 F8          idiv al            ;F6 
+01A7 F7 F8          idiv ax            ;F7
+01A9 F7 F9          idiv cx            ;F7
+01AB F6 BF 02 01    idiv byte [bx+258] ;F6
+01AF F6 39          idiv byte [bx+di]  ;F6
+01B1 F6 79 FC       idiv byte [bx+di-4];F6
+01B4 F6 3E 04 01    idiv byte [VA]     ;F6
+01B8 F7 3E 04 01    idiv word [VA]     ;F7
+01BC                ;acc, rm           ;F6
+01BC F6 E8          imul al            ;F6 
+01BE F7 E8          imul ax            ;F7
+01C0 F7 E9          imul cx            ;F7
+01C2 F6 AF 02 01    imul byte [bx+258] ;F6
+01C6 F6 29          imul byte [bx+di]  ;F6
+01C8 F6 69 FC       imul byte [bx+di-4];F6
+01CB F6 2E 04 01    imul byte [VA]     ;F6
+01CF F7 2E 04 01    imul word [VA]     ;F7
+01D3                ;r16, rm           ;0F AF
+;***** next line ERROR: not implemented, Symbol: bx
+;***** next line ERROR: extra char ignored, Symbol: bx
+01D3 F7 EB          imul bx, ax
+;***** next line ERROR: not implemented, Symbol: ax
+;***** next line ERROR: extra char ignored, Symbol: ax
+01D5 F7 E8          imul ax, bx
+01D7 F7 EB          imul bx
+01D9                ;imul dx, [VA]
+01D9                ;rm, i
+01D9                ;imul bx, 14
+01D9                ;imul bx, [VA], 258
+01D9                
+;END Errors: 4 ***ERROR*** , Label & Var: AB 0101,  VA 0104,  VB 0106,  L1 0108,  
+;COM file 217 bytes:

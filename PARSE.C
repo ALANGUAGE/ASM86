@@ -107,5 +107,6 @@ int isToken(char c) {
     InputPtr++; return 1;} return 0;
 }
 int skipRest() {
-  getTokeType(); if(TokeType!=0)error1("extra char ignored");
+  getTokeType(); 
+  if(TokeType)error1("extra char ignored");
 }

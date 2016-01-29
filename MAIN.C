@@ -40,9 +40,9 @@ int epilog() { int i; int j; char c;
     } while (i <= LabelMaxIx);
   }
   prs("\n;COM file "); printIntU(BinLen); prs(" bytes:");
-  i=0;
-  do { prc(' '); j = FileBin[i]; printhex8a(j); i++;
-  } while (i < BinLen);
+//  i=0;
+//  do { prc(' '); j = FileBin[i]; printhex8a(j); i++;
+//  } while (i < BinLen);
   i=0;
   do {
     c = FileBin[i];

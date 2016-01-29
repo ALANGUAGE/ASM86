@@ -1,5 +1,5 @@
-int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT,   AS TE
-char Version1[]="AS.C V0.07 24.1.2016";
+int main() {getarg(); parse(); epilog(); end1();}//BAS.BAT, AS TE, NAS.BAT
+char Version1[]="AS.C V0.07 29.1.2016";
 #include "DECL.C"
 #include "OPTABL.C"
 
@@ -19,6 +19,10 @@ int process() {
         if (RegType == WORD) {genCode(Code3, RegNo); return; }//short
         if (RegType ==DWORD) {genCode(Code3, RegNo); return; }
         }
+      }
+      if (Code2 == 5) {//imul extension?
+        getTokeType();
+        if (TokeType) implerror();
       }
       genCode(Code1, wflag);
       writeEA(Code2);
@@ -58,7 +62,7 @@ int Check2Op(char left, char rigth) {
 }
 int checkLeftOp() {
   getOp();
-  if (Op1 == ADR) implmerror();
+  if (Op1 == ADR) implerror();
   if (RegType == SEGREG) {segregerror(); return;}//only move,push,pop
   setwflag();
   if (OpSize == 0) error1("no op size declared");
