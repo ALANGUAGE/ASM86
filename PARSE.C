@@ -33,11 +33,14 @@ int getTokeType() { char c;
   if (letterE (c)) {getName(c); TokeType=ALNUME; return;}//ret:2=Symbol
   TokeType=NOALNUME; return;
 }
-int storeLabel() {
+int storeLabel() {unsigned int i;
   if(searchLabel()) error1("duplicate label");
   LabelNamePtr=strcpy(LabelNamePtr, Symbol);
   LabelNamePtr++;
+  i = LabelNamePtr - &LabelNames;//todo
+  if (i >= LABELNAMESMAX) errorexit("too long label names");
   LabelMaxIx++;
+  if (LabelMaxIx >= LABELADRMAX) errorexit("too many labels");
   LabelAddr[LabelMaxIx] = PC;
 }
 int searchLabel() {

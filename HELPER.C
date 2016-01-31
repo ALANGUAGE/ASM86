@@ -1,4 +1,5 @@
 int getLine() {// make ASCIIZ, skip LF=10 and CR=13
+  unsigned int i;
   InputPtr= &InputBuf;
   *InputPtr=0;//if last line is empty
   do {
@@ -7,6 +8,8 @@ int getLine() {// make ASCIIZ, skip LF=10 and CR=13
     if (DOS_NoBytes == 0) return;
     *InputPtr = DOS_ByteRead;
     InputPtr++;
+    i = InputPtr - &InputBuf;
+    if (i >= INPUTBUFMAX) errorexit("input line too long");
   } while (ifEOL(DOS_ByteRead) == 0);
   InputPtr--;
   *InputPtr=0;
@@ -51,7 +54,7 @@ int getDigit(unsigned char c) {//ret: SymbolInt
   } while(digit(c));
 }
 int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
-  char *p;
+  char *p; unsigned int i;
   p = &Symbol;
   *p = c;
   p++;
@@ -60,6 +63,8 @@ int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
     c = *InputPtr;
     *p = c;
     p++;
+    i = p - &Symbol;
+    if (i >= SYMBOLMAX) errorexit("symbol too long");
   }
   if (c == ':') isLabel=1; else isLabel=0;
   p--;

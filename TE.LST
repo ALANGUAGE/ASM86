@@ -1,10 +1,94 @@
 ;AS.C V0.07 31.1.2016, Source: TE.S, Output: TE.LST, TE.COM
 
+0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT
 0000                org 256
 0100 90             nop                ;90
-0101 08 00          VA dw 8            ;08 00
-0103 C4 01          les ax,  [bx+di]    ;C4 01
-0105 0F B2 0E 01 01    lss cx, [VA]        ;0F B2 0E [0400]  
-010A C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
-010D 0F B5 01       lgs ax, [bx+di]     ;0F B5 01 
-;END Errors: 0, COM file 16 bytes.
+0101 41 42 00       AB db "AB",0       ;41 42 00
+0104                
+0104 08 00          VA dw 8            ;08 00
+0106 41 06          VB db "A",6        ;41 06
+0108                ;add bx, ax         ;01 C3
+0108                ;add ax, bx         ;01 D8
+0108                ;add word ax, [bx]  ;03 07
+0108                ;mov al, [bp-4]     ;8A 46 FC
+0108                ;mov al, [VB+bx]    ;8A 87 06 00
+0108 FE C9          L1: dec byte cl    ;FE C9
+010A 49             dec word cx        ;49
+010B FE 07          inc byte [bx]      ;FE 07
+010D FE 0F          dec byte [bx]      ;FE 0F
+010F FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0112 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0115 F6 D1          not cl             ;F6 D1
+0117 FE C9          dec cl             ;FE C9
+0119 66 49          dec ecx            ;66 49
+011B FE 0F          dec byte [bx]      ;FE 0F
+011D FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0120 FE 8F 02 01    dec byte [bx+258]  ;FE 8F 02 01
+0124 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0127                ;dec word [cx];inv effective adr
+0127                ;inc word  VA ;inv comb opcode+operands
+0127 FE 06 04 01    inc byte [VA]      ;FE 06 04 00
+012B FF 06 06 01    inc word [VB]      ;FF 06 06 00
+012F FF 06 0A 01    inc word [VB+4]    ;FF 06 0A 00
+0133                ;inc      [VB];no opsize declared
+0133 FE 46 00       inc byte [bp]      ;FE 46 00  special case
+0136 FE 46 04       inc byte [bp+4]    ;FE 46 04
+0139 FE 86 02 01    inc byte [bp+258]  ;FE 86 02 01
+013D FE 81 02 01    inc byte [bx+di+258];FE81 02 01
+0141 FE 46 FC       inc byte [bp-4]    ;FE 46 FC
+0144 FE 01          inc byte [bx+di]   ;FE 01
+0146 FE 41 FC       inc byte [bx+di-4] ;FE 41 FC
+0149 F6 D0          not al             
+014B F7 D0          not ax             
+014D F7 D1          not cx             
+014F F6 97 02 01    not byte [bx+258]  
+0153 F6 11          not byte [bx+di]   
+0155 F6 51 FC       not byte [bx+di-4] 
+0158 F6 16 04 01    not byte [VA]      
+015C F7 16 04 01    not word [VA]      
+0160 F6 D8          neg al             
+0162 F7 D8          neg ax             
+0164 F7 D9          neg cx             
+0166 F6 9F 02 01    neg byte [bx+258]  
+016A F6 19          neg byte [bx+di]   
+016C F6 59 FC       neg byte [bx+di-4] 
+016F F6 1E 04 01    neg byte [VA]      
+0173 F7 1E 04 01    neg word [VA]      
+0177 F6 E0          mul al             
+0179 F7 E0          mul ax             
+017B F7 E1          mul cx             
+017D F6 A7 02 01    mul byte [bx+258]  
+0181 F6 21          mul byte [bx+di]   
+0183 F6 61 FC       mul byte [bx+di-4] 
+0186 F6 26 04 01    mul byte [VA]      
+018A F7 26 04 01    mul word [VA]      
+018E F6 F0          div al             
+0190 F7 F0          div ax             
+0192 F7 F1          div cx             
+0194 F6 B7 02 01    div byte [bx+258]  
+0198 F6 31          div byte [bx+di]   
+019A F6 71 FC       div byte [bx+di-4] 
+019D F6 36 04 01    div byte [VA]      
+01A1 F7 36 04 01    div word [VA]      
+01A5 F6 F8          idiv al            
+01A7 F7 F8          idiv ax            
+01A9 F7 F9          idiv cx            
+01AB F6 BF 02 01    idiv byte [bx+258] 
+01AF F6 39          idiv byte [bx+di]  
+01B1 F6 79 FC       idiv byte [bx+di-4]
+01B4 F6 3E 04 01    idiv byte [VA]     
+01B8 F7 3E 04 01    idiv word [VA]     
+01BC                ;acc, rm           
+01BC F6 E8          imul al            
+01BE F7 E8          imul ax            
+01C0 F7 E9          imul cx            
+01C2 F6 AF 02 01    imul byte [bx+258] 
+01C6 F6 29          imul byte [bx+di]  
+01C8 F6 69 FC       imul byte [bx+di-4]
+01CB F6 2E 04 01    imul byte [VA]     
+01CF F7 2E 04 01    imul word [VA]     
+01D3 C4 01          les ax,  [bx+di]    ;C4 01
+01D5 0F B2 0E 04 01    lss cx, [VA]        ;0F B2 0E [0400]  
+01DA C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
+01DD 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
+;***** next line ERROR: input line too long, Symbol: di
