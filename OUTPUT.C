@@ -46,13 +46,15 @@ int error1(char *s) { LIST=1; ErrorCount++;
   prs("\n;***** next line ERROR: "); prs(s);
   prs(", Symbol: "); prs(Symbol);}
 int allowederror(){error1("not allowed here"); }
-int implerror()  {error1("not implemented");}
-int indexerror (){error1("invalid index register");}
-int invaloperror (){error1("invalid operands");}
-int numbererror(){error1("number expected");}
-int regmemerror(){error1("only register or memory allowed");}
-int segregerror(){error1("segment register not allowed");}
-int syntaxerror(){error1("syntax");}
+int addrerror()   {error1("address expected");}
+int implerror()   {error1("not implemented");}
+int indexerror()  {error1("invalid index register");}
+int invaloperror(){error1("invalid or no operands");}
+int numbererror() {error1("number expected");}
+int regmemerror() {error1("only register or memory allowed");}
+int reg16error()  {error1("only reg16, no segreg allowed");}
+int segregerror() {error1("segment register not allowed");}
+int syntaxerror() {error1("syntax");}
 
 int errorexit(char *s) { error1(s); end1(1);}
 int addrexit(){errorexit("illegal address");}

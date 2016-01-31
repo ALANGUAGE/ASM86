@@ -65,8 +65,8 @@ unsigned int LabelAddr[LABELADRMAX];//addr of each label
 int LabelMaxIx=0;       //actual number of stored labels
 int LabelIx;            //actual number of just searched label
 
-#define FILEBINMAX 1990 //next number - max. oplemgth
-char FileBin  [2000];   //output binary file
+#define FILEBINMAX 2000 //next number - max. oplength
+char FileBin  [FILEBINMAX];//output binary file
 unsigned int BinLen=0;  //length of binary file
 
 char *arglen=0x80;      // for main only

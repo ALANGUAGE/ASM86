@@ -94,6 +94,7 @@ int lookCode() { // ret: CodeType, *OpCodePtr
   OpCodePtr++;
   } while(*OpCodePtr!=0);
 }
+
 int getCodeSize() {
   if (TokeType ==ALNUME) {
     if (eqstr(SymbolUpper,"BYTE")) {getTokeType(); return BYTE;}
@@ -106,6 +107,13 @@ int isToken(char c) {
   if (*InputPtr == c) {
     InputPtr++; return 1;} return 0;
 }
+int need(char c) {
+  if (isToken(c)) return;
+  error1();
+  prs(". need: ");
+  prc(c);
+}
+
 int skipRest() {
   getTokeType(); 
   if(TokeType)error1("extra char ignored");

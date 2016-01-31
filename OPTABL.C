@@ -38,19 +38,22 @@ char I_CLI[]=  {'C','L','I',0,          1,0xFA,   0xF1};//clear interrupt
 char I_STI[]=  {'S','T','I',0,          1,0xFB,   0xF1};//set interrupt
 char I_CLD[]=  {'C','L','D',0,          1,0xFC,   0xF1};//clear direction
 char I_STD[]=  {'S','T','D',0,          1,0xFD,   0xF1};//set direction
-// 52: mem reg 16 bit
+// 2: mem reg 16 bit
 char I_INC[]=  {'I','N','C',0,          2,0xFE, 0,0x40,0xF1};
 char I_DEC[]=  {'D','E','C',0,          2,0xFE, 1,0x48,0xF1};
-char I_NOT[]=  {'N','O','T',0,          2,0xF6, 2,0xF1};
-char I_NEG[]=  {'N','E','G',0,          2,0xF6, 3,0xF1};
-char I_MUL[]=  {'M','U','L',0,          2,0xF6, 4,0xF1};
-char I_IMUL[]= {'I','M','U','L',0,      2,0xF6, 5,0xF1};//only acc
-char I_DIV[]=  {'D','I','V',0,          2,0xF6, 6,0xF1};
-char I_IDIV[]= {'I','D','I','V',0,      2,0xF6, 7,0xF1};
-//  3: les, lda, lea
-char I_LES[]=  {'L','E','S',0,          3,0xC4,   0xF1};// /r, a16
-char I_LDS[]=  {'L','D','S',0,          3,0xC5,   0xF1};// /r, a16
-char I_LEA[]=  {'L','E','A',0,          3,0x8D,   0xF1};// /r, a16
+char I_NOT[]=  {'N','O','T',0,          2,0xF6, 2,     0xF1};
+char I_NEG[]=  {'N','E','G',0,          2,0xF6, 3,     0xF1};
+char I_MUL[]=  {'M','U','L',0,          2,0xF6, 4,     0xF1};
+char I_IMUL[]= {'I','M','U','L',0,      2,0xF6, 5,     0xF1};//only acc
+char I_DIV[]=  {'D','I','V',0,          2,0xF6, 6,     0xF1};
+char I_IDIV[]= {'I','D','I','V',0,      2,0xF6, 7,     0xF1};
+//  3: les, lda, lea, lss, lfs, lgs
+char I_LES[]=  {'L','E','S',0,          3,0xC4,     0xF1};
+char I_LDS[]=  {'L','D','S',0,          3,0xC5,     0xF1};
+char I_LEA[]=  {'L','E','A',0,          3,0x8D,     0xF1};//r, m16
+char I_LSS[]=  {'L','S','S',0,          3,0x0F,0xB2,0xF1};
+char I_LFS[]=  {'L','F','S',0,          3,0x0F,0xB4,0xF1};
+char I_LGS[]=  {'L','G','S',0,          3,0x0F,0xB5,0xF1};
 //  4: acc,imm  reg,imm  index,reg
 char I_ADD[]=  {'A','D','D',0,          4, 0,     0xF1};
 char I_OR []=  {'O','R',0,              4, 1,     0xF1};
@@ -60,6 +63,7 @@ char I_AND[]=  {'A','N','D',0,          4, 4,     0xF1};
 char I_SUB[]=  {'S','U','B',0,          4, 5,     0xF1};
 char I_XOR[]=  {'X','O','R',0,          4, 6,     0xF1};
 char I_CMP[]=  {'C','M','P',0,          4, 7,     0xF1};
+char I_TEST[]= {'T','E','S','T',0,     41,0xA8,0x84,0xF6,0,0xF1};
 //  5: mov
 char I_MOV[]=  {'M','O','V',0,          5,        0xF1};
 char I_MOVSX[]={'M','O','V','S','X',0,  5,0xBE,   0xF1};
