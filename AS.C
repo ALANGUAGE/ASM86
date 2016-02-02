@@ -9,7 +9,6 @@ char Version1[]="AS.C V0.07 31.1.2016";//BAS.BAT, AS TE, NAS.BAT
 #include "GENCODE.C"
 
 int process() {
-  char r1;//temp for 1. register
   getTokeType();//0, DIGIT, ALNUME, NOALNUME
   OpSize=getCodeSize();//0, BYTE, WORD, DWORD
   getCodes();//set: Code1, Code2, Code3
@@ -37,19 +36,36 @@ int process() {
   }
   
   if (CodeType == 3) {//les,lds,lea,lss,lfs,lgs
-    checkOp();
+    checkOp();      
     if (RegType != WORD) reg16error();
-    r1=RegNo;
+    if (Op1 == IMM) immeerror();
+    R1No=RegNo;
     need(',');    
     getOp();
     if (Op1 < ADR) addrerror(); 
         
     genCode8(Code1);//les,lds,lea
     if (Code1 == 0x0F) genCode8(Code2);//lss,lfs,lgs
-    writeEA(r1);           
+    writeEA(R1No);           
     return;
   }
- 
+
+  if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
+    checkOp();
+    if (Op1 == IMM) immeerror();  
+    Optemp = Op1;    
+    R1No=RegNo;   
+    R1Type = RegType;
+    need(',');    
+    getOp();  
+    if (Op1 == IMM) {
+             
+    }
+
+    writeEA(R1No);           
+    return;
+  }
+   
   if (CodeType ==  8) {//ret,retf
     if (TokeType == DIGIT) {
       genCode8(Code2);
@@ -65,7 +81,14 @@ int process() {
     PC=SymbolInt;return;
   }
   error1("unknown CodeType");
-}
+}    
+/*        Op      = 0, IMM, REG, ADR, MEM
+IMM       imme    = 0, SymbolInt    
+REG     R RegNo   = 0 - 7
+REG     R RegType = 0, BYTE, WORD, DWORD, SEGREG 
+MEM,ADR   disp    = 0,LabelAddr[LabelIx]
+MEM       regindexbase = 0 - 7
+          OpSize  = 0, BYTE, WORD, DWORD (set wflag) */
 
 int checkOp() {
   getOp();
@@ -78,13 +101,7 @@ int checkOp() {
     error1("Conflict OpSize and RegSize"); }
   if (RegType==0) error1("no register defined");
 }
-/*        Op      = 0, IMM, REG, ADR, MEM
-IMM       imme    = 0, SymbolInt    
-REG     R RegNo   = 0 - 7
-REG     R RegType = 0, BYTE, WORD, DWORD, SEGREG 
-MEM,ADR   disp    = 0,LabelAddr[LabelIx]
-MEM       regindexbase = 0 - 7
-          OpSize  = 0, BYTE, WORD, DWORD (set wflag) */
+
 int getOp() {
 //set: op1=0,IMM,REG,ADR,MEM
   disp=0; imme=0; regindexbase=0; isDirect=1;
@@ -98,7 +115,7 @@ int getOp() {
   error1("Name of operand expected #1");
 }
 
-int setwflag() {//only Op1 (first operand)
+int setwflag() {
   wflag=0;
   if (OpSize == 0) {//do not override OpSize
     if (Op1 == REG) {

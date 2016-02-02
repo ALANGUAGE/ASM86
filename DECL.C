@@ -33,13 +33,16 @@ char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 #define REG      2      //       ,BX    mode=11
 #define ADR      3      //VALUE  ,var1  mod=00, r/m=110
 #define MEM      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
-char Op1;               //0, IMM, REG, ADR, MEM
+char Op1;               //0, IMM, REG, ADR, MEM  
+char Optemp;            //temp for 1. operand
 char CodeType;          //1-207 by searchSymbol(), must be byte size
 char Code1;             // first  Opcode
 char Code2;             // second Opcode
 char Code3;             // third  Opcode
+char RegNo;             //0 - 7 AL, CL, ...  set in testReg()  
+char R1No;              //temp for 1. register
 char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
-char RegNo;             //0 - 7 AL, CL, ...  by testReg()
+char R1Type;            //temp for 1. register 
 char OpSize;            //0, BYTE, WORD, DWORD by getCodeSize()
 char wflag;             //0=byte, 1=word/dword
 //char AddrSize;          //67h:
@@ -47,7 +50,7 @@ char wflag;             //0=byte, 1=word/dword
 //char dflag;             //0=source is reg,  1=dest is reg
 //char modrm;           //mod, r/m
 char regindexbase;      //combination of index and base reg
-char isDirect;          //is direct addressing
+char isDirect;          //set in getOp and getMeM, need in WriteEA
 int disp;               //displacement      0-8 bytes
 int imme;               //immediate         0-8 bytes
 
