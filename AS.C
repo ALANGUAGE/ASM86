@@ -8,7 +8,8 @@ char Version1[]="AS.C V0.07 31.1.2016";//BAS.BAT, AS TE, NAS.BAT
 #include "MAIN.C"
 #include "GENCODE.C"
 
-int process() {
+int process() { 
+    char c;
   getTokeType();//0, DIGIT, ALNUME, NOALNUME
   OpSize=getCodeSize();//0, BYTE, WORD, DWORD
   getCodes();//set: Code1, Code2, Code3
@@ -30,7 +31,7 @@ int process() {
       getTokeType();
       if (TokeType) implerror();
     }
-    genCode(Code1, wflag);
+    genCodeW(Code1);
     writeEA(Code2);
     return;
   }
@@ -58,11 +59,23 @@ int process() {
     R1Type = RegType;
     need(',');    
     getOp();  
-    if (Op1 == IMM) {
-             
-    }
-
-    writeEA(R1No);           
+//prs("\nOp1:"); printIntU(Op1); prs(", imme:"); printIntU(imme);       
+    if (Op1 == IMM) {//second operand is imm  
+        if (R1No == 0) {//acc, imm: 04,imm
+            Code1 = Code1 << 3;
+            Code1 += 4;//code for acc,imm     
+            genCodeW(Code1);
+            genImmediate();
+            return;
+        }
+        //r/m, imm: 80 sign-extended,TTT,imm
+        getSignExtended(imme);    
+        c = sflag + 0x80;       
+        genCodeW(c); 
+        writeEA(Code1);//todo not Op1??
+        return;     
+       
+    } 
     return;
   }
    
@@ -78,17 +91,11 @@ int process() {
 
   if (CodeType==101) {// ORG nn
     if (TokeType != DIGIT) error1("only digit allowed");
-    PC=SymbolInt;return;
+    PC=SymbolInt;
+    return;
   }
   error1("unknown CodeType");
 }    
-/*        Op      = 0, IMM, REG, ADR, MEM
-IMM       imme    = 0, SymbolInt    
-REG     R RegNo   = 0 - 7
-REG     R RegType = 0, BYTE, WORD, DWORD, SEGREG 
-MEM,ADR   disp    = 0,LabelAddr[LabelIx]
-MEM       regindexbase = 0 - 7
-          OpSize  = 0, BYTE, WORD, DWORD (set wflag) */
 
 int checkOp() {
   getOp();
@@ -101,7 +108,16 @@ int checkOp() {
     error1("Conflict OpSize and RegSize"); }
   if (RegType==0) error1("no register defined");
 }
-
+/*    Op1, Optemp =0, 1=IMM, 2=REG, 3=ADR, 4=MEM 
+IMM      imme           = 0, SymbolInt
+REG      R1No,RegNo     = 0 - 7
+REG      R1Type,RegType = 0, BYTE, WORD, DWORD, SEGREG 
+MEM,ADR  disp           = 0, LabelAddr[LabelIx]
+MEM      regindexbase   = 0 - 7
+         OpSize         = 0, BYTE, WORD, DWORD
+         wflag
+*/ 
+ 
 int getOp() {
 //set: op1=0,IMM,REG,ADR,MEM
   disp=0; imme=0; regindexbase=0; isDirect=1;
@@ -113,18 +129,6 @@ int getOp() {
   if (Op1 == REG)                            return;
   if (Op1 == ADR)   {disp=LabelAddr[LabelIx];return;}
   error1("Name of operand expected #1");
-}
-
-int setwflag() {
-  wflag=0;
-  if (OpSize == 0) {//do not override OpSize
-    if (Op1 == REG) {
-      OpSize=RegType;
-      if (RegType == SEGREG) OpSize=WORD;
-    }
-  }
-  if (OpSize  == DWORD) {gen66h(); wflag=1;}
-  if (OpSize  ==  WORD) wflag=1;
 }
 
 int getOp1() {//scan for a single operand
@@ -181,4 +185,22 @@ int getIndReg2() {char m; m=4;//because m=0 is BX+DI
            else if (regindexbase==7) m=0;//BX+SI
   if (m > 3) indexerror();
   return m;
+}
+         
+         
+int setwflag() {
+  wflag=0;
+  if (OpSize == 0) {//do not override OpSize
+    if (Op1 == REG) {
+      OpSize=RegType;
+      if (RegType == SEGREG) OpSize=WORD;
+    }
+  }
+  if (OpSize  == DWORD) {gen66h(); wflag=1;}
+  if (OpSize  ==  WORD) wflag=1;
+}
+
+int getSignExtended(unsigned int i) {  
+    sflag=2;
+    if(i > 127) sflag = 0;
 }

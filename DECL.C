@@ -44,10 +44,11 @@ char R1No;              //temp for 1. register
 char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
 char R1Type;            //temp for 1. register 
 char OpSize;            //0, BYTE, WORD, DWORD by getCodeSize()
-char wflag;             //0=byte, 1=word/dword
+char wflag;             //wordflag: 0=byte, 1=word/dword
 //char AddrSize;          //67h:
 //char NumOprns;          //0-2
-//char dflag;             //0=source is reg,  1=dest is reg
+char dflag;             //directionflag: 0=source is reg,  1=to reg    
+char sflag;             //sign extended, same as dflag
 //char modrm;           //mod, r/m
 char regindexbase;      //combination of index and base reg
 char isDirect;          //set in getOp and getMeM, need in WriteEA

@@ -1,39 +1,32 @@
 ;AS.C V0.07 31.1.2016, Source: TE.S, Output: TE.LST, TE.COM
 
-0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT
+0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT     
+0000                ;1=IMM, 2=REG, 3=ADR, 4=MEM
 0000                org 256
-0100 90             nop                ;90
-0101 08 00          VA dw 8            ;08 00
+0100 90             nop                 ;90
+0101 08 00          VA dw 8             ;08 00
 0103                ;mov al, [bp-4]     ;8A 46 FC
-0103                ;mov al, [VB+bx]    ;8A 87 06 00
-;***** next line ERROR: extra char ignored, Symbol: al
-0103 C0             add al, 4
-;***** next line ERROR: extra char ignored, Symbol: al
-0104 C0             add al, 259
-;***** next line ERROR: extra char ignored, Symbol: ax
-0105 C0             add ax, 4
-;***** next line ERROR: extra char ignored, Symbol: ax
-0106 C0             add ax, 259
-;***** next line ERROR: extra char ignored, Symbol: cl
-0107 C9             add cl, 4
-;***** next line ERROR: extra char ignored, Symbol: cl
-0108 C9             add cl, 259
-;***** next line ERROR: extra char ignored, Symbol: cx
-0109 C9             add cx, 4
-;***** next line ERROR: extra char ignored, Symbol: cx
-010A C9             add cx, 259
-;***** next line ERROR: extra char ignored, Symbol: ax
-010B DB             add bx, ax         ;00 C3
-;***** next line ERROR: extra char ignored, Symbol: bx
-010C C0             add ax, bx         ;01 D8
-010D 07             add word ax, [bx]  ;03 07
+0103                ;mov al, [VB+bx]    ;8A 87 06 00           
 ;***** next line ERROR: no op size declared, Symbol: di
-;***** next line ERROR: extra char ignored, Symbol: al
-010E FF             add [bx+di], al
+0103                add [bx+di], al     ;00 01
 ;***** next line ERROR: no op size declared, Symbol: di
-;***** next line ERROR: extra char ignored, Symbol: ax
-010F FF             add [bx+di], ax
-0110 01             add al, [bx+di]
-0111 01             add ax, [bx+di]
-0112                
-;END Errors: 14 ***ERROR*** , COM file 18 bytes.
+0103                add [bx+di], ax     ;01 01
+0103                add al, [bx+di]     ;02 01
+0103                add ax, [bx+di]     ;03 01
+0103 04 04          add al, 4           ;04 04
+0105                ;add al, 259      ;;;04 03 bounds
+0105 05 04 00       add ax, 4           ;83 C0 04 ;05 04 00
+0108 05 03 01       add ax, 259         ;05 03 01
+010B 0C 04          or  al, 4           ;0C 04         
+010D 15 03 01       adc ax, 259         ;15 03 01     
+0110 82 00          add cl, 4           ;80 C1 04
+0112 81 00          add cx, 259         ;81 C1 03 01
+0114 04 04          add byte [VA], 4    ;80 06 01 01 04
+0116 05 04 00       add word [VA], 4  ;;;83 06 01 01 04
+0119                add al, [bx+di-4]   ;02 41 FC    
+0119                add bx, ax          ;01 C3
+0119                add ax, bx          ;01 D8
+0119                add al, [bx]        ;02 07
+0119                add ax, [bx]        ;03 07
+0119                
+;END Errors: 2 ***ERROR*** , COM file 25 bytes.

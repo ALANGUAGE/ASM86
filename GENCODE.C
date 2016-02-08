@@ -9,6 +9,10 @@ int gen66h() {genCode8(0x66);
 int genCode(char c, char d) {
     c = c + d;
     genCode8(c);
+}    
+int genCodeW(char c) {
+    c = c + wflag;  
+    genCode8(c);
 }
 int genCode8(char c) {
 //set: BinLen++, OpPrintIndex++
@@ -25,7 +29,7 @@ int genCode16(unsigned int i) {
   genCode8(i); i=i >> 8;
   genCode8(i);
 }
-int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase
+int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase, isDirect
 //mod-byte: mode76, reg/opcode543, r/m210    
   char len;
   len=0;
@@ -59,3 +63,8 @@ int writeEA(char xxx) {//need: Op1, disp, RegNo, regindexbase
   if (len == 1) genCode8 (disp);
   if (len == 2) genCode16(disp);
 }
+
+int genImmediate() {
+    if (wflag) genCode16(imme);
+    else       genCode8 (imme);
+}    

@@ -111,7 +111,10 @@ int isToken(char c) {
     InputPtr++; return 1;} return 0;
 }
 int need(char c) {
-  if (isToken(c)) return;
+  if (isToken(c)) {
+      getTokeType();
+      return;
+      }
   error1();
   prs(". need: ");
   prc(c);

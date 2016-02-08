@@ -117,14 +117,14 @@ char I_SAR[]=  {'S','A','R',0,          11, 7,    0xF1};
 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
 char I_INTO[]= {'I','N','T','O',0,      12,0xCE,   0xF1};
 //  14: in/out
-char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
+/*char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};
 char I_INSW[]= {'I','N','S','W',0,      14,0x6D,   0xF1};
 char I_INSD[]= {'I','N','S','D',0,      14,0x6D,   0xF1};
 char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xEE,0xF1};
 char I_OUTSB[]={'O','U','T','B',0,      14,0x6E,   0xF1};
 char I_OUTSW[]={'O','U','T','W',0,      14,0x6F,   0xF1};
-char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};
+char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};*/
 //  15: xchg
 char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0x90,0xF1};
 //  16: loop, jcxz
@@ -140,9 +140,9 @@ char I_ENTER[]={'E','N','T','E','R',0, 30, 0xC8,  0xF1};
 // 100: directives
 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
 // section, segment .TEXT .DATA .BSS
-//char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
-//char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
-//char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};
+/*char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
+char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
+char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};*/
 char I_DB[]=   {'D','B',0,            200,        0xF1};
 char I_DW[]=   {'D','W',0,            201,        0xF1};
 char I_DD[]=   {'D','D',0,            202,        0xF1};
