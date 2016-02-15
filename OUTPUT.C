@@ -46,7 +46,7 @@ int error1(char *s) { LIST=1; ErrorCount++;
   prs("\n;***** next line ERROR: "); prs(s);
   prs(", Symbol: "); prs(Symbol);}
 int allowederror(){error1("not allowed here"); }
-int addrerror()   {error1("address expected");} 
+int addrerror()   {error1("memory address expected");} 
 int immeerror()   {error1("immediate not allowed here");}
 int implerror()   {error1("not implemented");}
 int indexerror()  {error1("invalid index register");}

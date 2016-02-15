@@ -1,32 +1,81 @@
-;AS.C V0.07 31.1.2016, Source: TE.S, Output: TE.LST, TE.COM
+;AS.C V0.07 14.2.16, Source: TE.S, Output: TE.LST, TE.COM
 
 0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT     
-0000                ;1=IMM, 2=REG, 3=ADR, 4=MEM
+0000                ;1=IMM, 2=REG, 3=ADR, 4=MEM   
 0000                org 256
-0100 90             nop                 ;90
-0101 08 00          VA dw 8             ;08 00
-0103                ;mov al, [bp-4]     ;8A 46 FC
-0103                ;mov al, [VB+bx]    ;8A 87 06 00           
-;***** next line ERROR: no op size declared, Symbol: di
-0103                add [bx+di], al     ;00 01
-;***** next line ERROR: no op size declared, Symbol: di
-0103                add [bx+di], ax     ;01 01
-0103                add al, [bx+di]     ;02 01
-0103                add ax, [bx+di]     ;03 01
-0103 04 04          add al, 4           ;04 04
-0105                ;add al, 259      ;;;04 03 bounds
-0105 05 04 00       add ax, 4           ;83 C0 04 ;05 04 00
-0108 05 03 01       add ax, 259         ;05 03 01
-010B 0C 04          or  al, 4           ;0C 04         
-010D 15 03 01       adc ax, 259         ;15 03 01     
-0110 82 00          add cl, 4           ;80 C1 04
-0112 81 00          add cx, 259         ;81 C1 03 01
-0114 04 04          add byte [VA], 4    ;80 06 01 01 04
-0116 05 04 00       add word [VA], 4  ;;;83 06 01 01 04
-0119                add al, [bx+di-4]   ;02 41 FC    
-0119                add bx, ax          ;01 C3
-0119                add ax, bx          ;01 D8
-0119                add al, [bx]        ;02 07
-0119                add ax, [bx]        ;03 07
-0119                
-;END Errors: 2 ***ERROR*** , COM file 25 bytes.
+0100 F6 D0          not al              ;F6 D0       
+0102 08 00          VA dw 8             ;08 00  
+0104 F7 D1          not cx              ;F7 D1       
+0106 F6 97 02 01    not byte [bx+258]   ;F6 97 02 01   
+010A F6 11          not byte [bx+di]    ;F6 11       
+010C F6 51 FC       not byte [bx+di-4]  ;F6 51 FC     
+010F F6 16 02 01    not byte [VA]       ;F6 16 01 00 
+0113 F7 16 02 01    not word [VA]       ;F7 16 01 00     
+0117 F7 D9          neg cx             
+0119 F6 9F 02 01    neg byte [bx+258]  
+011D F6 19          neg byte [bx+di]   
+011F F6 59 FC       neg byte [bx+di-4] 
+0122 F6 1E 02 01    neg byte [VA]      
+0126 F7 1E 02 01    neg word [VA]      
+012A F6 E0          mul al             
+012C F7 E0          mul ax             
+012E F7 E1          mul cx             
+0130 F6 A7 02 01    mul byte [bx+258]  
+0134 F6 21          mul byte [bx+di]   
+0136 F6 61 FC       mul byte [bx+di-4] 
+0139 F6 26 02 01    mul byte [VA]      
+013D F7 26 02 01    mul word [VA]      
+0141 F6 F0          div al             
+0143 F7 F0          div ax             
+0145 F7 F1          div cx             
+0147 F6 B7 02 01    div byte [bx+258]  
+014B F6 31          div byte [bx+di]   
+014D F6 71 FC       div byte [bx+di-4] 
+0150 F6 36 02 01    div byte [VA]      
+0154 F7 36 02 01    div word [VA]      
+0158 F6 F8          idiv al            
+015A F7 F8          idiv ax            
+015C F7 F9          idiv cx            
+015E F6 BF 02 01    idiv byte [bx+258] 
+0162 F6 39          idiv byte [bx+di]  
+0164 F6 79 FC       idiv byte [bx+di-4]
+0167 F6 3E 02 01    idiv byte [VA]     
+016B F7 3E 02 01    idiv word [VA]     
+016F                ;acc, rm           
+016F F6 E8          imul al             ;F6 E8    
+0171 F7 E8          imul ax             ;F7 E8    
+0173 F7 E9          imul cx             ;F7 E9    
+0175 F6 AF 02 01    imul byte [bx+258]  ;F6 AF 02 01
+0179 F6 29          imul byte [bx+di]   ;F6 29    
+017B F6 69 FC       imul byte [bx+di-4] ;F6 69 FC  
+017E F6 2E 02 01    imul byte [VA]      ;F6 2E 01 00 
+0182 F7 2E 02 01    imul word [VA]      ;F7 2E 01 00 
+0186 C4 01          les ax,  [bx+di]    ;C4 01
+0188 0F B2 0E 02 01    lss cx, [VA]        ;0F B2 0E [0400]  
+018D C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
+0190 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
+0193 0F B5 81 02 01    lgs ax, [VA+bx+di]  ;0F B5 81 01 00
+0198                ;mov al, [bp-4]     ;8A 46 FC
+0198                ;mov al, [VB+bx]    ;8A 87 06 00           
+0198 04 04          add al, 4           ;04 04
+019A                ;add al, 259      ;;;04 03 bounds
+019A 05 04 00       add ax, 4           ;05 04 00 ;83 C0 04 
+019D 05 03 01       add ax, 259         ;05 03 01
+01A0 0C 04          or  al, 4           ;0C 04         
+01A2 15 03 01       adc ax, 259         ;15 03 01     
+01A5 80 C1 04       add cl, 4           ;80 C1 04
+01A8 81 C1 03 01    add cx, 259         ;81 C1 03 01
+01AC 80 06 02 01 04    add byte [VA], 4    ;80 06 02 01 04
+01B1 83 06 02 01 04    add word [VA], 4    ;83 06 02 01 04  
+01B7 83 06 05 01 04    add word [VA+3],4   ;83 06 05 00 04
+01BD                ;add word [VA+di]
+01BD 03 C7          add al, [bx+di-4]   ;02 41 FC    
+01BF 01 C3          add bx, ax          ;01 C3
+01C1 01 D8          add ax, bx          ;01 D8
+01C3 03 C3          add al, [bx]        ;02 07
+01C5 03 C3          add ax, [bx]        ;03 07
+01C7 01 01          add [bx+di], al     ;00 01
+01C9 01 01          add [bx+di], ax     ;01 01
+01CB 03 C7          add al, [bx+di]     ;02 01
+01CD 03 C7          add ax, [bx+di]     ;03 01
+;END Errors: 0, COM file 207 bytes.
