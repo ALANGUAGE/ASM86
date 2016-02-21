@@ -1,81 +1,240 @@
-;AS.C V0.07 14.2.16, Source: TE.S, Output: TE.LST, TE.COM
+;AS.C V0.07 17.2.16, Source: TE.S, Output: TE.LST, TE.COM
 
 0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT     
 0000                ;1=IMM, 2=REG, 3=ADR, 4=MEM   
-0000                org 256
+0000                org 256             ;NASM
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: al
+;***** next line ERROR: no register defined, Symbol: al
+checkOpL Op:02, Op2:00, wflag:00, OpSize:01
+xxx:02, Op:02, Op2:00, RegNo:00, R1No:00
 0100 F6 D0          not al              ;F6 D0       
 0102 08 00          VA dw 8             ;08 00  
-0104 F7 D1          not cx              ;F7 D1       
-0106 F6 97 02 01    not byte [bx+258]   ;F6 97 02 01   
-010A F6 11          not byte [bx+di]    ;F6 11       
-010C F6 51 FC       not byte [bx+di-4]  ;F6 51 FC     
-010F F6 16 02 01    not byte [VA]       ;F6 16 01 00 
-0113 F7 16 02 01    not word [VA]       ;F7 16 01 00     
-0117 F7 D9          neg cx             
-0119 F6 9F 02 01    neg byte [bx+258]  
-011D F6 19          neg byte [bx+di]   
-011F F6 59 FC       neg byte [bx+di-4] 
-0122 F6 1E 02 01    neg byte [VA]      
-0126 F7 1E 02 01    neg word [VA]      
-012A F6 E0          mul al             
-012C F7 E0          mul ax             
-012E F7 E1          mul cx             
-0130 F6 A7 02 01    mul byte [bx+258]  
-0134 F6 21          mul byte [bx+di]   
-0136 F6 61 FC       mul byte [bx+di-4] 
-0139 F6 26 02 01    mul byte [VA]      
-013D F7 26 02 01    mul word [VA]      
-0141 F6 F0          div al             
-0143 F7 F0          div ax             
-0145 F7 F1          div cx             
-0147 F6 B7 02 01    div byte [bx+258]  
-014B F6 31          div byte [bx+di]   
-014D F6 71 FC       div byte [bx+di-4] 
-0150 F6 36 02 01    div byte [VA]      
-0154 F7 36 02 01    div word [VA]      
-0158 F6 F8          idiv al            
-015A F7 F8          idiv ax            
-015C F7 F9          idiv cx            
-015E F6 BF 02 01    idiv byte [bx+258] 
-0162 F6 39          idiv byte [bx+di]  
-0164 F6 79 FC       idiv byte [bx+di-4]
-0167 F6 3E 02 01    idiv byte [VA]     
-016B F7 3E 02 01    idiv word [VA]     
-016F                ;acc, rm           
-016F F6 E8          imul al             ;F6 E8    
-0171 F7 E8          imul ax             ;F7 E8    
-0173 F7 E9          imul cx             ;F7 E9    
-0175 F6 AF 02 01    imul byte [bx+258]  ;F6 AF 02 01
-0179 F6 29          imul byte [bx+di]   ;F6 29    
-017B F6 69 FC       imul byte [bx+di-4] ;F6 69 FC  
-017E F6 2E 02 01    imul byte [VA]      ;F6 2E 01 00 
-0182 F7 2E 02 01    imul word [VA]      ;F7 2E 01 00 
-0186 C4 01          les ax,  [bx+di]    ;C4 01
-0188 0F B2 0E 02 01    lss cx, [VA]        ;0F B2 0E [0400]  
-018D C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
-0190 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
-0193 0F B5 81 02 01    lgs ax, [VA+bx+di]  ;0F B5 81 01 00
-0198                ;mov al, [bp-4]     ;8A 46 FC
-0198                ;mov al, [VB+bx]    ;8A 87 06 00           
-0198 04 04          add al, 4           ;04 04
-019A                ;add al, 259      ;;;04 03 bounds
-019A 05 04 00       add ax, 4           ;05 04 00 ;83 C0 04 
-019D 05 03 01       add ax, 259         ;05 03 01
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: cx
+;***** next line ERROR: no register defined, Symbol: cx
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:02, Op:02, Op2:00, RegNo:01, R1No:00
+0104 F7 D1          not cx              ;F7 D1 
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: DX
+;***** next line ERROR: no register defined, Symbol: DX
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:02, Op:02, Op2:00, RegNo:02, R1No:00
+0106 F7 D2          not DX              ;F7 D2      
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:02, Op:04, Op2:00, RegNo:03, R1No:00
+0108 F6 97 02 01    not byte [bx+258]   ;F6 97 02 01   
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:02, Op:04, Op2:00, RegNo:07, R1No:00
+010C F6 11          not byte [bx+di]    ;F6 11       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:02, Op:04, Op2:00, RegNo:07, R1No:00
+010E F6 51 FC       not byte [bx+di-4]  ;F6 51 FC     
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:02, Op:04, Op2:00, RegNo:00, R1No:00
+0111 F6 16 02 01    not byte [VA]       ;F6 16 01 00 
+checkOpL Op:04, Op2:00, wflag:01, OpSize:02
+xxx:02, Op:04, Op2:00, RegNo:00, R1No:00
+0115 F7 16 02 01    not word [VA]       ;F7 16 01 00     
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: cx
+;***** next line ERROR: no register defined, Symbol: cx
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:03, Op:02, Op2:00, RegNo:01, R1No:00
+0119 F7 D9          neg cx              ;F7 D9        
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:03, Op:04, Op2:00, RegNo:03, R1No:00
+011B F6 9F 02 01    neg byte [bx+258]   ;F6 9F 02 01   
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:03, Op:04, Op2:00, RegNo:07, R1No:00
+011F F6 19          neg byte [bx+di]    ;F6 19       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:03, Op:04, Op2:00, RegNo:07, R1No:00
+0121 F6 59 FC       neg byte [bx+di-4]  ;F6 59 FC     
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:03, Op:04, Op2:00, RegNo:00, R1No:00
+0124 F6 1E 02 01    neg byte [VA]       ;F6 1E 02 00 
+checkOpL Op:04, Op2:00, wflag:01, OpSize:02
+xxx:03, Op:04, Op2:00, RegNo:00, R1No:00
+0128 F7 1E 02 01    neg word [VA]       ;F7 1E 02 00 
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: al
+;***** next line ERROR: no register defined, Symbol: al
+checkOpL Op:02, Op2:00, wflag:00, OpSize:01
+xxx:04, Op:02, Op2:00, RegNo:00, R1No:00
+012C F6 E0          mul al              ;F6 E0       
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: ax
+;***** next line ERROR: no register defined, Symbol: ax
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:04, Op:02, Op2:00, RegNo:00, R1No:00
+012E F7 E0          mul ax              ;F7 E0       
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: cx
+;***** next line ERROR: no register defined, Symbol: cx
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:04, Op:02, Op2:00, RegNo:01, R1No:00
+0130 F7 E1          mul cx              ;F7 E1       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:04, Op:04, Op2:00, RegNo:03, R1No:00
+0132 F6 A7 02 01    mul byte [bx+258]   ;F6 A7 02 01   
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:04, Op:04, Op2:00, RegNo:07, R1No:00
+0136 F6 21          mul byte [bx+di]    ;F6 21       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:04, Op:04, Op2:00, RegNo:07, R1No:00
+0138 F6 61 FC       mul byte [bx+di-4]  ;F6 61 FC     
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:04, Op:04, Op2:00, RegNo:00, R1No:00
+013B F6 26 02 01    mul byte [VA]       ;F6 26 02 00 
+checkOpL Op:04, Op2:00, wflag:01, OpSize:02
+xxx:04, Op:04, Op2:00, RegNo:00, R1No:00
+013F F7 26 02 01    mul word [VA]       ;F7 26 02 00 
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: al
+;***** next line ERROR: no register defined, Symbol: al
+checkOpL Op:02, Op2:00, wflag:00, OpSize:01
+xxx:06, Op:02, Op2:00, RegNo:00, R1No:00
+0143 F6 F0          div al              ;F6 F0       
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: ax
+;***** next line ERROR: no register defined, Symbol: ax
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:06, Op:02, Op2:00, RegNo:00, R1No:00
+0145 F7 F0          div ax              ;F7 F0       
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: cx
+;***** next line ERROR: no register defined, Symbol: cx
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:06, Op:02, Op2:00, RegNo:01, R1No:00
+0147 F7 F1          div cx              ;F7 F1       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:06, Op:04, Op2:00, RegNo:03, R1No:00
+0149 F6 B7 02 01    div byte [bx+258]   ;F6 B7 02 01   
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:06, Op:04, Op2:00, RegNo:07, R1No:00
+014D F6 31          div byte [bx+di]    ;F6 31       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:06, Op:04, Op2:00, RegNo:07, R1No:00
+014F F6 71 FC       div byte [bx+di-4]  ;F6 71 FC     
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:06, Op:04, Op2:00, RegNo:00, R1No:00
+0152 F6 36 02 01    div byte [VA]       ;F6 36 02 00 
+checkOpL Op:04, Op2:00, wflag:01, OpSize:02
+xxx:06, Op:04, Op2:00, RegNo:00, R1No:00
+0156 F7 36 02 01    div word [VA]       ;F7 36 02 00 
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: al
+;***** next line ERROR: no register defined, Symbol: al
+checkOpL Op:02, Op2:00, wflag:00, OpSize:01
+xxx:07, Op:02, Op2:00, RegNo:00, R1No:00
+015A F6 F8          idiv al             ;F6 F8       
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: ax
+;***** next line ERROR: no register defined, Symbol: ax
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:07, Op:02, Op2:00, RegNo:00, R1No:00
+015C F7 F8          idiv ax             ;F7 F8       
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: cx
+;***** next line ERROR: no register defined, Symbol: cx
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:07, Op:02, Op2:00, RegNo:01, R1No:00
+015E F7 F9          idiv cx             ;F7 F9       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:07, Op:04, Op2:00, RegNo:03, R1No:00
+0160 F6 BF 02 01    idiv byte [bx+258]  ;F6 BF 02 01   
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:07, Op:04, Op2:00, RegNo:07, R1No:00
+0164 F6 39          idiv byte [bx+di]   ;F6 39       
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:07, Op:04, Op2:00, RegNo:07, R1No:00
+0166 F6 79 FC       idiv byte [bx+di-4] ;F6 79 FC     
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:07, Op:04, Op2:00, RegNo:00, R1No:00
+0169 F6 3E 02 01    idiv byte [VA]      ;F6 3E 02 00 
+checkOpL Op:04, Op2:00, wflag:01, OpSize:02
+xxx:07, Op:04, Op2:00, RegNo:00, R1No:00
+016D F7 3E 02 01    idiv word [VA]      ;F7 3E 02 00 
+0171                ;acc, rm           
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: al
+;***** next line ERROR: no register defined, Symbol: al
+checkOpL Op:02, Op2:00, wflag:00, OpSize:01
+xxx:05, Op:02, Op2:00, RegNo:00, R1No:00
+0171 F6 E8          imul al             ;F6 E8    
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: ax
+;***** next line ERROR: no register defined, Symbol: ax
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:05, Op:02, Op2:00, RegNo:00, R1No:00
+0173 F7 E8          imul ax             ;F7 E8    
+;***** next line ERROR: Conflict OpSize and RegSize, Symbol: cx
+;***** next line ERROR: no register defined, Symbol: cx
+checkOpL Op:02, Op2:00, wflag:01, OpSize:02
+xxx:05, Op:02, Op2:00, RegNo:01, R1No:00
+0175 F7 E9          imul cx             ;F7 E9    
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:05, Op:04, Op2:00, RegNo:03, R1No:00
+0177 F6 AF 02 01    imul byte [bx+258]  ;F6 AF 02 01
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:05, Op:04, Op2:00, RegNo:07, R1No:00
+017B F6 29          imul byte [bx+di]   ;F6 29    
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:05, Op:04, Op2:00, RegNo:07, R1No:00
+017D F6 69 FC       imul byte [bx+di-4] ;F6 69 FC  
+checkOpL Op:04, Op2:00, wflag:00, OpSize:01
+xxx:05, Op:04, Op2:00, RegNo:00, R1No:00
+0180 F6 2E 02 01    imul byte [VA]      ;F6 2E 01 00 
+checkOpL Op:04, Op2:00, wflag:01, OpSize:02
+xxx:05, Op:04, Op2:00, RegNo:00, R1No:00
+0184 F7 2E 02 01    imul word [VA]      ;F7 2E 01 00 
+;***** next line ERROR: only reg16, no segreg allowed, Symbol: ax
+xxx:00, Op:04, Op2:04, RegNo:07, R1No:00
+0188 C4 01          les ax,  [bx+di]    ;C4 01
+;***** next line ERROR: only reg16, no segreg allowed, Symbol: cx
+xxx:01, Op:04, Op2:04, RegNo:00, R1No:01
+018A 0F B2 0E 02 01    lss cx, [VA]        ;0F B2 0E [0400]  
+;***** next line ERROR: only reg16, no segreg allowed, Symbol: cx
+xxx:01, Op:04, Op2:04, RegNo:07, R1No:01
+018F C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
+;***** next line ERROR: only reg16, no segreg allowed, Symbol: ax
+xxx:00, Op:04, Op2:04, RegNo:07, R1No:00
+0192 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
+;***** next line ERROR: only reg16, no segreg allowed, Symbol: ax
+xxx:00, Op:04, Op2:04, RegNo:07, R1No:00
+0195 0F B5 81 02 01    lgs ax, [VA+bx+di]  ;0F B5 81 01 00
+019A                ;mov al, [bp-4]     ;8A 46 FC
+019A                ;mov al, [VB+bx]    ;8A 87 06 00           
+019A 04 04          add al, 4           ;04 04
+019C                ;add al, 259      ;;;04 03 bounds
+019C 04 04          add ax, 4           ;05 04 00 ;83 C0 04 XXXXXXXX
+019E 04 03          add ax, 259         ;05 03 01
 01A0 0C 04          or  al, 4           ;0C 04         
-01A2 15 03 01       adc ax, 259         ;15 03 01     
-01A5 80 C1 04       add cl, 4           ;80 C1 04
-01A8 81 C1 03 01    add cx, 259         ;81 C1 03 01
-01AC 80 06 02 01 04    add byte [VA], 4    ;80 06 02 01 04
-01B1 83 06 02 01 04    add word [VA], 4    ;83 06 02 01 04  
-01B7 83 06 05 01 04    add word [VA+3],4   ;83 06 05 00 04
-01BD                ;add word [VA+di]
-01BD 03 C7          add al, [bx+di-4]   ;02 41 FC    
-01BF 01 C3          add bx, ax          ;01 C3
-01C1 01 D8          add ax, bx          ;01 D8
-01C3 03 C3          add al, [bx]        ;02 07
-01C5 03 C3          add ax, [bx]        ;03 07
-01C7 01 01          add [bx+di], al     ;00 01
-01C9 01 01          add [bx+di], ax     ;01 01
-01CB 03 C7          add al, [bx+di]     ;02 01
-01CD 03 C7          add ax, [bx+di]     ;03 01
-;END Errors: 0, COM file 207 bytes.
+01A2 14 03          adc ax, 259         ;15 03 01     
+xxx:00, Op:02, Op2:01, RegNo:01, R1No:01
+01A4 82 C1 04       add cl, 4           ;80 C1 04
+xxx:00, Op:02, Op2:01, RegNo:01, R1No:01
+01A7 82 C1 04       add cx, 4           ;83 C1 04 
+xxx:00, Op:02, Op2:01, RegNo:01, R1No:01
+01AA 80 C1 03       add cx, 259         ;81 C1 03 01
+xxx:00, Op:02, Op2:01, RegNo:04, R1No:04
+01AD 82 C4 02       add  sp, 2          ;83 C4 02 
+xxx:00, Op:04, Op2:01, RegNo:00, R1No:00
+01B0 80 06 02 01 04    add byte [VA], 4    ;80 06 02 01 04
+xxx:00, Op:04, Op2:01, RegNo:00, R1No:00
+01B5 83 06 02 01 04    add word [VA], 4    ;83 06 02 01 04  
+xxx:00, Op:04, Op2:01, RegNo:00, R1No:00
+01BA 83 06 05 01 04    add word [VA+3],4   ;83 06 05 00 04   
+01BF                ;add word [VA+di]
+xxx:00, Op:04, Op2:04, RegNo:07, R1No:00
+01BF 02 41 FC       add al, [bx+di-4]   ;02 41 FC    
+xxx:00, Op:02, Op2:02, RegNo:00, R1No:03
+01C2 01 C3          add bx, ax          ;01 C3
+xxx:03, Op:02, Op2:02, RegNo:03, R1No:00
+01C4 01 D8          add ax, bx          ;01 D8
+xxx:00, Op:04, Op2:04, RegNo:03, R1No:00
+01C6 02 07          add al, [bx]        ;02 07
+xxx:00, Op:04, Op2:04, RegNo:03, R1No:00
+01C8 02 07          add ax, [bx]        ;03 07
+xxx:01, Op:04, Op2:04, RegNo:03, R1No:01
+01CA 02 0F          add cx, [bx]        ;03 0F
+xxx:01, Op:04, Op2:02, RegNo:01, R1No:03
+01CC 01 0F          add [bx], cx        ;01 0F
+xxx:00, Op:04, Op2:02, RegNo:00, R1No:06
+01CE 00 00          add [bx+si], al     ;00 00
+xxx:00, Op:04, Op2:02, RegNo:00, R1No:07
+01D0 00 01          add [bx+di], al     ;00 01
+xxx:00, Op:04, Op2:02, RegNo:00, R1No:07
+01D2 01 01          add [bx+di], ax     ;01 01
+xxx:00, Op:04, Op2:04, RegNo:07, R1No:00
+01D4 02 01          add al, [bx+di]     ;02 01
+xxx:00, Op:04, Op2:04, RegNo:07, R1No:00
+01D6 02 01          add ax, [bx+di]     ;03 01
+;END Errors: 37 ***ERROR*** , COM file 216 bytes.

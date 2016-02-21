@@ -1,4 +1,4 @@
-char Version1[]="AS.C V0.07 14.2.16";//BAS.BAT, AS TE, NAS.BAT
+char Version1[]="AS.C V0.07 17.2.16";//BAS.BAT, AS TE, NAS.BAT
 #include "DECL.C"
 #include "OPTABL.C"
 
@@ -21,7 +21,11 @@ int process() {
   
     if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv
         getOpL();
-        checkOpL();
+        checkOpL();     
+       prs("\ncheckOpL Op:"); printhex8a(Op);                
+       prs("\, Op2:"); printhex8a(Op2);                
+       prs(", wflag:"); printhex8a(wflag);           
+       prs(", OpSize:"); printhex8a(OpSize);         
         if (Code2 <= 1) {//inc,dec
   	        if (Op == REG) {//short
                 if (RegType == WORD) {genCode(Code3, RegNo); return; }
@@ -53,13 +57,15 @@ int process() {
     }
 
     if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
-        get2Ops();
-//       prs("\nOp:"); printhex8a(Op);                
-//       prs(", R1No:"); printhex8a(R1No);           
+        get2Ops();    
         if (Op == IMM) immeerror();   
         if (Op == ADR) invaloperror();     
+        setwflag();
+//       prs("\nOp:"); printhex8a(Op);                
+//       prs("\, Op2:"); printhex8a(Op2);                
+//       prs(", wflag:"); printhex8a(wflag);           
+//       prs(", OpSize:"); printhex8a(OpSize);            
         if (Op2 == IMM) {//second operand is imm     
-            setwflag();
             getSignExtended(imme);   
             if (Op == REG) {                
                 if (R1No == 0) {
@@ -76,11 +82,14 @@ int process() {
             writeEA(Code1);//todo not Op??  
             genImmediate();
             return;     
-        }    
-        c = Code1 << 3;
+        }  
+       
+        c = Code1 << 3;//r/m, r/m  
         if (Op == REG) {
-            if (Op2 == MEM) {//reg, mem 
-                genCodeDW(c);
+            if (Op2 == MEM) {//reg, mem        
+//   prs(", c:"); printhex8a(c);           
+                genCodeDW(c);//implicit set directionflag
+                Op=Op2;//writeEA with 2. Op  
                 writeEA(R1No);
                 return;    
             }
@@ -132,9 +141,7 @@ REG      R1Type,RegType = 0, BYTE, WORD, DWORD, SEGREG
 MEM,ADR  disp           = 0, LabelAddr[LabelIx]
 MEM      regindexbase   = 0 - 7
          OpSize         = 0, BYTE, WORD, DWORD
-         wflag
-*/ 
-         
+         wflag          */         
 int get2Ops() {
     getOpL();
     R1No=RegNo;   
@@ -144,15 +151,12 @@ int get2Ops() {
 }         
 int getOpL() {
 //set: op1=0,IMM,REG,ADR,MEM
-    disp=0; imme=0; isDirect=1; RegType=0; Op2=0;//for WriteEA  
-
-    Op=getOp1();
-    if (isToken('[')) {Op = MEM; getMEM();    return;}
-    if (Op == 0)     {invaloperror();         return;}
-    if (Op == IMM)   {imme=SymbolInt;         return;}
-    if (Op == REG)                            return;
-    if (Op == ADR)   {disp=LabelAddr[LabelIx];return;}
-    error1("Name of operand #1 expected");
+    disp=0; imme=0; isDirect=1; 
+    getOpR();
+    Op=Op2;
+    Op2=0;//for single operand statement    
+    R1Type=RegType;
+    RegType=0;//for WriteEA  
 }  
 
 int getOpR() {
@@ -162,7 +166,7 @@ int getOpR() {
     if (Op2 == IMM)   {imme=SymbolInt;         return;}
     if (Op2 == REG)                            return;
     if (Op2 == ADR)   {disp=LabelAddr[LabelIx];return;}
-    error1("Name of operand #2 expected");
+    error1("Name of operand expected");
 }
 
 int getOp1() {//scan for a single operand
@@ -225,7 +229,7 @@ int getIndReg2() {char m; m=4;//because m=0 is BX+DI
 int setwflag() {
     wflag=0;
     if (OpSize == 0) {//do not override OpSize
-        if (Op == REG) OpSize=RegType;
+        if (Op == REG) OpSize=R1Type;
         if (Op2== REG) OpSize=RegType;        
         if (RegType== SEGREG) OpSize=WORD;
         if (R1Type == SEGREG) OpSize=WORD;        

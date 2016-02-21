@@ -23,7 +23,7 @@ int genCode8(char c) {
     FileBin[BinLen]=c;
     BinLen++;
     PC++;
-    if (BinLen >= FILEBINMAX) errorexit("COM file to long");
+    if (BinLen >= FILEBINMAX) errorexit("COM file too long");
     if (OpPrintIndex < OPMAXLEN) {
         OpPos[OpPrintIndex]=c;
         OpPrintIndex++;
@@ -33,12 +33,16 @@ int genCode16(unsigned int i) {
     genCode8(i); i=i >> 8;
     genCode8(i);
 }
-int writeEA(char xxx) {//need: Op, disp, RegNo, regindexbase, isDirect
+int writeEA(char xxx) {//need: Op, Op2, disp, RegNo, regindexbase, isDirect
 //mod-byte: mode76, reg/opcode543, r/m210    
     char len;
     len=0;   
-//   prs("\nx:"); printhex8a(xxx);       
-//    prs(", rib:"); printhex8a(regindexbase);       
+   prs("\nxxx:"); printhex8a(xxx);       
+    prs(", Op:"); printhex8a(Op);
+    prs(", Op2:"); printhex8a(Op2);
+    prs(", RegNo:"); printhex8a(RegNo);
+    prs(", R1No:"); printhex8a(R1No);
+           
     xxx = xxx << 3;//in reg/opcode field
 //    prs(", xxx:"); printhex8a(xxx);       
 //    prs(", Op:"); printhex8a(Op);
@@ -76,6 +80,7 @@ int writeEA(char xxx) {//need: Op, disp, RegNo, regindexbase, isDirect
 }
 
 int genImmediate() {
+    if (sflag) wflag=0;
     if (wflag) genCode16(imme);
-    else       genCode8 (imme);
-}    
+    else       genCode8 (imme);  
+    }    
