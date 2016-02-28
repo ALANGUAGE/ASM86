@@ -9,11 +9,7 @@ int gen66h() {genCode8(0x66);
 int genCode(char c, char d) {
     c = c + d;
     genCode8(c);
-}   
-int genCodeDW(char c) {
-    c +=2;//direction flag  
-    genCodeW(c);
-} 
+}                             
 int genCodeW(char c) {
     c = c + wflag;  
     genCode8(c);
@@ -33,26 +29,32 @@ int genCode16(unsigned int i) {
     genCode8(i); i=i >> 8;
     genCode8(i);
 }
-int writeEA(char xxx) {//need: Op, Op2, disp, RegNo, regindexbase, isDirect
-//mod-byte: mode76, reg/opcode543, r/m210    
+int writeEA(char xxx) {//value for reg/operand
+//need: Op, Op2, disp, R1No, RegNo, regindexbase, isDirect
+//mod-bits: mode76, reg/opcode543, r/m210   
+//Op: 0, IMM, REG, ADR, MEM   
     char len;
     len=0;   
-   prs("\nxxx:"); printhex8a(xxx);       
+/*    prs("\n  EA x:"); printhex8a(xxx);       
     prs(", Op:"); printhex8a(Op);
     prs(", Op2:"); printhex8a(Op2);
-    prs(", RegNo:"); printhex8a(RegNo);
     prs(", R1No:"); printhex8a(R1No);
+    prs(", RegNo:"); printhex8a(RegNo);     */
            
-    xxx = xxx << 3;//in reg/opcode field
-//    prs(", xxx:"); printhex8a(xxx);       
-//    prs(", Op:"); printhex8a(Op);
-    if (Op ==   0) addrexit();
+    xxx = xxx << 3;//in reg/opcode field      
+
+    if (Op ==   0) addrerror();
+    if (Op == IMM) immeerror();   
+    if (Op == ADR) invaloperror();           
+
     if (Op == REG) {
-        xxx |= 0xC0; 
-        if (Op2 == REG) xxx = xxx + R1No;
-        else            xxx = xxx + RegNo;
+        xxx |= 0xC0;     
+        if (Op2 == 0) xxx = xxx + R1No;
+            else {
+                if (Op2 == REG) xxx = xxx + R1No;
+                else            xxx = xxx + RegNo;  
+            }
         } 
-    if (Op == ADR) error1("writeEA");           
     if (Op == MEM) {
         if (isDirect) {
             xxx |= 6;
@@ -73,14 +75,18 @@ int writeEA(char xxx) {//need: Op, Op2, disp, RegNo, regindexbase, isDirect
                 else xxx |= 0x80;
             }
         }
-    }
+    }  
+    
     genCode8(xxx);// gen second byte
     if (len == 1) genCode8 (disp);
     if (len == 2) genCode16(disp);
 }
 
 int genImmediate() {
-    if (sflag) wflag=0;
+    if (sflag) {
+        genCode8(imme);
+        return;
+    }
     if (wflag) genCode16(imme);
     else       genCode8 (imme);  
     }    

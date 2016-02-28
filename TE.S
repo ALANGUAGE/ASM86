@@ -49,6 +49,7 @@ imul byte [bx+di]   ;F6 29
 imul byte [bx+di-4] ;F6 69 FC  
 imul byte [VA]      ;F6 2E 01 00 
 imul word [VA]      ;F7 2E 01 00 
+
 les ax,  [bx+di]    ;C4 01
 lss cx, [VA]        ;0F B2 0E [0400]  
 les cx, [bx+di-4]   ;C4 49 FC 
@@ -56,9 +57,10 @@ lgs ax, [bx+di]     ;0F B5 01
 lgs ax, [VA+bx+di]  ;0F B5 81 01 00
 ;mov al, [bp-4]     ;8A 46 FC
 ;mov al, [VB+bx]    ;8A 87 06 00           
+
 add al, 4           ;04 04
 ;add al, 259      ;;;04 03 bounds
-add ax, 4           ;05 04 00 ;83 C0 04 XXXXXXXX
+add ax, 4           ;83 C0 04
 add ax, 259         ;05 03 01
 or  al, 4           ;0C 04         
 adc ax, 259         ;15 03 01     

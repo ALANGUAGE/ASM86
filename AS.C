@@ -1,4 +1,4 @@
-char Version1[]="AS.C V0.07 17.2.16";//BAS.BAT, AS TE, NAS.BAT
+char Version1[]="AS.C V0.07";//BAS.BAT, AS TE, NAS.BAT
 #include "DECL.C"
 #include "OPTABL.C"
 
@@ -21,75 +21,67 @@ int process() {
   
     if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv
         getOpL();
-        checkOpL();     
-       prs("\ncheckOpL Op:"); printhex8a(Op);                
-       prs("\, Op2:"); printhex8a(Op2);                
-       prs(", wflag:"); printhex8a(wflag);           
-       prs(", OpSize:"); printhex8a(OpSize);         
+        checkOpL();        
         if (Code2 <= 1) {//inc,dec
   	        if (Op == REG) {//short
-                if (RegType == WORD) {genCode(Code3, RegNo); return; }
-                if (RegType ==DWORD) {genCode(Code3, RegNo); return; }
+                if (R1Type == WORD) {genCode(Code3, RegNo); return; }
+                if (R1Type ==DWORD) {genCode(Code3, RegNo); return; }
             }
         }
         if (Code2 == 5) {//imul extension?
             getTokeType();
             if (TokeType) implerror();
         }
-        genCodeW(Code1);
+        genCodeW(Code1);   
+        
         writeEA(Code2);
         return;
     }
   
     if (CodeType == 3) {//les,lds,lea,lss,lfs,lgs
-        getOpL();
-        if (RegType != WORD) reg16error();//only r16
+        getOpL();       //setwflag not applicable
+        if (R1Type != WORD) reg16error();//only r16
         need(',');   
-        R1No = RegNo; 
         getOpR();
         if (Op2 != MEM) addrerror();//only m16 
         
         genCode8(Code1);//les,lds,lea
         if (Code1 == 0x0F) genCode8(Code2);//lss,lfs,lgs   
-        Op=Op2;//writeEA with 2. Op  
+        Op=Op2;//set MEM for writeEA
         writeEA(R1No);           
         return;
     }
 
     if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
         get2Ops();    
-        if (Op == IMM) immeerror();   
-        if (Op == ADR) invaloperror();     
-        setwflag();
-//       prs("\nOp:"); printhex8a(Op);                
-//       prs("\, Op2:"); printhex8a(Op2);                
-//       prs(", wflag:"); printhex8a(wflag);           
-//       prs(", OpSize:"); printhex8a(OpSize);            
+        setwflag();     
         if (Op2 == IMM) {//second operand is imm     
-            getSignExtended(imme);   
+            setsflag();   
             if (Op == REG) {                
-                if (R1No == 0) {
-                    Code1 = Code1 << 3;
-                    Code1 += 4;//code for acc,imm     
-                    genCodeW(Code1);
-                    genImmediate();
-                    return;
+                if (R1No == 0) {  
+                    if (sflag == 0) {                        
+                        c = Code1 << 3;
+                        c += 4;//code for acc,imm     
+                        genCodeW(c);
+                        genImmediate();
+                        return;
+                    }
                 }
             }
             //r/m, imm: 80 sign-extended,TTT,imm
             c = sflag + 0x80;       
             genCodeW(c); 
-            writeEA(Code1);//todo not Op??  
+            writeEA(Code1);  
             genImmediate();
             return;     
         }  
        
         c = Code1 << 3;//r/m, r/m  
         if (Op == REG) {
-            if (Op2 == MEM) {//reg, mem        
-//   prs(", c:"); printhex8a(c);           
-                genCodeDW(c);//implicit set directionflag
-                Op=Op2;//writeEA with 2. Op  
+            if (Op2 == MEM) {//reg, mem      
+                c += 2;//add direction flag
+                genCodeW(c);
+                Op=Op2;//set MEM for writeEA                
                 writeEA(R1No);
                 return;    
             }
@@ -127,12 +119,12 @@ int checkOpL() {
     if (RegType == SEGREG) {segregerror(); return;}//only move,push,pop
     setwflag();
     if (OpSize == 0) error1("no op size declared");
-    if (OpSize == RegType) return;
+    if (OpSize == R1Type) return;
     if (OpSize){
         if (Op == MEM) return;
         error1("Conflict OpSize and RegSize"); 
         }
-    if (RegType==0) error1("no register defined");
+    if (R1Type==0) error1("no register defined");
 }
 /*    Op, Op2 =0, 1=IMM, 2=REG, 3=ADR, 4=MEM 
 IMM      imme           = 0, SymbolInt
@@ -144,19 +136,16 @@ MEM      regindexbase   = 0 - 7
          wflag          */         
 int get2Ops() {
     getOpL();
-    R1No=RegNo;   
-    R1Type = RegType;
     need(',');    
     getOpR();         
 }         
 int getOpL() {
-//set: op1=0,IMM,REG,ADR,MEM
+//set: op=0,IMM,REG,ADR,MEM
     disp=0; imme=0; isDirect=1; 
     getOpR();
-    Op=Op2;
-    Op2=0;//for single operand statement    
-    R1Type=RegType;
-    RegType=0;//for WriteEA  
+    Op=Op2;         Op2=0;
+    R1No=RegNo;     RegNo=0;
+    R1Type=RegType; RegType=0; 
 }  
 
 int getOpR() {
@@ -238,9 +227,9 @@ int setwflag() {
     if (OpSize  ==  WORD) wflag=1;
 }
 
-int getSignExtended(unsigned int i) {  
+int setsflag() {  
     sflag=2;
-    if(i > 127) sflag = 0;    
+    if(imme > 127) sflag = 0;    
     if (OpSize == BYTE) {
         if (sflag == 0) error1("too big for byte r/m");
         sflag=0;//byte reg does not need sign extended   
