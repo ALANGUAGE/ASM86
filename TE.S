@@ -66,11 +66,18 @@ or  al, 4           ;0C 04
 adc ax, 259         ;15 03 01     
 add cl, 4           ;80 C1 04
 add cx, 4           ;83 C1 04 
-add cx, 259         ;81 C1 03 01
+add cx, 259         ;81 C1 03 01  
+or  cl, 4           ;80 C9 04  
+or  cl, 255         ;80 C9 FF  
+or  cx, 4           ;83 C9 04 
+or  cx, 127         ;83 C9 7F  
+or  cx, 128         ;81 C9 80 00
+or  cx, 255         ;81 C9 FF 00
+or  cx, 259         ;81 C9 03 01
 add  sp, 2          ;83 C4 02 
 add byte [VA], 4    ;80 06 02 01 04
 add word [VA], 4    ;83 06 02 01 04  
-add word [VA+3],4   ;83 06 05 00 04   
+add word [VA+3],4   ;83 06 05 01 04   
 ;add word [VA+di]
 add al, [bx+di-4]   ;02 41 FC    
 add bx, ax          ;01 C3

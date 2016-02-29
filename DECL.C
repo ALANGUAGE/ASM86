@@ -50,13 +50,13 @@ char sflag;             //sign extended, imm8 to word PUSH,ALU,IMUL3
 char regindexbase;      //combination of index and base reg
 char isDirect;          //set in getOpL and getMeM, need in WriteEA
 int disp;               //displacement      0-8 bytes
-int imme;               //immediate         0-8 bytes
+unsigned int imme;      //immediate         0-8 bytes
 
 #define OPMAXLEN 5
 char OpPos[OPMAXLEN];   //array for one opcode to list
 int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
-char PrintR;           //print 'R' if relocative
+char PrintR;            //print 'R' if relocative
 
 #define LABELNAMESMAX 969//next number - 31
 char LabelNames[1000];  //space for names of all labels

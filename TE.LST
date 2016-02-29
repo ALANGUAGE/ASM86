@@ -62,28 +62,35 @@
 019A                
 019A 04 04          add al, 4           ;04 04
 019C                ;add al, 259      ;;;04 03 bounds
-019C 83 C0 04       add ax, 4           ;05 04 00 ;83 C0 04 XXXXXXXX
+019C 83 C0 04       add ax, 4           ;83 C0 04
 019F 05 03 01       add ax, 259         ;05 03 01
 01A2 0C 04          or  al, 4           ;0C 04         
 01A4 15 03 01       adc ax, 259         ;15 03 01     
-01A7 80 C0 04       add cl, 4           ;80 C1 04
-01AA 83 C0 04       add cx, 4           ;83 C1 04 
-01AD 81 C0 03 01    add cx, 259         ;81 C1 03 01
-01B1 83 C0 02       add  sp, 2          ;83 C4 02 
-01B4 80 06 02 01 04    add byte [VA], 4    ;80 06 02 01 04
-01B9 83 06 02 01 04    add word [VA], 4    ;83 06 02 01 04  
-01BE 83 06 05 01 04    add word [VA+3],4   ;83 06 05 00 04   
-01C3                ;add word [VA+di]
-01C3 02 41 FC       add al, [bx+di-4]   ;02 41 FC    
-01C6 01 C3          add bx, ax          ;01 C3
-01C8 01 D8          add ax, bx          ;01 D8
-01CA 02 07          add al, [bx]        ;02 07
-01CC 03 07          add ax, [bx]        ;03 07
-01CE 03 0F          add cx, [bx]        ;03 0F
-01D0 01 0F          add [bx], cx        ;01 0F
-01D2 00 00          add [bx+si], al     ;00 00
-01D4 00 01          add [bx+di], al     ;00 01
-01D6 01 01          add [bx+di], ax     ;01 01
-01D8 02 01          add al, [bx+di]     ;02 01
-01DA 03 01          add ax, [bx+di]     ;03 01
-;END Errors: 0, COM file 220 bytes.
+01A7 80 C1 04       add cl, 4           ;80 C1 04
+01AA 83 C1 04       add cx, 4           ;83 C1 04 
+01AD 81 C1 03 01    add cx, 259         ;81 C1 03 01  
+01B1 80 C9 04       or  cl, 4           ;80 C9 04  
+01B4 80 C9 FF       or  cl, 255         ;80 C9 FF  
+01B7 83 C9 04       or  cx, 4           ;83 C9 04 
+01BA 83 C9 7F       or  cx, 127         ;83 C9 7F  
+01BD 81 C9 80 00    or  cx, 128         ;81 C9 80 00
+01C1 81 C9 FF 00    or  cx, 255         ;81 C9 FF 00
+01C5 81 C9 03 01    or  cx, 259         ;81 C9 03 01
+01C9 83 C4 02       add  sp, 2          ;83 C4 02 
+01CC 80 06 02 01 04    add byte [VA], 4    ;80 06 02 01 04
+01D1 83 06 02 01 04    add word [VA], 4    ;83 06 02 01 04  
+01D6 83 06 05 01 04    add word [VA+3],4   ;83 06 05 01 04   
+01DB                ;add word [VA+di]
+01DB 02 41 FC       add al, [bx+di-4]   ;02 41 FC    
+01DE 01 C3          add bx, ax          ;01 C3
+01E0 01 D8          add ax, bx          ;01 D8
+01E2 02 07          add al, [bx]        ;02 07
+01E4 03 07          add ax, [bx]        ;03 07
+01E6 03 0F          add cx, [bx]        ;03 0F
+01E8 01 0F          add [bx], cx        ;01 0F
+01EA 00 00          add [bx+si], al     ;00 00
+01EC 00 01          add [bx+di], al     ;00 01
+01EE 01 01          add [bx+di], ax     ;01 01
+01F0 02 01          add al, [bx+di]     ;02 01
+01F2 03 01          add ax, [bx+di]     ;03 01
+;END Errors: 0, COM file 244 bytes.

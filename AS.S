@@ -204,7 +204,7 @@ isDirect db 0
 
 disp dw 0
 
-;-53 int imme;               //immediate         0-8 bytes
+;-53 unsigned int imme;      //immediate         0-8 bytes
 
 imme dw 0
 
@@ -226,7 +226,7 @@ OpPrintIndex dw 0
 
 OpCodePtr dw 0
 
-;-59 char PrintR;           //print 'R' if relocative
+;-59 char PrintR;            //print 'R' if relocative
 
 PrintR db 0
 
@@ -2773,26 +2773,32 @@ testReg_29 db "EDI",0
 
 ;Use include file: OUTPUT.C
 
-;-1 int printLine() { int i; char c;
+;-1 int printLine() { 
 
 
 printLine:  ; *** PROC ***
 
-;-2   prs("\n"); printhex16(PCStart);
+;-2     int i; char c;
+
+
+;-3     prs("\n"); 
 
 ;Function : printLine, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word     1 NULL bp-2    i
-;  201 var sign byte     1 NULL bp-4    c;
+;  200 var sign word     2 NULL bp-2    i
+;  201 var sign byte     2 NULL bp-4    c;
  ENTER  4,0
  push printLine_0
  call prs
  add  sp, 2
+
+;-4     printhex16(PCStart);
+
  push word [PCStart]
  call printhex16
  add  sp, 2
 
-;-3   if (OpPrintIndex == 0) prs("                ");
+;-5     if (OpPrintIndex == 0) prs("                ");
 
  mov ax, [OpPrintIndex]
  cmp ax, 0
@@ -2801,12 +2807,12 @@ printLine:  ; *** PROC ***
  call prs
  add  sp, 2
 
-;-4   else {
+;-6     else {
 
  jmp @@printLine111
 @@printLine110:
 
-;-5     prc(PrintR);
+;-7         prc(PrintR);
 
  mov al, byte [PrintR]
  mov ah, 0
@@ -2814,37 +2820,40 @@ printLine:  ; *** PROC ***
  call prc
  add  sp, 2
 
-;-6     i=0;
+;-8         i=0;
 
  mov eax, 0
  mov word [bp-2], ax
 
-;-7     do {
+;-9         do {
 
 @@printLine112:
 
-;-8       c=OpPos[i];
+;-10             c=OpPos[i];
 
  mov bx, [bp-2]
  mov al, [OpPos + bx]
  mov byte [bp-4], al
 
-;-9       printhex8a(c); prc(' ');
+;-11             printhex8a(c); 
 
  mov al, byte [bp-4]
  mov ah, 0
  push ax
  call printhex8a
  add  sp, 2
+
+;-12             prc(' ');
+
  push 32
  call prc
  add  sp, 2
 
-;-10       i++;
+;-13             i++;
 
  inc  word [bp-2]
 
-;-11     } while(i < OpPrintIndex);
+;-14         } while (i < OpPrintIndex);
 
  mov ax, [bp-2]
  cmp ax, [OpPrintIndex]
@@ -2852,21 +2861,21 @@ printLine:  ; *** PROC ***
  jmp @@printLine112
 @@printLine113:
 
-;-12     do {// fill rest with blank
+;-15         do {// fill rest with blank
 
 @@printLine114:
 
-;-13       prs("   ");
+;-16             prs("   ");
 
  push printLine_2
  call prs
  add  sp, 2
 
-;-14       i++;
+;-17             i++;
 
  inc  word [bp-2]
 
-;-15     } while(i < OPMAXLEN);
+;-18         } while (i < OPMAXLEN);
 
  mov ax, [bp-2]
  cmp ax, 5
@@ -2874,10 +2883,10 @@ printLine:  ; *** PROC ***
  jmp @@printLine114
 @@printLine115:
 
-;-16   }
+;-19     }
 
 
-;-17   prscomment(InputBuf);
+;-20     prscomment(InputBuf);
 
 @@printLine111:
  lea  ax, [InputBuf]
@@ -2885,10 +2894,10 @@ printLine:  ; *** PROC ***
  call prscomment
  add  sp, 2
 
-;-18 }
+;-21 }
 
 
-;-19 int prc(unsigned char c) { if (LIST) { if (_ c==10) {ax=13; writetty(); }
+;-22 int prc(unsigned char c) {//print char 
  LEAVE
  ret
 ; ENDP
@@ -2897,25 +2906,46 @@ printLine_1 db "                ",0
 printLine_2 db "   ",0
 
 prc:  ; *** PROC ***
+
+;-23     if (LIST) { 
+
 ;Function : prc, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg byte    19 NULL bp+4    c;
+;  200 var unsg byte    22 NULL bp+4    c;
  ENTER  0,0
  mov al, [LIST]
  or  al, al
  je @@prc116
+
+;-24         if ( _ c==10) {
+
 cmp byte [bp+4], 10
  jne @@prc117
+
+;-25             ax=13; 
+
  mov  ax, 13
+
+;-26             writetty(); 
+
  call writetty
 
-;-20      al=c; writetty(); }
+;-27             }
+
+
+;-28         al=c; 
 
 @@prc117:
  mov  al, [bp+4]
+
+;-29         writetty(); 
+
  call writetty
 
-;-21    fputcR(c,lst_fd); }
+;-30         }
+
+
+;-31     fputcR(c,lst_fd); 
 
 @@prc116:
  push word [lst_fd]
@@ -2925,22 +2955,28 @@ cmp byte [bp+4], 10
  call fputcR
  add  sp, 4
 
-;-22 
+;-32 }
 
 
-;-23 int prscomment(unsigned char *s) {unsigned char c;
+;-33 
+
+
+;-34 int prscomment(unsigned char *s) {
  LEAVE
  ret
 ; ENDP
 
 prscomment:  ; *** PROC ***
 
-;-24   while(*s){c=*s;prc(c);s++;}
+;-35     unsigned char c;
+
+
+;-36     while (*s){
 
 ;Function : prscomment, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr unsg byte    23 NULL bp+4    s
-;  201 var unsg byte    23 NULL bp-2    c;
+;  200 ptr unsg byte    34 NULL bp+4    s
+;  201 var unsg byte    35 NULL bp-2    c;
  ENTER  2,0
 @@prscomment118:
  mov bx, [bp+4]
@@ -2948,38 +2984,59 @@ prscomment:  ; *** PROC ***
  mov ah, 0
  or  al, al
  je @@prscomment119
+
+;-37         c=*s;
+
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  mov byte [bp-2], al
+
+;-38         prc(c);
+
  mov al, byte [bp-2]
  mov ah, 0
  push ax
  call prc
  add  sp, 2
+
+;-39         s++;
+
  inc  word [bp+4]
 
-;-25 }
+;-40     }
+
+
+;-41 }
 
  jmp @@prscomment118
 @@prscomment119:
 
-;-26 int prs(unsigned char *s) {unsigned char c; int com; com=0;
+;-42 int prs(unsigned char *s) {
  LEAVE
  ret
 ; ENDP
 
 prs:  ; *** PROC ***
+
+;-43     unsigned char c; 
+
+
+;-44     int com; 
+
+
+;-45     com=0;
+
 ;Function : prs, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 ptr unsg byte    26 NULL bp+4    s
-;  201 var unsg byte    26 NULL bp-2    c
-;  202 var sign word    26 NULL bp-4    com;
+;  200 ptr unsg byte    42 NULL bp+4    s
+;  201 var unsg byte    43 NULL bp-2    c
+;  202 var sign word    44 NULL bp-4    com;
  ENTER  4,0
  mov eax, 0
  mov word [bp-4], ax
 
-;-27   while(*s) { c=*s; if (c==34) if (com) com=0; else com=1;
+;-46     while (*s) { 
 
 @@prs120:
  mov bx, [bp+4]
@@ -2987,125 +3044,199 @@ prs:  ; *** PROC ***
  mov ah, 0
  or  al, al
  je @@prs121
+
+;-47         c=*s; 
+
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  mov byte [bp-2], al
+
+;-48         if (c==34) {
+
  mov al, [bp-2]
  cmp al, 34
  jne @@prs122
+
+;-49             if (com) com=0; 
+
  mov ax, [bp-4]
  or  al, al
  je @@prs123
  mov eax, 0
  mov word [bp-4], ax
+
+;-50                 else com=1;  
+
  jmp @@prs124
 @@prs123:
  mov eax, 1
  mov word [bp-4], ax
 
-;-28     if (c==92) { if (com==0) { s++; c=*s;
+;-51         }
 
 @@prs124:
+
+;-52         if (c==92) { 
+
 @@prs122:
  mov al, [bp-2]
  cmp al, 92
  jne @@prs125
+
+;-53             if (com==0) { 
+
  mov ax, [bp-4]
  cmp ax, 0
  jne @@prs126
+
+;-54                 s++; 
+
  inc  word [bp+4]
+
+;-55                 c=*s;
+
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  mov byte [bp-2], al
 
-;-29           if (c=='n') c=10; if (c=='t') c= 9; } } prc(c); s++;  }
+;-56                 if (c=='n') c=10; 
 
  mov al, [bp-2]
  cmp al, 110
  jne @@prs127
  mov eax, 10
  mov byte [bp-2], al
+
+;-57                 if (c=='t') c= 9; 
+
 @@prs127:
  mov al, [bp-2]
  cmp al, 116
  jne @@prs128
  mov eax, 9
  mov byte [bp-2], al
+
+;-58             } 
+
 @@prs128:
+
+;-59         } 
+
 @@prs126:
+
+;-60         prc(c); 
+
 @@prs125:
  mov al, byte [bp-2]
  mov ah, 0
  push ax
  call prc
  add  sp, 2
+
+;-61         s++;  
+
  inc  word [bp+4]
 
-;-30 }
+;-62     }
+
+
+;-63 }
 
  jmp @@prs120
 @@prs121:
 
-;-31 int printhex8a(unsigned int c) { unsigned int nib;
+;-64 int printhex8a(unsigned char c) { 
  LEAVE
  ret
 ; ENDP
 
 printhex8a:  ; *** PROC ***
 
-;-32   nib = c >> 4; nib += 48; if (nib > 57)nib += 7; prc(nib);
+;-65     unsigned char nib;
+
+
+;-66     nib = c >> 4; printhex4(nib);                    
 
 ;Function : printhex8a, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    31 NULL bp+4    c
-;  201 var unsg word    31 NULL bp-2    nib;
+;  200 var unsg byte    64 NULL bp+4    c
+;  201 var unsg byte    65 NULL bp-2    nib;
  ENTER  2,0
- mov ax, [bp+4]
- shr ax, 4
- mov word [bp-2], ax
- add  word [bp-2], 48
- mov ax, [bp-2]
- cmp ax, 57
- jle @@printhex8a129
- add  word [bp-2], 7
-@@printhex8a129:
- push word [bp-2]
+ mov al, [bp+4]
+ shr al, 4
+ mov byte [bp-2], al
+ mov al, byte [bp-2]
+ mov ah, 0
+ push ax
+ call printhex4
+ add  sp, 2
+
+;-67     nib = c & 15; printhex4(nib);                    
+
+ mov al, [bp+4]
+ and al, 15
+ mov byte [bp-2], al
+ mov al, byte [bp-2]
+ mov ah, 0
+ push ax
+ call printhex4
+ add  sp, 2
+
+;-68 } 
+
+
+;-69 int printhex4(unsigned char c) {
+ LEAVE
+ ret
+; ENDP
+
+printhex4:  ; *** PROC ***
+
+;-70     c += 48; 
+
+;Function : printhex4, Number of local variables: 1
+;   # type sign width line used address name   list of local variables
+;  200 var unsg byte    69 NULL bp+4    c;
+ ENTER  0,0
+ add  byte [bp+4], 48
+
+;-71     if (c > 57) c += 7; 
+
+ mov al, [bp+4]
+ cmp al, 57
+ jle @@printhex4129
+ add  byte [bp+4], 7
+
+;-72     prc(c);      
+
+@@printhex4129:
+ mov al, byte [bp+4]
+ mov ah, 0
+ push ax
  call prc
  add  sp, 2
 
-;-33   nib = c & 15; nib += 48; if (nib > 57)nib += 7; prc(nib);
-
- mov ax, [bp+4]
- and ax, 15
- mov word [bp-2], ax
- add  word [bp-2], 48
- mov ax, [bp-2]
- cmp ax, 57
- jle @@printhex8a130
- add  word [bp-2], 7
-@@printhex8a130:
- push word [bp-2]
- call prc
- add  sp, 2
-
-;-34 }
+;-73 }
 
 
-;-35 int printhex16(unsigned int i) {unsigned int half;
+;-74 int printhex16(unsigned int i) {
  LEAVE
  ret
 ; ENDP
 
 printhex16:  ; *** PROC ***
 
-;-36   half = i >>  8; printhex8a(half); half = i & 255; printhex8a(half);
+;-75     unsigned int half;
+
+
+;-76     half = i >>  8; printhex8a(half); 
 
 ;Function : printhex16, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    35 NULL bp+4    i
-;  201 var unsg word    35 NULL bp-2    half;
+;  200 var unsg word    74 NULL bp+4    i
+;  201 var unsg word    75 NULL bp-2    half;
  ENTER  2,0
  mov ax, [bp+4]
  shr ax, 8
@@ -3113,6 +3244,9 @@ printhex16:  ; *** PROC ***
  push word [bp-2]
  call printhex8a
  add  sp, 2
+
+;-77     half = i & 255; printhex8a(half);
+
  mov ax, [bp+4]
  and ax, 255
  mov word [bp-2], ax
@@ -3120,40 +3254,49 @@ printhex16:  ; *** PROC ***
  call printhex8a
  add  sp, 2
 
-;-37 }
+;-78 }
 
 
-;-38 int printIntU(unsigned int n) { unsigned int e;
+;-79 int printIntU(unsigned int n) { 
  LEAVE
  ret
 ; ENDP
 
 printIntU:  ; *** PROC ***
 
-;-39   if ( _ n >= 10) {  e=n/10; //DIV
+;-80     unsigned int e;
+
+
+;-81     if ( _ n >= 10) {  
 
 ;Function : printIntU, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    38 NULL bp+4    n
-;  201 var unsg word    38 NULL bp-2    e;
+;  200 var unsg word    79 NULL bp+4    n
+;  201 var unsg word    80 NULL bp-2    e;
  ENTER  2,0
 cmp word [bp+4], 10 ;unsigned : 0
- jb  @@printIntU131
+ jb  @@printIntU130
+
+;-82         e=n/10; //DIV
+
  mov ax, [bp+4]
  mov bx, 10
  mov dx, 0
  div bx
  mov word [bp-2], ax
 
-;-40     printIntU(e); }
+;-83         printIntU(e); 
 
  push word [bp-2]
  call printIntU
  add  sp, 2
 
-;-41     n = n % 10; //unsigned mod
+;-84     }
 
-@@printIntU131:
+
+;-85     n = n % 10; //unsigned mod
+
+@@printIntU130:
  mov ax, [bp+4]
  mov bx, 10
  mov dx, 0
@@ -3161,65 +3304,109 @@ cmp word [bp+4], 10 ;unsigned : 0
  mov ax, dx
  mov word [bp+4], ax
 
-;-42     n += '0'; prc(n);
+;-86     n += '0'; 
 
  add  word [bp+4], 48
+
+;-87     prc(n);
+
  push word [bp+4]
  call prc
  add  sp, 2
 
-;-43 }
+;-88 }
 
 
-;-44 
+;-89 
 
 
-;-45 int error1(char *s) { LIST=1; ErrorCount++;
+;-90 int error1(char *s) { 
  LEAVE
  ret
 ; ENDP
 
 error1:  ; *** PROC ***
+
+;-91     LIST=1; 
+
 ;Function : error1, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte    45 NULL bp+4    s;
+;  200 ptr sign byte    90 NULL bp+4    s;
  ENTER  0,0
  mov eax, 1
  mov byte [LIST], al
+
+;-92     ErrorCount++;
+
  inc  word [ErrorCount]
 
-;-46   prs("\n;***** next line ERROR: "); prs(s);
+;-93     prs("\n;***** next line ERROR: "); 
 
  push error1_0
  call prs
  add  sp, 2
+
+;-94     prs(s);
+
  push word [bp+4]
  call prs
  add  sp, 2
 
-;-47   prs(", Symbol: "); prs(Symbol);}
+;-95     prs(", Symbol: "); 
 
  push error1_1
  call prs
  add  sp, 2
+
+;-96     prs(Symbol);
+
  lea  ax, [Symbol]
  push ax
  call prs
  add  sp, 2
 
-;-48 int allowederror(){error1("not allowed here"); }
+;-97 }
+
+
+;-98 int errorexit(char *s) { 
  LEAVE
  ret
 ; ENDP
 error1_0 db "\n;***** next line ERROR: ",0
 error1_1 db ", Symbol: ",0
 
+errorexit:  ; *** PROC ***
+
+;-99     error1(s); 
+
+;Function : errorexit, Number of local variables: 1
+;   # type sign width line used address name   list of local variables
+;  200 ptr sign byte    98 NULL bp+4    s;
+ ENTER  0,0
+ push word [bp+4]
+ call error1
+ add  sp, 2
+
+;-100     end1(1);
+
+ push 1
+ call end1
+ add  sp, 2
+
+;-101 }
+
+
+;-102 int allowederror() {error1("not allowed here"); }
+ LEAVE
+ ret
+; ENDP
+
 allowederror:  ; *** PROC ***
  push allowederror_0
  call error1
  add  sp, 2
 
-;-49 int addrerror()   {error1("address missing");} 
+;-103 int addrerror()    {error1("address missing");} 
 
  ret
 ; ENDP
@@ -3230,7 +3417,7 @@ addrerror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-50 int immeerror()   {error1("immediate not allowed here");}
+;-104 int immeerror()    {error1("immediate not allowed here");}
 
  ret
 ; ENDP
@@ -3241,7 +3428,7 @@ immeerror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-51 int implerror()   {error1("not implemented");}
+;-105 int implerror()    {error1("not implemented");}
 
  ret
 ; ENDP
@@ -3252,7 +3439,7 @@ implerror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-52 int indexerror()  {error1("invalid index register");}
+;-106 int indexerror()   {error1("invalid index register");}
 
  ret
 ; ENDP
@@ -3263,7 +3450,7 @@ indexerror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-53 int invaloperror(){error1("invalid or no operands");}
+;-107 int invaloperror() {error1("invalid or no operands");}
 
  ret
 ; ENDP
@@ -3274,7 +3461,7 @@ invaloperror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-54 int numbererror() {error1("number expected");}
+;-108 int numbererror()  {error1("number expected");}
 
  ret
 ; ENDP
@@ -3285,7 +3472,7 @@ numbererror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-55 int regmemerror() {error1("only register or memory allowed");}
+;-109 int regmemerror()  {error1("only register or memory allowed");}
 
  ret
 ; ENDP
@@ -3296,7 +3483,7 @@ regmemerror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-56 int reg16error()  {error1("only reg16, no segreg allowed");}
+;-110 int reg16error()   {error1("only reg16, no segreg allowed");}
 
  ret
 ; ENDP
@@ -3307,7 +3494,7 @@ reg16error:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-57 int segregerror() {error1("segment register not allowed");}
+;-111 int segregerror()  {error1("segment register not allowed");}
 
  ret
 ; ENDP
@@ -3318,7 +3505,7 @@ segregerror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-58 int syntaxerror() {error1("syntax");}
+;-112 int syntaxerror()  {error1("syntax");}
 
  ret
 ; ENDP
@@ -3329,38 +3516,21 @@ syntaxerror:  ; *** PROC ***
  call error1
  add  sp, 2
 
-;-59 
+;-113          
 
 
-;-60 int errorexit(char *s) { error1(s); end1(1);}
+;-114 int addrexit()     {errorexit("illegal address");}
 
  ret
 ; ENDP
 syntaxerror_0 db "syntax",0
-
-errorexit:  ; *** PROC ***
-;Function : errorexit, Number of local variables: 1
-;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte    60 NULL bp+4    s;
- ENTER  0,0
- push word [bp+4]
- call error1
- add  sp, 2
- push 1
- call end1
- add  sp, 2
-
-;-61 int addrexit(){errorexit("illegal address");}
- LEAVE
- ret
-; ENDP
 
 addrexit:  ; *** PROC ***
  push addrexit_0
  call errorexit
  add  sp, 2
 
-;-62 int internexit(){errorexit("intern compiler error");}
+;-115 int internexit()   {errorexit("intern compiler error");}
 
  ret
 ; ENDP
@@ -3430,7 +3600,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [bp-2]
  cmp ax, 0
- jne @@getarg132
+ jne @@getarg131
 
 ;-11     cputs(Version1);
 
@@ -3456,7 +3626,7 @@ getarg:  ; *** PROC ***
 
 ;-15   i=arglen1+129; 
 
-@@getarg132:
+@@getarg131:
  mov ax, [bp-2]
  add ax, 129
  mov word [bp-4], ax
@@ -3548,7 +3718,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [DOS_ERR]
  or  al, al
- je @@getarg133
+ je @@getarg132
  push getarg_4
  call cputs
  add  sp, 2
@@ -3562,7 +3732,7 @@ getarg:  ; *** PROC ***
 
 ;-28   lst_fd=creatR(namelst);
 
-@@getarg133:
+@@getarg132:
  lea  ax, [namelst]
  push ax
  call creatR
@@ -3573,7 +3743,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [DOS_ERR]
  or  al, al
- je @@getarg134
+ je @@getarg133
  push getarg_5
  call cputs
  add  sp, 2
@@ -3587,7 +3757,7 @@ getarg:  ; *** PROC ***
 
 ;-30   bin_fd=creatR(namebin);
 
-@@getarg134:
+@@getarg133:
  lea  ax, [namebin]
  push ax
  call creatR
@@ -3598,7 +3768,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [DOS_ERR]
  or  al, al
- je @@getarg135
+ je @@getarg134
  push getarg_6
  call cputs
  add  sp, 2
@@ -3615,7 +3785,7 @@ getarg:  ; *** PROC ***
 
 ;-33   prs(";");prs(Version1);
 
-@@getarg135:
+@@getarg134:
  push getarg_7
  call prs
  add  sp, 2
@@ -3698,7 +3868,7 @@ epilog:  ; *** PROC ***
 
  mov ax, [ErrorCount]
  or  al, al
- je @@epilog136
+ je @@epilog135
  push epilog_1
  call prs
  add  sp, 2
@@ -3750,7 +3920,7 @@ epilog:  ; *** PROC ***
 
 ;-56   prs(", COM file "); printIntU(BinLen); prs(" bytes.");
 
-@@epilog136:
+@@epilog135:
  push epilog_2
  call prs
  add  sp, 2
@@ -3777,7 +3947,7 @@ epilog:  ; *** PROC ***
 
 ;-61   do {
 
-@@epilog137:
+@@epilog136:
 
 ;-62     c = FileBin[i];
 
@@ -3802,9 +3972,9 @@ epilog:  ; *** PROC ***
 
  mov ax, [bp-2]
  cmp ax, [BinLen]
- jge @@epilog138
- jmp @@epilog137
-@@epilog138:
+ jge @@epilog137
+ jmp @@epilog136
+@@epilog137:
 
 ;-66 }
 
@@ -3995,17 +4165,17 @@ genCode8:  ; *** PROC ***
 
  mov ax, [BinLen]
  cmp ax, 2000 ;unsigned : 0
- jb  @@genCode8139
+ jb  @@genCode8138
  push genCode8_0
  call errorexit
  add  sp, 2
 
 ;-23     if (OpPrintIndex < OPMAXLEN) {
 
-@@genCode8139:
+@@genCode8138:
  mov ax, [OpPrintIndex]
  cmp ax, 5
- jge @@genCode8140
+ jge @@genCode8139
 
 ;-24         OpPos[OpPrintIndex]=c;
 
@@ -4022,7 +4192,7 @@ genCode8:  ; *** PROC ***
 
 ;-27 }
 
-@@genCode8140:
+@@genCode8139:
 
 ;-28 int genCode16(unsigned int i) {
  LEAVE
@@ -4114,54 +4284,62 @@ writeEA:  ; *** PROC ***
 
  mov al, [Op]
  cmp al, 0
- jne @@writeEA141
+ jne @@writeEA140
  call addrerror
 
 ;-47     if (Op == IMM) immeerror();   
 
-@@writeEA141:
+@@writeEA140:
  mov al, [Op]
  cmp al, 1
- jne @@writeEA142
+ jne @@writeEA141
  call immeerror
 
-;-48     if (Op == ADR) invaloperror();           
+;-48     if (Op == ADR) invaloperror(); 
+
+@@writeEA141:
+ mov al, [Op]
+ cmp al, 3
+ jne @@writeEA142
+ call invaloperror
+
+;-49     if (Op2== ADR) invaloperror();          
 
 @@writeEA142:
- mov al, [Op]
+ mov al, [Op2]
  cmp al, 3
  jne @@writeEA143
  call invaloperror
 
-;-49 
+;-50 
 
 
-;-50     if (Op == REG) {
+;-51     if (Op == REG) {
 
 @@writeEA143:
  mov al, [Op]
  cmp al, 2
  jne @@writeEA144
 
-;-51         xxx |= 0xC0;     
+;-52         xxx |= 0xC0;     
 
  or  byte [bp+4], 192
 
-;-52         if (Op2 == 0) xxx = xxx + R1No;
+;-53         if (Op2 <= IMM) xxx = xxx + R1No;//empty or IMM 
 
  mov al, [Op2]
- cmp al, 0
- jne @@writeEA145
+ cmp al, 1
+ jg  @@writeEA145
  mov al, [bp+4]
  add al, [R1No]
  mov byte [bp+4], al
 
-;-53             else {
+;-54             else {
 
  jmp @@writeEA146
 @@writeEA145:
 
-;-54                 if (Op2 == REG) xxx = xxx + R1No;
+;-55                 if (Op2 == REG) xxx = xxx + R1No;
 
  mov al, [Op2]
  cmp al, 2
@@ -4170,7 +4348,7 @@ writeEA:  ; *** PROC ***
  add al, [R1No]
  mov byte [bp+4], al
 
-;-55                 else            xxx = xxx + RegNo;  
+;-56                 else            xxx = xxx + RegNo;  
 
  jmp @@writeEA148
 @@writeEA147:
@@ -4178,101 +4356,101 @@ writeEA:  ; *** PROC ***
  add al, [RegNo]
  mov byte [bp+4], al
 
-;-56             }
+;-57             }
 
 @@writeEA148:
 
-;-57         } 
+;-58         } 
 
 @@writeEA146:
 
-;-58     if (Op == MEM) {
+;-59     if (Op == MEM) {
 
 @@writeEA144:
  mov al, [Op]
  cmp al, 4
  jne @@writeEA149
 
-;-59         if (isDirect) {
+;-60         if (isDirect) {
 
  mov al, [isDirect]
  or  al, al
  je @@writeEA150
 
-;-60             xxx |= 6;
+;-61             xxx |= 6;
 
  or  byte [bp+4], 6
 
-;-61             len = 2;
+;-62             len = 2;
 
  mov eax, 2
  mov byte [bp-2], al
 
-;-62         }
+;-63         }
 
 
-;-63         else { 
+;-64         else { 
 
  jmp @@writeEA151
 @@writeEA150:
 
-;-64             xxx = xxx + regindexbase;   
+;-65             xxx = xxx + regindexbase;   
 
  mov al, [bp+4]
  add al, [regindexbase]
  mov byte [bp+4], al
 
-;-65             if (regindexbase == 6) {//make [BP+00]
+;-66             if (regindexbase == 6) {//make [BP+00]
 
  mov al, [regindexbase]
  cmp al, 6
  jne @@writeEA152
 
-;-66                 len=1;
+;-67                 len=1;
 
  mov eax, 1
  mov byte [bp-2], al
 
-;-67                 if (disp == 0) xxx |= 0x40;
+;-68                 if (disp == 0) xxx |= 0x40;
 
  mov ax, [disp]
  cmp ax, 0
  jne @@writeEA153
  or  byte [bp+4], 64
 
-;-68             }
+;-69             }
 
 @@writeEA153:
 
-;-69 
+;-70 
 
 
-;-70             if (disp) {
+;-71             if (disp) {
 
 @@writeEA152:
  mov ax, [disp]
  or  al, al
  je @@writeEA154
 
-;-71                 ax = disp;
+;-72                 ax = disp;
 
  mov  ax, [disp]
 
-;-72                 if(ax > 127) len=2;
+;-73                 if(ax > 127) len=2;
 
  cmp  ax, 127
  jle @@writeEA155
  mov eax, 2
  mov byte [bp-2], al
 
-;-73                 else len=1;
+;-74                 else len=1;
 
  jmp @@writeEA156
 @@writeEA155:
  mov eax, 1
  mov byte [bp-2], al
 
-;-74                 if (len == 1) xxx |= 0x40;
+;-75                 if (len == 1) xxx |= 0x40;
 
 @@writeEA156:
  mov al, [bp-2]
@@ -4280,28 +4458,28 @@ writeEA:  ; *** PROC ***
  jne @@writeEA157
  or  byte [bp+4], 64
 
-;-75                 else xxx |= 0x80;
+;-76                 else xxx |= 0x80;
 
  jmp @@writeEA158
 @@writeEA157:
  or  byte [bp+4], 128
 
-;-76             }
+;-77             }
 
 @@writeEA158:
 
-;-77         }
+;-78         }
 
 @@writeEA154:
 
-;-78     }  
+;-79     }  
 
 @@writeEA151:
 
-;-79     
+;-80     
 
 
-;-80     genCode8(xxx);// gen second byte
+;-81     genCode8(xxx);// gen second byte
 
 @@writeEA149:
  mov al, byte [bp+4]
@@ -4310,7 +4488,7 @@ writeEA:  ; *** PROC ***
  call genCode8
  add  sp, 2
 
-;-81     if (len == 1) genCode8 (disp);
+;-82     if (len == 1) genCode8 (disp);
 
  mov al, [bp-2]
  cmp al, 1
@@ -4319,7 +4497,7 @@ writeEA:  ; *** PROC ***
  call genCode8
  add  sp, 2
 
-;-82     if (len == 2) genCode16(disp);
+;-83     if (len == 2) genCode16(disp);
 
 @@writeEA159:
  mov al, [bp-2]
@@ -4329,40 +4507,40 @@ writeEA:  ; *** PROC ***
  call genCode16
  add  sp, 2
 
-;-83 }
+;-84 }
 
 @@writeEA160:
 
-;-84 
+;-85 
 
 
-;-85 int genImmediate() {
+;-86 int genImmediate() {
  LEAVE
  ret
 ; ENDP
 
 genImmediate:  ; *** PROC ***
 
-;-86     if (sflag) {
+;-87     if (sflag) {
 
  mov al, [sflag]
  or  al, al
  je @@genImmediate161
 
-;-87         genCode8(imme);
+;-88         genCode8(imme);
 
  push word [imme]
  call genCode8
  add  sp, 2
 
-;-88         return;
+;-89         return;
 
  jmp @@retn
 
-;-89     }
+;-90     }
 
 
-;-90     if (wflag) genCode16(imme);
+;-91     if (wflag) genCode16(imme);
 
 @@genImmediate161:
  mov al, [wflag]
@@ -4372,7 +4550,7 @@ genImmediate:  ; *** PROC ***
  call genCode16
  add  sp, 2
 
-;-91     else       genCode8 (imme);  
+;-92     else       genCode8 (imme);  
 
  jmp @@genImmediate163
 @@genImmediate162:
@@ -4380,7 +4558,7 @@ genImmediate:  ; *** PROC ***
  call genCode8
  add  sp, 2
 
-;-92     }    
+;-93     }    
 
 @@genImmediate163:
 @@retn:
@@ -4675,7 +4853,7 @@ process:  ; *** PROC ***
  cmp al, 2
  jne @@process178
 
-;-61                 if (R1No == 0) {  
+;-61                 if (R1No == 0) {// acc,imm   
 
  mov al, [R1No]
  cmp al, 0
@@ -4693,7 +4871,7 @@ process:  ; *** PROC ***
  shl al, 3
  mov byte [bp-2], al
 
-;-64                         c += 4;//code for acc,imm     
+;-64                         c += 4;    
 
  add  byte [bp-2], 4
 
@@ -5624,7 +5802,7 @@ getIndReg2:  ; *** PROC ***
 ;-217          
 
 
-;-218 int setwflag() {
+;-218 int setwflag() {//word size, bit 0
 
 @@retn: LEAVE
  ret
@@ -5708,19 +5886,19 @@ setwflag:  ; *** PROC ***
 ;-229 
 
 
-;-230 int setsflag() {  
+;-230 int setsflag() {//sign-extend, bit 1  
 
  ret
 ; ENDP
 
 setsflag:  ; *** PROC ***
 
-;-231     sflag=2;
+;-231     sflag=2;  
 
  mov eax, 2
  mov byte [sflag], al
 
-;-232     if(imme > 127) sflag = 0;    
+;-232     if(imme > 127) sflag = 0;//qirks in NASM, 255 is better    
 
  mov ax, [imme]
  cmp ax, 127
@@ -5735,11 +5913,11 @@ setsflag:  ; *** PROC ***
  cmp al, 1
  jne @@setsflag241
 
-;-234         if (sflag == 0) error1("too big for byte r/m");
+;-234         if (imme > 255) error1("too big for byte r/m");
 
- mov al, [sflag]
- cmp al, 0
- jne @@setsflag242
+ mov ax, [imme]
+ cmp ax, 255
+ jle @@setsflag242
  push setsflag_0
  call error1
  add  sp, 2
@@ -6284,7 +6462,7 @@ ret
 ;   34 def unsg byte    34    -        0 ADR=3
 ;   35 def unsg byte    35    -        0 MEM=4
 ;   36 var sign byte    36   14        0 Op
-;   37 var sign byte    37   17        0 Op2
+;   37 var sign byte    37   18        0 Op2
 ;   38 var sign byte    38   13        0 CodeType
 ;   39 var sign byte    39    9        0 Code1
 ;   40 var sign byte    40    6        0 Code2
@@ -6295,11 +6473,11 @@ ret
 ;   45 var sign byte    45    8        0 R1Type
 ;   46 var sign byte    46   13        0 OpSize
 ;   47 var sign byte    47    5        0 wflag
-;   48 var sign byte    49    7        0 sflag
+;   48 var sign byte    49    6        0 sflag
 ;   49 var sign byte    50   14        0 regindexbase
 ;   50 var sign byte    51    3        0 isDirect
 ;   51 var sign word    52   14        0 disp
-;   52 var sign word    53    6        0 imme
+;   52 var unsg word    53    7        0 imme
 ;   53 def unsg byte    55    -        0 OPMAXLEN=5
 ;   54 arr sign byte    56    2        0 OpPos[5]
 ;   55 var sign word    57    6        0 OpPrintIndex
@@ -6463,67 +6641,68 @@ ret
 ;   16    1   56 word   getName
 ;   17    1   75 word   testReg
 ;   18    1    1 word   printLine
-;   19    8   19 word   prc
-;   20    1   23 word   prscomment
-;   21   21   26 word   prs
-;   22    3   31 word   printhex8a
-;   23    1   35 word   printhex16
-;   24    3   38 word   printIntU
-;   25   25   45 word   error1
-;   26 NULL   48 word   allowederror
-;   27    2   49 word   addrerror
-;   28    1   50 word   immeerror
-;   29    2   51 word   implerror
-;   30    4   52 word   indexerror
-;   31    2   53 word   invaloperror
-;   32    1   54 word   numbererror
-;   33 NULL   55 word   regmemerror
-;   34    1   56 word   reg16error
-;   35    1   57 word   segregerror
-;   36    2   58 word   syntaxerror
-;   37   12   60 word   errorexit
-;   38 NULL   61 word   addrexit
-;   39 NULL   62 word   internexit
-;   40 NULL    1 word   main
-;   41    1    8 word   getarg
-;   42    1   38 word   epilog
-;   43    2   67 word   end1
-;   44    1    2 word   getCodes
-;   45    1    7 word   gen66h
-;   46    2    9 word   genCode
-;   47    5   13 word   genCodeW
-;   48   16   17 word   genCode8
-;   49    4   28 word   genCode16
-;   50    5   32 word   writeEA
-;   51    2   85 word   genImmediate
-;   52    1   11 word   process
-;   53    1  117 word   checkOpL
-;   54    1  137 word   get2Ops
-;   55    3  142 word   getOpL
-;   56    3  151 word   getOpR
-;   57    2  161 word   getOp1
-;   58    1  177 word   getMEM
-;   59    1  199 word   getIndReg1
-;   60    1  207 word   getIndReg2
-;   61    2  218 word   setwflag
-;   62    1  230 word   setsflag
-;   63    4  238 word   writetty
-;   64    8  239 word   cputs
-;   65    2  240 word   toupper
-;   66    3  242 word   strlen
-;   67    6  243 word   strcpy
-;   68    3  245 word   digit
-;   69   35  246 word   eqstr
-;   70    3  249 word   strcat1
-;   71    1  250 word   openR
-;   72    2  251 word   creatR
-;   73    2  252 word   readRL
-;   74    2  253 word   fputcR
-;   75    3  255 word   fcloseR
-;   76    5  256 word   exitR
-;   77    1  258 word   putch
-;   78    4  259 word   DosInt
-;   79 NULL  260 word   LastFunctionByt
+;   19    7   22 word   prc
+;   20    1   34 word   prscomment
+;   21   21   42 word   prs
+;   22    3   64 word   printhex8a
+;   23    2   69 word   printhex4
+;   24    1   74 word   printhex16
+;   25    3   79 word   printIntU
+;   26   25   90 word   error1
+;   27   12   98 word   errorexit
+;   28 NULL  102 word   allowederror
+;   29    2  103 word   addrerror
+;   30    1  104 word   immeerror
+;   31    2  105 word   implerror
+;   32    4  106 word   indexerror
+;   33    3  107 word   invaloperror
+;   34    1  108 word   numbererror
+;   35 NULL  109 word   regmemerror
+;   36    1  110 word   reg16error
+;   37    1  111 word   segregerror
+;   38    2  112 word   syntaxerror
+;   39 NULL  114 word   addrexit
+;   40 NULL  115 word   internexit
+;   41 NULL    1 word   main
+;   42    1    8 word   getarg
+;   43    1   38 word   epilog
+;   44    2   67 word   end1
+;   45    1    2 word   getCodes
+;   46    1    7 word   gen66h
+;   47    2    9 word   genCode
+;   48    5   13 word   genCodeW
+;   49   16   17 word   genCode8
+;   50    4   28 word   genCode16
+;   51    5   32 word   writeEA
+;   52    2   86 word   genImmediate
+;   53    1   11 word   process
+;   54    1  117 word   checkOpL
+;   55    1  137 word   get2Ops
+;   56    3  142 word   getOpL
+;   57    3  151 word   getOpR
+;   58    2  161 word   getOp1
+;   59    1  177 word   getMEM
+;   60    1  199 word   getIndReg1
+;   61    1  207 word   getIndReg2
+;   62    2  218 word   setwflag
+;   63    1  230 word   setsflag
+;   64    4  238 word   writetty
+;   65    8  239 word   cputs
+;   66    2  240 word   toupper
+;   67    3  242 word   strlen
+;   68    6  243 word   strcpy
+;   69    3  245 word   digit
+;   70   35  246 word   eqstr
+;   71    3  249 word   strcat1
+;   72    1  250 word   openR
+;   73    2  251 word   creatR
+;   74    2  252 word   readRL
+;   75    2  253 word   fputcR
+;   76    3  255 word   fcloseR
+;   77    5  256 word   exitR
+;   78    1  258 word   putch
+;   79    4  259 word   DosInt
+;   80 NULL  260 word   LastFunctionByt
 
 ;    #  addr name   list of CALLs
 
@@ -6637,178 +6816,180 @@ ret
 ;  107  2395 fputcR
 ;  108  2417 prc
 ;  109  2433 prc
-;  110  2454 prc
-;  111  2458 prc
-;  112  2480 printhex8a
-;  113  2491 printhex8a
-;  114  2516 printIntU
-;  115  2526 prc
-;  116  2539 prs
-;  117  2543 prs
-;  118  2547 prs
-;  119  2551 prs
-;  120  2568 error1
-;  121  2585 error1
-;  122  2602 error1
-;  123  2619 error1
+;  110  2454 printhex4
+;  111  2464 printhex4
+;  112  2486 prc
+;  113  2508 printhex8a
+;  114  2519 printhex8a
+;  115  2544 printIntU
+;  116  2554 prc
+;  117  2567 prs
+;  118  2571 prs
+;  119  2575 prs
+;  120  2579 prs
+;  121  2595 error1
+;  122  2602 end1
+;  123  2620 error1
 ;  124  2637 error1
-;  125  2657 error1
-;  126  2676 error1
-;  127  2695 error1
-;  128  2713 error1
-;  129  2732 error1
-;  130  2751 error1
-;  131  2770 error1
-;  132  2777 end1
-;  133  2791 errorexit
-;  134  2812 errorexit
-;  135  2827 getarg
-;  136  2834 parse
-;  137  2840 epilog
-;  138  2847 end1
-;  139  2871 cputs
-;  140  2877 cputs
-;  141  2883 exitR
-;  142  2889 toupper
-;  143  2897 strcpy
-;  144  2904 strcat1
-;  145  2912 strcpy
-;  146  2919 strcat1
-;  147  2927 strcpy
-;  148  2934 strcat1
-;  149  2942 openR
-;  150  2948 cputs
-;  151  2954 cputs
-;  152  2960 exitR
-;  153  2966 creatR
-;  154  2973 cputs
-;  155  2979 cputs
-;  156  2985 exitR
-;  157  2991 creatR
-;  158  2998 cputs
-;  159  3004 cputs
-;  160  3010 exitR
-;  161  3016 prs
-;  162  3020 prs
-;  163  3024 prs
-;  164  3028 prs
-;  165  3032 prs
-;  166  3036 prs
-;  167  3040 prs
-;  168  3044 prs
-;  169  3048 prs
-;  170  3065 prs
-;  171  3069 printIntU
-;  172  3079 prs
-;  173  3083 prs
-;  174  3087 printIntU
-;  175  3097 prs
-;  176  3101 fputcR
-;  177  3115 fcloseR
-;  178  3123 fcloseR
-;  179  3131 fcloseR
-;  180  3139 exitR
-;  181  3161 genCode8
-;  182  3182 genCode8
-;  183  3202 genCode8
-;  184  3222 errorexit
-;  185  3244 genCode8
-;  186  3253 genCode8
-;  187  3278 addrerror
-;  188  3288 immeerror
-;  189  3298 invaloperror
-;  190  3311 genCode8
-;  191  3320 genCode8
-;  192  3329 genCode16
-;  193  3352 genCode8
-;  194  3361 genCode16
-;  195  3371 genCode8
-;  196  3390 getTokeType
-;  197  3402 getCodeSize
-;  198  3414 getCodes
-;  199  3423 genCode8
-;  200  3432 getOpL
-;  201  3439 checkOpL
-;  202  3448 genCode
-;  203  3456 genCode
-;  204  3464 getTokeType
-;  205  3476 implerror
-;  206  3486 genCodeW
-;  207  3495 writeEA
-;  208  3503 getOpL
-;  209  3510 reg16error
-;  210  3521 need
-;  211  3526 getOpR
-;  212  3533 addrerror
-;  213  3543 genCode8
-;  214  3552 genCode8
-;  215  3561 writeEA
-;  216  3569 get2Ops
-;  217  3577 setwflag
-;  218  3586 setsflag
-;  219  3595 genCodeW
-;  220  3604 genImmediate
-;  221  3617 genCodeW
-;  222  3626 writeEA
-;  223  3634 genImmediate
-;  224  3647 genCodeW
-;  225  3656 writeEA
-;  226  3664 genCodeW
-;  227  3673 writeEA
-;  228  3681 syntaxerror
-;  229  3693 genCode8
-;  230  3702 genCode16
-;  231  3712 genCode8
-;  232  3721 error1
-;  233  3728 error1
-;  234  3744 implerror
-;  235  3754 segregerror
-;  236  3766 setwflag
-;  237  3775 error1
-;  238  3782 error1
-;  239  3789 error1
-;  240  3804 getOpL
-;  241  3811 need
-;  242  3816 getOpR
-;  243  3830 getOpR
-;  244  3844 getOp1
-;  245  3851 isToken
-;  246  3859 getMEM
-;  247  3866 invaloperror
-;  248  3879 error1
-;  249  3893 testReg
-;  250  3901 searchLabel
-;  251  3913 error1
-;  252  3929 getTokeType
-;  253  3941 getOp1
-;  254  3948 syntaxerror
-;  255  3960 getIndReg2
-;  256  3971 getIndReg1
-;  257  3982 isToken
-;  258  3990 getTokeType
-;  259  4002 numbererror
-;  260  4014 isToken
-;  261  4022 isToken
-;  262  4030 errorexit
-;  263  4051 indexerror
-;  264  4062 indexerror
-;  265  4086 indexerror
-;  266  4097 indexerror
-;  267  4117 gen66h
-;  268  4133 error1
-;  269  4159 putch
-;  270  4227 strcpy
-;  271  4242 DosInt
-;  272  4258 DosInt
-;  273  4281 DosInt
-;  274  4300 DosInt
-;  275  4334 writetty
-;  276  4343 writetty
+;  125  2654 error1
+;  126  2671 error1
+;  127  2689 error1
+;  128  2709 error1
+;  129  2728 error1
+;  130  2747 error1
+;  131  2765 error1
+;  132  2784 error1
+;  133  2803 error1
+;  134  2819 errorexit
+;  135  2840 errorexit
+;  136  2855 getarg
+;  137  2862 parse
+;  138  2868 epilog
+;  139  2875 end1
+;  140  2899 cputs
+;  141  2905 cputs
+;  142  2911 exitR
+;  143  2917 toupper
+;  144  2925 strcpy
+;  145  2932 strcat1
+;  146  2940 strcpy
+;  147  2947 strcat1
+;  148  2955 strcpy
+;  149  2962 strcat1
+;  150  2970 openR
+;  151  2976 cputs
+;  152  2982 cputs
+;  153  2988 exitR
+;  154  2994 creatR
+;  155  3001 cputs
+;  156  3007 cputs
+;  157  3013 exitR
+;  158  3019 creatR
+;  159  3026 cputs
+;  160  3032 cputs
+;  161  3038 exitR
+;  162  3044 prs
+;  163  3048 prs
+;  164  3052 prs
+;  165  3056 prs
+;  166  3060 prs
+;  167  3064 prs
+;  168  3068 prs
+;  169  3072 prs
+;  170  3076 prs
+;  171  3093 prs
+;  172  3097 printIntU
+;  173  3107 prs
+;  174  3111 prs
+;  175  3115 printIntU
+;  176  3125 prs
+;  177  3129 fputcR
+;  178  3143 fcloseR
+;  179  3151 fcloseR
+;  180  3159 fcloseR
+;  181  3167 exitR
+;  182  3189 genCode8
+;  183  3210 genCode8
+;  184  3230 genCode8
+;  185  3250 errorexit
+;  186  3272 genCode8
+;  187  3281 genCode8
+;  188  3306 addrerror
+;  189  3316 immeerror
+;  190  3326 invaloperror
+;  191  3339 invaloperror
+;  192  3352 genCode8
+;  193  3361 genCode8
+;  194  3370 genCode16
+;  195  3393 genCode8
+;  196  3402 genCode16
+;  197  3412 genCode8
+;  198  3431 getTokeType
+;  199  3443 getCodeSize
+;  200  3455 getCodes
+;  201  3464 genCode8
+;  202  3473 getOpL
+;  203  3480 checkOpL
+;  204  3489 genCode
+;  205  3497 genCode
+;  206  3505 getTokeType
+;  207  3517 implerror
+;  208  3527 genCodeW
+;  209  3536 writeEA
+;  210  3544 getOpL
+;  211  3551 reg16error
+;  212  3562 need
+;  213  3567 getOpR
+;  214  3574 addrerror
+;  215  3584 genCode8
+;  216  3593 genCode8
+;  217  3602 writeEA
+;  218  3610 get2Ops
+;  219  3618 setwflag
+;  220  3627 setsflag
+;  221  3636 genCodeW
+;  222  3645 genImmediate
+;  223  3658 genCodeW
+;  224  3667 writeEA
+;  225  3675 genImmediate
+;  226  3688 genCodeW
+;  227  3697 writeEA
+;  228  3705 genCodeW
+;  229  3714 writeEA
+;  230  3722 syntaxerror
+;  231  3734 genCode8
+;  232  3743 genCode16
+;  233  3753 genCode8
+;  234  3762 error1
+;  235  3769 error1
+;  236  3785 implerror
+;  237  3795 segregerror
+;  238  3807 setwflag
+;  239  3816 error1
+;  240  3823 error1
+;  241  3830 error1
+;  242  3845 getOpL
+;  243  3852 need
+;  244  3857 getOpR
+;  245  3871 getOpR
+;  246  3885 getOp1
+;  247  3892 isToken
+;  248  3900 getMEM
+;  249  3907 invaloperror
+;  250  3920 error1
+;  251  3934 testReg
+;  252  3942 searchLabel
+;  253  3954 error1
+;  254  3970 getTokeType
+;  255  3982 getOp1
+;  256  3989 syntaxerror
+;  257  4001 getIndReg2
+;  258  4012 getIndReg1
+;  259  4023 isToken
+;  260  4031 getTokeType
+;  261  4043 numbererror
+;  262  4055 isToken
+;  263  4063 isToken
+;  264  4071 errorexit
+;  265  4092 indexerror
+;  266  4103 indexerror
+;  267  4127 indexerror
+;  268  4138 indexerror
+;  269  4158 gen66h
+;  270  4174 error1
+;  271  4200 putch
+;  272  4268 strcpy
+;  273  4283 DosInt
+;  274  4299 DosInt
+;  275  4322 DosInt
+;  276  4341 DosInt
+;  277  4375 writetty
+;  278  4384 writetty
 ;Input: AS.C, List: AS.S,  Lines:  261
 ;Glob. variables:  192 max.:  200
 ;Local variables:    3 max.:  100, in 'searchLabel'
-;Functions      :   80 max.:  300
-;Calls          :  277 max.: 2000, NameField: 4375 max.:    65535
+;Functions      :   81 max.:  300
+;Calls          :  279 max.: 2000, NameField: 4416 max.:    65535
 ;Code until     :25998 max.: 30000, free: 4002
 ;Data (HeapEnd) :33595, resting stacksize: 31940
 ;Max. Const in 'testReg' :  658 max. 3000, free: 2342

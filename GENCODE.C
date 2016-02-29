@@ -45,11 +45,12 @@ int writeEA(char xxx) {//value for reg/operand
 
     if (Op ==   0) addrerror();
     if (Op == IMM) immeerror();   
-    if (Op == ADR) invaloperror();           
+    if (Op == ADR) invaloperror(); 
+    if (Op2== ADR) invaloperror();          
 
     if (Op == REG) {
         xxx |= 0xC0;     
-        if (Op2 == 0) xxx = xxx + R1No;
+        if (Op2 <= IMM) xxx = xxx + R1No;//empty or IMM 
             else {
                 if (Op2 == REG) xxx = xxx + R1No;
                 else            xxx = xxx + RegNo;  

@@ -58,10 +58,10 @@ int process() {
         if (Op2 == IMM) {//second operand is imm     
             setsflag();   
             if (Op == REG) {                
-                if (R1No == 0) {  
+                if (R1No == 0) {// acc,imm   
                     if (sflag == 0) {                        
                         c = Code1 << 3;
-                        c += 4;//code for acc,imm     
+                        c += 4;    
                         genCodeW(c);
                         genImmediate();
                         return;
@@ -215,7 +215,7 @@ int getIndReg2() {char m; m=4;//because m=0 is BX+DI
 }
          
          
-int setwflag() {
+int setwflag() {//word size, bit 0
     wflag=0;
     if (OpSize == 0) {//do not override OpSize
         if (Op == REG) OpSize=R1Type;
@@ -227,11 +227,11 @@ int setwflag() {
     if (OpSize  ==  WORD) wflag=1;
 }
 
-int setsflag() {  
-    sflag=2;
-    if(imme > 127) sflag = 0;    
+int setsflag() {//sign-extend, bit 1  
+    sflag=2;  
+    if(imme > 127) sflag = 0;//qirks in NASM, 255 is better    
     if (OpSize == BYTE) {
-        if (sflag == 0) error1("too big for byte r/m");
+        if (imme > 255) error1("too big for byte r/m");
         sflag=0;//byte reg does not need sign extended   
     }
 }
