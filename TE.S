@@ -154,4 +154,21 @@ mov word [bx+si],cs ;8C 08
 mov es, ax          ;8E C0      
 mov ss, ax          ;8E D0      
 mov es, [bx+di-4]   ;8E 41 FC    
-mov es, [VA]        ;8E 06 02 00
+mov es, [VA]        ;8E 06 02 00         
+
+mov [bx+si], al     ;88 00   
+mov [bx+si], cl     ;88 08   
+mov al, cl          ;88 C8   
+mov cl, al          ;88 C1   
+mov al, [bx+si]     ;8A 00   
+mov al, [bx+di-4]   ;8A 41 FC 
+mov cl, [bx+si]     ;8A 08  
+mov al, [VA+bx+di]  ;8A 81 02 00
+mov al, [VA+bx+di-4];8A 81 FE FF  
+mov al, [VA]        ;A0 02 00
+mov al, [VA+3]      ;A0 05 00
+mov ax, [VA]        ;A1 02 00
+mov [VA], al        ;A2 02 00 
+mov al, VA          ;B0 02 00 error  
+mov ax, VA          ;B8 02 00
+mov word [VA], VA   ;C7 06 02 00 02 00

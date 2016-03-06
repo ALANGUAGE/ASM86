@@ -1077,7 +1077,7 @@
   1077 00001315 8A46FE                   mov al, byte [bp-2]
   1078 00001318 B400                     mov ah, 0
   1079 0000131A 50                       push ax
-  1080 0000131B E8A91E                   call digit
+  1080 0000131B E8B51E                   call digit
   1081 0000131E 83C402                   add  sp, 2
   1082 00001321 08C0                     or  al, al
   1083 00001323 0F841800                 je @@getTokeType14
@@ -1146,7 +1146,7 @@
   1146 0000138D 8D06[0F00]               lea  ax, [Symbol]
   1147 00001391 50                       push ax
   1148 00001392 FF36[B205]               push word [LabelNamePtr]
-  1149 00001396 E8F51D                   call strcpy
+  1149 00001396 E8011E                   call strcpy
   1150 00001399 83C404                   add  sp, 4
   1151 0000139C A3[B205]                 mov word [LabelNamePtr], ax
   1152                                  
@@ -1239,7 +1239,7 @@
   1239 00001438 8D06[0F00]               lea  ax, [Symbol]
   1240 0000143C 50                       push ax
   1241 0000143D FF76FC                   push word [bp-4]
-  1242 00001440 E8B71D                   call eqstr
+  1242 00001440 E8C31D                   call eqstr
   1243 00001443 83C404                   add  sp, 4
   1244 00001446 08C0                     or  al, al
   1245 00001448 0F840600                 je @@searchLabel21
@@ -1250,7 +1250,7 @@
   1250                                  
   1251                                  @@searchLabel21:
   1252 00001452 FF76FC                   push word [bp-4]
-  1253 00001455 E80B1D                   call strlen
+  1253 00001455 E8171D                   call strlen
   1254 00001458 83C402                   add  sp, 2
   1255 0000145B 8946FA                   mov word [bp-6], ax
   1256                                  
@@ -1505,7 +1505,7 @@
   1505 000015C5 FF36[C701]               push word [OpCodePtr]
   1506 000015C9 8D06[2E00]               lea  ax, [SymbolUpper]
   1507 000015CD 50                       push ax
-  1508 000015CE E8291C                   call eqstr
+  1508 000015CE E8351C                   call eqstr
   1509 000015D1 83C404                   add  sp, 4
   1510 000015D4 08C0                     or  al, al
   1511 000015D6 0F842700                 je @@lookCode39
@@ -1589,7 +1589,7 @@
   1589 00001635 68[9F16]                 push getCodeSize_0
   1590 00001638 8D06[2E00]               lea  ax, [SymbolUpper]
   1591 0000163C 50                       push ax
-  1592 0000163D E8BA1B                   call eqstr
+  1592 0000163D E8C61B                   call eqstr
   1593 00001640 83C404                   add  sp, 4
   1594 00001643 08C0                     or  al, al
   1595 00001645 0F840C00                 je @@getCodeSize46
@@ -1603,7 +1603,7 @@
   1603 00001655 68[A416]                 push getCodeSize_1
   1604 00001658 8D06[2E00]               lea  ax, [SymbolUpper]
   1605 0000165C 50                       push ax
-  1606 0000165D E89A1B                   call eqstr
+  1606 0000165D E8A61B                   call eqstr
   1607 00001660 83C404                   add  sp, 4
   1608 00001663 08C0                     or  al, al
   1609 00001665 0F840C00                 je @@getCodeSize47
@@ -1617,7 +1617,7 @@
   1617 00001675 68[A916]                 push getCodeSize_2
   1618 00001678 8D06[2E00]               lea  ax, [SymbolUpper]
   1619 0000167C 50                       push ax
-  1620 0000167D E87A1B                   call eqstr
+  1620 0000167D E8861B                   call eqstr
   1621 00001680 83C404                   add  sp, 4
   1622 00001683 08C0                     or  al, al
   1623 00001685 0F840C00                 je @@getCodeSize48
@@ -1801,7 +1801,7 @@
   1801 0000175D FF36[9901]               push word [asm_fd]
   1802 00001761 8D06[A501]               lea  ax, [DOS_ByteRead]
   1803 00001765 50                       push ax
-  1804 00001766 E82C1B                   call readRL
+  1804 00001766 E8381B                   call readRL
   1805 00001769 83C406                   add  sp, 6
   1806 0000176C A3[A301]                 mov word [DOS_NoBytes], ax
   1807                                  
@@ -1912,7 +1912,7 @@
   1912 00001821 FF36[9901]               push word [asm_fd]
   1913 00001825 8D06[A501]               lea  ax, [DOS_ByteRead]
   1914 00001829 50                       push ax
-  1915 0000182A E8681A                   call readRL
+  1915 0000182A E8741A                   call readRL
   1916 0000182D 83C406                   add  sp, 6
   1917 00001830 A3[A301]                 mov word [DOS_NoBytes], ax
   1918                                  
@@ -2070,7 +2070,7 @@
   2070 0000190C 8A4604                   mov al, byte [bp+4]
   2071 0000190F B400                     mov ah, 0
   2072 00001911 50                       push ax
-  2073 00001912 E8B218                   call digit
+  2073 00001912 E8BE18                   call digit
   2074 00001915 83C402                   add  sp, 2
   2075 00001918 08C0                     or  al, al
   2076 0000191A 0F840900                 je @@alnumE69
@@ -2163,7 +2163,7 @@
   2163 0000198E 8A4604                   mov al, byte [bp+4]
   2164 00001991 B400                     mov ah, 0
   2165 00001993 50                       push ax
-  2166 00001994 E83018                   call digit
+  2166 00001994 E83C18                   call digit
   2167 00001997 83C402                   add  sp, 2
   2168 0000199A 08C0                     or  al, al
   2169 0000199C 0F840200                 je @@getDigit72
@@ -2286,14 +2286,14 @@
   2286 00001A33 50                       push ax
   2287 00001A34 8D06[2E00]               lea  ax, [SymbolUpper]
   2288 00001A38 50                       push ax
-  2289 00001A39 E85217                   call strcpy
+  2289 00001A39 E85E17                   call strcpy
   2290 00001A3C 83C404                   add  sp, 4
   2291                                  
   2292                                  ;-73   toupper(SymbolUpper);
   2293                                  
   2294 00001A3F 8D06[2E00]               lea  ax, [SymbolUpper]
   2295 00001A43 50                       push ax
-  2296 00001A44 E8D916                   call toupper
+  2296 00001A44 E8E516                   call toupper
   2297 00001A47 83C402                   add  sp, 2
   2298                                  
   2299                                  ;-74 }
@@ -2320,7 +2320,7 @@
   2320                                  
   2321 00001A65 8D06[0F00]               lea  ax, [Symbol]
   2322 00001A69 50                       push ax
-  2323 00001A6A E8F616                   call strlen
+  2323 00001A6A E80217                   call strlen
   2324 00001A6D 83C402                   add  sp, 2
   2325 00001A70 3C02                     cmp al, 2
   2326 00001A72 0F8D0900                 jge @@testReg78
@@ -2332,7 +2332,7 @@
   2332                                  @@testReg78:
   2333 00001A7F 8D06[0F00]               lea  ax, [Symbol]
   2334 00001A83 50                       push ax
-  2335 00001A84 E8DC16                   call strlen
+  2335 00001A84 E8E816                   call strlen
   2336 00001A87 83C402                   add  sp, 2
   2337 00001A8A 3C03                     cmp al, 3
   2338 00001A8C 0F8E0900                 jle @@testReg79
@@ -2350,7 +2350,7 @@
   2350 00001AA2 68[361E]                 push testReg_0
   2351 00001AA5 8D06[2E00]               lea  ax, [SymbolUpper]
   2352 00001AA9 50                       push ax
-  2353 00001AAA E84D17                   call eqstr
+  2353 00001AAA E85917                   call eqstr
   2354 00001AAD 83C404                   add  sp, 4
   2355 00001AB0 08C0                     or  al, al
   2356 00001AB2 0F840900                 je @@testReg80
@@ -2363,7 +2363,7 @@
   2363 00001ABF 68[391E]                 push testReg_1
   2364 00001AC2 8D06[2E00]               lea  ax, [SymbolUpper]
   2365 00001AC6 50                       push ax
-  2366 00001AC7 E83017                   call eqstr
+  2366 00001AC7 E83C17                   call eqstr
   2367 00001ACA 83C404                   add  sp, 4
   2368 00001ACD 08C0                     or  al, al
   2369 00001ACF 0F840900                 je @@testReg81
@@ -2376,7 +2376,7 @@
   2376 00001ADC 68[3C1E]                 push testReg_2
   2377 00001ADF 8D06[2E00]               lea  ax, [SymbolUpper]
   2378 00001AE3 50                       push ax
-  2379 00001AE4 E81317                   call eqstr
+  2379 00001AE4 E81F17                   call eqstr
   2380 00001AE7 83C404                   add  sp, 4
   2381 00001AEA 08C0                     or  al, al
   2382 00001AEC 0F840900                 je @@testReg82
@@ -2389,7 +2389,7 @@
   2389 00001AF9 68[3F1E]                 push testReg_3
   2390 00001AFC 8D06[2E00]               lea  ax, [SymbolUpper]
   2391 00001B00 50                       push ax
-  2392 00001B01 E8F616                   call eqstr
+  2392 00001B01 E80217                   call eqstr
   2393 00001B04 83C404                   add  sp, 4
   2394 00001B07 08C0                     or  al, al
   2395 00001B09 0F840900                 je @@testReg83
@@ -2402,7 +2402,7 @@
   2402 00001B16 68[421E]                 push testReg_4
   2403 00001B19 8D06[2E00]               lea  ax, [SymbolUpper]
   2404 00001B1D 50                       push ax
-  2405 00001B1E E8D916                   call eqstr
+  2405 00001B1E E8E516                   call eqstr
   2406 00001B21 83C404                   add  sp, 4
   2407 00001B24 08C0                     or  al, al
   2408 00001B26 0F840900                 je @@testReg84
@@ -2415,7 +2415,7 @@
   2415 00001B33 68[451E]                 push testReg_5
   2416 00001B36 8D06[2E00]               lea  ax, [SymbolUpper]
   2417 00001B3A 50                       push ax
-  2418 00001B3B E8BC16                   call eqstr
+  2418 00001B3B E8C816                   call eqstr
   2419 00001B3E 83C404                   add  sp, 4
   2420 00001B41 08C0                     or  al, al
   2421 00001B43 0F840900                 je @@testReg85
@@ -2428,7 +2428,7 @@
   2428 00001B50 68[481E]                 push testReg_6
   2429 00001B53 8D06[2E00]               lea  ax, [SymbolUpper]
   2430 00001B57 50                       push ax
-  2431 00001B58 E89F16                   call eqstr
+  2431 00001B58 E8AB16                   call eqstr
   2432 00001B5B 83C404                   add  sp, 4
   2433 00001B5E 08C0                     or  al, al
   2434 00001B60 0F840900                 je @@testReg86
@@ -2441,7 +2441,7 @@
   2441 00001B6D 68[4B1E]                 push testReg_7
   2442 00001B70 8D06[2E00]               lea  ax, [SymbolUpper]
   2443 00001B74 50                       push ax
-  2444 00001B75 E88216                   call eqstr
+  2444 00001B75 E88E16                   call eqstr
   2445 00001B78 83C404                   add  sp, 4
   2446 00001B7B 08C0                     or  al, al
   2447 00001B7D 0F840900                 je @@testReg87
@@ -2459,7 +2459,7 @@
   2459 00001B93 68[4E1E]                 push testReg_8
   2460 00001B96 8D06[2E00]               lea  ax, [SymbolUpper]
   2461 00001B9A 50                       push ax
-  2462 00001B9B E85C16                   call eqstr
+  2462 00001B9B E86816                   call eqstr
   2463 00001B9E 83C404                   add  sp, 4
   2464 00001BA1 08C0                     or  al, al
   2465 00001BA3 0F840900                 je @@testReg88
@@ -2472,7 +2472,7 @@
   2472 00001BB0 68[511E]                 push testReg_9
   2473 00001BB3 8D06[2E00]               lea  ax, [SymbolUpper]
   2474 00001BB7 50                       push ax
-  2475 00001BB8 E83F16                   call eqstr
+  2475 00001BB8 E84B16                   call eqstr
   2476 00001BBB 83C404                   add  sp, 4
   2477 00001BBE 08C0                     or  al, al
   2478 00001BC0 0F840900                 je @@testReg89
@@ -2485,7 +2485,7 @@
   2485 00001BCD 68[541E]                 push testReg_10
   2486 00001BD0 8D06[2E00]               lea  ax, [SymbolUpper]
   2487 00001BD4 50                       push ax
-  2488 00001BD5 E82216                   call eqstr
+  2488 00001BD5 E82E16                   call eqstr
   2489 00001BD8 83C404                   add  sp, 4
   2490 00001BDB 08C0                     or  al, al
   2491 00001BDD 0F840900                 je @@testReg90
@@ -2498,7 +2498,7 @@
   2498 00001BEA 68[571E]                 push testReg_11
   2499 00001BED 8D06[2E00]               lea  ax, [SymbolUpper]
   2500 00001BF1 50                       push ax
-  2501 00001BF2 E80516                   call eqstr
+  2501 00001BF2 E81116                   call eqstr
   2502 00001BF5 83C404                   add  sp, 4
   2503 00001BF8 08C0                     or  al, al
   2504 00001BFA 0F840900                 je @@testReg91
@@ -2511,7 +2511,7 @@
   2511 00001C07 68[5A1E]                 push testReg_12
   2512 00001C0A 8D06[2E00]               lea  ax, [SymbolUpper]
   2513 00001C0E 50                       push ax
-  2514 00001C0F E8E815                   call eqstr
+  2514 00001C0F E8F415                   call eqstr
   2515 00001C12 83C404                   add  sp, 4
   2516 00001C15 08C0                     or  al, al
   2517 00001C17 0F840900                 je @@testReg92
@@ -2524,7 +2524,7 @@
   2524 00001C24 68[5D1E]                 push testReg_13
   2525 00001C27 8D06[2E00]               lea  ax, [SymbolUpper]
   2526 00001C2B 50                       push ax
-  2527 00001C2C E8CB15                   call eqstr
+  2527 00001C2C E8D715                   call eqstr
   2528 00001C2F 83C404                   add  sp, 4
   2529 00001C32 08C0                     or  al, al
   2530 00001C34 0F840900                 je @@testReg93
@@ -2537,7 +2537,7 @@
   2537 00001C41 68[601E]                 push testReg_14
   2538 00001C44 8D06[2E00]               lea  ax, [SymbolUpper]
   2539 00001C48 50                       push ax
-  2540 00001C49 E8AE15                   call eqstr
+  2540 00001C49 E8BA15                   call eqstr
   2541 00001C4C 83C404                   add  sp, 4
   2542 00001C4F 08C0                     or  al, al
   2543 00001C51 0F840900                 je @@testReg94
@@ -2550,7 +2550,7 @@
   2550 00001C5E 68[631E]                 push testReg_15
   2551 00001C61 8D06[2E00]               lea  ax, [SymbolUpper]
   2552 00001C65 50                       push ax
-  2553 00001C66 E89115                   call eqstr
+  2553 00001C66 E89D15                   call eqstr
   2554 00001C69 83C404                   add  sp, 4
   2555 00001C6C 08C0                     or  al, al
   2556 00001C6E 0F840900                 je @@testReg95
@@ -2568,7 +2568,7 @@
   2568 00001C84 68[661E]                 push testReg_16
   2569 00001C87 8D06[2E00]               lea  ax, [SymbolUpper]
   2570 00001C8B 50                       push ax
-  2571 00001C8C E86B15                   call eqstr
+  2571 00001C8C E87715                   call eqstr
   2572 00001C8F 83C404                   add  sp, 4
   2573 00001C92 08C0                     or  al, al
   2574 00001C94 0F840900                 je @@testReg96
@@ -2581,7 +2581,7 @@
   2581 00001CA1 68[691E]                 push testReg_17
   2582 00001CA4 8D06[2E00]               lea  ax, [SymbolUpper]
   2583 00001CA8 50                       push ax
-  2584 00001CA9 E84E15                   call eqstr
+  2584 00001CA9 E85A15                   call eqstr
   2585 00001CAC 83C404                   add  sp, 4
   2586 00001CAF 08C0                     or  al, al
   2587 00001CB1 0F840900                 je @@testReg97
@@ -2594,7 +2594,7 @@
   2594 00001CBE 68[6C1E]                 push testReg_18
   2595 00001CC1 8D06[2E00]               lea  ax, [SymbolUpper]
   2596 00001CC5 50                       push ax
-  2597 00001CC6 E83115                   call eqstr
+  2597 00001CC6 E83D15                   call eqstr
   2598 00001CC9 83C404                   add  sp, 4
   2599 00001CCC 08C0                     or  al, al
   2600 00001CCE 0F840900                 je @@testReg98
@@ -2607,7 +2607,7 @@
   2607 00001CDB 68[6F1E]                 push testReg_19
   2608 00001CDE 8D06[2E00]               lea  ax, [SymbolUpper]
   2609 00001CE2 50                       push ax
-  2610 00001CE3 E81415                   call eqstr
+  2610 00001CE3 E82015                   call eqstr
   2611 00001CE6 83C404                   add  sp, 4
   2612 00001CE9 08C0                     or  al, al
   2613 00001CEB 0F840900                 je @@testReg99
@@ -2620,7 +2620,7 @@
   2620 00001CF8 68[721E]                 push testReg_20
   2621 00001CFB 8D06[2E00]               lea  ax, [SymbolUpper]
   2622 00001CFF 50                       push ax
-  2623 00001D00 E8F714                   call eqstr
+  2623 00001D00 E80315                   call eqstr
   2624 00001D03 83C404                   add  sp, 4
   2625 00001D06 08C0                     or  al, al
   2626 00001D08 0F840900                 je @@testReg100
@@ -2633,7 +2633,7 @@
   2633 00001D15 68[751E]                 push testReg_21
   2634 00001D18 8D06[2E00]               lea  ax, [SymbolUpper]
   2635 00001D1C 50                       push ax
-  2636 00001D1D E8DA14                   call eqstr
+  2636 00001D1D E8E614                   call eqstr
   2637 00001D20 83C404                   add  sp, 4
   2638 00001D23 08C0                     or  al, al
   2639 00001D25 0F840900                 je @@testReg101
@@ -2651,7 +2651,7 @@
   2651 00001D3B 68[781E]                 push testReg_22
   2652 00001D3E 8D06[2E00]               lea  ax, [SymbolUpper]
   2653 00001D42 50                       push ax
-  2654 00001D43 E8B414                   call eqstr
+  2654 00001D43 E8C014                   call eqstr
   2655 00001D46 83C404                   add  sp, 4
   2656 00001D49 08C0                     or  al, al
   2657 00001D4B 0F840900                 je @@testReg102
@@ -2664,7 +2664,7 @@
   2664 00001D58 68[7C1E]                 push testReg_23
   2665 00001D5B 8D06[2E00]               lea  ax, [SymbolUpper]
   2666 00001D5F 50                       push ax
-  2667 00001D60 E89714                   call eqstr
+  2667 00001D60 E8A314                   call eqstr
   2668 00001D63 83C404                   add  sp, 4
   2669 00001D66 08C0                     or  al, al
   2670 00001D68 0F840900                 je @@testReg103
@@ -2677,7 +2677,7 @@
   2677 00001D75 68[801E]                 push testReg_24
   2678 00001D78 8D06[2E00]               lea  ax, [SymbolUpper]
   2679 00001D7C 50                       push ax
-  2680 00001D7D E87A14                   call eqstr
+  2680 00001D7D E88614                   call eqstr
   2681 00001D80 83C404                   add  sp, 4
   2682 00001D83 08C0                     or  al, al
   2683 00001D85 0F840900                 je @@testReg104
@@ -2690,7 +2690,7 @@
   2690 00001D92 68[841E]                 push testReg_25
   2691 00001D95 8D06[2E00]               lea  ax, [SymbolUpper]
   2692 00001D99 50                       push ax
-  2693 00001D9A E85D14                   call eqstr
+  2693 00001D9A E86914                   call eqstr
   2694 00001D9D 83C404                   add  sp, 4
   2695 00001DA0 08C0                     or  al, al
   2696 00001DA2 0F840900                 je @@testReg105
@@ -2703,7 +2703,7 @@
   2703 00001DAF 68[881E]                 push testReg_26
   2704 00001DB2 8D06[2E00]               lea  ax, [SymbolUpper]
   2705 00001DB6 50                       push ax
-  2706 00001DB7 E84014                   call eqstr
+  2706 00001DB7 E84C14                   call eqstr
   2707 00001DBA 83C404                   add  sp, 4
   2708 00001DBD 08C0                     or  al, al
   2709 00001DBF 0F840900                 je @@testReg106
@@ -2716,7 +2716,7 @@
   2716 00001DCC 68[8C1E]                 push testReg_27
   2717 00001DCF 8D06[2E00]               lea  ax, [SymbolUpper]
   2718 00001DD3 50                       push ax
-  2719 00001DD4 E82314                   call eqstr
+  2719 00001DD4 E82F14                   call eqstr
   2720 00001DD7 83C404                   add  sp, 4
   2721 00001DDA 08C0                     or  al, al
   2722 00001DDC 0F840900                 je @@testReg107
@@ -2729,7 +2729,7 @@
   2729 00001DE9 68[901E]                 push testReg_28
   2730 00001DEC 8D06[2E00]               lea  ax, [SymbolUpper]
   2731 00001DF0 50                       push ax
-  2732 00001DF1 E80614                   call eqstr
+  2732 00001DF1 E81214                   call eqstr
   2733 00001DF4 83C404                   add  sp, 4
   2734 00001DF7 08C0                     or  al, al
   2735 00001DF9 0F840900                 je @@testReg108
@@ -2742,7 +2742,7 @@
   2742 00001E06 68[941E]                 push testReg_29
   2743 00001E09 8D06[2E00]               lea  ax, [SymbolUpper]
   2744 00001E0D 50                       push ax
-  2745 00001E0E E8E913                   call eqstr
+  2745 00001E0E E8F513                   call eqstr
   2746 00001E11 83C404                   add  sp, 4
   2747 00001E14 08C0                     or  al, al
   2748 00001E16 0F840900                 je @@testReg109
@@ -2954,7 +2954,7 @@
   2954                                  
   2955                                  ;-26             writetty(); 
   2956                                  
-  2957 00001F5D E88A11                   call writetty
+  2957 00001F5D E89611                   call writetty
   2958                                  
   2959                                  ;-27             }
   2960                                  
@@ -2966,7 +2966,7 @@
   2966                                  
   2967                                  ;-29         writetty(); 
   2968                                  
-  2969 00001F63 E88411                   call writetty
+  2969 00001F63 E89011                   call writetty
   2970                                  
   2971                                  ;-30         }
   2972                                  
@@ -2978,7 +2978,7 @@
   2978 00001F6A 8A4604                   mov al, byte [bp+4]
   2979 00001F6D B400                     mov ah, 0
   2980 00001F6F 50                       push ax
-  2981 00001F70 E83713                   call fputcR
+  2981 00001F70 E84313                   call fputcR
   2982 00001F73 83C404                   add  sp, 4
   2983                                  
   2984                                  ;-32 }
@@ -3657,19 +3657,19 @@
   3657                                  
   3658 00002337 8D06[0300]               lea  ax, [Version1]
   3659 0000233B 50                       push ax
-  3660 0000233C E8B30D                   call cputs
+  3660 0000233C E8BF0D                   call cputs
   3661 0000233F 83C402                   add  sp, 2
   3662                                  
   3663                                  ;-12     cputs(", Usage: AS.COM filename [w/o .S] : ");
   3664                                  
   3665 00002342 68[E324]                 push getarg_0
-  3666 00002345 E8AA0D                   call cputs
+  3666 00002345 E8B60D                   call cputs
   3667 00002348 83C402                   add  sp, 2
   3668                                  
   3669                                  ;-13     exitR(3);
   3670                                  
   3671 0000234B 6A03                     push 3
-  3672 0000234D E87D0F                   call exitR
+  3672 0000234D E8890F                   call exitR
   3673 00002350 83C402                   add  sp, 2
   3674                                  
   3675                                  ;-14   }
@@ -3695,7 +3695,7 @@
   3695                                  ;-18   toupper(argv);
   3696                                  
   3697 0000236A FF36[540E]               push word [argv]
-  3698 0000236E E8AF0D                   call toupper
+  3698 0000236E E8BB0D                   call toupper
   3699 00002371 83C402                   add  sp, 2
   3700                                  
   3701                                  ;-19   
@@ -3706,12 +3706,12 @@
   3706 00002374 FF36[540E]               push word [argv]
   3707 00002378 8D06[D000]               lea  ax, [namein]
   3708 0000237C 50                       push ax
-  3709 0000237D E80E0E                   call strcpy
+  3709 0000237D E81A0E                   call strcpy
   3710 00002380 83C404                   add  sp, 4
   3711 00002383 68[0825]                 push getarg_1
   3712 00002386 8D06[D000]               lea  ax, [namein]
   3713 0000238A 50                       push ax
-  3714 0000238B E8C10E                   call strcat1
+  3714 0000238B E8CD0E                   call strcat1
   3715 0000238E 83C404                   add  sp, 4
   3716                                  
   3717                                  ;-21   strcpy(namelst,argv); strcat1(namelst,".LST");
@@ -3719,12 +3719,12 @@
   3719 00002391 FF36[540E]               push word [argv]
   3720 00002395 8D06[1301]               lea  ax, [namelst]
   3721 00002399 50                       push ax
-  3722 0000239A E8F10D                   call strcpy
+  3722 0000239A E8FD0D                   call strcpy
   3723 0000239D 83C404                   add  sp, 4
   3724 000023A0 68[0B25]                 push getarg_2
   3725 000023A3 8D06[1301]               lea  ax, [namelst]
   3726 000023A7 50                       push ax
-  3727 000023A8 E8A40E                   call strcat1
+  3727 000023A8 E8B00E                   call strcat1
   3728 000023AB 83C404                   add  sp, 4
   3729                                  
   3730                                  ;-22   strcpy(namebin,argv); strcat1(namebin,".COM");
@@ -3732,12 +3732,12 @@
   3732 000023AE FF36[540E]               push word [argv]
   3733 000023B2 8D06[5601]               lea  ax, [namebin]
   3734 000023B6 50                       push ax
-  3735 000023B7 E8D40D                   call strcpy
+  3735 000023B7 E8E00D                   call strcpy
   3736 000023BA 83C404                   add  sp, 4
   3737 000023BD 68[1025]                 push getarg_3
   3738 000023C0 8D06[5601]               lea  ax, [namebin]
   3739 000023C4 50                       push ax
-  3740 000023C5 E8870E                   call strcat1
+  3740 000023C5 E8930E                   call strcat1
   3741 000023C8 83C404                   add  sp, 4
   3742                                  
   3743                                  ;-23 
@@ -3761,7 +3761,7 @@
   3761                                  
   3762 000023EF 8D06[D000]               lea  ax, [namein]
   3763 000023F3 50                       push ax
-  3764 000023F4 E87D0E                   call openR
+  3764 000023F4 E8890E                   call openR
   3765 000023F7 83C402                   add  sp, 2
   3766 000023FA A3[9901]                 mov word [asm_fd], ax
   3767                                  
@@ -3771,14 +3771,14 @@
   3771 00002400 08C0                     or  al, al
   3772 00002402 0F841C00                 je @@getarg132
   3773 00002406 68[1525]                 push getarg_4
-  3774 00002409 E8E60C                   call cputs
+  3774 00002409 E8F20C                   call cputs
   3775 0000240C 83C402                   add  sp, 2
   3776 0000240F 8D06[D000]               lea  ax, [namein]
   3777 00002413 50                       push ax
-  3778 00002414 E8DB0C                   call cputs
+  3778 00002414 E8E70C                   call cputs
   3779 00002417 83C402                   add  sp, 2
   3780 0000241A 6A01                     push 1
-  3781 0000241C E8AE0E                   call exitR
+  3781 0000241C E8BA0E                   call exitR
   3782 0000241F 83C402                   add  sp, 2
   3783                                  
   3784                                  ;-28   lst_fd=creatR(namelst);
@@ -3786,7 +3786,7 @@
   3786                                  @@getarg132:
   3787 00002422 8D06[1301]               lea  ax, [namelst]
   3788 00002426 50                       push ax
-  3789 00002427 E8590E                   call creatR
+  3789 00002427 E8650E                   call creatR
   3790 0000242A 83C402                   add  sp, 2
   3791 0000242D A3[9B01]                 mov word [lst_fd], ax
   3792                                  
@@ -3796,14 +3796,14 @@
   3796 00002433 08C0                     or  al, al
   3797 00002435 0F841C00                 je @@getarg133
   3798 00002439 68[2B25]                 push getarg_5
-  3799 0000243C E8B30C                   call cputs
+  3799 0000243C E8BF0C                   call cputs
   3800 0000243F 83C402                   add  sp, 2
   3801 00002442 8D06[1301]               lea  ax, [namelst]
   3802 00002446 50                       push ax
-  3803 00002447 E8A80C                   call cputs
+  3803 00002447 E8B40C                   call cputs
   3804 0000244A 83C402                   add  sp, 2
   3805 0000244D 6A02                     push 2
-  3806 0000244F E87B0E                   call exitR
+  3806 0000244F E8870E                   call exitR
   3807 00002452 83C402                   add  sp, 2
   3808                                  
   3809                                  ;-30   bin_fd=creatR(namebin);
@@ -3811,7 +3811,7 @@
   3811                                  @@getarg133:
   3812 00002455 8D06[5601]               lea  ax, [namebin]
   3813 00002459 50                       push ax
-  3814 0000245A E8260E                   call creatR
+  3814 0000245A E8320E                   call creatR
   3815 0000245D 83C402                   add  sp, 2
   3816 00002460 A3[9D01]                 mov word [bin_fd], ax
   3817                                  
@@ -3821,14 +3821,14 @@
   3821 00002466 08C0                     or  al, al
   3822 00002468 0F841C00                 je @@getarg134
   3823 0000246C 68[4225]                 push getarg_6
-  3824 0000246F E8800C                   call cputs
+  3824 0000246F E88C0C                   call cputs
   3825 00002472 83C402                   add  sp, 2
   3826 00002475 8D06[5601]               lea  ax, [namebin]
   3827 00002479 50                       push ax
-  3828 0000247A E8750C                   call cputs
+  3828 0000247A E8810C                   call cputs
   3829 0000247D 83C402                   add  sp, 2
   3830 00002480 6A02                     push 2
-  3831 00002482 E8480E                   call exitR
+  3831 00002482 E8540E                   call exitR
   3832 00002485 83C402                   add  sp, 2
   3833                                  
   3834                                  ;-32   
@@ -4024,7 +4024,7 @@
   4024 000025D2 8A46FA                   mov al, byte [bp-6]
   4025 000025D5 B400                     mov ah, 0
   4026 000025D7 50                       push ax
-  4027 000025D8 E8CF0C                   call fputcR
+  4027 000025D8 E8DB0C                   call fputcR
   4028 000025DB 83C404                   add  sp, 4
   4029                                  
   4030                                  ;-64     i++;
@@ -4063,25 +4063,25 @@
   4063                                  ;  200 var sign word    67 NULL bp+4    n;
   4064 00002622 C8000000                 ENTER  0,0
   4065 00002626 FF36[9901]               push word [asm_fd]
-  4066 0000262A E8920C                   call fcloseR
+  4066 0000262A E89E0C                   call fcloseR
   4067 0000262D 83C402                   add  sp, 2
   4068                                  
   4069                                  ;-69   fcloseR(lst_fd);
   4070                                  
   4071 00002630 FF36[9B01]               push word [lst_fd]
-  4072 00002634 E8880C                   call fcloseR
+  4072 00002634 E8940C                   call fcloseR
   4073 00002637 83C402                   add  sp, 2
   4074                                  
   4075                                  ;-70   fcloseR(bin_fd);
   4076                                  
   4077 0000263A FF36[9D01]               push word [bin_fd]
-  4078 0000263E E87E0C                   call fcloseR
+  4078 0000263E E88A0C                   call fcloseR
   4079 00002641 83C402                   add  sp, 2
   4080                                  
   4081                                  ;-71   exitR(n);
   4082                                  
   4083 00002644 FF7604                   push word [bp+4]
-  4084 00002647 E8830C                   call exitR
+  4084 00002647 E88F0C                   call exitR
   4085 0000264A 83C402                   add  sp, 2
   4086                                  
   4087                                  ;-72 }
@@ -4629,7 +4629,7 @@
   4629                                  
   4630                                  ;-18         return;
   4631                                  
-  4632 000028AA E9CC02                   jmp @@retn
+  4632 000028AA E9E402                   jmp @@retn
   4633                                  
   4634                                  ;-19     }
   4635                                  
@@ -4646,11 +4646,11 @@
   4646                                  
   4647                                  ;-22         getOpL();
   4648                                  
-  4649 000028B6 E83704                   call getOpL
+  4649 000028B6 E84304                   call getOpL
   4650                                  
   4651                                  ;-23         checkOpL();        
   4652                                  
-  4653 000028B9 E82F03                   call checkOpL
+  4653 000028B9 E84703                   call checkOpL
   4654                                  
   4655                                  ;-24         if (Code2 <= 1) {//inc,dec
   4656                                  
@@ -4677,7 +4677,7 @@
   4677 000028E2 50                       push ax
   4678 000028E3 E8A0FD                   call genCode2
   4679 000028E6 83C404                   add  sp, 4
-  4680 000028E9 E98D02                   jmp @@retn
+  4680 000028E9 E9A502                   jmp @@retn
   4681                                  
   4682                                  ;-27             }
   4683                                  
@@ -4728,7 +4728,7 @@
   4728                                  
   4729                                  ;-35         return;
   4730                                  
-  4731 0000291C E95A02                   jmp @@retn
+  4731 0000291C E97202                   jmp @@retn
   4732                                  
   4733                                  ;-36     }
   4734                                  
@@ -4745,7 +4745,7 @@
   4745                                  
   4746                                  ;-39         check2Ops();    //setwflag not applicable
   4747                                  
-  4748 00002928 E87303                   call check2Ops
+  4748 00002928 E88B03                   call check2Ops
   4749                                  
   4750                                  ;-40         if (R1Type != WORD) reg16error();//only r16
   4751                                  
@@ -4801,7 +4801,7 @@
   4801                                  
   4802                                  ;-47         return;
   4803                                  
-  4804 00002976 E90002                   jmp @@retn
+  4804 00002976 E91802                   jmp @@retn
   4805                                  
   4806                                  ;-48     }
   4807                                  
@@ -4818,7 +4818,7 @@
   4818                                  
   4819                                  ;-51         check2Ops();    
   4820                                  
-  4821 00002982 E81903                   call check2Ops
+  4821 00002982 E83103                   call check2Ops
   4822                                  
   4823                                  ;-52         if (Op2 == IMM) {//second operand is imm     
   4824                                  
@@ -4828,7 +4828,7 @@
   4828                                  
   4829                                  ;-53             setsflag();   
   4830                                  
-  4831 0000298E E80207                   call setsflag
+  4831 0000298E E80E07                   call setsflag
   4832                                  
   4833                                  ;-54             if (Op == REG) {                
   4834                                  
@@ -4872,7 +4872,7 @@
   4872                                  
   4873                                  ;-61                         return;
   4874                                  
-  4875 000029C8 E9AE01                   jmp @@retn
+  4875 000029C8 E9C601                   jmp @@retn
   4876                                  
   4877                                  ;-62                     }
   4878                                  
@@ -4917,7 +4917,7 @@
   4917                                  
   4918                                  ;-70             return;     
   4919                                  
-  4920 000029EE E98801                   jmp @@retn
+  4920 000029EE E9A001                   jmp @@retn
   4921                                  
   4922                                  ;-71         }  
   4923                                  
@@ -4968,7 +4968,7 @@
   4968                                  
   4969                                  ;-79                 return;    
   4970                                  
-  4971 00002A2E E94801                   jmp @@retn
+  4971 00002A2E E96001                   jmp @@retn
   4972                                  
   4973                                  ;-80             }
   4974                                  
@@ -5002,7 +5002,7 @@
   5002                                  
   5003                                  ;-85             return;            
   5004                                  
-  5005 00002A52 E92401                   jmp @@retn
+  5005 00002A52 E93C01                   jmp @@retn
   5006                                  
   5007                                  ;-86         }          
   5008                                  
@@ -5014,7 +5014,7 @@
   5014                                  
   5015                                  ;-88         return;
   5016                                  
-  5017 00002A58 E91E01                   jmp @@retn
+  5017 00002A58 E93601                   jmp @@retn
   5018                                  
   5019                                  ;-89     }
   5020                                  
@@ -5027,7 +5027,7 @@
   5027                                  @@process172:
   5028 00002A5B A0[AE01]                 mov al, [CodeType]
   5029 00002A5E 3C05                     cmp al, 5
-  5030 00002A60 0F85AE00                 jne @@process180
+  5030 00002A60 0F85C600                 jne @@process180
   5031                                  
   5032                                  ;-92         dflag=0;
   5033                                  
@@ -5036,7 +5036,7 @@
   5036                                  
   5037                                  ;-93         check2Ops();    
   5038                                  
-  5039 00002A6D E82E02                   call check2Ops
+  5039 00002A6D E84602                   call check2Ops
   5040                                  
   5041                                  ;-94 /*    prs("\n Op:"); printhex8a(Op);
   5042                                  
@@ -5047,1192 +5047,1192 @@
   5047                                  ;-96     prs(", R1No:"); printhex8a(R1No);
   5048                                  
   5049                                  
-  5050                                  ;-97     prs(", R2No:"); printhex8a(R2No);   */    
+  5050                                  ;-97     prs(", R2No:"); printhex8a(R2No);   */  
   5051                                  
   5052                                  
-  5053                                  ;-98         if (Op2 == IMM) {// r,i     
+  5053                                  ;-98         if (Op2 == ADR) {
   5054                                  
   5055 00002A70 A0[AD01]                 mov al, [Op2]
-  5056 00002A73 3C01                     cmp al, 1
-  5057 00002A75 0F855400                 jne @@process181
+  5056 00002A73 3C03                     cmp al, 3
+  5057 00002A75 0F850F00                 jne @@process181
   5058                                  
-  5059                                  ;-99             if (Op == REG) {               
+  5059                                  ;-99             imme=disp;
   5060                                  
-  5061 00002A79 A0[AC01]                 mov al, [Op]
-  5062 00002A7C 3C02                     cmp al, 2
-  5063 00002A7E 0F852500                 jne @@process182
-  5064                                  
-  5065                                  ;-100                 c = wflag << 3;   
-  5066                                  
-  5067 00002A82 A0[B701]                 mov al, [wflag]
-  5068 00002A85 C0E003                   shl al, 3
-  5069 00002A88 8846FE                   mov byte [bp-2], al
+  5061 00002A79 A1[BC01]                 mov ax, [disp]
+  5062 00002A7C A3[BE01]                 mov word [imme], ax
+  5063                                  
+  5064                                  ;-100             Op2=IMM;//continue with IMM    
+  5065                                  
+  5066 00002A7F 66B801000000             mov eax, 1
+  5067 00002A85 A2[AD01]                 mov byte [Op2], al
+  5068                                  
+  5069                                  ;-101         }  
   5070                                  
-  5071                                  ;-101                 c += 0xB0;                                     
-  5072                                  
-  5073 00002A8B 8046FEB0                 add  byte [bp-2], 176
-  5074                                  
-  5075                                  ;-102                 genCode2(c, R1No);   
-  5076                                  
-  5077 00002A8F A0[B301]                 mov al, byte [R1No]
-  5078 00002A92 B400                     mov ah, 0
-  5079 00002A94 50                       push ax
-  5080 00002A95 8A46FE                   mov al, byte [bp-2]
-  5081 00002A98 B400                     mov ah, 0
-  5082 00002A9A 50                       push ax
-  5083 00002A9B E8E8FB                   call genCode2
-  5084 00002A9E 83C404                   add  sp, 4
-  5085                                  
-  5086                                  ;-103                 genImmediate();
-  5087                                  
-  5088 00002AA1 E8C0FD                   call genImmediate
-  5089                                  
-  5090                                  ;-104                 return; 
-  5091                                  
-  5092 00002AA4 E9D200                   jmp @@retn
-  5093                                  
-  5094                                  ;-105             }
-  5095                                  
+  5071                                  
+  5072                                  ;-102         if (Op2 == IMM) {// r,i     
+  5073                                  
+  5074                                  @@process181:
+  5075 00002A88 A0[AD01]                 mov al, [Op2]
+  5076 00002A8B 3C01                     cmp al, 1
+  5077 00002A8D 0F855400                 jne @@process182
+  5078                                  
+  5079                                  ;-103             if (Op == REG) {               
+  5080                                  
+  5081 00002A91 A0[AC01]                 mov al, [Op]
+  5082 00002A94 3C02                     cmp al, 2
+  5083 00002A96 0F852500                 jne @@process183
+  5084                                  
+  5085                                  ;-104                 c = wflag << 3;   
+  5086                                  
+  5087 00002A9A A0[B701]                 mov al, [wflag]
+  5088 00002A9D C0E003                   shl al, 3
+  5089 00002AA0 8846FE                   mov byte [bp-2], al
+  5090                                  
+  5091                                  ;-105                 c += 0xB0;                                     
+  5092                                  
+  5093 00002AA3 8046FEB0                 add  byte [bp-2], 176
+  5094                                  
+  5095                                  ;-106                 genCode2(c, R1No);   
   5096                                  
-  5097                                  ;-106             if (Op == MEM) {// m,i  
-  5098                                  
-  5099                                  @@process182:
-  5100 00002AA7 A0[AC01]                 mov al, [Op]
-  5101 00002AAA 3C04                     cmp al, 4
-  5102 00002AAC 0F851700                 jne @@process183
-  5103                                  
-  5104                                  ;-107                 genCodeW(0xC6);
+  5097 00002AA7 A0[B301]                 mov al, byte [R1No]
+  5098 00002AAA B400                     mov ah, 0
+  5099 00002AAC 50                       push ax
+  5100 00002AAD 8A46FE                   mov al, byte [bp-2]
+  5101 00002AB0 B400                     mov ah, 0
+  5102 00002AB2 50                       push ax
+  5103 00002AB3 E8D0FB                   call genCode2
+  5104 00002AB6 83C404                   add  sp, 4
   5105                                  
-  5106 00002AB0 68C600                   push 198
-  5107 00002AB3 E8EBFB                   call genCodeW
-  5108 00002AB6 83C402                   add  sp, 2
+  5106                                  ;-107                 genImmediate();
+  5107                                  
+  5108 00002AB9 E8A8FD                   call genImmediate
   5109                                  
-  5110                                  ;-108                 writeEA( 0 );
+  5110                                  ;-108                 return; 
   5111                                  
-  5112 00002AB9 6A00                     push 0
-  5113 00002ABB E877FC                   call writeEA
-  5114 00002ABE 83C402                   add  sp, 2
+  5112 00002ABC E9D200                   jmp @@retn
+  5113                                  
+  5114                                  ;-109             }
   5115                                  
-  5116                                  ;-109                 genImmediate();
-  5117                                  
-  5118 00002AC1 E8A0FD                   call genImmediate
-  5119                                  
-  5120                                  ;-110                 return;  
-  5121                                  
-  5122 00002AC4 E9B200                   jmp @@retn
+  5116                                  
+  5117                                  ;-110             if (Op == MEM) {// m,i  
+  5118                                  
+  5119                                  @@process183:
+  5120 00002ABF A0[AC01]                 mov al, [Op]
+  5121 00002AC2 3C04                     cmp al, 4
+  5122 00002AC4 0F851700                 jne @@process184
   5123                                  
-  5124                                  ;-111             }
+  5124                                  ;-111                 genCodeW(0xC6);
   5125                                  
-  5126                                  
-  5127                                  ;-112             regmemerror();
-  5128                                  
-  5129                                  @@process183:
-  5130 00002AC7 E883F7                   call regmemerror
+  5126 00002AC8 68C600                   push 198
+  5127 00002ACB E8D3FB                   call genCodeW
+  5128 00002ACE 83C402                   add  sp, 2
+  5129                                  
+  5130                                  ;-112                 writeEA( 0 );
   5131                                  
-  5132                                  ;-113             return;
-  5133                                  
-  5134 00002ACA E9AC00                   jmp @@retn
+  5132 00002AD1 6A00                     push 0
+  5133 00002AD3 E85FFC                   call writeEA
+  5134 00002AD6 83C402                   add  sp, 2
   5135                                  
-  5136                                  ;-114         }      
+  5136                                  ;-113                 genImmediate();
   5137                                  
-  5138                                  
-  5139                                  ;-115         if (R1Type == SEGREG) ChangeDirection();//sreg,rm
-  5140                                  
-  5141                                  @@process181:
-  5142 00002ACD A0[B501]                 mov al, [R1Type]
-  5143 00002AD0 3C04                     cmp al, 4
-  5144 00002AD2 0F850300                 jne @@process184
-  5145 00002AD6 E8CD00                   call ChangeDirection
+  5138 00002AD9 E888FD                   call genImmediate
+  5139                                  
+  5140                                  ;-114                 return;  
+  5141                                  
+  5142 00002ADC E9B200                   jmp @@retn
+  5143                                  
+  5144                                  ;-115             }
+  5145                                  
   5146                                  
-  5147                                  ;-116         if (R2Type == SEGREG) {//rm,sreg
+  5147                                  ;-116             regmemerror();
   5148                                  
   5149                                  @@process184:
-  5150 00002AD9 A0[B401]                 mov al, [R2Type]
-  5151 00002ADC 3C04                     cmp al, 4
-  5152 00002ADE 0F852A00                 jne @@process185
+  5150 00002ADF E86BF7                   call regmemerror
+  5151                                  
+  5152                                  ;-117             return;
   5153                                  
-  5154                                  ;-117             if (OpSize != WORD) reg16error();
+  5154 00002AE2 E9AC00                   jmp @@retn
   5155                                  
-  5156 00002AE2 A0[B601]                 mov al, [OpSize]
-  5157 00002AE5 3C02                     cmp al, 2
-  5158 00002AE7 0F840300                 je  @@process186
-  5159 00002AEB E889F7                   call reg16error
+  5156                                  ;-118         }      
+  5157                                  
+  5158                                  
+  5159                                  ;-119         if (R1Type == SEGREG) ChangeDirection();//sreg,rm
   5160                                  
-  5161                                  ;-118                 genCode2(0x8C, dflag);
-  5162                                  
-  5163                                  @@process186:
-  5164 00002AEE A0[B801]                 mov al, byte [dflag]
-  5165 00002AF1 B400                     mov ah, 0
-  5166 00002AF3 50                       push ax
-  5167 00002AF4 688C00                   push 140
-  5168 00002AF7 E88CFB                   call genCode2
-  5169 00002AFA 83C404                   add  sp, 4
-  5170                                  
-  5171                                  ;-119                 writeEA(R2No);
-  5172                                  
-  5173 00002AFD A0[B201]                 mov al, byte [R2No]
-  5174 00002B00 B400                     mov ah, 0
-  5175 00002B02 50                       push ax
-  5176 00002B03 E82FFC                   call writeEA
-  5177 00002B06 83C402                   add  sp, 2
-  5178                                  
-  5179                                  ;-120                 return;   
+  5161                                  @@process182:
+  5162 00002AE5 A0[B501]                 mov al, [R1Type]
+  5163 00002AE8 3C04                     cmp al, 4
+  5164 00002AEA 0F850300                 jne @@process185
+  5165 00002AEE E8CD00                   call ChangeDirection
+  5166                                  
+  5167                                  ;-120         if (R2Type == SEGREG) {//rm,sreg
+  5168                                  
+  5169                                  @@process185:
+  5170 00002AF1 A0[B401]                 mov al, [R2Type]
+  5171 00002AF4 3C04                     cmp al, 4
+  5172 00002AF6 0F852A00                 jne @@process186
+  5173                                  
+  5174                                  ;-121             if (OpSize != WORD) reg16error();
+  5175                                  
+  5176 00002AFA A0[B601]                 mov al, [OpSize]
+  5177 00002AFD 3C02                     cmp al, 2
+  5178 00002AFF 0F840300                 je  @@process187
+  5179 00002B03 E871F7                   call reg16error
   5180                                  
-  5181 00002B09 E96D00                   jmp @@retn
+  5181                                  ;-122                 genCode2(0x8C, dflag);
   5182                                  
-  5183                                  ;-121         }          
-  5184                                  
-  5185                                  
-  5186                                  ;-122 /*        if (R1Type == SEGREG) {//sreg,rm
-  5187                                  
-  5188                                  
-  5189                                  ;-123             if (OpSize != WORD) reg16error();
+  5183                                  @@process187:
+  5184 00002B06 A0[B801]                 mov al, byte [dflag]
+  5185 00002B09 B400                     mov ah, 0
+  5186 00002B0B 50                       push ax
+  5187 00002B0C 688C00                   push 140
+  5188 00002B0F E874FB                   call genCode2
+  5189 00002B12 83C404                   add  sp, 4
   5190                                  
-  5191                                  
-  5192                                  ;-124                 genCode8(0x8E);
-  5193                                  
-  5194                                  
-  5195                                  ;-125                 writeEA(R1No);
-  5196                                  
-  5197                                  
-  5198                                  ;-126                 return;   
-  5199                                  
+  5191                                  ;-123                 writeEA(R2No);
+  5192                                  
+  5193 00002B15 A0[B201]                 mov al, byte [R2No]
+  5194 00002B18 B400                     mov ah, 0
+  5195 00002B1A 50                       push ax
+  5196 00002B1B E817FC                   call writeEA
+  5197 00002B1E 83C402                   add  sp, 2
+  5198                                  
+  5199                                  ;-124                 return;   
   5200                                  
-  5201                                  ;-127         }    */      
+  5201 00002B21 E96D00                   jmp @@retn
   5202                                  
-  5203                                  
-  5204                                  ;-128         syntaxerror();
+  5203                                  ;-125         }          
+  5204                                  
   5205                                  
-  5206                                  @@process185:
-  5207 00002B0C E8B7F7                   call syntaxerror
+  5206                                  ;-126          
+  5207                                  
   5208                                  
-  5209                                  ;-129         return;
+  5209                                  ;-127          
   5210                                  
-  5211 00002B0F E96700                   jmp @@retn
-  5212                                  
-  5213                                  ;-130     }    
-  5214                                  
-  5215                                  
-  5216                                  ;-131     
-  5217                                  
+  5211                                  
+  5212                                  ;-128         syntaxerror();
+  5213                                  
+  5214                                  @@process186:
+  5215 00002B24 E89FF7                   call syntaxerror
+  5216                                  
+  5217                                  ;-129         return;
   5218                                  
-  5219                                  ;-132     if (CodeType ==  8) {//ret,retf
+  5219 00002B27 E96700                   jmp @@retn
   5220                                  
-  5221                                  @@process180:
-  5222 00002B12 A0[AE01]                 mov al, [CodeType]
-  5223 00002B15 3C08                     cmp al, 8
-  5224 00002B17 0F853100                 jne @@process187
+  5221                                  ;-130     }    
+  5222                                  
+  5223                                  
+  5224                                  ;-131     
   5225                                  
-  5226                                  ;-133         if (TokeType == DIGIT) {
-  5227                                  
-  5228 00002B1B A0[AB01]                 mov al, [TokeType]
-  5229 00002B1E 3C01                     cmp al, 1
-  5230 00002B20 0F851900                 jne @@process188
-  5231                                  
-  5232                                  ;-134             genCode8(Code2);
+  5226                                  
+  5227                                  ;-132     if (CodeType ==  8) {//ret,retf
+  5228                                  
+  5229                                  @@process180:
+  5230 00002B2A A0[AE01]                 mov al, [CodeType]
+  5231 00002B2D 3C08                     cmp al, 8
+  5232 00002B2F 0F853100                 jne @@process188
   5233                                  
-  5234 00002B24 A0[B001]                 mov al, byte [Code2]
-  5235 00002B27 B400                     mov ah, 0
-  5236 00002B29 50                       push ax
-  5237 00002B2A E890FB                   call genCode8
-  5238 00002B2D 83C402                   add  sp, 2
+  5234                                  ;-133         if (TokeType == DIGIT) {
+  5235                                  
+  5236 00002B33 A0[AB01]                 mov al, [TokeType]
+  5237 00002B36 3C01                     cmp al, 1
+  5238 00002B38 0F851900                 jne @@process189
   5239                                  
-  5240                                  ;-135             genCode16(SymbolInt);
+  5240                                  ;-134             genCode8(Code2);
   5241                                  
-  5242 00002B30 FF36[4D00]               push word [SymbolInt]
-  5243 00002B34 E8DDFB                   call genCode16
-  5244 00002B37 83C402                   add  sp, 2
-  5245                                  
-  5246                                  ;-136             return;
+  5242 00002B3C A0[B001]                 mov al, byte [Code2]
+  5243 00002B3F B400                     mov ah, 0
+  5244 00002B41 50                       push ax
+  5245 00002B42 E878FB                   call genCode8
+  5246 00002B45 83C402                   add  sp, 2
   5247                                  
-  5248 00002B3A E93C00                   jmp @@retn
+  5248                                  ;-135             genCode16(SymbolInt);
   5249                                  
-  5250                                  ;-137         }
-  5251                                  
-  5252                                  
-  5253                                  ;-138         genCode8(Code1); 
-  5254                                  
-  5255                                  @@process188:
-  5256 00002B3D A0[AF01]                 mov al, byte [Code1]
-  5257 00002B40 B400                     mov ah, 0
-  5258 00002B42 50                       push ax
-  5259 00002B43 E877FB                   call genCode8
-  5260 00002B46 83C402                   add  sp, 2
-  5261                                  
-  5262                                  ;-139         return;
-  5263                                  
-  5264 00002B49 E92D00                   jmp @@retn
-  5265                                  
-  5266                                  ;-140     }
-  5267                                  
-  5268                                  
-  5269                                  ;-141 
-  5270                                  
+  5250 00002B48 FF36[4D00]               push word [SymbolInt]
+  5251 00002B4C E8C5FB                   call genCode16
+  5252 00002B4F 83C402                   add  sp, 2
+  5253                                  
+  5254                                  ;-136             return;
+  5255                                  
+  5256 00002B52 E93C00                   jmp @@retn
+  5257                                  
+  5258                                  ;-137         }
+  5259                                  
+  5260                                  
+  5261                                  ;-138         genCode8(Code1); 
+  5262                                  
+  5263                                  @@process189:
+  5264 00002B55 A0[AF01]                 mov al, byte [Code1]
+  5265 00002B58 B400                     mov ah, 0
+  5266 00002B5A 50                       push ax
+  5267 00002B5B E85FFB                   call genCode8
+  5268 00002B5E 83C402                   add  sp, 2
+  5269                                  
+  5270                                  ;-139         return;
   5271                                  
-  5272                                  ;-142     if (CodeType==101) {// ORG nn
+  5272 00002B61 E92D00                   jmp @@retn
   5273                                  
-  5274                                  @@process187:
-  5275 00002B4C A0[AE01]                 mov al, [CodeType]
-  5276 00002B4F 3C65                     cmp al, 101
-  5277 00002B51 0F851B00                 jne @@process189
+  5274                                  ;-140     }
+  5275                                  
+  5276                                  
+  5277                                  ;-141 
   5278                                  
-  5279                                  ;-143         if (TokeType != DIGIT) error1("only digit allowed");
-  5280                                  
-  5281 00002B55 A0[AB01]                 mov al, [TokeType]
-  5282 00002B58 3C01                     cmp al, 1
-  5283 00002B5A 0F840900                 je  @@process190
-  5284 00002B5E 68[7B2B]                 push process_0
-  5285 00002B61 E8A3F5                   call error1
-  5286 00002B64 83C402                   add  sp, 2
-  5287                                  
-  5288                                  ;-144         PC=SymbolInt;
-  5289                                  
-  5290                                  @@process190:
-  5291 00002B67 A1[4D00]                 mov ax, [SymbolInt]
-  5292 00002B6A A3[A601]                 mov word [PC], ax
-  5293                                  
-  5294                                  ;-145         return;
+  5279                                  
+  5280                                  ;-142     if (CodeType==101) {// ORG nn
+  5281                                  
+  5282                                  @@process188:
+  5283 00002B64 A0[AE01]                 mov al, [CodeType]
+  5284 00002B67 3C65                     cmp al, 101
+  5285 00002B69 0F851B00                 jne @@process190
+  5286                                  
+  5287                                  ;-143         if (TokeType != DIGIT) error1("only digit allowed");
+  5288                                  
+  5289 00002B6D A0[AB01]                 mov al, [TokeType]
+  5290 00002B70 3C01                     cmp al, 1
+  5291 00002B72 0F840900                 je  @@process191
+  5292 00002B76 68[932B]                 push process_0
+  5293 00002B79 E88BF5                   call error1
+  5294 00002B7C 83C402                   add  sp, 2
   5295                                  
-  5296 00002B6D E90900                   jmp @@retn
+  5296                                  ;-144         PC=SymbolInt;
   5297                                  
-  5298                                  ;-146     }
-  5299                                  
-  5300                                  
-  5301                                  ;-147     error1("Command not implemented");
-  5302                                  
-  5303                                  @@process189:
-  5304 00002B70 68[8E2B]                 push process_1
-  5305 00002B73 E891F5                   call error1
-  5306 00002B76 83C402                   add  sp, 2
+  5298                                  @@process191:
+  5299 00002B7F A1[4D00]                 mov ax, [SymbolInt]
+  5300 00002B82 A3[A601]                 mov word [PC], ax
+  5301                                  
+  5302                                  ;-145         return;
+  5303                                  
+  5304 00002B85 E90900                   jmp @@retn
+  5305                                  
+  5306                                  ;-146     }
   5307                                  
-  5308                                  ;-148 }    
-  5309                                  
+  5308                                  
+  5309                                  ;-147     error1("Command not implemented");
   5310                                  
-  5311                                  ;-149      
-  5312                                  
-  5313                                  
-  5314                                  ;-150 int ChangeDirection() {
+  5311                                  @@process190:
+  5312 00002B88 68[A62B]                 push process_1
+  5313 00002B8B E879F5                   call error1
+  5314 00002B8E 83C402                   add  sp, 2
   5315                                  
-  5316 00002B79 C9                      @@retn: LEAVE
-  5317 00002B7A C3                       ret
-  5318                                  ; ENDP
-  5319 00002B7B 6F6E6C792064696769-     process_0 db "only digit allowed",0
-  5320 00002B84 7420616C6C6F776564-
-  5321 00002B8D 00                 
-  5322 00002B8E 436F6D6D616E64206E-     process_1 db "Command not implemented",0
-  5323 00002B97 6F7420696D706C656D-
-  5324 00002BA0 656E74656400       
-  5325                                  
-  5326                                  ChangeDirection:  ; *** PROC ***
-  5327                                  
-  5328                                  ;-151     char c;
-  5329                                  
-  5330                                  
-  5331                                  ;-152     c=Op;     Op    =Op2;    Op2   =c;
-  5332                                  
-  5333                                  ;Function : ChangeDirection, Number of local variables: 1
-  5334                                  ;   # type sign width line used address name   list of local variables
-  5335                                  ;  200 var sign byte   151 NULL bp-2    c;
-  5336 00002BA6 C8020000                 ENTER  2,0
-  5337 00002BAA A0[AC01]                 mov al, [Op]
-  5338 00002BAD 8846FE                   mov byte [bp-2], al
-  5339 00002BB0 A0[AD01]                 mov al, [Op2]
-  5340 00002BB3 A2[AC01]                 mov byte [Op], al
-  5341 00002BB6 8A46FE                   mov al, [bp-2]
-  5342 00002BB9 A2[AD01]                 mov byte [Op2], al
-  5343                                  
-  5344                                  ;-153     c=R1Type; R1Type=R2Type; R2Type=c;
-  5345                                  
-  5346 00002BBC A0[B501]                 mov al, [R1Type]
-  5347 00002BBF 8846FE                   mov byte [bp-2], al
-  5348 00002BC2 A0[B401]                 mov al, [R2Type]
-  5349 00002BC5 A2[B501]                 mov byte [R1Type], al
-  5350 00002BC8 8A46FE                   mov al, [bp-2]
-  5351 00002BCB A2[B401]                 mov byte [R2Type], al
-  5352                                  
-  5353                                  ;-154     c=R1No;   R1No  =R2No;   R2No  =c;
-  5354                                  
-  5355 00002BCE A0[B301]                 mov al, [R1No]
-  5356 00002BD1 8846FE                   mov byte [bp-2], al
-  5357 00002BD4 A0[B201]                 mov al, [R2No]
-  5358 00002BD7 A2[B301]                 mov byte [R1No], al
-  5359 00002BDA 8A46FE                   mov al, [bp-2]
-  5360 00002BDD A2[B201]                 mov byte [R2No], al
-  5361                                  
-  5362                                  ;-155     dflag=2;     
-  5363                                  
-  5364 00002BE0 66B802000000             mov eax, 2
-  5365 00002BE6 A2[B801]                 mov byte [dflag], al
-  5366                                  
-  5367                                  ;-156 }
-  5368                                  
+  5316                                  ;-148 }    
+  5317                                  
+  5318                                  
+  5319                                  ;-149      
+  5320                                  
+  5321                                  
+  5322                                  ;-150 int ChangeDirection() {
+  5323                                  
+  5324 00002B91 C9                      @@retn: LEAVE
+  5325 00002B92 C3                       ret
+  5326                                  ; ENDP
+  5327 00002B93 6F6E6C792064696769-     process_0 db "only digit allowed",0
+  5328 00002B9C 7420616C6C6F776564-
+  5329 00002BA5 00                 
+  5330 00002BA6 436F6D6D616E64206E-     process_1 db "Command not implemented",0
+  5331 00002BAF 6F7420696D706C656D-
+  5332 00002BB8 656E74656400       
+  5333                                  
+  5334                                  ChangeDirection:  ; *** PROC ***
+  5335                                  
+  5336                                  ;-151     char c;
+  5337                                  
+  5338                                  
+  5339                                  ;-152     c=Op;     Op    =Op2;    Op2   =c;
+  5340                                  
+  5341                                  ;Function : ChangeDirection, Number of local variables: 1
+  5342                                  ;   # type sign width line used address name   list of local variables
+  5343                                  ;  200 var sign byte   151 NULL bp-2    c;
+  5344 00002BBE C8020000                 ENTER  2,0
+  5345 00002BC2 A0[AC01]                 mov al, [Op]
+  5346 00002BC5 8846FE                   mov byte [bp-2], al
+  5347 00002BC8 A0[AD01]                 mov al, [Op2]
+  5348 00002BCB A2[AC01]                 mov byte [Op], al
+  5349 00002BCE 8A46FE                   mov al, [bp-2]
+  5350 00002BD1 A2[AD01]                 mov byte [Op2], al
+  5351                                  
+  5352                                  ;-153     c=R1Type; R1Type=R2Type; R2Type=c;
+  5353                                  
+  5354 00002BD4 A0[B501]                 mov al, [R1Type]
+  5355 00002BD7 8846FE                   mov byte [bp-2], al
+  5356 00002BDA A0[B401]                 mov al, [R2Type]
+  5357 00002BDD A2[B501]                 mov byte [R1Type], al
+  5358 00002BE0 8A46FE                   mov al, [bp-2]
+  5359 00002BE3 A2[B401]                 mov byte [R2Type], al
+  5360                                  
+  5361                                  ;-154     c=R1No;   R1No  =R2No;   R2No  =c;
+  5362                                  
+  5363 00002BE6 A0[B301]                 mov al, [R1No]
+  5364 00002BE9 8846FE                   mov byte [bp-2], al
+  5365 00002BEC A0[B201]                 mov al, [R2No]
+  5366 00002BEF A2[B301]                 mov byte [R1No], al
+  5367 00002BF2 8A46FE                   mov al, [bp-2]
+  5368 00002BF5 A2[B201]                 mov byte [R2No], al
   5369                                  
-  5370                                  ;-157      
+  5370                                  ;-155     dflag=2;     
   5371                                  
-  5372                                  
-  5373                                  ;-158 int checkOpL() {
-  5374 00002BE9 C9                       LEAVE
-  5375 00002BEA C3                       ret
-  5376                                  ; ENDP
+  5372 00002BF8 66B802000000             mov eax, 2
+  5373 00002BFE A2[B801]                 mov byte [dflag], al
+  5374                                  
+  5375                                  ;-156 }
+  5376                                  
   5377                                  
-  5378                                  checkOpL:  ; *** PROC ***
+  5378                                  ;-157      
   5379                                  
-  5380                                  ;-159     if (Op == ADR) implerror();
-  5381                                  
-  5382 00002BEB A0[AC01]                 mov al, [Op]
-  5383 00002BEE 3C03                     cmp al, 3
-  5384 00002BF0 0F850300                 jne @@checkOpL191
-  5385 00002BF4 E8E0F5                   call implerror
-  5386                                  
-  5387                                  ;-160     if (R2Type == SEGREG) {segregerror(); return;}//only move,push,pop
-  5388                                  
-  5389                                  @@checkOpL191:
-  5390 00002BF7 A0[B401]                 mov al, [R2Type]
-  5391 00002BFA 3C04                     cmp al, 4
-  5392 00002BFC 0F850600                 jne @@checkOpL192
-  5393 00002C00 E89CF6                   call segregerror
-  5394 00002C03 E95300                   jmp @@retn
-  5395                                  
-  5396                                  ;-161     setwflag();
-  5397                                  
-  5398                                  @@checkOpL192:
-  5399 00002C06 E80E04                   call setwflag
-  5400                                  
-  5401                                  ;-162     if (OpSize == 0) error1("no op size declared");
-  5402                                  
-  5403 00002C09 A0[B601]                 mov al, [OpSize]
-  5404 00002C0C 3C00                     cmp al, 0
-  5405 00002C0E 0F850900                 jne @@checkOpL193
-  5406 00002C12 68[5A2C]                 push checkOpL_0
-  5407 00002C15 E8EFF4                   call error1
-  5408 00002C18 83C402                   add  sp, 2
-  5409                                  
-  5410                                  ;-163     if (OpSize == R1Type) return;
-  5411                                  
-  5412                                  @@checkOpL193:
-  5413 00002C1B A0[B601]                 mov al, [OpSize]
-  5414 00002C1E 3A06[B501]               cmp al, [R1Type]
-  5415 00002C22 0F850300                 jne @@checkOpL194
-  5416 00002C26 E93000                   jmp @@retn
+  5380                                  
+  5381                                  ;-158 int checkOpL() {
+  5382 00002C01 C9                       LEAVE
+  5383 00002C02 C3                       ret
+  5384                                  ; ENDP
+  5385                                  
+  5386                                  checkOpL:  ; *** PROC ***
+  5387                                  
+  5388                                  ;-159     if (Op == ADR) implerror();
+  5389                                  
+  5390 00002C03 A0[AC01]                 mov al, [Op]
+  5391 00002C06 3C03                     cmp al, 3
+  5392 00002C08 0F850300                 jne @@checkOpL192
+  5393 00002C0C E8C8F5                   call implerror
+  5394                                  
+  5395                                  ;-160     if (R2Type == SEGREG) {segregerror(); return;}//only move,push,pop
+  5396                                  
+  5397                                  @@checkOpL192:
+  5398 00002C0F A0[B401]                 mov al, [R2Type]
+  5399 00002C12 3C04                     cmp al, 4
+  5400 00002C14 0F850600                 jne @@checkOpL193
+  5401 00002C18 E884F6                   call segregerror
+  5402 00002C1B E95300                   jmp @@retn
+  5403                                  
+  5404                                  ;-161     setwflag();
+  5405                                  
+  5406                                  @@checkOpL193:
+  5407 00002C1E E80204                   call setwflag
+  5408                                  
+  5409                                  ;-162     if (OpSize == 0) error1("no op size declared");
+  5410                                  
+  5411 00002C21 A0[B601]                 mov al, [OpSize]
+  5412 00002C24 3C00                     cmp al, 0
+  5413 00002C26 0F850900                 jne @@checkOpL194
+  5414 00002C2A 68[722C]                 push checkOpL_0
+  5415 00002C2D E8D7F4                   call error1
+  5416 00002C30 83C402                   add  sp, 2
   5417                                  
-  5418                                  ;-164     if (OpSize){
+  5418                                  ;-163     if (OpSize == R1Type) return;
   5419                                  
   5420                                  @@checkOpL194:
-  5421 00002C29 A0[B601]                 mov al, [OpSize]
-  5422 00002C2C 08C0                     or  al, al
-  5423 00002C2E 0F841500                 je @@checkOpL195
-  5424                                  
-  5425                                  ;-165         if (Op == MEM) return;
-  5426                                  
-  5427 00002C32 A0[AC01]                 mov al, [Op]
-  5428 00002C35 3C04                     cmp al, 4
-  5429 00002C37 0F850300                 jne @@checkOpL196
-  5430 00002C3B E91B00                   jmp @@retn
-  5431                                  
-  5432                                  ;-166         error1("Conflict OpSize and RegSize"); 
-  5433                                  
-  5434                                  @@checkOpL196:
-  5435 00002C3E 68[6E2C]                 push checkOpL_1
-  5436 00002C41 E8C3F4                   call error1
-  5437 00002C44 83C402                   add  sp, 2
-  5438                                  
-  5439                                  ;-167         }
-  5440                                  
+  5421 00002C33 A0[B601]                 mov al, [OpSize]
+  5422 00002C36 3A06[B501]               cmp al, [R1Type]
+  5423 00002C3A 0F850300                 jne @@checkOpL195
+  5424 00002C3E E93000                   jmp @@retn
+  5425                                  
+  5426                                  ;-164     if (OpSize){
+  5427                                  
+  5428                                  @@checkOpL195:
+  5429 00002C41 A0[B601]                 mov al, [OpSize]
+  5430 00002C44 08C0                     or  al, al
+  5431 00002C46 0F841500                 je @@checkOpL196
+  5432                                  
+  5433                                  ;-165         if (Op == MEM) return;
+  5434                                  
+  5435 00002C4A A0[AC01]                 mov al, [Op]
+  5436 00002C4D 3C04                     cmp al, 4
+  5437 00002C4F 0F850300                 jne @@checkOpL197
+  5438 00002C53 E91B00                   jmp @@retn
+  5439                                  
+  5440                                  ;-166         error1("Conflict OpSize and RegSize"); 
   5441                                  
-  5442                                  ;-168     if (R1Type==0) error1("no register defined");
-  5443                                  
-  5444                                  @@checkOpL195:
-  5445 00002C47 A0[B501]                 mov al, [R1Type]
-  5446 00002C4A 3C00                     cmp al, 0
-  5447 00002C4C 0F850900                 jne @@checkOpL197
-  5448 00002C50 68[8A2C]                 push checkOpL_2
-  5449 00002C53 E8B1F4                   call error1
-  5450 00002C56 83C402                   add  sp, 2
+  5442                                  @@checkOpL197:
+  5443 00002C56 68[862C]                 push checkOpL_1
+  5444 00002C59 E8ABF4                   call error1
+  5445 00002C5C 83C402                   add  sp, 2
+  5446                                  
+  5447                                  ;-167         }
+  5448                                  
+  5449                                  
+  5450                                  ;-168     if (R1Type==0) error1("no register defined");
   5451                                  
-  5452                                  ;-169 }
-  5453                                  
-  5454                                  @@checkOpL197:
-  5455                                  
-  5456                                  ;-170     
-  5457                                  
-  5458                                  
-  5459                                  ;-171 int check2Ops() {
-  5460                                  
-  5461                                  @@retn:
-  5462 00002C59 C3                       ret
-  5463                                  ; ENDP
-  5464 00002C5A 6E6F206F702073697A-     checkOpL_0 db "no op size declared",0
-  5465 00002C63 65206465636C617265-
-  5466 00002C6C 6400               
-  5467 00002C6E 436F6E666C69637420-     checkOpL_1 db "Conflict OpSize and RegSize",0
-  5468 00002C77 4F7053697A6520616E-
-  5469 00002C80 642052656753697A65-
-  5470 00002C89 00                 
-  5471 00002C8A 6E6F20726567697374-     checkOpL_2 db "no register defined",0
-  5472 00002C93 657220646566696E65-
-  5473 00002C9C 6400               
-  5474                                  
-  5475                                  check2Ops:  ; *** PROC ***
-  5476                                  
-  5477                                  ;-172     get2Ops();
-  5478                                  
-  5479 00002C9E E84000                   call get2Ops
-  5480                                  
-  5481                                  ;-173     if (Op ==   0) addrerror();
+  5452                                  @@checkOpL196:
+  5453 00002C5F A0[B501]                 mov al, [R1Type]
+  5454 00002C62 3C00                     cmp al, 0
+  5455 00002C64 0F850900                 jne @@checkOpL198
+  5456 00002C68 68[A22C]                 push checkOpL_2
+  5457 00002C6B E899F4                   call error1
+  5458 00002C6E 83C402                   add  sp, 2
+  5459                                  
+  5460                                  ;-169 }
+  5461                                  
+  5462                                  @@checkOpL198:
+  5463                                  
+  5464                                  ;-170     
+  5465                                  
+  5466                                  
+  5467                                  ;-171 int check2Ops() {
+  5468                                  
+  5469                                  @@retn:
+  5470 00002C71 C3                       ret
+  5471                                  ; ENDP
+  5472 00002C72 6E6F206F702073697A-     checkOpL_0 db "no op size declared",0
+  5473 00002C7B 65206465636C617265-
+  5474 00002C84 6400               
+  5475 00002C86 436F6E666C69637420-     checkOpL_1 db "Conflict OpSize and RegSize",0
+  5476 00002C8F 4F7053697A6520616E-
+  5477 00002C98 642052656753697A65-
+  5478 00002CA1 00                 
+  5479 00002CA2 6E6F20726567697374-     checkOpL_2 db "no register defined",0
+  5480 00002CAB 657220646566696E65-
+  5481 00002CB4 6400               
   5482                                  
-  5483 00002CA1 A0[AC01]                 mov al, [Op]
-  5484 00002CA4 3C00                     cmp al, 0
-  5485 00002CA6 0F850300                 jne @@check2Ops198
-  5486 00002CAA E8EBF4                   call addrerror
-  5487                                  
-  5488                                  ;-174     if (Op == ADR) invaloperror(); 
-  5489                                  
-  5490                                  @@check2Ops198:
-  5491 00002CAD A0[AC01]                 mov al, [Op]
-  5492 00002CB0 3C03                     cmp al, 3
-  5493 00002CB2 0F850300                 jne @@check2Ops199
-  5494 00002CB6 E859F5                   call invaloperror
+  5483                                  check2Ops:  ; *** PROC ***
+  5484                                  
+  5485                                  ;-172     get2Ops();
+  5486                                  
+  5487 00002CB6 E83400                   call get2Ops
+  5488                                  
+  5489                                  ;-173     if (Op ==   0) addrerror();
+  5490                                  
+  5491 00002CB9 A0[AC01]                 mov al, [Op]
+  5492 00002CBC 3C00                     cmp al, 0
+  5493 00002CBE 0F850300                 jne @@check2Ops199
+  5494 00002CC2 E8D3F4                   call addrerror
   5495                                  
-  5496                                  ;-175     if (Op == IMM) immeerror();   
+  5496                                  ;-174     if (Op == ADR) invaloperror(); 
   5497                                  
   5498                                  @@check2Ops199:
-  5499 00002CB9 A0[AC01]                 mov al, [Op]
-  5500 00002CBC 3C01                     cmp al, 1
-  5501 00002CBE 0F850300                 jne @@check2Ops200
-  5502 00002CC2 E8EDF4                   call immeerror
+  5499 00002CC5 A0[AC01]                 mov al, [Op]
+  5500 00002CC8 3C03                     cmp al, 3
+  5501 00002CCA 0F850300                 jne @@check2Ops200
+  5502 00002CCE E841F5                   call invaloperror
   5503                                  
-  5504                                  ;-176     if (Op2==   0) addrerror();
+  5504                                  ;-175     if (Op == IMM) immeerror();   
   5505                                  
   5506                                  @@check2Ops200:
-  5507 00002CC5 A0[AD01]                 mov al, [Op2]
-  5508 00002CC8 3C00                     cmp al, 0
-  5509 00002CCA 0F850300                 jne @@check2Ops201
-  5510 00002CCE E8C7F4                   call addrerror
+  5507 00002CD1 A0[AC01]                 mov al, [Op]
+  5508 00002CD4 3C01                     cmp al, 1
+  5509 00002CD6 0F850300                 jne @@check2Ops201
+  5510 00002CDA E8D5F4                   call immeerror
   5511                                  
-  5512                                  ;-177     if (Op2== ADR) invaloperror();          
+  5512                                  ;-176     if (Op2==   0) addrerror();
   5513                                  
   5514                                  @@check2Ops201:
-  5515 00002CD1 A0[AD01]                 mov al, [Op2]
-  5516 00002CD4 3C03                     cmp al, 3
-  5517 00002CD6 0F850300                 jne @@check2Ops202
-  5518 00002CDA E835F5                   call invaloperror
+  5515 00002CDD A0[AD01]                 mov al, [Op2]
+  5516 00002CE0 3C00                     cmp al, 0
+  5517 00002CE2 0F850300                 jne @@check2Ops202
+  5518 00002CE6 E8AFF4                   call addrerror
   5519                                  
-  5520                                  ;-178     setwflag();       
+  5520                                  ;-177 //    if (Op2== ADR) invaloperror();//allowed in mov           
   5521                                  
-  5522                                  @@check2Ops202:
-  5523 00002CDD E83703                   call setwflag
+  5522                                  
+  5523                                  ;-178     setwflag();       
   5524                                  
-  5525                                  ;-179 }    
-  5526                                  
+  5525                                  @@check2Ops202:
+  5526 00002CE9 E83703                   call setwflag
   5527                                  
-  5528                                  ;-180 int get2Ops() {
+  5528                                  ;-179 }    
   5529                                  
-  5530 00002CE0 C3                       ret
-  5531                                  ; ENDP
+  5530                                  
+  5531                                  ;-180 int get2Ops() {
   5532                                  
-  5533                                  get2Ops:  ; *** PROC ***
-  5534                                  
-  5535                                  ;-181     getOpL();
-  5536                                  
-  5537 00002CE1 E80C00                   call getOpL
-  5538                                  
-  5539                                  ;-182     need(',');    
-  5540                                  
-  5541 00002CE4 6A2C                     push 44
-  5542 00002CE6 E8F4E9                   call need
-  5543 00002CE9 83C402                   add  sp, 2
-  5544                                  
-  5545                                  ;-183     getOpR();         
-  5546                                  
-  5547 00002CEC E84D00                   call getOpR
-  5548                                  
-  5549                                  ;-184 } 
-  5550                                  
+  5533 00002CEC C3                       ret
+  5534                                  ; ENDP
+  5535                                  
+  5536                                  get2Ops:  ; *** PROC ***
+  5537                                  
+  5538                                  ;-181     getOpL();
+  5539                                  
+  5540 00002CED E80C00                   call getOpL
+  5541                                  
+  5542                                  ;-182     need(',');    
+  5543                                  
+  5544 00002CF0 6A2C                     push 44
+  5545 00002CF2 E8E8E9                   call need
+  5546 00002CF5 83C402                   add  sp, 2
+  5547                                  
+  5548                                  ;-183     getOpR();         
+  5549                                  
+  5550 00002CF8 E84D00                   call getOpR
   5551                                  
-  5552                                  ;-185         
+  5552                                  ;-184 } 
   5553                                  
   5554                                  
-  5555                                  ;-186 int getOpL() {
+  5555                                  ;-185         
   5556                                  
-  5557 00002CEF C3                       ret
-  5558                                  ; ENDP
+  5557                                  
+  5558                                  ;-186 int getOpL() {
   5559                                  
-  5560                                  getOpL:  ; *** PROC ***
-  5561                                  
-  5562                                  ;-187 //set: op=0,IMM,REG,ADR,MEM
-  5563                                  
+  5560 00002CFB C3                       ret
+  5561                                  ; ENDP
+  5562                                  
+  5563                                  getOpL:  ; *** PROC ***
   5564                                  
-  5565                                  ;-188     disp=0; imme=0; isDirect=1; 
+  5565                                  ;-187 //set: op=0,IMM,REG,ADR,MEM
   5566                                  
-  5567 00002CF0 66B800000000             mov eax, 0
-  5568 00002CF6 A3[BC01]                 mov word [disp], ax
-  5569 00002CF9 66B800000000             mov eax, 0
-  5570 00002CFF A3[BE01]                 mov word [imme], ax
-  5571 00002D02 66B801000000             mov eax, 1
-  5572 00002D08 A2[BB01]                 mov byte [isDirect], al
-  5573                                  
-  5574                                  ;-189     getOpR();
-  5575                                  
-  5576 00002D0B E82E00                   call getOpR
-  5577                                  
-  5578                                  ;-190     Op=Op2;         Op2=0;
-  5579                                  
-  5580 00002D0E A0[AD01]                 mov al, [Op2]
-  5581 00002D11 A2[AC01]                 mov byte [Op], al
-  5582 00002D14 66B800000000             mov eax, 0
-  5583 00002D1A A2[AD01]                 mov byte [Op2], al
-  5584                                  
-  5585                                  ;-191     R1No=R2No;      R2No=0;
-  5586                                  
-  5587 00002D1D A0[B201]                 mov al, [R2No]
-  5588 00002D20 A2[B301]                 mov byte [R1No], al
-  5589 00002D23 66B800000000             mov eax, 0
-  5590 00002D29 A2[B201]                 mov byte [R2No], al
-  5591                                  
-  5592                                  ;-192     R1Type=R2Type; R2Type=0; 
-  5593                                  
-  5594 00002D2C A0[B401]                 mov al, [R2Type]
-  5595 00002D2F A2[B501]                 mov byte [R1Type], al
-  5596 00002D32 66B800000000             mov eax, 0
-  5597 00002D38 A2[B401]                 mov byte [R2Type], al
-  5598                                  
-  5599                                  ;-193 }  
-  5600                                  
+  5567                                  
+  5568                                  ;-188     disp=0; imme=0; isDirect=1; 
+  5569                                  
+  5570 00002CFC 66B800000000             mov eax, 0
+  5571 00002D02 A3[BC01]                 mov word [disp], ax
+  5572 00002D05 66B800000000             mov eax, 0
+  5573 00002D0B A3[BE01]                 mov word [imme], ax
+  5574 00002D0E 66B801000000             mov eax, 1
+  5575 00002D14 A2[BB01]                 mov byte [isDirect], al
+  5576                                  
+  5577                                  ;-189     getOpR();
+  5578                                  
+  5579 00002D17 E82E00                   call getOpR
+  5580                                  
+  5581                                  ;-190     Op=Op2;         Op2=0;
+  5582                                  
+  5583 00002D1A A0[AD01]                 mov al, [Op2]
+  5584 00002D1D A2[AC01]                 mov byte [Op], al
+  5585 00002D20 66B800000000             mov eax, 0
+  5586 00002D26 A2[AD01]                 mov byte [Op2], al
+  5587                                  
+  5588                                  ;-191     R1No=R2No;      R2No=0;
+  5589                                  
+  5590 00002D29 A0[B201]                 mov al, [R2No]
+  5591 00002D2C A2[B301]                 mov byte [R1No], al
+  5592 00002D2F 66B800000000             mov eax, 0
+  5593 00002D35 A2[B201]                 mov byte [R2No], al
+  5594                                  
+  5595                                  ;-192     R1Type=R2Type; R2Type=0; 
+  5596                                  
+  5597 00002D38 A0[B401]                 mov al, [R2Type]
+  5598 00002D3B A2[B501]                 mov byte [R1Type], al
+  5599 00002D3E 66B800000000             mov eax, 0
+  5600 00002D44 A2[B401]                 mov byte [R2Type], al
   5601                                  
-  5602                                  ;-194 
+  5602                                  ;-193 }  
   5603                                  
   5604                                  
-  5605                                  ;-195 int getOpR() {
+  5605                                  ;-194 
   5606                                  
-  5607 00002D3B C3                       ret
-  5608                                  ; ENDP
+  5607                                  
+  5608                                  ;-195 int getOpR() {
   5609                                  
-  5610                                  getOpR:  ; *** PROC ***
-  5611                                  
-  5612                                  ;-196     Op2=getOp1();
-  5613                                  
-  5614 00002D3C E88900                   call getOp1
-  5615 00002D3F A2[AD01]                 mov byte [Op2], al
+  5610 00002D47 C3                       ret
+  5611                                  ; ENDP
+  5612                                  
+  5613                                  getOpR:  ; *** PROC ***
+  5614                                  
+  5615                                  ;-196     Op2=getOp1();
   5616                                  
-  5617                                  ;-197     if (isToken('[')) {Op2 = MEM; getMEM();    return;}
-  5618                                  
-  5619 00002D42 6A5B                     push 91
-  5620 00002D44 E868E9                   call isToken
-  5621 00002D47 83C402                   add  sp, 2
-  5622 00002D4A 08C0                     or  al, al
-  5623 00002D4C 0F840F00                 je @@getOpR203
-  5624 00002D50 66B804000000             mov eax, 4
-  5625 00002D56 A2[AD01]                 mov byte [Op2], al
-  5626 00002D59 E8F200                   call getMEM
-  5627 00002D5C E94F00                   jmp @@retn
-  5628                                  
-  5629                                  ;-198     if (Op2 == 0)     {invaloperror();         return;}
-  5630                                  
-  5631                                  @@getOpR203:
-  5632 00002D5F A0[AD01]                 mov al, [Op2]
-  5633 00002D62 3C00                     cmp al, 0
-  5634 00002D64 0F850600                 jne @@getOpR204
-  5635 00002D68 E8A7F4                   call invaloperror
-  5636 00002D6B E94000                   jmp @@retn
-  5637                                  
-  5638                                  ;-199     if (Op2 == IMM)   {imme=SymbolInt;         return;}
-  5639                                  
-  5640                                  @@getOpR204:
-  5641 00002D6E A0[AD01]                 mov al, [Op2]
-  5642 00002D71 3C01                     cmp al, 1
-  5643 00002D73 0F850900                 jne @@getOpR205
-  5644 00002D77 A1[4D00]                 mov ax, [SymbolInt]
-  5645 00002D7A A3[BE01]                 mov word [imme], ax
-  5646 00002D7D E92E00                   jmp @@retn
-  5647                                  
-  5648                                  ;-200     if (Op2 == REG)                            return;
-  5649                                  
-  5650                                  @@getOpR205:
-  5651 00002D80 A0[AD01]                 mov al, [Op2]
-  5652 00002D83 3C02                     cmp al, 2
-  5653 00002D85 0F850300                 jne @@getOpR206
-  5654 00002D89 E92200                   jmp @@retn
-  5655                                  
-  5656                                  ;-201     if (Op2 == ADR)   {disp=LabelAddr[LabelIx];return;}
-  5657                                  
-  5658                                  @@getOpR206:
-  5659 00002D8C A0[AD01]                 mov al, [Op2]
-  5660 00002D8F 3C03                     cmp al, 3
-  5661 00002D91 0F851000                 jne @@getOpR207
-  5662 00002D95 8B1E[7E06]               mov bx, [LabelIx]
-  5663 00002D99 D1E3                     shl bx, 1
-  5664 00002D9B 8B87[B405]               mov ax, [LabelAddr + bx]
-  5665 00002D9F A3[BC01]                 mov word [disp], ax
-  5666 00002DA2 E90900                   jmp @@retn
-  5667                                  
-  5668                                  ;-202     error1("Name of operand expected");
-  5669                                  
-  5670                                  @@getOpR207:
-  5671 00002DA5 68[AF2D]                 push getOpR_0
-  5672 00002DA8 E85CF3                   call error1
-  5673 00002DAB 83C402                   add  sp, 2
-  5674                                  
-  5675                                  ;-203 }
-  5676                                  
+  5617 00002D48 E88900                   call getOp1
+  5618 00002D4B A2[AD01]                 mov byte [Op2], al
+  5619                                  
+  5620                                  ;-197     if (isToken('[')) {Op2 = MEM; getMEM();    return;}
+  5621                                  
+  5622 00002D4E 6A5B                     push 91
+  5623 00002D50 E85CE9                   call isToken
+  5624 00002D53 83C402                   add  sp, 2
+  5625 00002D56 08C0                     or  al, al
+  5626 00002D58 0F840F00                 je @@getOpR203
+  5627 00002D5C 66B804000000             mov eax, 4
+  5628 00002D62 A2[AD01]                 mov byte [Op2], al
+  5629 00002D65 E8F200                   call getMEM
+  5630 00002D68 E94F00                   jmp @@retn
+  5631                                  
+  5632                                  ;-198     if (Op2 == 0)     {invaloperror();         return;}
+  5633                                  
+  5634                                  @@getOpR203:
+  5635 00002D6B A0[AD01]                 mov al, [Op2]
+  5636 00002D6E 3C00                     cmp al, 0
+  5637 00002D70 0F850600                 jne @@getOpR204
+  5638 00002D74 E89BF4                   call invaloperror
+  5639 00002D77 E94000                   jmp @@retn
+  5640                                  
+  5641                                  ;-199     if (Op2 == IMM)   {imme=SymbolInt;         return;}
+  5642                                  
+  5643                                  @@getOpR204:
+  5644 00002D7A A0[AD01]                 mov al, [Op2]
+  5645 00002D7D 3C01                     cmp al, 1
+  5646 00002D7F 0F850900                 jne @@getOpR205
+  5647 00002D83 A1[4D00]                 mov ax, [SymbolInt]
+  5648 00002D86 A3[BE01]                 mov word [imme], ax
+  5649 00002D89 E92E00                   jmp @@retn
+  5650                                  
+  5651                                  ;-200     if (Op2 == REG)                            return;
+  5652                                  
+  5653                                  @@getOpR205:
+  5654 00002D8C A0[AD01]                 mov al, [Op2]
+  5655 00002D8F 3C02                     cmp al, 2
+  5656 00002D91 0F850300                 jne @@getOpR206
+  5657 00002D95 E92200                   jmp @@retn
+  5658                                  
+  5659                                  ;-201     if (Op2 == ADR)   {disp=LabelAddr[LabelIx];return;}
+  5660                                  
+  5661                                  @@getOpR206:
+  5662 00002D98 A0[AD01]                 mov al, [Op2]
+  5663 00002D9B 3C03                     cmp al, 3
+  5664 00002D9D 0F851000                 jne @@getOpR207
+  5665 00002DA1 8B1E[7E06]               mov bx, [LabelIx]
+  5666 00002DA5 D1E3                     shl bx, 1
+  5667 00002DA7 8B87[B405]               mov ax, [LabelAddr + bx]
+  5668 00002DAB A3[BC01]                 mov word [disp], ax
+  5669 00002DAE E90900                   jmp @@retn
+  5670                                  
+  5671                                  ;-202     error1("Name of operand expected");
+  5672                                  
+  5673                                  @@getOpR207:
+  5674 00002DB1 68[BB2D]                 push getOpR_0
+  5675 00002DB4 E850F3                   call error1
+  5676 00002DB7 83C402                   add  sp, 2
   5677                                  
-  5678                                  ;-204 
+  5678                                  ;-203 }
   5679                                  
   5680                                  
-  5681                                  ;-205 int getOp1() {//scan for a single operand
+  5681                                  ;-204 
   5682                                  
-  5683                                  @@retn:
-  5684 00002DAE C3                       ret
-  5685                                  ; ENDP
-  5686 00002DAF 4E616D65206F66206F-     getOpR_0 db "Name of operand expected",0
-  5687 00002DB8 706572616E64206578-
-  5688 00002DC1 70656374656400     
-  5689                                  
-  5690                                  getOp1:  ; *** PROC ***
-  5691                                  
-  5692                                  ;-206 //return:0, IMM, REG, ADR (not MEM)
-  5693                                  
+  5683                                  
+  5684                                  ;-205 int getOp1() {//scan for a single operand
+  5685                                  
+  5686                                  @@retn:
+  5687 00002DBA C3                       ret
+  5688                                  ; ENDP
+  5689 00002DBB 4E616D65206F66206F-     getOpR_0 db "Name of operand expected",0
+  5690 00002DC4 706572616E64206578-
+  5691 00002DCD 70656374656400     
+  5692                                  
+  5693                                  getOp1:  ; *** PROC ***
   5694                                  
-  5695                                  ;-207 //set   :R2Type, R2No by testReg
+  5695                                  ;-206 //return:0, IMM, REG, ADR (not MEM)
   5696                                  
   5697                                  
-  5698                                  ;-208 //set   :LabelIx by searchLabel
+  5698                                  ;-207 //set   :R2Type, R2No by testReg
   5699                                  
   5700                                  
-  5701                                  ;-209     if (TokeType == 0)      return 0;
+  5701                                  ;-208 //set   :LabelIx by searchLabel
   5702                                  
-  5703 00002DC8 A0[AB01]                 mov al, [TokeType]
-  5704 00002DCB 3C00                     cmp al, 0
-  5705 00002DCD 0F850900                 jne @@getOp1208
-  5706 00002DD1 66B800000000             mov eax, 0
-  5707 00002DD7 E96000                   jmp @@retn
-  5708                                  
-  5709                                  ;-210     if (TokeType == DIGIT)  return IMM;
-  5710                                  
-  5711                                  @@getOp1208:
-  5712 00002DDA A0[AB01]                 mov al, [TokeType]
-  5713 00002DDD 3C01                     cmp al, 1
-  5714 00002DDF 0F850900                 jne @@getOp1209
-  5715 00002DE3 66B801000000             mov eax, 1
-  5716 00002DE9 E94E00                   jmp @@retn
-  5717                                  
-  5718                                  ;-211     if (TokeType == ALNUME) {
-  5719                                  
-  5720                                  @@getOp1209:
-  5721 00002DEC A0[AB01]                 mov al, [TokeType]
-  5722 00002DEF 3C03                     cmp al, 3
-  5723 00002DF1 0F853C00                 jne @@getOp1210
-  5724                                  
-  5725                                  ;-212         R2No=testReg();
-  5726                                  
-  5727 00002DF5 E864EC                   call testReg
-  5728 00002DF8 A2[B201]                 mov byte [R2No], al
+  5703                                  
+  5704                                  ;-209     if (TokeType == 0)      return 0;
+  5705                                  
+  5706 00002DD4 A0[AB01]                 mov al, [TokeType]
+  5707 00002DD7 3C00                     cmp al, 0
+  5708 00002DD9 0F850900                 jne @@getOp1208
+  5709 00002DDD 66B800000000             mov eax, 0
+  5710 00002DE3 E96000                   jmp @@retn
+  5711                                  
+  5712                                  ;-210     if (TokeType == DIGIT)  return IMM;
+  5713                                  
+  5714                                  @@getOp1208:
+  5715 00002DE6 A0[AB01]                 mov al, [TokeType]
+  5716 00002DE9 3C01                     cmp al, 1
+  5717 00002DEB 0F850900                 jne @@getOp1209
+  5718 00002DEF 66B801000000             mov eax, 1
+  5719 00002DF5 E94E00                   jmp @@retn
+  5720                                  
+  5721                                  ;-211     if (TokeType == ALNUME) {
+  5722                                  
+  5723                                  @@getOp1209:
+  5724 00002DF8 A0[AB01]                 mov al, [TokeType]
+  5725 00002DFB 3C03                     cmp al, 3
+  5726 00002DFD 0F853C00                 jne @@getOp1210
+  5727                                  
+  5728                                  ;-212         R2No=testReg();
   5729                                  
-  5730                                  ;-213         if (R2Type)        return REG;
-  5731                                  
-  5732 00002DFB A0[B401]                 mov al, [R2Type]
-  5733 00002DFE 08C0                     or  al, al
-  5734 00002E00 0F840900                 je @@getOp1211
-  5735 00002E04 66B802000000             mov eax, 2
-  5736 00002E0A E92D00                   jmp @@retn
-  5737                                  
-  5738                                  ;-214         LabelIx=searchLabel();
-  5739                                  
-  5740                                  @@getOp1211:
-  5741 00002E0D E80AE6                   call searchLabel
-  5742 00002E10 A3[7E06]                 mov word [LabelIx], ax
-  5743                                  
-  5744                                  ;-215         if (LabelIx)        return ADR;
-  5745                                  
-  5746 00002E13 A1[7E06]                 mov ax, [LabelIx]
-  5747 00002E16 08C0                     or  al, al
-  5748 00002E18 0F840C00                 je @@getOp1212
-  5749 00002E1C 66B803000000             mov eax, 3
-  5750 00002E22 E91500                   jmp @@retn
-  5751                                  
-  5752                                  ;-216         else error1("variable not found"); 
-  5753                                  
-  5754 00002E25 E90900                   jmp @@getOp1213
-  5755                                  @@getOp1212:
-  5756 00002E28 68[3B2E]                 push getOp1_0
-  5757 00002E2B E8D9F2                   call error1
-  5758 00002E2E 83C402                   add  sp, 2
-  5759                                  
-  5760                                  ;-217     }
-  5761                                  
-  5762                                  @@getOp1213:
-  5763                                  
-  5764                                  ;-218     return 0;
-  5765                                  
-  5766                                  @@getOp1210:
-  5767 00002E31 66B800000000             mov eax, 0
-  5768 00002E37 E90000                   jmp @@retn
-  5769                                  
-  5770                                  ;-219 }
-  5771                                  
+  5730 00002E01 E858EC                   call testReg
+  5731 00002E04 A2[B201]                 mov byte [R2No], al
+  5732                                  
+  5733                                  ;-213         if (R2Type)        return REG;
+  5734                                  
+  5735 00002E07 A0[B401]                 mov al, [R2Type]
+  5736 00002E0A 08C0                     or  al, al
+  5737 00002E0C 0F840900                 je @@getOp1211
+  5738 00002E10 66B802000000             mov eax, 2
+  5739 00002E16 E92D00                   jmp @@retn
+  5740                                  
+  5741                                  ;-214         LabelIx=searchLabel();
+  5742                                  
+  5743                                  @@getOp1211:
+  5744 00002E19 E8FEE5                   call searchLabel
+  5745 00002E1C A3[7E06]                 mov word [LabelIx], ax
+  5746                                  
+  5747                                  ;-215         if (LabelIx)        return ADR;
+  5748                                  
+  5749 00002E1F A1[7E06]                 mov ax, [LabelIx]
+  5750 00002E22 08C0                     or  al, al
+  5751 00002E24 0F840C00                 je @@getOp1212
+  5752 00002E28 66B803000000             mov eax, 3
+  5753 00002E2E E91500                   jmp @@retn
+  5754                                  
+  5755                                  ;-216         else error1("variable not found"); 
+  5756                                  
+  5757 00002E31 E90900                   jmp @@getOp1213
+  5758                                  @@getOp1212:
+  5759 00002E34 68[472E]                 push getOp1_0
+  5760 00002E37 E8CDF2                   call error1
+  5761 00002E3A 83C402                   add  sp, 2
+  5762                                  
+  5763                                  ;-217     }
+  5764                                  
+  5765                                  @@getOp1213:
+  5766                                  
+  5767                                  ;-218     return 0;
+  5768                                  
+  5769                                  @@getOp1210:
+  5770 00002E3D 66B800000000             mov eax, 0
+  5771 00002E43 E90000                   jmp @@retn
   5772                                  
-  5773                                  ;-220 
+  5773                                  ;-219 }
   5774                                  
   5775                                  
-  5776                                  ;-221 int getMEM() {// e.g. [array+bp+si-4]
+  5776                                  ;-220 
   5777                                  
-  5778                                  @@retn:
-  5779 00002E3A C3                       ret
-  5780                                  ; ENDP
-  5781 00002E3B 7661726961626C6520-     getOp1_0 db "variable not found",0
-  5782 00002E44 6E6F7420666F756E64-
-  5783 00002E4D 00                 
-  5784                                  
-  5785                                  getMEM:  ; *** PROC ***
-  5786                                  
-  5787                                  ;-222 //set: disp, rm, R2Type
-  5788                                  
+  5778                                  
+  5779                                  ;-221 int getMEM() {// e.g. [array+bp+si-4]
+  5780                                  
+  5781                                  @@retn:
+  5782 00002E46 C3                       ret
+  5783                                  ; ENDP
+  5784 00002E47 7661726961626C6520-     getOp1_0 db "variable not found",0
+  5785 00002E50 6E6F7420666F756E64-
+  5786 00002E59 00                 
+  5787                                  
+  5788                                  getMEM:  ; *** PROC ***
   5789                                  
-  5790                                  ;-223     char c;
+  5790                                  ;-222 //set: disp, rm, R2Type
   5791                                  
   5792                                  
-  5793                                  ;-224     disp=0; rm=0;
+  5793                                  ;-223     char c;
   5794                                  
-  5795                                  ;Function : getMEM, Number of local variables: 1
-  5796                                  ;   # type sign width line used address name   list of local variables
-  5797                                  ;  200 var sign byte   223 NULL bp-2    c;
-  5798 00002E4E C8020000                 ENTER  2,0
-  5799 00002E52 66B800000000             mov eax, 0
-  5800 00002E58 A3[BC01]                 mov word [disp], ax
-  5801 00002E5B 66B800000000             mov eax, 0
-  5802 00002E61 A2[BA01]                 mov byte [rm], al
-  5803                                  
-  5804                                  ;-225     do {
-  5805                                  
-  5806                                  @@getMEM214:
-  5807                                  
-  5808                                  ;-226         getTokeType();
-  5809                                  
-  5810 00002E64 E872E4                   call getTokeType
-  5811                                  
-  5812                                  ;-227         c=getOp1();
-  5813                                  
-  5814 00002E67 E85EFF                   call getOp1
-  5815 00002E6A 8846FE                   mov byte [bp-2], al
+  5795                                  
+  5796                                  ;-224     disp=0; rm=0;
+  5797                                  
+  5798                                  ;Function : getMEM, Number of local variables: 1
+  5799                                  ;   # type sign width line used address name   list of local variables
+  5800                                  ;  200 var sign byte   223 NULL bp-2    c;
+  5801 00002E5A C8020000                 ENTER  2,0
+  5802 00002E5E 66B800000000             mov eax, 0
+  5803 00002E64 A3[BC01]                 mov word [disp], ax
+  5804 00002E67 66B800000000             mov eax, 0
+  5805 00002E6D A2[BA01]                 mov byte [rm], al
+  5806                                  
+  5807                                  ;-225     do {
+  5808                                  
+  5809                                  @@getMEM214:
+  5810                                  
+  5811                                  ;-226         getTokeType();
+  5812                                  
+  5813 00002E70 E866E4                   call getTokeType
+  5814                                  
+  5815                                  ;-227         c=getOp1();
   5816                                  
-  5817                                  ;-228         if (c ==   0) syntaxerror();
-  5818                                  
-  5819 00002E6D 8A46FE                   mov al, [bp-2]
-  5820 00002E70 3C00                     cmp al, 0
-  5821 00002E72 0F850300                 jne @@getMEM215
-  5822 00002E76 E84DF4                   call syntaxerror
-  5823                                  
-  5824                                  ;-229         if (c == REG) {isDirect=0;
-  5825                                  
-  5826                                  @@getMEM215:
-  5827 00002E79 8A46FE                   mov al, [bp-2]
-  5828 00002E7C 3C02                     cmp al, 2
-  5829 00002E7E 0F851E00                 jne @@getMEM216
-  5830 00002E82 66B800000000             mov eax, 0
-  5831 00002E88 A2[BB01]                 mov byte [isDirect], al
-  5832                                  
-  5833                                  ;-230             if (rm) rm=getIndReg2();
-  5834                                  
-  5835 00002E8B A0[BA01]                 mov al, [rm]
-  5836 00002E8E 08C0                     or  al, al
-  5837 00002E90 0F840900                 je @@getMEM217
-  5838 00002E94 E8F300                   call getIndReg2
-  5839 00002E97 A2[BA01]                 mov byte [rm], al
-  5840                                  
-  5841                                  ;-231             else getIndReg1();
-  5842                                  
-  5843 00002E9A E90300                   jmp @@getMEM218
-  5844                                  @@getMEM217:
-  5845 00002E9D E88900                   call getIndReg1
-  5846                                  
-  5847                                  ;-232         }
-  5848                                  
-  5849                                  @@getMEM218:
-  5850                                  
-  5851                                  ;-233         if (c == ADR) disp=disp+LabelAddr[LabelIx];
-  5852                                  
-  5853                                  @@getMEM216:
-  5854 00002EA0 8A46FE                   mov al, [bp-2]
-  5855 00002EA3 3C03                     cmp al, 3
-  5856 00002EA5 0F851000                 jne @@getMEM219
-  5857 00002EA9 A1[BC01]                 mov ax, [disp]
-  5858 00002EAC 8B1E[7E06]               mov bx, [LabelIx]
-  5859 00002EB0 D1E3                     shl bx, 1
-  5860 00002EB2 0387[B405]               add ax, [LabelAddr + bx]
-  5861 00002EB6 A3[BC01]                 mov word [disp], ax
-  5862                                  
-  5863                                  ;-234         if (c == IMM) disp=disp+SymbolInt;
-  5864                                  
-  5865                                  @@getMEM219:
-  5866 00002EB9 8A46FE                   mov al, [bp-2]
-  5867 00002EBC 3C01                     cmp al, 1
-  5868 00002EBE 0F850A00                 jne @@getMEM220
-  5869 00002EC2 A1[BC01]                 mov ax, [disp]
-  5870 00002EC5 0306[4D00]               add ax, [SymbolInt]
-  5871 00002EC9 A3[BC01]                 mov word [disp], ax
-  5872                                  
-  5873                                  ;-235         if (isToken('-')) {
-  5874                                  
-  5875                                  @@getMEM220:
-  5876 00002ECC 6A2D                     push 45
-  5877 00002ECE E8DEE7                   call isToken
-  5878 00002ED1 83C402                   add  sp, 2
-  5879 00002ED4 08C0                     or  al, al
-  5880 00002ED6 0F841900                 je @@getMEM221
-  5881                                  
-  5882                                  ;-236             getTokeType();
-  5883                                  
-  5884 00002EDA E8FCE3                   call getTokeType
-  5885                                  
-  5886                                  ;-237             if (TokeType != DIGIT) numbererror();
-  5887                                  
-  5888 00002EDD A0[AB01]                 mov al, [TokeType]
-  5889 00002EE0 3C01                     cmp al, 1
-  5890 00002EE2 0F840300                 je  @@getMEM222
-  5891 00002EE6 E84AF3                   call numbererror
-  5892                                  
-  5893                                  ;-238             disp = disp - SymbolInt;
-  5894                                  
-  5895                                  @@getMEM222:
-  5896 00002EE9 A1[BC01]                 mov ax, [disp]
-  5897 00002EEC 2B06[4D00]               sub ax, [SymbolInt]
-  5898 00002EF0 A3[BC01]                 mov word [disp], ax
-  5899                                  
-  5900                                  ;-239         }
-  5901                                  
+  5817 00002E73 E85EFF                   call getOp1
+  5818 00002E76 8846FE                   mov byte [bp-2], al
+  5819                                  
+  5820                                  ;-228         if (c ==   0) syntaxerror();
+  5821                                  
+  5822 00002E79 8A46FE                   mov al, [bp-2]
+  5823 00002E7C 3C00                     cmp al, 0
+  5824 00002E7E 0F850300                 jne @@getMEM215
+  5825 00002E82 E841F4                   call syntaxerror
+  5826                                  
+  5827                                  ;-229         if (c == REG) {isDirect=0;
+  5828                                  
+  5829                                  @@getMEM215:
+  5830 00002E85 8A46FE                   mov al, [bp-2]
+  5831 00002E88 3C02                     cmp al, 2
+  5832 00002E8A 0F851E00                 jne @@getMEM216
+  5833 00002E8E 66B800000000             mov eax, 0
+  5834 00002E94 A2[BB01]                 mov byte [isDirect], al
+  5835                                  
+  5836                                  ;-230             if (rm) rm=getIndReg2();
+  5837                                  
+  5838 00002E97 A0[BA01]                 mov al, [rm]
+  5839 00002E9A 08C0                     or  al, al
+  5840 00002E9C 0F840900                 je @@getMEM217
+  5841 00002EA0 E8F300                   call getIndReg2
+  5842 00002EA3 A2[BA01]                 mov byte [rm], al
+  5843                                  
+  5844                                  ;-231             else getIndReg1();
+  5845                                  
+  5846 00002EA6 E90300                   jmp @@getMEM218
+  5847                                  @@getMEM217:
+  5848 00002EA9 E88900                   call getIndReg1
+  5849                                  
+  5850                                  ;-232         }
+  5851                                  
+  5852                                  @@getMEM218:
+  5853                                  
+  5854                                  ;-233         if (c == ADR) disp=disp+LabelAddr[LabelIx];
+  5855                                  
+  5856                                  @@getMEM216:
+  5857 00002EAC 8A46FE                   mov al, [bp-2]
+  5858 00002EAF 3C03                     cmp al, 3
+  5859 00002EB1 0F851000                 jne @@getMEM219
+  5860 00002EB5 A1[BC01]                 mov ax, [disp]
+  5861 00002EB8 8B1E[7E06]               mov bx, [LabelIx]
+  5862 00002EBC D1E3                     shl bx, 1
+  5863 00002EBE 0387[B405]               add ax, [LabelAddr + bx]
+  5864 00002EC2 A3[BC01]                 mov word [disp], ax
+  5865                                  
+  5866                                  ;-234         if (c == IMM) disp=disp+SymbolInt;
+  5867                                  
+  5868                                  @@getMEM219:
+  5869 00002EC5 8A46FE                   mov al, [bp-2]
+  5870 00002EC8 3C01                     cmp al, 1
+  5871 00002ECA 0F850A00                 jne @@getMEM220
+  5872 00002ECE A1[BC01]                 mov ax, [disp]
+  5873 00002ED1 0306[4D00]               add ax, [SymbolInt]
+  5874 00002ED5 A3[BC01]                 mov word [disp], ax
+  5875                                  
+  5876                                  ;-235         if (isToken('-')) {
+  5877                                  
+  5878                                  @@getMEM220:
+  5879 00002ED8 6A2D                     push 45
+  5880 00002EDA E8D2E7                   call isToken
+  5881 00002EDD 83C402                   add  sp, 2
+  5882 00002EE0 08C0                     or  al, al
+  5883 00002EE2 0F841900                 je @@getMEM221
+  5884                                  
+  5885                                  ;-236             getTokeType();
+  5886                                  
+  5887 00002EE6 E8F0E3                   call getTokeType
+  5888                                  
+  5889                                  ;-237             if (TokeType != DIGIT) numbererror();
+  5890                                  
+  5891 00002EE9 A0[AB01]                 mov al, [TokeType]
+  5892 00002EEC 3C01                     cmp al, 1
+  5893 00002EEE 0F840300                 je  @@getMEM222
+  5894 00002EF2 E83EF3                   call numbererror
+  5895                                  
+  5896                                  ;-238             disp = disp - SymbolInt;
+  5897                                  
+  5898                                  @@getMEM222:
+  5899 00002EF5 A1[BC01]                 mov ax, [disp]
+  5900 00002EF8 2B06[4D00]               sub ax, [SymbolInt]
+  5901 00002EFC A3[BC01]                 mov word [disp], ax
   5902                                  
-  5903                                  ;-240     } while (isToken('+'));
+  5903                                  ;-239         }
   5904                                  
-  5905                                  @@getMEM221:
-  5906 00002EF3 6A2B                     push 43
-  5907 00002EF5 E8B7E7                   call isToken
-  5908 00002EF8 83C402                   add  sp, 2
-  5909 00002EFB 08C0                     or  al, al
-  5910 00002EFD 0F840300                 je @@getMEM223
-  5911 00002F01 E960FF                   jmp @@getMEM214
-  5912                                  @@getMEM223:
-  5913                                  
-  5914                                  ;-241     if (isToken(']') == 0) errorexit("] expected");
-  5915                                  
-  5916 00002F04 6A5D                     push 93
-  5917 00002F06 E8A6E7                   call isToken
-  5918 00002F09 83C402                   add  sp, 2
-  5919 00002F0C 83F800                   cmp ax, 0
-  5920 00002F0F 0F850900                 jne @@getMEM224
-  5921 00002F13 68[1E2F]                 push getMEM_0
-  5922 00002F16 E84DF2                   call errorexit
-  5923 00002F19 83C402                   add  sp, 2
-  5924                                  
-  5925                                  ;-242 }
-  5926                                  
-  5927                                  @@getMEM224:
-  5928                                  
-  5929                                  ;-243 int getIndReg1() {
-  5930 00002F1C C9                       LEAVE
-  5931 00002F1D C3                       ret
-  5932                                  ; ENDP
-  5933 00002F1E 5D2065787065637465-     getMEM_0 db "] expected",0
-  5934 00002F27 6400               
-  5935                                  
-  5936                                  getIndReg1:  ; *** PROC ***
-  5937                                  
-  5938                                  ;-244     if (R2Type !=WORD) indexerror();
-  5939                                  
-  5940 00002F29 A0[B401]                 mov al, [R2Type]
-  5941 00002F2C 3C02                     cmp al, 2
-  5942 00002F2E 0F840300                 je  @@getIndReg1225
-  5943 00002F32 E8BCF2                   call indexerror
-  5944                                  
-  5945                                  ;-245     if (R2No==3) rm=7;//BX
-  5946                                  
-  5947                                  @@getIndReg1225:
-  5948 00002F35 A0[B201]                 mov al, [R2No]
-  5949 00002F38 3C03                     cmp al, 3
-  5950 00002F3A 0F850900                 jne @@getIndReg1226
-  5951 00002F3E 66B807000000             mov eax, 7
-  5952 00002F44 A2[BA01]                 mov byte [rm], al
-  5953                                  
-  5954                                  ;-246     if (R2No==5) rm=6;//BP, change to BP+0
-  5955                                  
-  5956                                  @@getIndReg1226:
-  5957 00002F47 A0[B201]                 mov al, [R2No]
-  5958 00002F4A 3C05                     cmp al, 5
-  5959 00002F4C 0F850900                 jne @@getIndReg1227
-  5960 00002F50 66B806000000             mov eax, 6
-  5961 00002F56 A2[BA01]                 mov byte [rm], al
-  5962                                  
-  5963                                  ;-247     if (R2No==7) rm=5;//DI
-  5964                                  
-  5965                                  @@getIndReg1227:
-  5966 00002F59 A0[B201]                 mov al, [R2No]
-  5967 00002F5C 3C07                     cmp al, 7
-  5968 00002F5E 0F850900                 jne @@getIndReg1228
-  5969 00002F62 66B805000000             mov eax, 5
-  5970 00002F68 A2[BA01]                 mov byte [rm], al
-  5971                                  
-  5972                                  ;-248     if (R2No==6) rm=4;//SI
-  5973                                  
-  5974                                  @@getIndReg1228:
-  5975 00002F6B A0[B201]                 mov al, [R2No]
-  5976 00002F6E 3C06                     cmp al, 6
-  5977 00002F70 0F850900                 jne @@getIndReg1229
-  5978 00002F74 66B804000000             mov eax, 4
-  5979 00002F7A A2[BA01]                 mov byte [rm], al
-  5980                                  
-  5981                                  ;-249     if (rm==0) indexerror();
-  5982                                  
-  5983                                  @@getIndReg1229:
-  5984 00002F7D A0[BA01]                 mov al, [rm]
-  5985 00002F80 3C00                     cmp al, 0
-  5986 00002F82 0F850300                 jne @@getIndReg1230
-  5987 00002F86 E868F2                   call indexerror
-  5988                                  
-  5989                                  ;-250 }
-  5990                                  
-  5991                                  @@getIndReg1230:
-  5992                                  
-  5993                                  ;-251 int getIndReg2() {char m; m=4;//because m=0 is BX+DI
-  5994                                  
-  5995 00002F89 C3                       ret
-  5996                                  ; ENDP
+  5905                                  
+  5906                                  ;-240     } while (isToken('+'));
+  5907                                  
+  5908                                  @@getMEM221:
+  5909 00002EFF 6A2B                     push 43
+  5910 00002F01 E8ABE7                   call isToken
+  5911 00002F04 83C402                   add  sp, 2
+  5912 00002F07 08C0                     or  al, al
+  5913 00002F09 0F840300                 je @@getMEM223
+  5914 00002F0D E960FF                   jmp @@getMEM214
+  5915                                  @@getMEM223:
+  5916                                  
+  5917                                  ;-241     if (isToken(']') == 0) errorexit("] expected");
+  5918                                  
+  5919 00002F10 6A5D                     push 93
+  5920 00002F12 E89AE7                   call isToken
+  5921 00002F15 83C402                   add  sp, 2
+  5922 00002F18 83F800                   cmp ax, 0
+  5923 00002F1B 0F850900                 jne @@getMEM224
+  5924 00002F1F 68[2A2F]                 push getMEM_0
+  5925 00002F22 E841F2                   call errorexit
+  5926 00002F25 83C402                   add  sp, 2
+  5927                                  
+  5928                                  ;-242 }
+  5929                                  
+  5930                                  @@getMEM224:
+  5931                                  
+  5932                                  ;-243 int getIndReg1() {
+  5933 00002F28 C9                       LEAVE
+  5934 00002F29 C3                       ret
+  5935                                  ; ENDP
+  5936 00002F2A 5D2065787065637465-     getMEM_0 db "] expected",0
+  5937 00002F33 6400               
+  5938                                  
+  5939                                  getIndReg1:  ; *** PROC ***
+  5940                                  
+  5941                                  ;-244     if (R2Type !=WORD) indexerror();
+  5942                                  
+  5943 00002F35 A0[B401]                 mov al, [R2Type]
+  5944 00002F38 3C02                     cmp al, 2
+  5945 00002F3A 0F840300                 je  @@getIndReg1225
+  5946 00002F3E E8B0F2                   call indexerror
+  5947                                  
+  5948                                  ;-245     if (R2No==3) rm=7;//BX
+  5949                                  
+  5950                                  @@getIndReg1225:
+  5951 00002F41 A0[B201]                 mov al, [R2No]
+  5952 00002F44 3C03                     cmp al, 3
+  5953 00002F46 0F850900                 jne @@getIndReg1226
+  5954 00002F4A 66B807000000             mov eax, 7
+  5955 00002F50 A2[BA01]                 mov byte [rm], al
+  5956                                  
+  5957                                  ;-246     if (R2No==5) rm=6;//BP, change to BP+0
+  5958                                  
+  5959                                  @@getIndReg1226:
+  5960 00002F53 A0[B201]                 mov al, [R2No]
+  5961 00002F56 3C05                     cmp al, 5
+  5962 00002F58 0F850900                 jne @@getIndReg1227
+  5963 00002F5C 66B806000000             mov eax, 6
+  5964 00002F62 A2[BA01]                 mov byte [rm], al
+  5965                                  
+  5966                                  ;-247     if (R2No==7) rm=5;//DI
+  5967                                  
+  5968                                  @@getIndReg1227:
+  5969 00002F65 A0[B201]                 mov al, [R2No]
+  5970 00002F68 3C07                     cmp al, 7
+  5971 00002F6A 0F850900                 jne @@getIndReg1228
+  5972 00002F6E 66B805000000             mov eax, 5
+  5973 00002F74 A2[BA01]                 mov byte [rm], al
+  5974                                  
+  5975                                  ;-248     if (R2No==6) rm=4;//SI
+  5976                                  
+  5977                                  @@getIndReg1228:
+  5978 00002F77 A0[B201]                 mov al, [R2No]
+  5979 00002F7A 3C06                     cmp al, 6
+  5980 00002F7C 0F850900                 jne @@getIndReg1229
+  5981 00002F80 66B804000000             mov eax, 4
+  5982 00002F86 A2[BA01]                 mov byte [rm], al
+  5983                                  
+  5984                                  ;-249     if (rm==0) indexerror();
+  5985                                  
+  5986                                  @@getIndReg1229:
+  5987 00002F89 A0[BA01]                 mov al, [rm]
+  5988 00002F8C 3C00                     cmp al, 0
+  5989 00002F8E 0F850300                 jne @@getIndReg1230
+  5990 00002F92 E85CF2                   call indexerror
+  5991                                  
+  5992                                  ;-250 }
+  5993                                  
+  5994                                  @@getIndReg1230:
+  5995                                  
+  5996                                  ;-251 int getIndReg2() {char m; m=4;//because m=0 is BX+DI
   5997                                  
-  5998                                  getIndReg2:  ; *** PROC ***
-  5999                                  ;Function : getIndReg2, Number of local variables: 1
-  6000                                  ;   # type sign width line used address name   list of local variables
-  6001                                  ;  200 var sign byte   251 NULL bp-2    m;
-  6002 00002F8A C8020000                 ENTER  2,0
-  6003 00002F8E 66B804000000             mov eax, 4
-  6004 00002F94 8846FE                   mov byte [bp-2], al
-  6005                                  
-  6006                                  ;-252     if (R2Type !=WORD) indexerror();
-  6007                                  
-  6008 00002F97 A0[B401]                 mov al, [R2Type]
-  6009 00002F9A 3C02                     cmp al, 2
-  6010 00002F9C 0F840300                 je  @@getIndReg2231
-  6011 00002FA0 E84EF2                   call indexerror
-  6012                                  
-  6013                                  ;-253     if (R2No==7) if (rm==6) m=3;//BP+DI
-  6014                                  
-  6015                                  @@getIndReg2231:
-  6016 00002FA3 A0[B201]                 mov al, [R2No]
-  6017 00002FA6 3C07                     cmp al, 7
-  6018 00002FA8 0F852700                 jne @@getIndReg2232
-  6019 00002FAC A0[BA01]                 mov al, [rm]
-  6020 00002FAF 3C06                     cmp al, 6
-  6021 00002FB1 0F850C00                 jne @@getIndReg2233
-  6022 00002FB5 66B803000000             mov eax, 3
-  6023 00002FBB 8846FE                   mov byte [bp-2], al
-  6024                                  
-  6025                                  ;-254              else if (rm==7) m=1;//BX+DI
-  6026                                  
-  6027 00002FBE E91200                   jmp @@getIndReg2234
-  6028                                  @@getIndReg2233:
-  6029 00002FC1 A0[BA01]                 mov al, [rm]
-  6030 00002FC4 3C07                     cmp al, 7
-  6031 00002FC6 0F850900                 jne @@getIndReg2235
-  6032 00002FCA 66B801000000             mov eax, 1
-  6033 00002FD0 8846FE                   mov byte [bp-2], al
-  6034                                  
-  6035                                  ;-255     if (R2No==6) if (rm==6) m=2;//BP+SI
-  6036                                  
-  6037                                  @@getIndReg2235:
-  6038                                  @@getIndReg2234:
-  6039                                  @@getIndReg2232:
-  6040 00002FD3 A0[B201]                 mov al, [R2No]
-  6041 00002FD6 3C06                     cmp al, 6
-  6042 00002FD8 0F852700                 jne @@getIndReg2236
-  6043 00002FDC A0[BA01]                 mov al, [rm]
-  6044 00002FDF 3C06                     cmp al, 6
-  6045 00002FE1 0F850C00                 jne @@getIndReg2237
-  6046 00002FE5 66B802000000             mov eax, 2
-  6047 00002FEB 8846FE                   mov byte [bp-2], al
-  6048                                  
-  6049                                  ;-256              else if (rm==7) m=0;//BX+SI
-  6050                                  
-  6051 00002FEE E91200                   jmp @@getIndReg2238
-  6052                                  @@getIndReg2237:
-  6053 00002FF1 A0[BA01]                 mov al, [rm]
-  6054 00002FF4 3C07                     cmp al, 7
-  6055 00002FF6 0F850900                 jne @@getIndReg2239
-  6056 00002FFA 66B800000000             mov eax, 0
-  6057 00003000 8846FE                   mov byte [bp-2], al
-  6058                                  
-  6059                                  ;-257     if (m > 3) indexerror();
-  6060                                  
-  6061                                  @@getIndReg2239:
-  6062                                  @@getIndReg2238:
-  6063                                  @@getIndReg2236:
-  6064 00003003 8A46FE                   mov al, [bp-2]
-  6065 00003006 3C03                     cmp al, 3
-  6066 00003008 0F8E0300                 jle @@getIndReg2240
-  6067 0000300C E8E2F1                   call indexerror
-  6068                                  
-  6069                                  ;-258     return m;
-  6070                                  
-  6071                                  @@getIndReg2240:
-  6072 0000300F 8A46FE                   mov al, [bp-2]
-  6073 00003012 E90000                   jmp @@retn
-  6074                                  
-  6075                                  ;-259 }
-  6076                                  
+  5998 00002F95 C3                       ret
+  5999                                  ; ENDP
+  6000                                  
+  6001                                  getIndReg2:  ; *** PROC ***
+  6002                                  ;Function : getIndReg2, Number of local variables: 1
+  6003                                  ;   # type sign width line used address name   list of local variables
+  6004                                  ;  200 var sign byte   251 NULL bp-2    m;
+  6005 00002F96 C8020000                 ENTER  2,0
+  6006 00002F9A 66B804000000             mov eax, 4
+  6007 00002FA0 8846FE                   mov byte [bp-2], al
+  6008                                  
+  6009                                  ;-252     if (R2Type !=WORD) indexerror();
+  6010                                  
+  6011 00002FA3 A0[B401]                 mov al, [R2Type]
+  6012 00002FA6 3C02                     cmp al, 2
+  6013 00002FA8 0F840300                 je  @@getIndReg2231
+  6014 00002FAC E842F2                   call indexerror
+  6015                                  
+  6016                                  ;-253     if (R2No==7) if (rm==6) m=3;//BP+DI
+  6017                                  
+  6018                                  @@getIndReg2231:
+  6019 00002FAF A0[B201]                 mov al, [R2No]
+  6020 00002FB2 3C07                     cmp al, 7
+  6021 00002FB4 0F852700                 jne @@getIndReg2232
+  6022 00002FB8 A0[BA01]                 mov al, [rm]
+  6023 00002FBB 3C06                     cmp al, 6
+  6024 00002FBD 0F850C00                 jne @@getIndReg2233
+  6025 00002FC1 66B803000000             mov eax, 3
+  6026 00002FC7 8846FE                   mov byte [bp-2], al
+  6027                                  
+  6028                                  ;-254              else if (rm==7) m=1;//BX+DI
+  6029                                  
+  6030 00002FCA E91200                   jmp @@getIndReg2234
+  6031                                  @@getIndReg2233:
+  6032 00002FCD A0[BA01]                 mov al, [rm]
+  6033 00002FD0 3C07                     cmp al, 7
+  6034 00002FD2 0F850900                 jne @@getIndReg2235
+  6035 00002FD6 66B801000000             mov eax, 1
+  6036 00002FDC 8846FE                   mov byte [bp-2], al
+  6037                                  
+  6038                                  ;-255     if (R2No==6) if (rm==6) m=2;//BP+SI
+  6039                                  
+  6040                                  @@getIndReg2235:
+  6041                                  @@getIndReg2234:
+  6042                                  @@getIndReg2232:
+  6043 00002FDF A0[B201]                 mov al, [R2No]
+  6044 00002FE2 3C06                     cmp al, 6
+  6045 00002FE4 0F852700                 jne @@getIndReg2236
+  6046 00002FE8 A0[BA01]                 mov al, [rm]
+  6047 00002FEB 3C06                     cmp al, 6
+  6048 00002FED 0F850C00                 jne @@getIndReg2237
+  6049 00002FF1 66B802000000             mov eax, 2
+  6050 00002FF7 8846FE                   mov byte [bp-2], al
+  6051                                  
+  6052                                  ;-256              else if (rm==7) m=0;//BX+SI
+  6053                                  
+  6054 00002FFA E91200                   jmp @@getIndReg2238
+  6055                                  @@getIndReg2237:
+  6056 00002FFD A0[BA01]                 mov al, [rm]
+  6057 00003000 3C07                     cmp al, 7
+  6058 00003002 0F850900                 jne @@getIndReg2239
+  6059 00003006 66B800000000             mov eax, 0
+  6060 0000300C 8846FE                   mov byte [bp-2], al
+  6061                                  
+  6062                                  ;-257     if (m > 3) indexerror();
+  6063                                  
+  6064                                  @@getIndReg2239:
+  6065                                  @@getIndReg2238:
+  6066                                  @@getIndReg2236:
+  6067 0000300F 8A46FE                   mov al, [bp-2]
+  6068 00003012 3C03                     cmp al, 3
+  6069 00003014 0F8E0300                 jle @@getIndReg2240
+  6070 00003018 E8D6F1                   call indexerror
+  6071                                  
+  6072                                  ;-258     return m;
+  6073                                  
+  6074                                  @@getIndReg2240:
+  6075 0000301B 8A46FE                   mov al, [bp-2]
+  6076 0000301E E90000                   jmp @@retn
   6077                                  
-  6078                                  ;-260                   
+  6078                                  ;-259 }
   6079                                  
   6080                                  
-  6081                                  ;-261 int setwflag() {//word size, bit 0
+  6081                                  ;-260                   
   6082                                  
-  6083 00003015 C9                      @@retn: LEAVE
-  6084 00003016 C3                       ret
-  6085                                  ; ENDP
-  6086                                  
-  6087                                  setwflag:  ; *** PROC ***
-  6088                                  
-  6089                                  ;-262     wflag=0;
-  6090                                  
-  6091 00003017 66B800000000             mov eax, 0
-  6092 0000301D A2[B701]                 mov byte [wflag], al
+  6083                                  
+  6084                                  ;-261 int setwflag() {//word size, bit 0
+  6085                                  
+  6086 00003021 C9                      @@retn: LEAVE
+  6087 00003022 C3                       ret
+  6088                                  ; ENDP
+  6089                                  
+  6090                                  setwflag:  ; *** PROC ***
+  6091                                  
+  6092                                  ;-262     wflag=0;
   6093                                  
-  6094                                  ;-263     if (OpSize == 0) {//do not override OpSize
-  6095                                  
-  6096 00003020 A0[B601]                 mov al, [OpSize]
-  6097 00003023 3C00                     cmp al, 0
-  6098 00003025 0F854200                 jne @@setwflag241
-  6099                                  
-  6100                                  ;-264         if (Op == REG) OpSize=R1Type;
-  6101                                  
-  6102 00003029 A0[AC01]                 mov al, [Op]
-  6103 0000302C 3C02                     cmp al, 2
-  6104 0000302E 0F850600                 jne @@setwflag242
-  6105 00003032 A0[B501]                 mov al, [R1Type]
-  6106 00003035 A2[B601]                 mov byte [OpSize], al
-  6107                                  
-  6108                                  ;-265         if (Op2== REG) OpSize=R2Type;        
-  6109                                  
-  6110                                  @@setwflag242:
-  6111 00003038 A0[AD01]                 mov al, [Op2]
-  6112 0000303B 3C02                     cmp al, 2
-  6113 0000303D 0F850600                 jne @@setwflag243
-  6114 00003041 A0[B401]                 mov al, [R2Type]
-  6115 00003044 A2[B601]                 mov byte [OpSize], al
-  6116                                  
-  6117                                  ;-266         if (R2Type== SEGREG) OpSize=WORD;
-  6118                                  
-  6119                                  @@setwflag243:
-  6120 00003047 A0[B401]                 mov al, [R2Type]
-  6121 0000304A 3C04                     cmp al, 4
-  6122 0000304C 0F850900                 jne @@setwflag244
-  6123 00003050 66B802000000             mov eax, 2
-  6124 00003056 A2[B601]                 mov byte [OpSize], al
-  6125                                  
-  6126                                  ;-267         if (R1Type == SEGREG) OpSize=WORD;        
-  6127                                  
-  6128                                  @@setwflag244:
-  6129 00003059 A0[B501]                 mov al, [R1Type]
-  6130 0000305C 3C04                     cmp al, 4
-  6131 0000305E 0F850900                 jne @@setwflag245
-  6132 00003062 66B802000000             mov eax, 2
-  6133 00003068 A2[B601]                 mov byte [OpSize], al
-  6134                                  
-  6135                                  ;-268     }
-  6136                                  
-  6137                                  @@setwflag245:
-  6138                                  
-  6139                                  ;-269     if (OpSize  == DWORD) {gen66h(); wflag=1;}
-  6140                                  
-  6141                                  @@setwflag241:
-  6142 0000306B A0[B601]                 mov al, [OpSize]
-  6143 0000306E 3C03                     cmp al, 3
-  6144 00003070 0F850C00                 jne @@setwflag246
-  6145 00003074 E806F6                   call gen66h
-  6146 00003077 66B801000000             mov eax, 1
-  6147 0000307D A2[B701]                 mov byte [wflag], al
-  6148                                  
-  6149                                  ;-270     if (OpSize  ==  WORD) wflag=1;
-  6150                                  
-  6151                                  @@setwflag246:
-  6152 00003080 A0[B601]                 mov al, [OpSize]
-  6153 00003083 3C02                     cmp al, 2
-  6154 00003085 0F850900                 jne @@setwflag247
-  6155 00003089 66B801000000             mov eax, 1
-  6156 0000308F A2[B701]                 mov byte [wflag], al
-  6157                                  
-  6158                                  ;-271 }
-  6159                                  
-  6160                                  @@setwflag247:
-  6161                                  
-  6162                                  ;-272 int setsflag() {//sign-extend, bit 1, only PUSH, ALU, IMUL3     
-  6163                                  
-  6164 00003092 C3                       ret
-  6165                                  ; ENDP
+  6094 00003023 66B800000000             mov eax, 0
+  6095 00003029 A2[B701]                 mov byte [wflag], al
+  6096                                  
+  6097                                  ;-263     if (OpSize == 0) {//do not override OpSize
+  6098                                  
+  6099 0000302C A0[B601]                 mov al, [OpSize]
+  6100 0000302F 3C00                     cmp al, 0
+  6101 00003031 0F854200                 jne @@setwflag241
+  6102                                  
+  6103                                  ;-264         if (Op == REG) OpSize=R1Type;
+  6104                                  
+  6105 00003035 A0[AC01]                 mov al, [Op]
+  6106 00003038 3C02                     cmp al, 2
+  6107 0000303A 0F850600                 jne @@setwflag242
+  6108 0000303E A0[B501]                 mov al, [R1Type]
+  6109 00003041 A2[B601]                 mov byte [OpSize], al
+  6110                                  
+  6111                                  ;-265         if (Op2== REG) OpSize=R2Type;        
+  6112                                  
+  6113                                  @@setwflag242:
+  6114 00003044 A0[AD01]                 mov al, [Op2]
+  6115 00003047 3C02                     cmp al, 2
+  6116 00003049 0F850600                 jne @@setwflag243
+  6117 0000304D A0[B401]                 mov al, [R2Type]
+  6118 00003050 A2[B601]                 mov byte [OpSize], al
+  6119                                  
+  6120                                  ;-266         if (R2Type== SEGREG) OpSize=WORD;
+  6121                                  
+  6122                                  @@setwflag243:
+  6123 00003053 A0[B401]                 mov al, [R2Type]
+  6124 00003056 3C04                     cmp al, 4
+  6125 00003058 0F850900                 jne @@setwflag244
+  6126 0000305C 66B802000000             mov eax, 2
+  6127 00003062 A2[B601]                 mov byte [OpSize], al
+  6128                                  
+  6129                                  ;-267         if (R1Type == SEGREG) OpSize=WORD;        
+  6130                                  
+  6131                                  @@setwflag244:
+  6132 00003065 A0[B501]                 mov al, [R1Type]
+  6133 00003068 3C04                     cmp al, 4
+  6134 0000306A 0F850900                 jne @@setwflag245
+  6135 0000306E 66B802000000             mov eax, 2
+  6136 00003074 A2[B601]                 mov byte [OpSize], al
+  6137                                  
+  6138                                  ;-268     }
+  6139                                  
+  6140                                  @@setwflag245:
+  6141                                  
+  6142                                  ;-269     if (OpSize  == DWORD) {gen66h(); wflag=1;}
+  6143                                  
+  6144                                  @@setwflag241:
+  6145 00003077 A0[B601]                 mov al, [OpSize]
+  6146 0000307A 3C03                     cmp al, 3
+  6147 0000307C 0F850C00                 jne @@setwflag246
+  6148 00003080 E8FAF5                   call gen66h
+  6149 00003083 66B801000000             mov eax, 1
+  6150 00003089 A2[B701]                 mov byte [wflag], al
+  6151                                  
+  6152                                  ;-270     if (OpSize  ==  WORD) wflag=1;
+  6153                                  
+  6154                                  @@setwflag246:
+  6155 0000308C A0[B601]                 mov al, [OpSize]
+  6156 0000308F 3C02                     cmp al, 2
+  6157 00003091 0F850900                 jne @@setwflag247
+  6158 00003095 66B801000000             mov eax, 1
+  6159 0000309B A2[B701]                 mov byte [wflag], al
+  6160                                  
+  6161                                  ;-271 }
+  6162                                  
+  6163                                  @@setwflag247:
+  6164                                  
+  6165                                  ;-272 int setsflag() {//sign-extend, bit 1, only PUSH, ALU, IMUL3     
   6166                                  
-  6167                                  setsflag:  ; *** PROC ***
-  6168                                  
-  6169                                  ;-273     sflag=2;  
-  6170                                  
-  6171 00003093 66B802000000             mov eax, 2
-  6172 00003099 A2[B901]                 mov byte [sflag], al
+  6167 0000309E C3                       ret
+  6168                                  ; ENDP
+  6169                                  
+  6170                                  setsflag:  ; *** PROC ***
+  6171                                  
+  6172                                  ;-273     sflag=2;  
   6173                                  
-  6174                                  ;-274     if(imme > 127) sflag = 0;
-  6175                                  
-  6176 0000309C A1[BE01]                 mov ax, [imme]
-  6177 0000309F 83F87F                   cmp ax, 127
-  6178 000030A2 0F8E0900                 jle @@setsflag248
-  6179 000030A6 66B800000000             mov eax, 0
-  6180 000030AC A2[B901]                 mov byte [sflag], al
-  6181                                  
-  6182                                  ;-275     if (OpSize == BYTE) {
-  6183                                  
-  6184                                  @@setsflag248:
-  6185 000030AF A0[B601]                 mov al, [OpSize]
-  6186 000030B2 3C01                     cmp al, 1
-  6187 000030B4 0F851C00                 jne @@setsflag249
-  6188                                  
-  6189                                  ;-276         if (imme > 255) error1("too big for byte r/m");
-  6190                                  
-  6191 000030B8 A1[BE01]                 mov ax, [imme]
-  6192 000030BB 3DFF00                   cmp ax, 255
-  6193 000030BE 0F8E0900                 jle @@setsflag250
-  6194 000030C2 68[D530]                 push setsflag_0
-  6195 000030C5 E83FF0                   call error1
-  6196 000030C8 83C402                   add  sp, 2
-  6197                                  
-  6198                                  ;-277         sflag=0;//byte reg does not need sign extended   
-  6199                                  
-  6200                                  @@setsflag250:
-  6201 000030CB 66B800000000             mov eax, 0
-  6202 000030D1 A2[B901]                 mov byte [sflag], al
-  6203                                  
-  6204                                  ;-278     }
-  6205                                  
+  6174 0000309F 66B802000000             mov eax, 2
+  6175 000030A5 A2[B901]                 mov byte [sflag], al
+  6176                                  
+  6177                                  ;-274     if(imme > 127) sflag = 0;
+  6178                                  
+  6179 000030A8 A1[BE01]                 mov ax, [imme]
+  6180 000030AB 83F87F                   cmp ax, 127
+  6181 000030AE 0F8E0900                 jle @@setsflag248
+  6182 000030B2 66B800000000             mov eax, 0
+  6183 000030B8 A2[B901]                 mov byte [sflag], al
+  6184                                  
+  6185                                  ;-275     if (OpSize == BYTE) {
+  6186                                  
+  6187                                  @@setsflag248:
+  6188 000030BB A0[B601]                 mov al, [OpSize]
+  6189 000030BE 3C01                     cmp al, 1
+  6190 000030C0 0F851C00                 jne @@setsflag249
+  6191                                  
+  6192                                  ;-276         if (imme > 255) error1("too big for byte r/m");
+  6193                                  
+  6194 000030C4 A1[BE01]                 mov ax, [imme]
+  6195 000030C7 3DFF00                   cmp ax, 255
+  6196 000030CA 0F8E0900                 jle @@setsflag250
+  6197 000030CE 68[E130]                 push setsflag_0
+  6198 000030D1 E833F0                   call error1
+  6199 000030D4 83C402                   add  sp, 2
+  6200                                  
+  6201                                  ;-277         sflag=0;//byte reg does not need sign extended   
+  6202                                  
+  6203                                  @@setsflag250:
+  6204 000030D7 66B800000000             mov eax, 0
+  6205 000030DD A2[B901]                 mov byte [sflag], al
   6206                                  
-  6207                                  ;-279 }
+  6207                                  ;-278     }
   6208                                  
-  6209                                  @@setsflag249:
-  6210 000030D4 C3                       ret
-  6211                                  ; ENDP
-  6212 000030D5 746F6F206269672066-     setsflag_0 db "too big for byte r/m",0
-  6213 000030DE 6F7220627974652072-
-  6214 000030E7 2F6D00             
-  6215                                   
-  6216                                  ; missing functions: 
-  6217                                  ; digit
-  6218                                  ; strcpy
-  6219                                  ; eqstr
-  6220                                  ; strlen
-  6221                                  ; eqstr
+  6209                                  
+  6210                                  ;-279 }
+  6211                                  
+  6212                                  @@setsflag249:
+  6213 000030E0 C3                       ret
+  6214                                  ; ENDP
+  6215 000030E1 746F6F206269672066-     setsflag_0 db "too big for byte r/m",0
+  6216 000030EA 6F7220627974652072-
+  6217 000030F3 2F6D00             
+  6218                                   
+  6219                                  ; missing functions: 
+  6220                                  ; digit
+  6221                                  ; strcpy
   6222                                  ; eqstr
-  6223                                  ; eqstr
+  6223                                  ; strlen
   6224                                  ; eqstr
-  6225                                  ; readRL
-  6226                                  ; readRL
-  6227                                  ; digit
-  6228                                  ; digit
-  6229                                  ; strcpy
-  6230                                  ; toupper
-  6231                                  ; strlen
-  6232                                  ; strlen
-  6233                                  ; eqstr
-  6234                                  ; eqstr
-  6235                                  ; eqstr
+  6225                                  ; eqstr
+  6226                                  ; eqstr
+  6227                                  ; eqstr
+  6228                                  ; readRL
+  6229                                  ; readRL
+  6230                                  ; digit
+  6231                                  ; digit
+  6232                                  ; strcpy
+  6233                                  ; toupper
+  6234                                  ; strlen
+  6235                                  ; strlen
   6236                                  ; eqstr
   6237                                  ; eqstr
   6238                                  ; eqstr
@@ -6260,1027 +6260,1029 @@
   6260                                  ; eqstr
   6261                                  ; eqstr
   6262                                  ; eqstr
-  6263                                  ; writetty
-  6264                                  ; writetty
-  6265                                  ; fputcR
-  6266                                  ; cputs
-  6267                                  ; cputs
-  6268                                  ; exitR
-  6269                                  ; toupper
-  6270                                  ; strcpy
-  6271                                  ; strcat1
-  6272                                  ; strcpy
-  6273                                  ; strcat1
-  6274                                  ; strcpy
-  6275                                  ; strcat1
-  6276                                  ; openR
-  6277                                  ; cputs
-  6278                                  ; cputs
-  6279                                  ; exitR
-  6280                                  ; creatR
+  6263                                  ; eqstr
+  6264                                  ; eqstr
+  6265                                  ; eqstr
+  6266                                  ; writetty
+  6267                                  ; writetty
+  6268                                  ; fputcR
+  6269                                  ; cputs
+  6270                                  ; cputs
+  6271                                  ; exitR
+  6272                                  ; toupper
+  6273                                  ; strcpy
+  6274                                  ; strcat1
+  6275                                  ; strcpy
+  6276                                  ; strcat1
+  6277                                  ; strcpy
+  6278                                  ; strcat1
+  6279                                  ; openR
+  6280                                  ; cputs
   6281                                  ; cputs
-  6282                                  ; cputs
-  6283                                  ; exitR
-  6284                                  ; creatR
+  6282                                  ; exitR
+  6283                                  ; creatR
+  6284                                  ; cputs
   6285                                  ; cputs
-  6286                                  ; cputs
-  6287                                  ; exitR
-  6288                                  ; fputcR
-  6289                                  ; fcloseR
-  6290                                  ; fcloseR
-  6291                                  ; fcloseR
-  6292                                  ; exitR
-  6293                                  ; Number of unresolved CALLs :   76
-  6294                                  ;use archive file: AR.C
-  6295                                  
-  6296                                  ;-280 // AR.C Archive
-  6297                                  
-  6298                                  ;Number of CALLs:    2 : writetty
-  6299                                  
-  6300                                  writetty:  ; *** PROC ***
-  6301 000030EA B40E                     mov  ah, 14
-  6302 000030EC BB0000                   mov  bx, 0
-  6303 000030EF CD10                     int  16
-  6304                                  
-  6305                                  ;-281 int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
-  6306                                  
-  6307 000030F1 C3                       ret
-  6308                                  ; ENDP
-  6309                                  ;Number of CALLs:    8 : cputs
-  6310                                  
-  6311                                  cputs:  ; *** PROC ***
-  6312                                  ;Function : cputs, Number of local variables: 2
-  6313                                  ;   # type sign width line used address name   list of local variables
-  6314                                  ;  200 ptr sign byte   281 NULL bp+4    s
-  6315                                  ;  201 var sign byte   281 NULL bp-2    c;
-  6316 000030F2 C8020000                 ENTER  2,0
-  6317                                  @@cputs251:
-  6318 000030F6 8B5E04                   mov bx, [bp+4]
-  6319 000030F9 8A07                     mov al, [bx]
-  6320 000030FB B400                     mov ah, 0
-  6321 000030FD 08C0                     or  al, al
-  6322 000030FF 0F841B00                 je @@cputs252
-  6323 00003103 8B5E04                   mov bx, [bp+4]
-  6324 00003106 8A07                     mov al, [bx]
-  6325 00003108 B400                     mov ah, 0
-  6326 0000310A 8846FE                   mov byte [bp-2], al
-  6327 0000310D 8A46FE                   mov al, byte [bp-2]
-  6328 00003110 B400                     mov ah, 0
-  6329 00003112 50                       push ax
-  6330 00003113 E8C401                   call putch
-  6331 00003116 83C402                   add  sp, 2
-  6332 00003119 FF4604                   inc  word [bp+4]
-  6333 0000311C EBD8                     jmp @@cputs251
-  6334                                  @@cputs252:
-  6335                                  
-  6336                                  ;-282 int mkneg(int n) { n; __asm {neg ax} }
-  6337 0000311E C9                       LEAVE
-  6338 0000311F C3                       ret
-  6339                                  ; ENDP
-  6340                                  ;Number of CALLs:    2 : toupper
-  6341                                  
-  6342                                  toupper:  ; *** PROC ***
-  6343                                  ;Function : toupper, Number of local variables: 1
-  6344                                  ;   # type sign width line used address name   list of local variables
-  6345                                  ;  200 ptr sign byte   282 NULL bp+4    s;
-  6346 00003120 C8000000                 ENTER  0,0
-  6347                                  @@toupper253:
-  6348 00003124 8B5E04                   mov bx, [bp+4]
-  6349 00003127 8A07                     mov al, [bx]
-  6350 00003129 B400                     mov ah, 0
-  6351 0000312B 08C0                     or  al, al
-  6352 0000312D 0F843000                 je @@toupper254
-  6353 00003131 8B5E04                   mov bx, [bp+4]
-  6354 00003134 8A07                     mov al, [bx]
-  6355 00003136 B400                     mov ah, 0
-  6356 00003138 83F861                   cmp ax, 97 ;unsigned : 1
-  6357 0000313B 0F8C1D00                 jl  @@toupper255
-  6358 0000313F 8B5E04                   mov bx, [bp+4]
-  6359 00003142 8A07                     mov al, [bx]
-  6360 00003144 B400                     mov ah, 0
-  6361 00003146 83F87A                   cmp ax, 122
-  6362 00003149 0F8F0F00                 jg  @@toupper256
-  6363 0000314D 8B5E04                   mov bx, [bp+4]
-  6364 00003150 8A07                     mov al, [bx]
-  6365 00003152 B400                     mov ah, 0
-  6366 00003154 83E820                   sub ax, 32
-  6367 00003157 8B5E04                   mov  bx, [bp+4]
-  6368 0000315A 8807                     mov  [bx], al
-  6369                                  @@toupper256:
-  6370                                  @@toupper255:
-  6371 0000315C FF4604                   inc  word [bp+4]
-  6372 0000315F EBC3                     jmp @@toupper253
-  6373                                  @@toupper254:
-  6374                                  
-  6375                                  ;-283 //int head1  (char *s) {char c; do{c=*s; c=letter(c); s++; }while(c) *s=0; }
-  6376                                  
+  6286                                  ; exitR
+  6287                                  ; creatR
+  6288                                  ; cputs
+  6289                                  ; cputs
+  6290                                  ; exitR
+  6291                                  ; fputcR
+  6292                                  ; fcloseR
+  6293                                  ; fcloseR
+  6294                                  ; fcloseR
+  6295                                  ; exitR
+  6296                                  ; Number of unresolved CALLs :   76
+  6297                                  ;use archive file: AR.C
+  6298                                  
+  6299                                  ;-280 // AR.C Archive
+  6300                                  
+  6301                                  ;Number of CALLs:    2 : writetty
+  6302                                  
+  6303                                  writetty:  ; *** PROC ***
+  6304 000030F6 B40E                     mov  ah, 14
+  6305 000030F8 BB0000                   mov  bx, 0
+  6306 000030FB CD10                     int  16
+  6307                                  
+  6308                                  ;-281 int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
+  6309                                  
+  6310 000030FD C3                       ret
+  6311                                  ; ENDP
+  6312                                  ;Number of CALLs:    8 : cputs
+  6313                                  
+  6314                                  cputs:  ; *** PROC ***
+  6315                                  ;Function : cputs, Number of local variables: 2
+  6316                                  ;   # type sign width line used address name   list of local variables
+  6317                                  ;  200 ptr sign byte   281 NULL bp+4    s
+  6318                                  ;  201 var sign byte   281 NULL bp-2    c;
+  6319 000030FE C8020000                 ENTER  2,0
+  6320                                  @@cputs251:
+  6321 00003102 8B5E04                   mov bx, [bp+4]
+  6322 00003105 8A07                     mov al, [bx]
+  6323 00003107 B400                     mov ah, 0
+  6324 00003109 08C0                     or  al, al
+  6325 0000310B 0F841B00                 je @@cputs252
+  6326 0000310F 8B5E04                   mov bx, [bp+4]
+  6327 00003112 8A07                     mov al, [bx]
+  6328 00003114 B400                     mov ah, 0
+  6329 00003116 8846FE                   mov byte [bp-2], al
+  6330 00003119 8A46FE                   mov al, byte [bp-2]
+  6331 0000311C B400                     mov ah, 0
+  6332 0000311E 50                       push ax
+  6333 0000311F E8C401                   call putch
+  6334 00003122 83C402                   add  sp, 2
+  6335 00003125 FF4604                   inc  word [bp+4]
+  6336 00003128 EBD8                     jmp @@cputs251
+  6337                                  @@cputs252:
+  6338                                  
+  6339                                  ;-282 int mkneg(int n) { n; __asm {neg ax} }
+  6340 0000312A C9                       LEAVE
+  6341 0000312B C3                       ret
+  6342                                  ; ENDP
+  6343                                  ;Number of CALLs:    2 : toupper
+  6344                                  
+  6345                                  toupper:  ; *** PROC ***
+  6346                                  ;Function : toupper, Number of local variables: 1
+  6347                                  ;   # type sign width line used address name   list of local variables
+  6348                                  ;  200 ptr sign byte   282 NULL bp+4    s;
+  6349 0000312C C8000000                 ENTER  0,0
+  6350                                  @@toupper253:
+  6351 00003130 8B5E04                   mov bx, [bp+4]
+  6352 00003133 8A07                     mov al, [bx]
+  6353 00003135 B400                     mov ah, 0
+  6354 00003137 08C0                     or  al, al
+  6355 00003139 0F843000                 je @@toupper254
+  6356 0000313D 8B5E04                   mov bx, [bp+4]
+  6357 00003140 8A07                     mov al, [bx]
+  6358 00003142 B400                     mov ah, 0
+  6359 00003144 83F861                   cmp ax, 97 ;unsigned : 1
+  6360 00003147 0F8C1D00                 jl  @@toupper255
+  6361 0000314B 8B5E04                   mov bx, [bp+4]
+  6362 0000314E 8A07                     mov al, [bx]
+  6363 00003150 B400                     mov ah, 0
+  6364 00003152 83F87A                   cmp ax, 122
+  6365 00003155 0F8F0F00                 jg  @@toupper256
+  6366 00003159 8B5E04                   mov bx, [bp+4]
+  6367 0000315C 8A07                     mov al, [bx]
+  6368 0000315E B400                     mov ah, 0
+  6369 00003160 83E820                   sub ax, 32
+  6370 00003163 8B5E04                   mov  bx, [bp+4]
+  6371 00003166 8807                     mov  [bx], al
+  6372                                  @@toupper256:
+  6373                                  @@toupper255:
+  6374 00003168 FF4604                   inc  word [bp+4]
+  6375 0000316B EBC3                     jmp @@toupper253
+  6376                                  @@toupper254:
   6377                                  
-  6378                                  ;-284 int strlen(char *s) { int c; c=0; while (*s!=0) {s++; c++;} return c; }
-  6379 00003161 C9                       LEAVE
-  6380 00003162 C3                       ret
-  6381                                  ; ENDP
-  6382                                  ;Number of CALLs:    3 : strlen
-  6383                                  
-  6384                                  strlen:  ; *** PROC ***
-  6385                                  ;Function : strlen, Number of local variables: 2
-  6386                                  ;   # type sign width line used address name   list of local variables
-  6387                                  ;  200 ptr sign byte   284 NULL bp+4    s
-  6388                                  ;  201 var sign word   284 NULL bp-2    c;
-  6389 00003163 C8020000                 ENTER  2,0
-  6390 00003167 66B800000000             mov eax, 0
-  6391 0000316D 8946FE                   mov word [bp-2], ax
-  6392                                  @@strlen257:
-  6393 00003170 8B5E04                   mov bx, [bp+4]
-  6394 00003173 8A07                     mov al, [bx]
-  6395 00003175 B400                     mov ah, 0
-  6396 00003177 83F800                   cmp ax, 0
-  6397 0000317A 0F840800                 je  @@strlen258
-  6398 0000317E FF4604                   inc  word [bp+4]
-  6399 00003181 FF46FE                   inc  word [bp-2]
-  6400 00003184 EBEA                     jmp @@strlen257
-  6401                                  @@strlen258:
-  6402 00003186 8B46FE                   mov ax, [bp-2]
-  6403 00003189 E90000                   jmp @@retn
-  6404                                  
-  6405                                  ;-285 int strcpy1(char *s, char *t) {do { *s=*t; s++; t++; } while (*t!=0); *s=0; }
-  6406                                  
-  6407 0000318C C9                      @@retn: LEAVE
-  6408 0000318D C3                       ret
-  6409                                  ; ENDP
-  6410                                  ;Number of CALLs:    5 : strcpy
-  6411                                  
-  6412                                  strcpy:  ; *** PROC ***
-  6413                                  ;Function : strcpy, Number of local variables: 2
-  6414                                  ;   # type sign width line used address name   list of local variables
-  6415                                  ;  200 ptr sign byte   285 NULL bp+4    s
-  6416                                  ;  201 ptr sign byte   285 NULL bp+6    t;
-  6417 0000318E C8000000                 ENTER  0,0
-  6418                                  @@strcpy259:
-  6419 00003192 8B5E06                   mov bx, [bp+6]
-  6420 00003195 8A07                     mov al, [bx]
-  6421 00003197 B400                     mov ah, 0
-  6422 00003199 8B5E04                   mov  bx, [bp+4]
-  6423 0000319C 8807                     mov  [bx], al
-  6424 0000319E FF4604                   inc  word [bp+4]
-  6425 000031A1 FF4606                   inc  word [bp+6]
-  6426                                  
-  6427                                  ;-286   while (*t!=0); *s=0; return s; }
-  6428                                  
-  6429 000031A4 8B5E06                   mov bx, [bp+6]
-  6430 000031A7 8A07                     mov al, [bx]
-  6431 000031A9 B400                     mov ah, 0
-  6432 000031AB 83F800                   cmp ax, 0
-  6433 000031AE 0F840200                 je  @@strcpy260
-  6434 000031B2 EBDE                     jmp @@strcpy259
-  6435                                  @@strcpy260:
-  6436 000031B4 66B800000000             mov eax, 0
-  6437 000031BA 8B5E04                   mov  bx, [bp+4]
-  6438 000031BD 8807                     mov  [bx], al
-  6439 000031BF 8B4604                   mov ax, [bp+4]
-  6440 000031C2 E90000                   jmp @@retn
-  6441                                  
-  6442                                  ;-287 int strncpy(char *s, char *t, int n) { if (_ n==0) return;
-  6443                                  
-  6444 000031C5 C9                      @@retn: LEAVE
-  6445 000031C6 C3                       ret
-  6446                                  ; ENDP
-  6447                                  ;Number of CALLs:    3 : digit
-  6448                                  
-  6449                                  digit:  ; *** PROC ***
-  6450                                  ;Function : digit, Number of local variables: 1
-  6451                                  ;   # type sign width line used address name   list of local variables
-  6452                                  ;  200 var sign byte   287 NULL bp+4    c;
-  6453 000031C7 C8000000                 ENTER  0,0
-  6454 000031CB 8A4604                   mov al, [bp+4]
-  6455 000031CE 3C30                     cmp al, 48
-  6456 000031D0 0F8D0900                 jge @@digit261
-  6457 000031D4 66B800000000             mov eax, 0
-  6458 000031DA E91B00                   jmp @@retn
-  6459                                  @@digit261:
-  6460 000031DD 8A4604                   mov al, [bp+4]
-  6461 000031E0 3C39                     cmp al, 57
-  6462 000031E2 0F8E0900                 jle @@digit262
-  6463 000031E6 66B800000000             mov eax, 0
-  6464 000031EC E90900                   jmp @@retn
-  6465                                  @@digit262:
-  6466 000031EF 66B801000000             mov eax, 1
-  6467 000031F5 E90000                   jmp @@retn
-  6468                                  
-  6469                                  ;-288 int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1; //XXXXXXXXXX
-  6470                                  
-  6471 000031F8 C9                      @@retn: LEAVE
-  6472 000031F9 C3                       ret
-  6473                                  ; ENDP
-  6474                                  ;Number of CALLs:   35 : eqstr
-  6475                                  
-  6476                                  eqstr:  ; *** PROC ***
-  6477                                  ;Function : eqstr, Number of local variables: 2
-  6478                                  ;   # type sign width line used address name   list of local variables
-  6479                                  ;  200 ptr sign byte   288 NULL bp+4    p
-  6480                                  ;  201 ptr sign byte   288 NULL bp+6    q;
-  6481 000031FA C8000000                 ENTER  0,0
-  6482                                  @@eqstr263:
-  6483 000031FE 8B5E04                   mov bx, [bp+4]
-  6484 00003201 8A07                     mov al, [bx]
-  6485 00003203 B400                     mov ah, 0
-  6486 00003205 08C0                     or  al, al
-  6487 00003207 0F842300                 je @@eqstr264
-  6488                                  
-  6489                                  ;-289     if (*p != *q) return 0; p++; q++; }
-  6490                                  
-  6491 0000320B 8B5E04                   mov bx, [bp+4]
-  6492 0000320E 8A07                     mov al, [bx]
-  6493 00003210 B400                     mov ah, 0
-  6494 00003212 8B5E06                   mov bx, [bp+6]
-  6495 00003215 3A07                     cmp al, [bx]
-  6496 00003217 B400                     mov ah, 0
-  6497 00003219 0F840900                 je  @@eqstr265
-  6498 0000321D 66B800000000             mov eax, 0
-  6499 00003223 E92700                   jmp @@retn
-  6500                                  @@eqstr265:
-  6501 00003226 FF4604                   inc  word [bp+4]
-  6502 00003229 FF4606                   inc  word [bp+6]
-  6503                                  
-  6504                                  ;-290     if(*q) return 0; return 1; }
-  6505                                  
-  6506 0000322C EBD0                     jmp @@eqstr263
-  6507                                  @@eqstr264:
-  6508 0000322E 8B5E06                   mov bx, [bp+6]
-  6509 00003231 8A07                     mov al, [bx]
-  6510 00003233 B400                     mov ah, 0
-  6511 00003235 08C0                     or  al, al
-  6512 00003237 0F840900                 je @@eqstr266
-  6513 0000323B 66B800000000             mov eax, 0
-  6514 00003241 E90900                   jmp @@retn
-  6515                                  @@eqstr266:
-  6516 00003244 66B801000000             mov eax, 1
-  6517 0000324A E90000                   jmp @@retn
-  6518                                  
-  6519                                  ;-291 int strcat1(char *s, char *t) { while (*s != 0) s++; strcpy(s, t);  }
-  6520                                  
-  6521 0000324D C9                      @@retn: LEAVE
-  6522 0000324E C3                       ret
-  6523                                  ; ENDP
-  6524                                  ;Number of CALLs:    3 : strcat1
-  6525                                  
-  6526                                  strcat1:  ; *** PROC ***
-  6527                                  ;Function : strcat1, Number of local variables: 2
-  6528                                  ;   # type sign width line used address name   list of local variables
-  6529                                  ;  200 ptr sign byte   291 NULL bp+4    s
-  6530                                  ;  201 ptr sign byte   291 NULL bp+6    t;
-  6531 0000324F C8000000                 ENTER  0,0
-  6532                                  @@strcat1267:
-  6533 00003253 8B5E04                   mov bx, [bp+4]
-  6534 00003256 8A07                     mov al, [bx]
-  6535 00003258 B400                     mov ah, 0
-  6536 0000325A 83F800                   cmp ax, 0
-  6537 0000325D 0F840500                 je  @@strcat1268
-  6538 00003261 FF4604                   inc  word [bp+4]
-  6539 00003264 EBED                     jmp @@strcat1267
-  6540                                  @@strcat1268:
-  6541 00003266 FF7606                   push word [bp+6]
-  6542 00003269 FF7604                   push word [bp+4]
-  6543 0000326C E81FFF                   call strcpy
-  6544 0000326F 83C404                   add  sp, 4
-  6545                                  
-  6546                                  ;-292 int basename(char *s) { char *p; p=0;
-  6547 00003272 C9                       LEAVE
-  6548 00003273 C3                       ret
-  6549                                  ; ENDP
-  6550                                  ;Number of CALLs:    1 : openR
-  6551                                  
-  6552                                  openR:  ; *** PROC ***
-  6553                                  ;Function : openR, Number of local variables: 1
-  6554                                  ;   # type sign width line used address name   list of local variables
-  6555                                  ;  200 ptr sign byte   292 NULL bp+4    s;
-  6556 00003274 C8000000                 ENTER  0,0
-  6557 00003278 8B5604                   mov  dx, [bp+4]
-  6558 0000327B B8023D                   mov  ax, 15618
-  6559 0000327E E87200                   call DosInt
-  6560                                  
-  6561                                  ;-293 int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
-  6562 00003281 C9                       LEAVE
-  6563 00003282 C3                       ret
-  6564                                  ; ENDP
-  6565                                  ;Number of CALLs:    2 : creatR
-  6566                                  
-  6567                                  creatR:  ; *** PROC ***
-  6568                                  ;Function : creatR, Number of local variables: 1
-  6569                                  ;   # type sign width line used address name   list of local variables
-  6570                                  ;  200 ptr sign byte   293 NULL bp+4    s;
-  6571 00003283 C8000000                 ENTER  0,0
-  6572 00003287 8B5604                   mov  dx, [bp+4]
-  6573 0000328A B90000                   mov  cx, 0
-  6574 0000328D B8003C                   mov  ax, 15360
-  6575 00003290 E86000                   call DosInt
-  6576                                  
-  6577                                  ;-294 int readR (char *s, int fd) {dx=s; cx=1; bx=fd; ax=0x3F00; DosInt(); }
-  6578 00003293 C9                       LEAVE
-  6579 00003294 C3                       ret
-  6580                                  ; ENDP
-  6581                                  ;Number of CALLs:    2 : readRL
-  6582                                  
-  6583                                  readRL:  ; *** PROC ***
-  6584                                  ;Function : readRL, Number of local variables: 3
-  6585                                  ;   # type sign width line used address name   list of local variables
-  6586                                  ;  200 ptr sign byte   294 NULL bp+4    s
-  6587                                  ;  201 var sign word   294 NULL bp+6    fd
-  6588                                  ;  202 var sign word   294 NULL bp+8    len;
-  6589 00003295 C8000000                 ENTER  0,0
-  6590 00003299 8B5604                   mov  dx, [bp+4]
-  6591 0000329C 8B4E08                   mov  cx, [bp+8]
-  6592 0000329F 8B5E06                   mov  bx, [bp+6]
-  6593 000032A2 B8003F                   mov  ax, 16128
-  6594 000032A5 E84B00                   call DosInt
-  6595                                  
-  6596                                  ;-295 int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
-  6597 000032A8 C9                       LEAVE
-  6598 000032A9 C3                       ret
-  6599                                  ; ENDP
-  6600                                  ;Number of CALLs:    2 : fputcR
-  6601                                  
-  6602                                  fputcR:  ; *** PROC ***
-  6603                                  ;Function : fputcR, Number of local variables: 2
-  6604                                  ;   # type sign width line used address name   list of local variables
-  6605                                  ;  200 ptr sign byte   295 NULL bp+4    n
-  6606                                  ;  201 var sign word   295 NULL bp+6    fd;
-  6607 000032AA C8000000                 ENTER  0,0
-  6608 000032AE 8D5604                  lea dx, [bp+4]
-  6609                                  
-  6610                                  ;-296   cx=1; bx=fd; ax=0x4000; DosInt(); }
-  6611                                  
-  6612 000032B1 B90100                   mov  cx, 1
-  6613 000032B4 8B5E06                   mov  bx, [bp+6]
-  6614 000032B7 B80040                   mov  ax, 16384
-  6615 000032BA E83600                   call DosInt
-  6616                                  
-  6617                                  ;-297 int writeRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x4000; DosInt();}
-  6618 000032BD C9                       LEAVE
-  6619 000032BE C3                       ret
-  6620                                  ; ENDP
-  6621                                  ;Number of CALLs:    3 : fcloseR
-  6622                                  
-  6623                                  fcloseR:  ; *** PROC ***
-  6624                                  ;Function : fcloseR, Number of local variables: 1
-  6625                                  ;   # type sign width line used address name   list of local variables
-  6626                                  ;  200 var sign word   297 NULL bp+4    fd;
-  6627 000032BF C8000000                 ENTER  0,0
-  6628 000032C3 8B5E04                   mov  bx, [bp+4]
-  6629 000032C6 B8003E                   mov  ax, 15872
-  6630 000032C9 CD21                     int  33
-  6631                                  
-  6632                                  ;-298 int exitR(char c) {ah=0x4C; al=c; inth 0x21; }
-  6633 000032CB C9                       LEAVE
-  6634 000032CC C3                       ret
-  6635                                  ; ENDP
-  6636                                  ;Number of CALLs:    5 : exitR
-  6637                                  
-  6638                                  exitR:  ; *** PROC ***
-  6639                                  ;Function : exitR, Number of local variables: 1
-  6640                                  ;   # type sign width line used address name   list of local variables
-  6641                                  ;  200 var sign byte   298 NULL bp+4    c;
-  6642 000032CD C8000000                 ENTER  0,0
-  6643 000032D1 B44C                     mov  ah, 76
-  6644 000032D3 8A4604                   mov  al, [bp+4]
-  6645 000032D6 CD21                     int  33
-  6646                                  
-  6647                                  ;-299 int setdta(char *s) {dx=s; ah=0x1A; inth 0x21; }
-  6648 000032D8 C9                       LEAVE
-  6649 000032D9 C3                       ret
-  6650                                  ; ENDP
-  6651                                  ;End of archive file. 
-  6652                                   
-  6653                                  ; missing functions: 
-  6654                                  ; putch
-  6655                                  ; DosInt
-  6656                                  ; DosInt
-  6657                                  ; DosInt
+  6378                                  ;-283 //int head1  (char *s) {char c; do{c=*s; c=letter(c); s++; }while(c) *s=0; }
+  6379                                  
+  6380                                  
+  6381                                  ;-284 int strlen(char *s) { int c; c=0; while (*s!=0) {s++; c++;} return c; }
+  6382 0000316D C9                       LEAVE
+  6383 0000316E C3                       ret
+  6384                                  ; ENDP
+  6385                                  ;Number of CALLs:    3 : strlen
+  6386                                  
+  6387                                  strlen:  ; *** PROC ***
+  6388                                  ;Function : strlen, Number of local variables: 2
+  6389                                  ;   # type sign width line used address name   list of local variables
+  6390                                  ;  200 ptr sign byte   284 NULL bp+4    s
+  6391                                  ;  201 var sign word   284 NULL bp-2    c;
+  6392 0000316F C8020000                 ENTER  2,0
+  6393 00003173 66B800000000             mov eax, 0
+  6394 00003179 8946FE                   mov word [bp-2], ax
+  6395                                  @@strlen257:
+  6396 0000317C 8B5E04                   mov bx, [bp+4]
+  6397 0000317F 8A07                     mov al, [bx]
+  6398 00003181 B400                     mov ah, 0
+  6399 00003183 83F800                   cmp ax, 0
+  6400 00003186 0F840800                 je  @@strlen258
+  6401 0000318A FF4604                   inc  word [bp+4]
+  6402 0000318D FF46FE                   inc  word [bp-2]
+  6403 00003190 EBEA                     jmp @@strlen257
+  6404                                  @@strlen258:
+  6405 00003192 8B46FE                   mov ax, [bp-2]
+  6406 00003195 E90000                   jmp @@retn
+  6407                                  
+  6408                                  ;-285 int strcpy1(char *s, char *t) {do { *s=*t; s++; t++; } while (*t!=0); *s=0; }
+  6409                                  
+  6410 00003198 C9                      @@retn: LEAVE
+  6411 00003199 C3                       ret
+  6412                                  ; ENDP
+  6413                                  ;Number of CALLs:    5 : strcpy
+  6414                                  
+  6415                                  strcpy:  ; *** PROC ***
+  6416                                  ;Function : strcpy, Number of local variables: 2
+  6417                                  ;   # type sign width line used address name   list of local variables
+  6418                                  ;  200 ptr sign byte   285 NULL bp+4    s
+  6419                                  ;  201 ptr sign byte   285 NULL bp+6    t;
+  6420 0000319A C8000000                 ENTER  0,0
+  6421                                  @@strcpy259:
+  6422 0000319E 8B5E06                   mov bx, [bp+6]
+  6423 000031A1 8A07                     mov al, [bx]
+  6424 000031A3 B400                     mov ah, 0
+  6425 000031A5 8B5E04                   mov  bx, [bp+4]
+  6426 000031A8 8807                     mov  [bx], al
+  6427 000031AA FF4604                   inc  word [bp+4]
+  6428 000031AD FF4606                   inc  word [bp+6]
+  6429                                  
+  6430                                  ;-286   while (*t!=0); *s=0; return s; }
+  6431                                  
+  6432 000031B0 8B5E06                   mov bx, [bp+6]
+  6433 000031B3 8A07                     mov al, [bx]
+  6434 000031B5 B400                     mov ah, 0
+  6435 000031B7 83F800                   cmp ax, 0
+  6436 000031BA 0F840200                 je  @@strcpy260
+  6437 000031BE EBDE                     jmp @@strcpy259
+  6438                                  @@strcpy260:
+  6439 000031C0 66B800000000             mov eax, 0
+  6440 000031C6 8B5E04                   mov  bx, [bp+4]
+  6441 000031C9 8807                     mov  [bx], al
+  6442 000031CB 8B4604                   mov ax, [bp+4]
+  6443 000031CE E90000                   jmp @@retn
+  6444                                  
+  6445                                  ;-287 int strncpy(char *s, char *t, int n) { if (_ n==0) return;
+  6446                                  
+  6447 000031D1 C9                      @@retn: LEAVE
+  6448 000031D2 C3                       ret
+  6449                                  ; ENDP
+  6450                                  ;Number of CALLs:    3 : digit
+  6451                                  
+  6452                                  digit:  ; *** PROC ***
+  6453                                  ;Function : digit, Number of local variables: 1
+  6454                                  ;   # type sign width line used address name   list of local variables
+  6455                                  ;  200 var sign byte   287 NULL bp+4    c;
+  6456 000031D3 C8000000                 ENTER  0,0
+  6457 000031D7 8A4604                   mov al, [bp+4]
+  6458 000031DA 3C30                     cmp al, 48
+  6459 000031DC 0F8D0900                 jge @@digit261
+  6460 000031E0 66B800000000             mov eax, 0
+  6461 000031E6 E91B00                   jmp @@retn
+  6462                                  @@digit261:
+  6463 000031E9 8A4604                   mov al, [bp+4]
+  6464 000031EC 3C39                     cmp al, 57
+  6465 000031EE 0F8E0900                 jle @@digit262
+  6466 000031F2 66B800000000             mov eax, 0
+  6467 000031F8 E90900                   jmp @@retn
+  6468                                  @@digit262:
+  6469 000031FB 66B801000000             mov eax, 1
+  6470 00003201 E90000                   jmp @@retn
+  6471                                  
+  6472                                  ;-288 int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1; //XXXXXXXXXX
+  6473                                  
+  6474 00003204 C9                      @@retn: LEAVE
+  6475 00003205 C3                       ret
+  6476                                  ; ENDP
+  6477                                  ;Number of CALLs:   35 : eqstr
+  6478                                  
+  6479                                  eqstr:  ; *** PROC ***
+  6480                                  ;Function : eqstr, Number of local variables: 2
+  6481                                  ;   # type sign width line used address name   list of local variables
+  6482                                  ;  200 ptr sign byte   288 NULL bp+4    p
+  6483                                  ;  201 ptr sign byte   288 NULL bp+6    q;
+  6484 00003206 C8000000                 ENTER  0,0
+  6485                                  @@eqstr263:
+  6486 0000320A 8B5E04                   mov bx, [bp+4]
+  6487 0000320D 8A07                     mov al, [bx]
+  6488 0000320F B400                     mov ah, 0
+  6489 00003211 08C0                     or  al, al
+  6490 00003213 0F842300                 je @@eqstr264
+  6491                                  
+  6492                                  ;-289     if (*p != *q) return 0; p++; q++; }
+  6493                                  
+  6494 00003217 8B5E04                   mov bx, [bp+4]
+  6495 0000321A 8A07                     mov al, [bx]
+  6496 0000321C B400                     mov ah, 0
+  6497 0000321E 8B5E06                   mov bx, [bp+6]
+  6498 00003221 3A07                     cmp al, [bx]
+  6499 00003223 B400                     mov ah, 0
+  6500 00003225 0F840900                 je  @@eqstr265
+  6501 00003229 66B800000000             mov eax, 0
+  6502 0000322F E92700                   jmp @@retn
+  6503                                  @@eqstr265:
+  6504 00003232 FF4604                   inc  word [bp+4]
+  6505 00003235 FF4606                   inc  word [bp+6]
+  6506                                  
+  6507                                  ;-290     if(*q) return 0; return 1; }
+  6508                                  
+  6509 00003238 EBD0                     jmp @@eqstr263
+  6510                                  @@eqstr264:
+  6511 0000323A 8B5E06                   mov bx, [bp+6]
+  6512 0000323D 8A07                     mov al, [bx]
+  6513 0000323F B400                     mov ah, 0
+  6514 00003241 08C0                     or  al, al
+  6515 00003243 0F840900                 je @@eqstr266
+  6516 00003247 66B800000000             mov eax, 0
+  6517 0000324D E90900                   jmp @@retn
+  6518                                  @@eqstr266:
+  6519 00003250 66B801000000             mov eax, 1
+  6520 00003256 E90000                   jmp @@retn
+  6521                                  
+  6522                                  ;-291 int strcat1(char *s, char *t) { while (*s != 0) s++; strcpy(s, t);  }
+  6523                                  
+  6524 00003259 C9                      @@retn: LEAVE
+  6525 0000325A C3                       ret
+  6526                                  ; ENDP
+  6527                                  ;Number of CALLs:    3 : strcat1
+  6528                                  
+  6529                                  strcat1:  ; *** PROC ***
+  6530                                  ;Function : strcat1, Number of local variables: 2
+  6531                                  ;   # type sign width line used address name   list of local variables
+  6532                                  ;  200 ptr sign byte   291 NULL bp+4    s
+  6533                                  ;  201 ptr sign byte   291 NULL bp+6    t;
+  6534 0000325B C8000000                 ENTER  0,0
+  6535                                  @@strcat1267:
+  6536 0000325F 8B5E04                   mov bx, [bp+4]
+  6537 00003262 8A07                     mov al, [bx]
+  6538 00003264 B400                     mov ah, 0
+  6539 00003266 83F800                   cmp ax, 0
+  6540 00003269 0F840500                 je  @@strcat1268
+  6541 0000326D FF4604                   inc  word [bp+4]
+  6542 00003270 EBED                     jmp @@strcat1267
+  6543                                  @@strcat1268:
+  6544 00003272 FF7606                   push word [bp+6]
+  6545 00003275 FF7604                   push word [bp+4]
+  6546 00003278 E81FFF                   call strcpy
+  6547 0000327B 83C404                   add  sp, 4
+  6548                                  
+  6549                                  ;-292 int basename(char *s) { char *p; p=0;
+  6550 0000327E C9                       LEAVE
+  6551 0000327F C3                       ret
+  6552                                  ; ENDP
+  6553                                  ;Number of CALLs:    1 : openR
+  6554                                  
+  6555                                  openR:  ; *** PROC ***
+  6556                                  ;Function : openR, Number of local variables: 1
+  6557                                  ;   # type sign width line used address name   list of local variables
+  6558                                  ;  200 ptr sign byte   292 NULL bp+4    s;
+  6559 00003280 C8000000                 ENTER  0,0
+  6560 00003284 8B5604                   mov  dx, [bp+4]
+  6561 00003287 B8023D                   mov  ax, 15618
+  6562 0000328A E87200                   call DosInt
+  6563                                  
+  6564                                  ;-293 int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
+  6565 0000328D C9                       LEAVE
+  6566 0000328E C3                       ret
+  6567                                  ; ENDP
+  6568                                  ;Number of CALLs:    2 : creatR
+  6569                                  
+  6570                                  creatR:  ; *** PROC ***
+  6571                                  ;Function : creatR, Number of local variables: 1
+  6572                                  ;   # type sign width line used address name   list of local variables
+  6573                                  ;  200 ptr sign byte   293 NULL bp+4    s;
+  6574 0000328F C8000000                 ENTER  0,0
+  6575 00003293 8B5604                   mov  dx, [bp+4]
+  6576 00003296 B90000                   mov  cx, 0
+  6577 00003299 B8003C                   mov  ax, 15360
+  6578 0000329C E86000                   call DosInt
+  6579                                  
+  6580                                  ;-294 int readR (char *s, int fd) {dx=s; cx=1; bx=fd; ax=0x3F00; DosInt(); }
+  6581 0000329F C9                       LEAVE
+  6582 000032A0 C3                       ret
+  6583                                  ; ENDP
+  6584                                  ;Number of CALLs:    2 : readRL
+  6585                                  
+  6586                                  readRL:  ; *** PROC ***
+  6587                                  ;Function : readRL, Number of local variables: 3
+  6588                                  ;   # type sign width line used address name   list of local variables
+  6589                                  ;  200 ptr sign byte   294 NULL bp+4    s
+  6590                                  ;  201 var sign word   294 NULL bp+6    fd
+  6591                                  ;  202 var sign word   294 NULL bp+8    len;
+  6592 000032A1 C8000000                 ENTER  0,0
+  6593 000032A5 8B5604                   mov  dx, [bp+4]
+  6594 000032A8 8B4E08                   mov  cx, [bp+8]
+  6595 000032AB 8B5E06                   mov  bx, [bp+6]
+  6596 000032AE B8003F                   mov  ax, 16128
+  6597 000032B1 E84B00                   call DosInt
+  6598                                  
+  6599                                  ;-295 int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
+  6600 000032B4 C9                       LEAVE
+  6601 000032B5 C3                       ret
+  6602                                  ; ENDP
+  6603                                  ;Number of CALLs:    2 : fputcR
+  6604                                  
+  6605                                  fputcR:  ; *** PROC ***
+  6606                                  ;Function : fputcR, Number of local variables: 2
+  6607                                  ;   # type sign width line used address name   list of local variables
+  6608                                  ;  200 ptr sign byte   295 NULL bp+4    n
+  6609                                  ;  201 var sign word   295 NULL bp+6    fd;
+  6610 000032B6 C8000000                 ENTER  0,0
+  6611 000032BA 8D5604                  lea dx, [bp+4]
+  6612                                  
+  6613                                  ;-296   cx=1; bx=fd; ax=0x4000; DosInt(); }
+  6614                                  
+  6615 000032BD B90100                   mov  cx, 1
+  6616 000032C0 8B5E06                   mov  bx, [bp+6]
+  6617 000032C3 B80040                   mov  ax, 16384
+  6618 000032C6 E83600                   call DosInt
+  6619                                  
+  6620                                  ;-297 int writeRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x4000; DosInt();}
+  6621 000032C9 C9                       LEAVE
+  6622 000032CA C3                       ret
+  6623                                  ; ENDP
+  6624                                  ;Number of CALLs:    3 : fcloseR
+  6625                                  
+  6626                                  fcloseR:  ; *** PROC ***
+  6627                                  ;Function : fcloseR, Number of local variables: 1
+  6628                                  ;   # type sign width line used address name   list of local variables
+  6629                                  ;  200 var sign word   297 NULL bp+4    fd;
+  6630 000032CB C8000000                 ENTER  0,0
+  6631 000032CF 8B5E04                   mov  bx, [bp+4]
+  6632 000032D2 B8003E                   mov  ax, 15872
+  6633 000032D5 CD21                     int  33
+  6634                                  
+  6635                                  ;-298 int exitR(char c) {ah=0x4C; al=c; inth 0x21; }
+  6636 000032D7 C9                       LEAVE
+  6637 000032D8 C3                       ret
+  6638                                  ; ENDP
+  6639                                  ;Number of CALLs:    5 : exitR
+  6640                                  
+  6641                                  exitR:  ; *** PROC ***
+  6642                                  ;Function : exitR, Number of local variables: 1
+  6643                                  ;   # type sign width line used address name   list of local variables
+  6644                                  ;  200 var sign byte   298 NULL bp+4    c;
+  6645 000032D9 C8000000                 ENTER  0,0
+  6646 000032DD B44C                     mov  ah, 76
+  6647 000032DF 8A4604                   mov  al, [bp+4]
+  6648 000032E2 CD21                     int  33
+  6649                                  
+  6650                                  ;-299 int setdta(char *s) {dx=s; ah=0x1A; inth 0x21; }
+  6651 000032E4 C9                       LEAVE
+  6652 000032E5 C3                       ret
+  6653                                  ; ENDP
+  6654                                  ;End of archive file. 
+  6655                                   
+  6656                                  ; missing functions: 
+  6657                                  ; putch
   6658                                  ; DosInt
-  6659                                  ; Number of unresolved CALLs :    5
-  6660                                  ;use archive file: AR.C
-  6661                                  
-  6662                                  ;-300 // AR.C Archive
-  6663                                  
-  6664                                  ;Number of CALLs:    1 : putch
-  6665                                  
-  6666                                  putch:  ; *** PROC ***
-  6667                                  ;Function : putch, Number of local variables: 1
-  6668                                  ;   # type sign width line used address name   list of local variables
-  6669                                  ;  200 var sign byte   300 NULL bp+4    c;
-  6670 000032DA C8000000                 ENTER  0,0
-  6671 000032DE 807E040A                cmp byte [bp+4], 10
-  6672 000032E2 0F850500                 jne @@putch269
-  6673 000032E6 B00D                     mov  al, 13
-  6674 000032E8 E8FFFD                   call writetty
-  6675                                  @@putch269:
-  6676 000032EB 8A4604                   mov  al, [bp+4]
-  6677 000032EE E8F9FD                   call writetty
-  6678                                  
-  6679                                  ;-301 int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
-  6680 000032F1 C9                       LEAVE
-  6681 000032F2 C3                       ret
-  6682                                  ; ENDP
-  6683                                  ;Number of CALLs:    4 : DosInt
-  6684                                  
-  6685                                  DosInt:  ; *** PROC ***
-  6686 000032F3 CD21                     int  33
-  6687 000032F5 7304                     jae short @@DosInt270
-  6688 000032F7 FF06[9F01]               inc  word [DOS_ERR]
-  6689                                  @@DosInt270:
-  6690                                  
-  6691                                  ;-302 int openR (char *s) { dx=s; ax=0x3D02;  DosInt(); }
-  6692                                  
-  6693 000032FB C3                       ret
-  6694                                  ; ENDP
-  6695                                  ;End of archive file. 
-  6696                                   
-  6697                                  ; missing functions:  All FUNCTIONs in place
-  6698 000032FC E80000                  LastFunctionByt:db 0E8h, 0, 0
-  6699 000032FF 58                      pop ax
-  6700 00003300 C3                      ret
-  6701                                   
-  6702                                  ;   # type sign width line used  address name   list of global variables
-  6703                                  
-  6704                                  ;    1 arr sign byte     1    2        0 Version1[10]
-  6705                                  ;    2 var sign byte     1    3        0 LIST
-  6706                                  ;    3 def unsg byte     2    -        0 SYMBOLMAX=31
-  6707                                  ;    4 arr sign byte     3    8        0 Symbol[31]
-  6708                                  ;    5 arr sign byte     4   36        0 SymbolUpper[31]
-  6709                                  ;    6 var unsg word     5   12        0 SymbolInt
-  6710                                  ;    7 def unsg byte     6    -        0 INPUTBUFMAX=127
-  6711                                  ;    8 arr sign byte     7    4        0 InputBuf[127]
-  6712                                  ;    9 ptr unsg byte     8   24        0 InputPtr
-  6713                                  ;   10 arr sign byte     9    5        0 namein[67]
-  6714                                  ;   11 arr sign byte    10    5        0 namelst[67]
-  6715                                  ;   12 arr sign byte    11    5        0 namebin[67]
-  6716                                  ;   13 var sign word    12    4        0 asm_fd
-  6717                                  ;   14 var sign word    13    3        0 lst_fd
-  6718                                  ;   15 var sign word    14    3        0 bin_fd
-  6719                                  ;   16 var sign word    15    6        0 DOS_ERR
-  6720                                  ;   17 var sign word    16    4        0 ErrorCount
-  6721                                  ;   18 var sign word    17    4        0 DOS_NoBytes
-  6722                                  ;   19 var sign byte    18    4        0 DOS_ByteRead
-  6723                                  ;   20 var unsg word    20    5        0 PC
-  6724                                  ;   21 var unsg word    21    2        0 PCStart
-  6725                                  ;   22 var sign byte    22    3        0 isLabel
-  6726                                  ;   23 def unsg byte    23    -        0 DIGIT=1
-  6727                                  ;   24 def unsg byte    24    -        0 LETTERE=2
-  6728                                  ;   25 def unsg byte    25    -        0 ALNUME=3
-  6729                                  ;   26 def unsg byte    26    -        0 NOALNUME=4
-  6730                                  ;   27 var sign byte    27   21        0 TokeType
-  6731                                  ;   28 def unsg byte    28    -        0 BYTE=1
-  6732                                  ;   29 def unsg byte    29    -        0 WORD=2
-  6733                                  ;   30 def unsg byte    30    -        0 DWORD=3
-  6734                                  ;   31 def unsg byte    31    -        0 SEGREG=4
-  6735                                  ;   32 def unsg byte    32    -        0 IMM=1
-  6736                                  ;   33 def unsg byte    33    -        0 REG=2
-  6737                                  ;   34 def unsg byte    34    -        0 ADR=3
-  6738                                  ;   35 def unsg byte    35    -        0 MEM=4
-  6739                                  ;   36 var sign byte    36   18        0 Op
-  6740                                  ;   37 var sign byte    37   22        0 Op2
-  6741                                  ;   38 var sign byte    38   14        0 CodeType
-  6742                                  ;   39 var sign byte    39    9        0 Code1
-  6743                                  ;   40 var sign byte    40    6        0 Code2
-  6744                                  ;   41 var sign byte    41    2        0 Code3
-  6745                                  ;   42 var sign byte    42   14        0 R2No
-  6746                                  ;   43 var sign byte    43   10        0 R1No
-  6747                                  ;   44 var sign byte    44   17        0 R2Type
-  6748                                  ;   45 var sign byte    45    9        0 R1Type
-  6749                                  ;   46 var sign byte    46   14        0 OpSize
-  6750                                  ;   47 var sign byte    47    7        0 wflag
-  6751                                  ;   48 var sign byte    48    3        0 dflag
-  6752                                  ;   49 var sign byte    49    6        0 sflag
-  6753                                  ;   50 var sign byte    50   14        0 rm
-  6754                                  ;   51 var sign byte    51    3        0 isDirect
-  6755                                  ;   52 var sign word    52   14        0 disp
-  6756                                  ;   53 var unsg word    53    7        0 imme
-  6757                                  ;   54 def unsg byte    55    -        0 OPMAXLEN=5
-  6758                                  ;   55 arr sign byte    56    2        0 OpPos[5]
-  6759                                  ;   56 var sign word    57    6        0 OpPrintIndex
-  6760                                  ;   57 ptr sign byte    58   17        0 OpCodePtr
-  6761                                  ;   58 var sign byte    59    2        0 PrintR
-  6762                                  ;   59 def unsg byte    61    -        0 LABELNAMESMAX=969
-  6763                                  ;   60 arr sign byte    62    3        0 LabelNames[1000]
-  6764                                  ;   61 ptr sign byte    63    5        0 LabelNamePtr
-  6765                                  ;   62 def unsg byte    64    -        0 LABELADRMAX=100
-  6766                                  ;   63 arr unsg word    65    3        0 LabelAddr[100]
-  6767                                  ;   64 var sign word    66    4        0 LabelMaxIx
-  6768                                  ;   65 var sign word    67    4        0 LabelIx
-  6769                                  ;   66 def unsg byte    69    -        0 FILEBINMAX=2000
-  6770                                  ;   67 arr sign byte    70    2        0 FileBin[2000]
-  6771                                  ;   68 var unsg word    71    5        0 BinLen
-  6772                                  ;   69 ptr sign byte    73    1        0 arglen
-  6773                                  ;   70 ptr sign byte    74    4        0 argv
-  6774                                  ;   71 var sign byte     1    1        0 I_START
-  6775                                  ;   72 arr sign byte     4 NULL        0 I_PUSHA[9]
-  6776                                  ;   73 arr sign byte     5 NULL        0 I_POPA[8]
-  6777                                  ;   74 arr sign byte     6 NULL        0 I_NOP[7]
-  6778                                  ;   75 arr sign byte     7 NULL        0 I_CBW[7]
-  6779                                  ;   76 arr sign byte     8 NULL        0 I_CWDE[8]
-  6780                                  ;   77 arr sign byte     9 NULL        0 I_CWD[7]
-  6781                                  ;   78 arr sign byte    10 NULL        0 I_CDQ[7]
-  6782                                  ;   79 arr sign byte    11 NULL        0 I_WAIT[8]
-  6783                                  ;   80 arr sign byte    12 NULL        0 I_PUSHF[9]
-  6784                                  ;   81 arr sign byte    13 NULL        0 I_POPF[8]
-  6785                                  ;   82 arr sign byte    14 NULL        0 I_SAHF[8]
-  6786                                  ;   83 arr sign byte    15 NULL        0 I_LAHF[8]
-  6787                                  ;   84 arr sign byte    16 NULL        0 I_MOVSB[9]
-  6788                                  ;   85 arr sign byte    17 NULL        0 I_MOVSW[9]
-  6789                                  ;   86 arr sign byte    18 NULL        0 I_CMPSB[9]
-  6790                                  ;   87 arr sign byte    19 NULL        0 I_CMPSW[9]
-  6791                                  ;   88 arr sign byte    20 NULL        0 I_STOSB[9]
-  6792                                  ;   89 arr sign byte    21 NULL        0 I_STOSW[9]
-  6793                                  ;   90 arr sign byte    22 NULL        0 I_LODSB[9]
-  6794                                  ;   91 arr sign byte    23 NULL        0 I_LODSW[9]
-  6795                                  ;   92 arr sign byte    24 NULL        0 I_SCASB[9]
-  6796                                  ;   93 arr sign byte    25 NULL        0 I_SCASW[9]
-  6797                                  ;   94 arr sign byte    26 NULL        0 I_LEAVE[9]
-  6798                                  ;   95 arr sign byte    27 NULL        0 I_IRET[8]
-  6799                                  ;   96 arr sign byte    28 NULL        0 I_XLAT[8]
-  6800                                  ;   97 arr sign byte    29 NULL        0 I_LOCK[8]
-  6801                                  ;   98 arr sign byte    30 NULL        0 I_REPNE[9]
-  6802                                  ;   99 arr sign byte    31 NULL        0 I_REPNZ[9]
-  6803                                  ;  100 arr sign byte    32 NULL        0 I_REPE[8]
-  6804                                  ;  101 arr sign byte    33 NULL        0 I_REPZ[8]
-  6805                                  ;  102 arr sign byte    34 NULL        0 I_HLT[7]
-  6806                                  ;  103 arr sign byte    35 NULL        0 I_CLC[7]
-  6807                                  ;  104 arr sign byte    36 NULL        0 I_STC[7]
-  6808                                  ;  105 arr sign byte    37 NULL        0 I_CLI[7]
-  6809                                  ;  106 arr sign byte    38 NULL        0 I_STI[7]
-  6810                                  ;  107 arr sign byte    39 NULL        0 I_CLD[7]
-  6811                                  ;  108 arr sign byte    40 NULL        0 I_STD[7]
-  6812                                  ;  109 arr sign byte    42 NULL        0 I_INC[9]
-  6813                                  ;  110 arr sign byte    43 NULL        0 I_DEC[9]
-  6814                                  ;  111 arr sign byte    44 NULL        0 I_NOT[8]
-  6815                                  ;  112 arr sign byte    45 NULL        0 I_NEG[8]
-  6816                                  ;  113 arr sign byte    46 NULL        0 I_MUL[8]
-  6817                                  ;  114 arr sign byte    47 NULL        0 I_IMUL[9]
-  6818                                  ;  115 arr sign byte    48 NULL        0 I_DIV[8]
-  6819                                  ;  116 arr sign byte    49 NULL        0 I_IDIV[9]
-  6820                                  ;  117 arr sign byte    51 NULL        0 I_LES[7]
-  6821                                  ;  118 arr sign byte    52 NULL        0 I_LDS[7]
-  6822                                  ;  119 arr sign byte    53 NULL        0 I_LEA[7]
-  6823                                  ;  120 arr sign byte    54 NULL        0 I_LSS[8]
-  6824                                  ;  121 arr sign byte    55 NULL        0 I_LFS[8]
-  6825                                  ;  122 arr sign byte    56 NULL        0 I_LGS[8]
-  6826                                  ;  123 arr sign byte    58 NULL        0 I_ADD[7]
-  6827                                  ;  124 arr sign byte    59 NULL        0 I_OR[6]
-  6828                                  ;  125 arr sign byte    60 NULL        0 I_ADC[7]
-  6829                                  ;  126 arr sign byte    61 NULL        0 I_SBB[7]
-  6830                                  ;  127 arr sign byte    62 NULL        0 I_AND[7]
-  6831                                  ;  128 arr sign byte    63 NULL        0 I_SUB[7]
-  6832                                  ;  129 arr sign byte    64 NULL        0 I_XOR[7]
-  6833                                  ;  130 arr sign byte    65 NULL        0 I_CMP[7]
-  6834                                  ;  131 arr sign byte    66 NULL        0 I_TEST[11]
-  6835                                  ;  132 arr sign byte    68 NULL        0 I_MOV[6]
-  6836                                  ;  133 arr sign byte    69 NULL        0 I_MOVSX[9]
-  6837                                  ;  134 arr sign byte    70 NULL        0 I_MOVZX[9]
-  6838                                  ;  135 arr sign byte    72 NULL        0 I_JO[6]
-  6839                                  ;  136 arr sign byte    73 NULL        0 I_JNO[7]
-  6840                                  ;  137 arr sign byte    74 NULL        0 I_JB[6]
-  6841                                  ;  138 arr sign byte    75 NULL        0 I_JC[6]
-  6842                                  ;  139 arr sign byte    76 NULL        0 I_JNB[7]
-  6843                                  ;  140 arr sign byte    77 NULL        0 I_JAE[7]
-  6844                                  ;  141 arr sign byte    78 NULL        0 I_JNC[7]
-  6845                                  ;  142 arr sign byte    79 NULL        0 I_JE[6]
-  6846                                  ;  143 arr sign byte    80 NULL        0 I_JZ[6]
-  6847                                  ;  144 arr sign byte    81 NULL        0 I_JNE[7]
-  6848                                  ;  145 arr sign byte    82 NULL        0 I_JNZ[7]
-  6849                                  ;  146 arr sign byte    83 NULL        0 I_JBE[7]
-  6850                                  ;  147 arr sign byte    84 NULL        0 I_JNA[7]
-  6851                                  ;  148 arr sign byte    85 NULL        0 I_JA[6]
-  6852                                  ;  149 arr sign byte    86 NULL        0 I_JS[6]
-  6853                                  ;  150 arr sign byte    87 NULL        0 I_JNS[7]
-  6854                                  ;  151 arr sign byte    88 NULL        0 I_JP[6]
-  6855                                  ;  152 arr sign byte    89 NULL        0 I_JPE[7]
-  6856                                  ;  153 arr sign byte    90 NULL        0 I_JNP[7]
-  6857                                  ;  154 arr sign byte    91 NULL        0 I_JPO[7]
-  6858                                  ;  155 arr sign byte    92 NULL        0 I_JL[6]
-  6859                                  ;  156 arr sign byte    93 NULL        0 I_JNL[7]
-  6860                                  ;  157 arr sign byte    94 NULL        0 I_JGE[7]
-  6861                                  ;  158 arr sign byte    95 NULL        0 I_JLE[7]
-  6862                                  ;  159 arr sign byte    96 NULL        0 I_JNG[7]
-  6863                                  ;  160 arr sign byte    97 NULL        0 I_JG[6]
-  6864                                  ;  161 arr sign byte    99 NULL        0 I_JMP[8]
-  6865                                  ;  162 arr sign byte   100 NULL        0 I_CALL[9]
-  6866                                  ;  163 arr sign byte   102 NULL        0 I_RET[8]
-  6867                                  ;  164 arr sign byte   103 NULL        0 I_RETF[9]
-  6868                                  ;  165 arr sign byte   105 NULL        0 I_PUSH[8]
-  6869                                  ;  166 arr sign byte   106 NULL        0 I_POP[7]
-  6870                                  ;  167 arr sign byte   108 NULL        0 I_ROL[7]
-  6871                                  ;  168 arr sign byte   109 NULL        0 I_ROR[7]
-  6872                                  ;  169 arr sign byte   110 NULL        0 I_RCL[7]
-  6873                                  ;  170 arr sign byte   111 NULL        0 I_RCR[7]
-  6874                                  ;  171 arr sign byte   112 NULL        0 I_SHL[7]
-  6875                                  ;  172 arr sign byte   113 NULL        0 I_SAL[7]
-  6876                                  ;  173 arr sign byte   114 NULL        0 I_SHR[7]
-  6877                                  ;  174 arr sign byte   115 NULL        0 I_SAR[7]
-  6878                                  ;  175 arr sign byte   117 NULL        0 I_INT[8]
-  6879                                  ;  176 arr sign byte   118 NULL        0 I_INTO[8]
-  6880                                  ;  177 arr sign byte   129 NULL        0 I_XCHG[9]
-  6881                                  ;  178 arr sign byte   131 NULL        0 I_LOOPNZ[10]
-  6882                                  ;  179 arr sign byte   132 NULL        0 I_LOOPNE[10]
-  6883                                  ;  180 arr sign byte   133 NULL        0 I_LOOPZ[9]
-  6884                                  ;  181 arr sign byte   134 NULL        0 I_LOOPE[9]
-  6885                                  ;  182 arr sign byte   135 NULL        0 I_LOOP[8]
-  6886                                  ;  183 arr sign byte   136 NULL        0 I_JCXZ[8]
-  6887                                  ;  184 arr sign byte   137 NULL        0 I_JECXZ[9]
-  6888                                  ;  185 arr sign byte   139 NULL        0 I_ENTER[9]
-  6889                                  ;  186 arr sign byte   141 NULL        0 I_ORG[6]
-  6890                                  ;  187 arr sign byte   146 NULL        0 I_DB[5]
-  6891                                  ;  188 arr sign byte   147 NULL        0 I_DW[5]
-  6892                                  ;  189 arr sign byte   148 NULL        0 I_DD[5]
-  6893                                  ;  190 arr sign byte   149 NULL        0 I_RESB[7]
-  6894                                  ;  191 arr sign byte   150 NULL        0 I_RESW[7]
-  6895                                  ;  192 arr sign byte   151 NULL        0 I_RESD[7]
-  6896                                  ;  193 var sign byte   152 NULL        0 I_END
-  6897                                  
-  6898                                  
-  6899                                  ;   # Calls Line Width  Name   list of functions
+  6659                                  ; DosInt
+  6660                                  ; DosInt
+  6661                                  ; DosInt
+  6662                                  ; Number of unresolved CALLs :    5
+  6663                                  ;use archive file: AR.C
+  6664                                  
+  6665                                  ;-300 // AR.C Archive
+  6666                                  
+  6667                                  ;Number of CALLs:    1 : putch
+  6668                                  
+  6669                                  putch:  ; *** PROC ***
+  6670                                  ;Function : putch, Number of local variables: 1
+  6671                                  ;   # type sign width line used address name   list of local variables
+  6672                                  ;  200 var sign byte   300 NULL bp+4    c;
+  6673 000032E6 C8000000                 ENTER  0,0
+  6674 000032EA 807E040A                cmp byte [bp+4], 10
+  6675 000032EE 0F850500                 jne @@putch269
+  6676 000032F2 B00D                     mov  al, 13
+  6677 000032F4 E8FFFD                   call writetty
+  6678                                  @@putch269:
+  6679 000032F7 8A4604                   mov  al, [bp+4]
+  6680 000032FA E8F9FD                   call writetty
+  6681                                  
+  6682                                  ;-301 int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
+  6683 000032FD C9                       LEAVE
+  6684 000032FE C3                       ret
+  6685                                  ; ENDP
+  6686                                  ;Number of CALLs:    4 : DosInt
+  6687                                  
+  6688                                  DosInt:  ; *** PROC ***
+  6689 000032FF CD21                     int  33
+  6690 00003301 7304                     jae short @@DosInt270
+  6691 00003303 FF06[9F01]               inc  word [DOS_ERR]
+  6692                                  @@DosInt270:
+  6693                                  
+  6694                                  ;-302 int openR (char *s) { dx=s; ax=0x3D02;  DosInt(); }
+  6695                                  
+  6696 00003307 C3                       ret
+  6697                                  ; ENDP
+  6698                                  ;End of archive file. 
+  6699                                   
+  6700                                  ; missing functions:  All FUNCTIONs in place
+  6701 00003308 E80000                  LastFunctionByt:db 0E8h, 0, 0
+  6702 0000330B 58                      pop ax
+  6703 0000330C C3                      ret
+  6704                                   
+  6705                                  ;   # type sign width line used  address name   list of global variables
+  6706                                  
+  6707                                  ;    1 arr sign byte     1    2        0 Version1[10]
+  6708                                  ;    2 var sign byte     1    3        0 LIST
+  6709                                  ;    3 def unsg byte     2    -        0 SYMBOLMAX=31
+  6710                                  ;    4 arr sign byte     3    8        0 Symbol[31]
+  6711                                  ;    5 arr sign byte     4   36        0 SymbolUpper[31]
+  6712                                  ;    6 var unsg word     5   12        0 SymbolInt
+  6713                                  ;    7 def unsg byte     6    -        0 INPUTBUFMAX=127
+  6714                                  ;    8 arr sign byte     7    4        0 InputBuf[127]
+  6715                                  ;    9 ptr unsg byte     8   24        0 InputPtr
+  6716                                  ;   10 arr sign byte     9    5        0 namein[67]
+  6717                                  ;   11 arr sign byte    10    5        0 namelst[67]
+  6718                                  ;   12 arr sign byte    11    5        0 namebin[67]
+  6719                                  ;   13 var sign word    12    4        0 asm_fd
+  6720                                  ;   14 var sign word    13    3        0 lst_fd
+  6721                                  ;   15 var sign word    14    3        0 bin_fd
+  6722                                  ;   16 var sign word    15    6        0 DOS_ERR
+  6723                                  ;   17 var sign word    16    4        0 ErrorCount
+  6724                                  ;   18 var sign word    17    4        0 DOS_NoBytes
+  6725                                  ;   19 var sign byte    18    4        0 DOS_ByteRead
+  6726                                  ;   20 var unsg word    20    5        0 PC
+  6727                                  ;   21 var unsg word    21    2        0 PCStart
+  6728                                  ;   22 var sign byte    22    3        0 isLabel
+  6729                                  ;   23 def unsg byte    23    -        0 DIGIT=1
+  6730                                  ;   24 def unsg byte    24    -        0 LETTERE=2
+  6731                                  ;   25 def unsg byte    25    -        0 ALNUME=3
+  6732                                  ;   26 def unsg byte    26    -        0 NOALNUME=4
+  6733                                  ;   27 var sign byte    27   21        0 TokeType
+  6734                                  ;   28 def unsg byte    28    -        0 BYTE=1
+  6735                                  ;   29 def unsg byte    29    -        0 WORD=2
+  6736                                  ;   30 def unsg byte    30    -        0 DWORD=3
+  6737                                  ;   31 def unsg byte    31    -        0 SEGREG=4
+  6738                                  ;   32 def unsg byte    32    -        0 IMM=1
+  6739                                  ;   33 def unsg byte    33    -        0 REG=2
+  6740                                  ;   34 def unsg byte    34    -        0 ADR=3
+  6741                                  ;   35 def unsg byte    35    -        0 MEM=4
+  6742                                  ;   36 var sign byte    36   18        0 Op
+  6743                                  ;   37 var sign byte    37   23        0 Op2
+  6744                                  ;   38 var sign byte    38   14        0 CodeType
+  6745                                  ;   39 var sign byte    39    9        0 Code1
+  6746                                  ;   40 var sign byte    40    6        0 Code2
+  6747                                  ;   41 var sign byte    41    2        0 Code3
+  6748                                  ;   42 var sign byte    42   14        0 R2No
+  6749                                  ;   43 var sign byte    43   10        0 R1No
+  6750                                  ;   44 var sign byte    44   17        0 R2Type
+  6751                                  ;   45 var sign byte    45    9        0 R1Type
+  6752                                  ;   46 var sign byte    46   14        0 OpSize
+  6753                                  ;   47 var sign byte    47    7        0 wflag
+  6754                                  ;   48 var sign byte    48    3        0 dflag
+  6755                                  ;   49 var sign byte    49    6        0 sflag
+  6756                                  ;   50 var sign byte    50   14        0 rm
+  6757                                  ;   51 var sign byte    51    3        0 isDirect
+  6758                                  ;   52 var sign word    52   15        0 disp
+  6759                                  ;   53 var unsg word    53    8        0 imme
+  6760                                  ;   54 def unsg byte    55    -        0 OPMAXLEN=5
+  6761                                  ;   55 arr sign byte    56    2        0 OpPos[5]
+  6762                                  ;   56 var sign word    57    6        0 OpPrintIndex
+  6763                                  ;   57 ptr sign byte    58   17        0 OpCodePtr
+  6764                                  ;   58 var sign byte    59    2        0 PrintR
+  6765                                  ;   59 def unsg byte    61    -        0 LABELNAMESMAX=969
+  6766                                  ;   60 arr sign byte    62    3        0 LabelNames[1000]
+  6767                                  ;   61 ptr sign byte    63    5        0 LabelNamePtr
+  6768                                  ;   62 def unsg byte    64    -        0 LABELADRMAX=100
+  6769                                  ;   63 arr unsg word    65    3        0 LabelAddr[100]
+  6770                                  ;   64 var sign word    66    4        0 LabelMaxIx
+  6771                                  ;   65 var sign word    67    4        0 LabelIx
+  6772                                  ;   66 def unsg byte    69    -        0 FILEBINMAX=2000
+  6773                                  ;   67 arr sign byte    70    2        0 FileBin[2000]
+  6774                                  ;   68 var unsg word    71    5        0 BinLen
+  6775                                  ;   69 ptr sign byte    73    1        0 arglen
+  6776                                  ;   70 ptr sign byte    74    4        0 argv
+  6777                                  ;   71 var sign byte     1    1        0 I_START
+  6778                                  ;   72 arr sign byte     4 NULL        0 I_PUSHA[9]
+  6779                                  ;   73 arr sign byte     5 NULL        0 I_POPA[8]
+  6780                                  ;   74 arr sign byte     6 NULL        0 I_NOP[7]
+  6781                                  ;   75 arr sign byte     7 NULL        0 I_CBW[7]
+  6782                                  ;   76 arr sign byte     8 NULL        0 I_CWDE[8]
+  6783                                  ;   77 arr sign byte     9 NULL        0 I_CWD[7]
+  6784                                  ;   78 arr sign byte    10 NULL        0 I_CDQ[7]
+  6785                                  ;   79 arr sign byte    11 NULL        0 I_WAIT[8]
+  6786                                  ;   80 arr sign byte    12 NULL        0 I_PUSHF[9]
+  6787                                  ;   81 arr sign byte    13 NULL        0 I_POPF[8]
+  6788                                  ;   82 arr sign byte    14 NULL        0 I_SAHF[8]
+  6789                                  ;   83 arr sign byte    15 NULL        0 I_LAHF[8]
+  6790                                  ;   84 arr sign byte    16 NULL        0 I_MOVSB[9]
+  6791                                  ;   85 arr sign byte    17 NULL        0 I_MOVSW[9]
+  6792                                  ;   86 arr sign byte    18 NULL        0 I_CMPSB[9]
+  6793                                  ;   87 arr sign byte    19 NULL        0 I_CMPSW[9]
+  6794                                  ;   88 arr sign byte    20 NULL        0 I_STOSB[9]
+  6795                                  ;   89 arr sign byte    21 NULL        0 I_STOSW[9]
+  6796                                  ;   90 arr sign byte    22 NULL        0 I_LODSB[9]
+  6797                                  ;   91 arr sign byte    23 NULL        0 I_LODSW[9]
+  6798                                  ;   92 arr sign byte    24 NULL        0 I_SCASB[9]
+  6799                                  ;   93 arr sign byte    25 NULL        0 I_SCASW[9]
+  6800                                  ;   94 arr sign byte    26 NULL        0 I_LEAVE[9]
+  6801                                  ;   95 arr sign byte    27 NULL        0 I_IRET[8]
+  6802                                  ;   96 arr sign byte    28 NULL        0 I_XLAT[8]
+  6803                                  ;   97 arr sign byte    29 NULL        0 I_LOCK[8]
+  6804                                  ;   98 arr sign byte    30 NULL        0 I_REPNE[9]
+  6805                                  ;   99 arr sign byte    31 NULL        0 I_REPNZ[9]
+  6806                                  ;  100 arr sign byte    32 NULL        0 I_REPE[8]
+  6807                                  ;  101 arr sign byte    33 NULL        0 I_REPZ[8]
+  6808                                  ;  102 arr sign byte    34 NULL        0 I_HLT[7]
+  6809                                  ;  103 arr sign byte    35 NULL        0 I_CLC[7]
+  6810                                  ;  104 arr sign byte    36 NULL        0 I_STC[7]
+  6811                                  ;  105 arr sign byte    37 NULL        0 I_CLI[7]
+  6812                                  ;  106 arr sign byte    38 NULL        0 I_STI[7]
+  6813                                  ;  107 arr sign byte    39 NULL        0 I_CLD[7]
+  6814                                  ;  108 arr sign byte    40 NULL        0 I_STD[7]
+  6815                                  ;  109 arr sign byte    42 NULL        0 I_INC[9]
+  6816                                  ;  110 arr sign byte    43 NULL        0 I_DEC[9]
+  6817                                  ;  111 arr sign byte    44 NULL        0 I_NOT[8]
+  6818                                  ;  112 arr sign byte    45 NULL        0 I_NEG[8]
+  6819                                  ;  113 arr sign byte    46 NULL        0 I_MUL[8]
+  6820                                  ;  114 arr sign byte    47 NULL        0 I_IMUL[9]
+  6821                                  ;  115 arr sign byte    48 NULL        0 I_DIV[8]
+  6822                                  ;  116 arr sign byte    49 NULL        0 I_IDIV[9]
+  6823                                  ;  117 arr sign byte    51 NULL        0 I_LES[7]
+  6824                                  ;  118 arr sign byte    52 NULL        0 I_LDS[7]
+  6825                                  ;  119 arr sign byte    53 NULL        0 I_LEA[7]
+  6826                                  ;  120 arr sign byte    54 NULL        0 I_LSS[8]
+  6827                                  ;  121 arr sign byte    55 NULL        0 I_LFS[8]
+  6828                                  ;  122 arr sign byte    56 NULL        0 I_LGS[8]
+  6829                                  ;  123 arr sign byte    58 NULL        0 I_ADD[7]
+  6830                                  ;  124 arr sign byte    59 NULL        0 I_OR[6]
+  6831                                  ;  125 arr sign byte    60 NULL        0 I_ADC[7]
+  6832                                  ;  126 arr sign byte    61 NULL        0 I_SBB[7]
+  6833                                  ;  127 arr sign byte    62 NULL        0 I_AND[7]
+  6834                                  ;  128 arr sign byte    63 NULL        0 I_SUB[7]
+  6835                                  ;  129 arr sign byte    64 NULL        0 I_XOR[7]
+  6836                                  ;  130 arr sign byte    65 NULL        0 I_CMP[7]
+  6837                                  ;  131 arr sign byte    66 NULL        0 I_TEST[11]
+  6838                                  ;  132 arr sign byte    68 NULL        0 I_MOV[6]
+  6839                                  ;  133 arr sign byte    69 NULL        0 I_MOVSX[9]
+  6840                                  ;  134 arr sign byte    70 NULL        0 I_MOVZX[9]
+  6841                                  ;  135 arr sign byte    72 NULL        0 I_JO[6]
+  6842                                  ;  136 arr sign byte    73 NULL        0 I_JNO[7]
+  6843                                  ;  137 arr sign byte    74 NULL        0 I_JB[6]
+  6844                                  ;  138 arr sign byte    75 NULL        0 I_JC[6]
+  6845                                  ;  139 arr sign byte    76 NULL        0 I_JNB[7]
+  6846                                  ;  140 arr sign byte    77 NULL        0 I_JAE[7]
+  6847                                  ;  141 arr sign byte    78 NULL        0 I_JNC[7]
+  6848                                  ;  142 arr sign byte    79 NULL        0 I_JE[6]
+  6849                                  ;  143 arr sign byte    80 NULL        0 I_JZ[6]
+  6850                                  ;  144 arr sign byte    81 NULL        0 I_JNE[7]
+  6851                                  ;  145 arr sign byte    82 NULL        0 I_JNZ[7]
+  6852                                  ;  146 arr sign byte    83 NULL        0 I_JBE[7]
+  6853                                  ;  147 arr sign byte    84 NULL        0 I_JNA[7]
+  6854                                  ;  148 arr sign byte    85 NULL        0 I_JA[6]
+  6855                                  ;  149 arr sign byte    86 NULL        0 I_JS[6]
+  6856                                  ;  150 arr sign byte    87 NULL        0 I_JNS[7]
+  6857                                  ;  151 arr sign byte    88 NULL        0 I_JP[6]
+  6858                                  ;  152 arr sign byte    89 NULL        0 I_JPE[7]
+  6859                                  ;  153 arr sign byte    90 NULL        0 I_JNP[7]
+  6860                                  ;  154 arr sign byte    91 NULL        0 I_JPO[7]
+  6861                                  ;  155 arr sign byte    92 NULL        0 I_JL[6]
+  6862                                  ;  156 arr sign byte    93 NULL        0 I_JNL[7]
+  6863                                  ;  157 arr sign byte    94 NULL        0 I_JGE[7]
+  6864                                  ;  158 arr sign byte    95 NULL        0 I_JLE[7]
+  6865                                  ;  159 arr sign byte    96 NULL        0 I_JNG[7]
+  6866                                  ;  160 arr sign byte    97 NULL        0 I_JG[6]
+  6867                                  ;  161 arr sign byte    99 NULL        0 I_JMP[8]
+  6868                                  ;  162 arr sign byte   100 NULL        0 I_CALL[9]
+  6869                                  ;  163 arr sign byte   102 NULL        0 I_RET[8]
+  6870                                  ;  164 arr sign byte   103 NULL        0 I_RETF[9]
+  6871                                  ;  165 arr sign byte   105 NULL        0 I_PUSH[8]
+  6872                                  ;  166 arr sign byte   106 NULL        0 I_POP[7]
+  6873                                  ;  167 arr sign byte   108 NULL        0 I_ROL[7]
+  6874                                  ;  168 arr sign byte   109 NULL        0 I_ROR[7]
+  6875                                  ;  169 arr sign byte   110 NULL        0 I_RCL[7]
+  6876                                  ;  170 arr sign byte   111 NULL        0 I_RCR[7]
+  6877                                  ;  171 arr sign byte   112 NULL        0 I_SHL[7]
+  6878                                  ;  172 arr sign byte   113 NULL        0 I_SAL[7]
+  6879                                  ;  173 arr sign byte   114 NULL        0 I_SHR[7]
+  6880                                  ;  174 arr sign byte   115 NULL        0 I_SAR[7]
+  6881                                  ;  175 arr sign byte   117 NULL        0 I_INT[8]
+  6882                                  ;  176 arr sign byte   118 NULL        0 I_INTO[8]
+  6883                                  ;  177 arr sign byte   129 NULL        0 I_XCHG[9]
+  6884                                  ;  178 arr sign byte   131 NULL        0 I_LOOPNZ[10]
+  6885                                  ;  179 arr sign byte   132 NULL        0 I_LOOPNE[10]
+  6886                                  ;  180 arr sign byte   133 NULL        0 I_LOOPZ[9]
+  6887                                  ;  181 arr sign byte   134 NULL        0 I_LOOPE[9]
+  6888                                  ;  182 arr sign byte   135 NULL        0 I_LOOP[8]
+  6889                                  ;  183 arr sign byte   136 NULL        0 I_JCXZ[8]
+  6890                                  ;  184 arr sign byte   137 NULL        0 I_JECXZ[9]
+  6891                                  ;  185 arr sign byte   139 NULL        0 I_ENTER[9]
+  6892                                  ;  186 arr sign byte   141 NULL        0 I_ORG[6]
+  6893                                  ;  187 arr sign byte   146 NULL        0 I_DB[5]
+  6894                                  ;  188 arr sign byte   147 NULL        0 I_DW[5]
+  6895                                  ;  189 arr sign byte   148 NULL        0 I_DD[5]
+  6896                                  ;  190 arr sign byte   149 NULL        0 I_RESB[7]
+  6897                                  ;  191 arr sign byte   150 NULL        0 I_RESW[7]
+  6898                                  ;  192 arr sign byte   151 NULL        0 I_RESD[7]
+  6899                                  ;  193 var sign byte   152 NULL        0 I_END
   6900                                  
-  6901                                  ;    0    1    1 word   parse
-  6902                                  ;    1   14   27 word   getTokeType
-  6903                                  ;    2    2   36 word   storeLabel
-  6904                                  ;    3    2   46 word   searchLabel
-  6905                                  ;    4    1   57 word   getVariable
-  6906                                  ;    5    2   86 word   lookCode
-  6907                                  ;    6    1  101 word   getCodeSize
-  6908                                  ;    7    8  108 word   isToken
-  6909                                  ;    8    1  113 word   need
-  6910                                  ;    9    1  123 word   skipRest
-  6911                                  ;   10    1    1 word   getLine
-  6912                                  ;   11    1   17 word   ifEOL
-  6913                                  ;   12    3   24 word   skipBlank
-  6914                                  ;   13    2   29 word   letterE
-  6915                                  ;   14    1   39 word   alnumE
-  6916                                  ;   15    1   44 word   getDigit
-  6917                                  ;   16    1   56 word   getName
-  6918                                  ;   17    1   75 word   testReg
-  6919                                  ;   18    1    1 word   printLine
-  6920                                  ;   19    7   22 word   prc
-  6921                                  ;   20    1   34 word   prscomment
-  6922                                  ;   21   21   42 word   prs
-  6923                                  ;   22    3   64 word   printhex8a
-  6924                                  ;   23    2   69 word   printhex4
-  6925                                  ;   24    1   74 word   printhex16
-  6926                                  ;   25    3   79 word   printIntU
-  6927                                  ;   26   25   90 word   error1
-  6928                                  ;   27   12   98 word   errorexit
-  6929                                  ;   28 NULL  102 word   allowederror
-  6930                                  ;   29    3  103 word   addrerror
-  6931                                  ;   30    1  104 word   immeerror
-  6932                                  ;   31    2  105 word   implerror
-  6933                                  ;   32    4  106 word   indexerror
-  6934                                  ;   33    3  107 word   invaloperror
-  6935                                  ;   34    1  108 word   numbererror
-  6936                                  ;   35    1  109 word   regmemerror
-  6937                                  ;   36    2  110 word   reg16error
-  6938                                  ;   37    1  111 word   segregerror
-  6939                                  ;   38    3  112 word   syntaxerror
-  6940                                  ;   39 NULL  114 word   addrexit
-  6941                                  ;   40 NULL  115 word   internexit
-  6942                                  ;   41 NULL    1 word   main
-  6943                                  ;   42    1    8 word   getarg
-  6944                                  ;   43    1   38 word   epilog
-  6945                                  ;   44    2   67 word   end1
-  6946                                  ;   45    1    2 word   getCodes
-  6947                                  ;   46    1    7 word   gen66h
-  6948                                  ;   47    3    9 word   genCode2
-  6949                                  ;   48    6   13 word   genCodeW
-  6950                                  ;   49   16   17 word   genCode8
-  6951                                  ;   50    4   28 word   genCode16
-  6952                                  ;   51    7   32 word   writeEA
-  6953                                  ;   52    1   74 word   genImmediateSE
-  6954                                  ;   53    4   78 word   genImmediate
-  6955                                  ;   54    1   10 word   process
-  6956                                  ;   55    1  150 word   ChangeDirection
-  6957                                  ;   56    1  158 word   checkOpL
-  6958                                  ;   57    3  171 word   check2Ops
-  6959                                  ;   58    1  180 word   get2Ops
-  6960                                  ;   59    2  186 word   getOpL
-  6961                                  ;   60    2  195 word   getOpR
-  6962                                  ;   61    2  205 word   getOp1
-  6963                                  ;   62    1  221 word   getMEM
-  6964                                  ;   63    1  243 word   getIndReg1
-  6965                                  ;   64    1  251 word   getIndReg2
-  6966                                  ;   65    2  261 word   setwflag
-  6967                                  ;   66    1  272 word   setsflag
-  6968                                  ;   67    4  280 word   writetty
-  6969                                  ;   68    8  281 word   cputs
-  6970                                  ;   69    2  282 word   toupper
-  6971                                  ;   70    3  284 word   strlen
-  6972                                  ;   71    6  285 word   strcpy
-  6973                                  ;   72    3  287 word   digit
-  6974                                  ;   73   35  288 word   eqstr
-  6975                                  ;   74    3  291 word   strcat1
-  6976                                  ;   75    1  292 word   openR
-  6977                                  ;   76    2  293 word   creatR
-  6978                                  ;   77    2  294 word   readRL
-  6979                                  ;   78    2  295 word   fputcR
-  6980                                  ;   79    3  297 word   fcloseR
-  6981                                  ;   80    5  298 word   exitR
-  6982                                  ;   81    1  300 word   putch
-  6983                                  ;   82    4  301 word   DosInt
-  6984                                  ;   83 NULL  302 word   LastFunctionByt
-  6985                                  
-  6986                                  ;    #  addr name   list of CALLs
-  6987                                  
-  6988                                  ;    0  1339 getLine
-  6989                                  ;    1  1347 getTokeType
-  6990                                  ;    2  1359 storeLabel
-  6991                                  ;    3  1370 getTokeType
-  6992                                  ;    4  1382 lookCode
-  6993                                  ;    5  1391 process
-  6994                                  ;    6  1399 getVariable
-  6995                                  ;    7  1411 skipRest
-  6996                                  ;    8  1420 error1
-  6997                                  ;    9  1427 error1
-  6998                                  ;   10  1434 printLine
-  6999                                  ;   11  1458 skipBlank
-  7000                                  ;   12  1468 digit
-  7001                                  ;   13  1474 getDigit
-  7002                                  ;   14  1483 letterE
-  7003                                  ;   15  1491 getName
-  7004                                  ;   16  1512 searchLabel
-  7005                                  ;   17  1524 error1
-  7006                                  ;   18  1531 strcpy
-  7007                                  ;   19  1538 errorexit
-  7008                                  ;   20  1548 errorexit
-  7009                                  ;   21  1578 eqstr
-  7010                                  ;   22  1584 strlen
-  7011                                  ;   23  1605 storeLabel
-  7012                                  ;   24  1616 getTokeType
-  7013                                  ;   25  1628 lookCode
-  7014                                  ;   26  1637 errorexit
-  7015                                  ;   27  1647 errorexit
-  7016                                  ;   28  1657 getTokeType
-  7017                                  ;   29  1669 genCode8
-  7018                                  ;   30  1678 skipBlank
-  7019                                  ;   31  1688 isToken
-  7020                                  ;   32  1696 genCode8
-  7021                                  ;   33  1705 isToken
-  7022                                  ;   34  1713 getTokeType
-  7023                                  ;   35  1725 genCode16
-  7024                                  ;   36  1735 isToken
-  7025                                  ;   37  1743 errorexit
-  7026                                  ;   38  1762 eqstr
-  7027                                  ;   39  1780 eqstr
-  7028                                  ;   40  1786 getTokeType
-  7029                                  ;   41  1798 eqstr
-  7030                                  ;   42  1804 getTokeType
-  7031                                  ;   43  1816 eqstr
-  7032                                  ;   44  1822 getTokeType
-  7033                                  ;   45  1844 skipBlank
-  7034                                  ;   46  1861 isToken
-  7035                                  ;   47  1869 getTokeType
-  7036                                  ;   48  1881 error1
-  7037                                  ;   49  1888 prs
-  7038                                  ;   50  1892 prc
-  7039                                  ;   51  1905 getTokeType
-  7040                                  ;   52  1917 error1
-  7041                                  ;   53  1934 readRL
-  7042                                  ;   54  1941 errorexit
-  7043                                  ;   55  1951 errorexit
-  7044                                  ;   56  1961 ifEOL
-  7045                                  ;   57  1975 readRL
-  7046                                  ;   58  2011 digit
-  7047                                  ;   59  2017 letterE
-  7048                                  ;   60  2044 digit
-  7049                                  ;   61  2064 alnumE
-  7050                                  ;   62  2071 errorexit
-  7051                                  ;   63  2081 strcpy
-  7052                                  ;   64  2088 toupper
-  7053                                  ;   65  2104 strlen
-  7054                                  ;   66  2111 strlen
-  7055                                  ;   67  2118 eqstr
-  7056                                  ;   68  2124 eqstr
-  7057                                  ;   69  2130 eqstr
-  7058                                  ;   70  2136 eqstr
-  7059                                  ;   71  2142 eqstr
-  7060                                  ;   72  2148 eqstr
-  7061                                  ;   73  2154 eqstr
-  7062                                  ;   74  2160 eqstr
-  7063                                  ;   75  2166 eqstr
-  7064                                  ;   76  2172 eqstr
-  7065                                  ;   77  2178 eqstr
-  7066                                  ;   78  2184 eqstr
-  7067                                  ;   79  2190 eqstr
-  7068                                  ;   80  2196 eqstr
-  7069                                  ;   81  2202 eqstr
-  7070                                  ;   82  2208 eqstr
-  7071                                  ;   83  2214 eqstr
-  7072                                  ;   84  2220 eqstr
-  7073                                  ;   85  2226 eqstr
-  7074                                  ;   86  2232 eqstr
-  7075                                  ;   87  2238 eqstr
-  7076                                  ;   88  2244 eqstr
-  7077                                  ;   89  2250 eqstr
-  7078                                  ;   90  2256 eqstr
-  7079                                  ;   91  2262 eqstr
-  7080                                  ;   92  2268 eqstr
-  7081                                  ;   93  2274 eqstr
-  7082                                  ;   94  2280 eqstr
-  7083                                  ;   95  2286 eqstr
-  7084                                  ;   96  2292 eqstr
-  7085                                  ;   97  2312 prs
-  7086                                  ;   98  2316 printhex16
-  7087                                  ;   99  2327 prs
-  7088                                  ;  100  2331 prc
-  7089                                  ;  101  2335 printhex8a
-  7090                                  ;  102  2346 prc
-  7091                                  ;  103  2350 prs
-  7092                                  ;  104  2354 prscomment
-  7093                                  ;  105  2371 writetty
-  7094                                  ;  106  2380 writetty
-  7095                                  ;  107  2389 fputcR
-  7096                                  ;  108  2411 prc
-  7097                                  ;  109  2427 prc
-  7098                                  ;  110  2448 printhex4
-  7099                                  ;  111  2458 printhex4
-  7100                                  ;  112  2480 prc
-  7101                                  ;  113  2502 printhex8a
-  7102                                  ;  114  2513 printhex8a
-  7103                                  ;  115  2538 printIntU
-  7104                                  ;  116  2548 prc
-  7105                                  ;  117  2561 prs
-  7106                                  ;  118  2565 prs
-  7107                                  ;  119  2569 prs
-  7108                                  ;  120  2573 prs
-  7109                                  ;  121  2589 error1
-  7110                                  ;  122  2596 end1
-  7111                                  ;  123  2614 error1
-  7112                                  ;  124  2631 error1
-  7113                                  ;  125  2648 error1
-  7114                                  ;  126  2665 error1
-  7115                                  ;  127  2683 error1
-  7116                                  ;  128  2703 error1
-  7117                                  ;  129  2722 error1
-  7118                                  ;  130  2741 error1
-  7119                                  ;  131  2759 error1
-  7120                                  ;  132  2778 error1
-  7121                                  ;  133  2797 error1
-  7122                                  ;  134  2813 errorexit
-  7123                                  ;  135  2834 errorexit
-  7124                                  ;  136  2849 getarg
-  7125                                  ;  137  2856 parse
-  7126                                  ;  138  2862 epilog
-  7127                                  ;  139  2869 end1
-  7128                                  ;  140  2893 cputs
-  7129                                  ;  141  2899 cputs
-  7130                                  ;  142  2905 exitR
-  7131                                  ;  143  2911 toupper
-  7132                                  ;  144  2919 strcpy
-  7133                                  ;  145  2926 strcat1
-  7134                                  ;  146  2934 strcpy
-  7135                                  ;  147  2941 strcat1
-  7136                                  ;  148  2949 strcpy
-  7137                                  ;  149  2956 strcat1
-  7138                                  ;  150  2964 openR
-  7139                                  ;  151  2970 cputs
-  7140                                  ;  152  2976 cputs
-  7141                                  ;  153  2982 exitR
-  7142                                  ;  154  2988 creatR
-  7143                                  ;  155  2995 cputs
-  7144                                  ;  156  3001 cputs
-  7145                                  ;  157  3007 exitR
-  7146                                  ;  158  3013 creatR
-  7147                                  ;  159  3020 cputs
-  7148                                  ;  160  3026 cputs
-  7149                                  ;  161  3032 exitR
-  7150                                  ;  162  3038 prs
-  7151                                  ;  163  3042 prs
-  7152                                  ;  164  3046 prs
-  7153                                  ;  165  3050 prs
-  7154                                  ;  166  3054 prs
-  7155                                  ;  167  3058 prs
-  7156                                  ;  168  3062 prs
-  7157                                  ;  169  3066 prs
-  7158                                  ;  170  3070 prs
-  7159                                  ;  171  3087 prs
-  7160                                  ;  172  3091 printIntU
-  7161                                  ;  173  3101 prs
-  7162                                  ;  174  3105 prs
-  7163                                  ;  175  3109 printIntU
-  7164                                  ;  176  3119 prs
-  7165                                  ;  177  3123 fputcR
-  7166                                  ;  178  3137 fcloseR
-  7167                                  ;  179  3145 fcloseR
-  7168                                  ;  180  3153 fcloseR
-  7169                                  ;  181  3161 exitR
-  7170                                  ;  182  3183 genCode8
-  7171                                  ;  183  3205 genCode8
-  7172                                  ;  184  3225 genCode8
-  7173                                  ;  185  3245 errorexit
-  7174                                  ;  186  3267 genCode8
-  7175                                  ;  187  3276 genCode8
-  7176                                  ;  188  3301 genCode8
-  7177                                  ;  189  3310 genCode8
-  7178                                  ;  190  3319 genCode16
-  7179                                  ;  191  3344 genCode8
-  7180                                  ;  192  3353 genImmediate
-  7181                                  ;  193  3379 genCode16
-  7182                                  ;  194  3389 genCode8
-  7183                                  ;  195  3408 getTokeType
-  7184                                  ;  196  3420 getCodeSize
-  7185                                  ;  197  3432 getCodes
-  7186                                  ;  198  3441 genCode8
-  7187                                  ;  199  3450 getOpL
-  7188                                  ;  200  3457 checkOpL
-  7189                                  ;  201  3466 genCode2
-  7190                                  ;  202  3475 getTokeType
-  7191                                  ;  203  3487 implerror
-  7192                                  ;  204  3497 genCodeW
-  7193                                  ;  205  3506 writeEA
-  7194                                  ;  206  3514 check2Ops
-  7195                                  ;  207  3524 reg16error
-  7196                                  ;  208  3535 addrerror
-  7197                                  ;  209  3545 genCode8
-  7198                                  ;  210  3554 genCode8
-  7199                                  ;  211  3563 writeEA
-  7200                                  ;  212  3571 check2Ops
-  7201                                  ;  213  3581 setsflag
-  7202                                  ;  214  3590 genCodeW
-  7203                                  ;  215  3599 genImmediate
-  7204                                  ;  216  3612 genCodeW
-  7205                                  ;  217  3621 writeEA
-  7206                                  ;  218  3629 genImmediateSE
-  7207                                  ;  219  3644 genCodeW
-  7208                                  ;  220  3653 writeEA
-  7209                                  ;  221  3661 genCodeW
-  7210                                  ;  222  3670 writeEA
-  7211                                  ;  223  3678 syntaxerror
-  7212                                  ;  224  3690 check2Ops
-  7213                                  ;  225  3700 genCode2
-  7214                                  ;  226  3709 genImmediate
-  7215                                  ;  227  3722 genCodeW
-  7216                                  ;  228  3731 writeEA
-  7217                                  ;  229  3739 genImmediate
-  7218                                  ;  230  3752 regmemerror
-  7219                                  ;  231  3764 ChangeDirection
-  7220                                  ;  232  3780 reg16error
-  7221                                  ;  233  3791 genCode2
-  7222                                  ;  234  3800 writeEA
-  7223                                  ;  235  3808 syntaxerror
-  7224                                  ;  236  3820 genCode8
-  7225                                  ;  237  3829 genCode16
-  7226                                  ;  238  3839 genCode8
-  7227                                  ;  239  3848 error1
-  7228                                  ;  240  3855 error1
-  7229                                  ;  241  3889 implerror
-  7230                                  ;  242  3899 segregerror
-  7231                                  ;  243  3911 setwflag
-  7232                                  ;  244  3920 error1
-  7233                                  ;  245  3927 error1
-  7234                                  ;  246  3934 error1
-  7235                                  ;  247  3951 get2Ops
-  7236                                  ;  248  3959 addrerror
-  7237                                  ;  249  3969 invaloperror
-  7238                                  ;  250  3982 immeerror
-  7239                                  ;  251  3992 addrerror
-  7240                                  ;  252  4002 invaloperror
-  7241                                  ;  253  4015 setwflag
-  7242                                  ;  254  4032 getOpL
-  7243                                  ;  255  4039 need
-  7244                                  ;  256  4044 getOpR
-  7245                                  ;  257  4058 getOpR
-  7246                                  ;  258  4072 getOp1
-  7247                                  ;  259  4079 isToken
-  7248                                  ;  260  4087 getMEM
-  7249                                  ;  261  4094 invaloperror
-  7250                                  ;  262  4107 error1
-  7251                                  ;  263  4121 testReg
-  7252                                  ;  264  4129 searchLabel
-  7253                                  ;  265  4141 error1
-  7254                                  ;  266  4157 getTokeType
-  7255                                  ;  267  4169 getOp1
-  7256                                  ;  268  4176 syntaxerror
-  7257                                  ;  269  4188 getIndReg2
-  7258                                  ;  270  4199 getIndReg1
-  7259                                  ;  271  4210 isToken
-  7260                                  ;  272  4218 getTokeType
-  7261                                  ;  273  4230 numbererror
-  7262                                  ;  274  4242 isToken
-  7263                                  ;  275  4250 isToken
-  7264                                  ;  276  4258 errorexit
-  7265                                  ;  277  4279 indexerror
-  7266                                  ;  278  4290 indexerror
-  7267                                  ;  279  4314 indexerror
-  7268                                  ;  280  4325 indexerror
-  7269                                  ;  281  4345 gen66h
-  7270                                  ;  282  4361 error1
-  7271                                  ;  283  4387 putch
-  7272                                  ;  284  4455 strcpy
-  7273                                  ;  285  4470 DosInt
-  7274                                  ;  286  4486 DosInt
-  7275                                  ;  287  4509 DosInt
-  7276                                  ;  288  4528 DosInt
-  7277                                  ;  289  4562 writetty
-  7278                                  ;  290  4571 writetty
-  7279                                  ;Input: AS.C, List: AS.S,  Lines:  303
-  7280                                  ;Glob. variables:  193 max.:  200
-  7281                                  ;Local variables:    3 max.:  100, in 'searchLabel'
-  7282                                  ;Functions      :   84 max.:  300
-  7283                                  ;Calls          :  291 max.: 2000, NameField: 4603 max.:    65535
-  7284                                  ;Code until     :25998 max.: 30000, free: 4002
-  7285                                  ;Data (HeapEnd) :33595, resting stacksize: 31940
-  7286                                  ;Max. Const in 'testReg' :  658 max. 3000, free: 2342
+  6901                                  
+  6902                                  ;   # Calls Line Width  Name   list of functions
+  6903                                  
+  6904                                  ;    0    1    1 word   parse
+  6905                                  ;    1   14   27 word   getTokeType
+  6906                                  ;    2    2   36 word   storeLabel
+  6907                                  ;    3    2   46 word   searchLabel
+  6908                                  ;    4    1   57 word   getVariable
+  6909                                  ;    5    2   86 word   lookCode
+  6910                                  ;    6    1  101 word   getCodeSize
+  6911                                  ;    7    8  108 word   isToken
+  6912                                  ;    8    1  113 word   need
+  6913                                  ;    9    1  123 word   skipRest
+  6914                                  ;   10    1    1 word   getLine
+  6915                                  ;   11    1   17 word   ifEOL
+  6916                                  ;   12    3   24 word   skipBlank
+  6917                                  ;   13    2   29 word   letterE
+  6918                                  ;   14    1   39 word   alnumE
+  6919                                  ;   15    1   44 word   getDigit
+  6920                                  ;   16    1   56 word   getName
+  6921                                  ;   17    1   75 word   testReg
+  6922                                  ;   18    1    1 word   printLine
+  6923                                  ;   19    7   22 word   prc
+  6924                                  ;   20    1   34 word   prscomment
+  6925                                  ;   21   21   42 word   prs
+  6926                                  ;   22    3   64 word   printhex8a
+  6927                                  ;   23    2   69 word   printhex4
+  6928                                  ;   24    1   74 word   printhex16
+  6929                                  ;   25    3   79 word   printIntU
+  6930                                  ;   26   25   90 word   error1
+  6931                                  ;   27   12   98 word   errorexit
+  6932                                  ;   28 NULL  102 word   allowederror
+  6933                                  ;   29    3  103 word   addrerror
+  6934                                  ;   30    1  104 word   immeerror
+  6935                                  ;   31    2  105 word   implerror
+  6936                                  ;   32    4  106 word   indexerror
+  6937                                  ;   33    2  107 word   invaloperror
+  6938                                  ;   34    1  108 word   numbererror
+  6939                                  ;   35    1  109 word   regmemerror
+  6940                                  ;   36    2  110 word   reg16error
+  6941                                  ;   37    1  111 word   segregerror
+  6942                                  ;   38    3  112 word   syntaxerror
+  6943                                  ;   39 NULL  114 word   addrexit
+  6944                                  ;   40 NULL  115 word   internexit
+  6945                                  ;   41 NULL    1 word   main
+  6946                                  ;   42    1    8 word   getarg
+  6947                                  ;   43    1   38 word   epilog
+  6948                                  ;   44    2   67 word   end1
+  6949                                  ;   45    1    2 word   getCodes
+  6950                                  ;   46    1    7 word   gen66h
+  6951                                  ;   47    3    9 word   genCode2
+  6952                                  ;   48    6   13 word   genCodeW
+  6953                                  ;   49   16   17 word   genCode8
+  6954                                  ;   50    4   28 word   genCode16
+  6955                                  ;   51    7   32 word   writeEA
+  6956                                  ;   52    1   74 word   genImmediateSE
+  6957                                  ;   53    4   78 word   genImmediate
+  6958                                  ;   54    1   10 word   process
+  6959                                  ;   55    1  150 word   ChangeDirection
+  6960                                  ;   56    1  158 word   checkOpL
+  6961                                  ;   57    3  171 word   check2Ops
+  6962                                  ;   58    1  180 word   get2Ops
+  6963                                  ;   59    2  186 word   getOpL
+  6964                                  ;   60    2  195 word   getOpR
+  6965                                  ;   61    2  205 word   getOp1
+  6966                                  ;   62    1  221 word   getMEM
+  6967                                  ;   63    1  243 word   getIndReg1
+  6968                                  ;   64    1  251 word   getIndReg2
+  6969                                  ;   65    2  261 word   setwflag
+  6970                                  ;   66    1  272 word   setsflag
+  6971                                  ;   67    4  280 word   writetty
+  6972                                  ;   68    8  281 word   cputs
+  6973                                  ;   69    2  282 word   toupper
+  6974                                  ;   70    3  284 word   strlen
+  6975                                  ;   71    6  285 word   strcpy
+  6976                                  ;   72    3  287 word   digit
+  6977                                  ;   73   35  288 word   eqstr
+  6978                                  ;   74    3  291 word   strcat1
+  6979                                  ;   75    1  292 word   openR
+  6980                                  ;   76    2  293 word   creatR
+  6981                                  ;   77    2  294 word   readRL
+  6982                                  ;   78    2  295 word   fputcR
+  6983                                  ;   79    3  297 word   fcloseR
+  6984                                  ;   80    5  298 word   exitR
+  6985                                  ;   81    1  300 word   putch
+  6986                                  ;   82    4  301 word   DosInt
+  6987                                  ;   83 NULL  302 word   LastFunctionByt
+  6988                                  
+  6989                                  ;    #  addr name   list of CALLs
+  6990                                  
+  6991                                  ;    0  1339 getLine
+  6992                                  ;    1  1347 getTokeType
+  6993                                  ;    2  1359 storeLabel
+  6994                                  ;    3  1370 getTokeType
+  6995                                  ;    4  1382 lookCode
+  6996                                  ;    5  1391 process
+  6997                                  ;    6  1399 getVariable
+  6998                                  ;    7  1411 skipRest
+  6999                                  ;    8  1420 error1
+  7000                                  ;    9  1427 error1
+  7001                                  ;   10  1434 printLine
+  7002                                  ;   11  1458 skipBlank
+  7003                                  ;   12  1468 digit
+  7004                                  ;   13  1474 getDigit
+  7005                                  ;   14  1483 letterE
+  7006                                  ;   15  1491 getName
+  7007                                  ;   16  1512 searchLabel
+  7008                                  ;   17  1524 error1
+  7009                                  ;   18  1531 strcpy
+  7010                                  ;   19  1538 errorexit
+  7011                                  ;   20  1548 errorexit
+  7012                                  ;   21  1578 eqstr
+  7013                                  ;   22  1584 strlen
+  7014                                  ;   23  1605 storeLabel
+  7015                                  ;   24  1616 getTokeType
+  7016                                  ;   25  1628 lookCode
+  7017                                  ;   26  1637 errorexit
+  7018                                  ;   27  1647 errorexit
+  7019                                  ;   28  1657 getTokeType
+  7020                                  ;   29  1669 genCode8
+  7021                                  ;   30  1678 skipBlank
+  7022                                  ;   31  1688 isToken
+  7023                                  ;   32  1696 genCode8
+  7024                                  ;   33  1705 isToken
+  7025                                  ;   34  1713 getTokeType
+  7026                                  ;   35  1725 genCode16
+  7027                                  ;   36  1735 isToken
+  7028                                  ;   37  1743 errorexit
+  7029                                  ;   38  1762 eqstr
+  7030                                  ;   39  1780 eqstr
+  7031                                  ;   40  1786 getTokeType
+  7032                                  ;   41  1798 eqstr
+  7033                                  ;   42  1804 getTokeType
+  7034                                  ;   43  1816 eqstr
+  7035                                  ;   44  1822 getTokeType
+  7036                                  ;   45  1844 skipBlank
+  7037                                  ;   46  1861 isToken
+  7038                                  ;   47  1869 getTokeType
+  7039                                  ;   48  1881 error1
+  7040                                  ;   49  1888 prs
+  7041                                  ;   50  1892 prc
+  7042                                  ;   51  1905 getTokeType
+  7043                                  ;   52  1917 error1
+  7044                                  ;   53  1934 readRL
+  7045                                  ;   54  1941 errorexit
+  7046                                  ;   55  1951 errorexit
+  7047                                  ;   56  1961 ifEOL
+  7048                                  ;   57  1975 readRL
+  7049                                  ;   58  2011 digit
+  7050                                  ;   59  2017 letterE
+  7051                                  ;   60  2044 digit
+  7052                                  ;   61  2064 alnumE
+  7053                                  ;   62  2071 errorexit
+  7054                                  ;   63  2081 strcpy
+  7055                                  ;   64  2088 toupper
+  7056                                  ;   65  2104 strlen
+  7057                                  ;   66  2111 strlen
+  7058                                  ;   67  2118 eqstr
+  7059                                  ;   68  2124 eqstr
+  7060                                  ;   69  2130 eqstr
+  7061                                  ;   70  2136 eqstr
+  7062                                  ;   71  2142 eqstr
+  7063                                  ;   72  2148 eqstr
+  7064                                  ;   73  2154 eqstr
+  7065                                  ;   74  2160 eqstr
+  7066                                  ;   75  2166 eqstr
+  7067                                  ;   76  2172 eqstr
+  7068                                  ;   77  2178 eqstr
+  7069                                  ;   78  2184 eqstr
+  7070                                  ;   79  2190 eqstr
+  7071                                  ;   80  2196 eqstr
+  7072                                  ;   81  2202 eqstr
+  7073                                  ;   82  2208 eqstr
+  7074                                  ;   83  2214 eqstr
+  7075                                  ;   84  2220 eqstr
+  7076                                  ;   85  2226 eqstr
+  7077                                  ;   86  2232 eqstr
+  7078                                  ;   87  2238 eqstr
+  7079                                  ;   88  2244 eqstr
+  7080                                  ;   89  2250 eqstr
+  7081                                  ;   90  2256 eqstr
+  7082                                  ;   91  2262 eqstr
+  7083                                  ;   92  2268 eqstr
+  7084                                  ;   93  2274 eqstr
+  7085                                  ;   94  2280 eqstr
+  7086                                  ;   95  2286 eqstr
+  7087                                  ;   96  2292 eqstr
+  7088                                  ;   97  2312 prs
+  7089                                  ;   98  2316 printhex16
+  7090                                  ;   99  2327 prs
+  7091                                  ;  100  2331 prc
+  7092                                  ;  101  2335 printhex8a
+  7093                                  ;  102  2346 prc
+  7094                                  ;  103  2350 prs
+  7095                                  ;  104  2354 prscomment
+  7096                                  ;  105  2371 writetty
+  7097                                  ;  106  2380 writetty
+  7098                                  ;  107  2389 fputcR
+  7099                                  ;  108  2411 prc
+  7100                                  ;  109  2427 prc
+  7101                                  ;  110  2448 printhex4
+  7102                                  ;  111  2458 printhex4
+  7103                                  ;  112  2480 prc
+  7104                                  ;  113  2502 printhex8a
+  7105                                  ;  114  2513 printhex8a
+  7106                                  ;  115  2538 printIntU
+  7107                                  ;  116  2548 prc
+  7108                                  ;  117  2561 prs
+  7109                                  ;  118  2565 prs
+  7110                                  ;  119  2569 prs
+  7111                                  ;  120  2573 prs
+  7112                                  ;  121  2589 error1
+  7113                                  ;  122  2596 end1
+  7114                                  ;  123  2614 error1
+  7115                                  ;  124  2631 error1
+  7116                                  ;  125  2648 error1
+  7117                                  ;  126  2665 error1
+  7118                                  ;  127  2683 error1
+  7119                                  ;  128  2703 error1
+  7120                                  ;  129  2722 error1
+  7121                                  ;  130  2741 error1
+  7122                                  ;  131  2759 error1
+  7123                                  ;  132  2778 error1
+  7124                                  ;  133  2797 error1
+  7125                                  ;  134  2813 errorexit
+  7126                                  ;  135  2834 errorexit
+  7127                                  ;  136  2849 getarg
+  7128                                  ;  137  2856 parse
+  7129                                  ;  138  2862 epilog
+  7130                                  ;  139  2869 end1
+  7131                                  ;  140  2893 cputs
+  7132                                  ;  141  2899 cputs
+  7133                                  ;  142  2905 exitR
+  7134                                  ;  143  2911 toupper
+  7135                                  ;  144  2919 strcpy
+  7136                                  ;  145  2926 strcat1
+  7137                                  ;  146  2934 strcpy
+  7138                                  ;  147  2941 strcat1
+  7139                                  ;  148  2949 strcpy
+  7140                                  ;  149  2956 strcat1
+  7141                                  ;  150  2964 openR
+  7142                                  ;  151  2970 cputs
+  7143                                  ;  152  2976 cputs
+  7144                                  ;  153  2982 exitR
+  7145                                  ;  154  2988 creatR
+  7146                                  ;  155  2995 cputs
+  7147                                  ;  156  3001 cputs
+  7148                                  ;  157  3007 exitR
+  7149                                  ;  158  3013 creatR
+  7150                                  ;  159  3020 cputs
+  7151                                  ;  160  3026 cputs
+  7152                                  ;  161  3032 exitR
+  7153                                  ;  162  3038 prs
+  7154                                  ;  163  3042 prs
+  7155                                  ;  164  3046 prs
+  7156                                  ;  165  3050 prs
+  7157                                  ;  166  3054 prs
+  7158                                  ;  167  3058 prs
+  7159                                  ;  168  3062 prs
+  7160                                  ;  169  3066 prs
+  7161                                  ;  170  3070 prs
+  7162                                  ;  171  3087 prs
+  7163                                  ;  172  3091 printIntU
+  7164                                  ;  173  3101 prs
+  7165                                  ;  174  3105 prs
+  7166                                  ;  175  3109 printIntU
+  7167                                  ;  176  3119 prs
+  7168                                  ;  177  3123 fputcR
+  7169                                  ;  178  3137 fcloseR
+  7170                                  ;  179  3145 fcloseR
+  7171                                  ;  180  3153 fcloseR
+  7172                                  ;  181  3161 exitR
+  7173                                  ;  182  3183 genCode8
+  7174                                  ;  183  3205 genCode8
+  7175                                  ;  184  3225 genCode8
+  7176                                  ;  185  3245 errorexit
+  7177                                  ;  186  3267 genCode8
+  7178                                  ;  187  3276 genCode8
+  7179                                  ;  188  3301 genCode8
+  7180                                  ;  189  3310 genCode8
+  7181                                  ;  190  3319 genCode16
+  7182                                  ;  191  3344 genCode8
+  7183                                  ;  192  3353 genImmediate
+  7184                                  ;  193  3379 genCode16
+  7185                                  ;  194  3389 genCode8
+  7186                                  ;  195  3408 getTokeType
+  7187                                  ;  196  3420 getCodeSize
+  7188                                  ;  197  3432 getCodes
+  7189                                  ;  198  3441 genCode8
+  7190                                  ;  199  3450 getOpL
+  7191                                  ;  200  3457 checkOpL
+  7192                                  ;  201  3466 genCode2
+  7193                                  ;  202  3475 getTokeType
+  7194                                  ;  203  3487 implerror
+  7195                                  ;  204  3497 genCodeW
+  7196                                  ;  205  3506 writeEA
+  7197                                  ;  206  3514 check2Ops
+  7198                                  ;  207  3524 reg16error
+  7199                                  ;  208  3535 addrerror
+  7200                                  ;  209  3545 genCode8
+  7201                                  ;  210  3554 genCode8
+  7202                                  ;  211  3563 writeEA
+  7203                                  ;  212  3571 check2Ops
+  7204                                  ;  213  3581 setsflag
+  7205                                  ;  214  3590 genCodeW
+  7206                                  ;  215  3599 genImmediate
+  7207                                  ;  216  3612 genCodeW
+  7208                                  ;  217  3621 writeEA
+  7209                                  ;  218  3629 genImmediateSE
+  7210                                  ;  219  3644 genCodeW
+  7211                                  ;  220  3653 writeEA
+  7212                                  ;  221  3661 genCodeW
+  7213                                  ;  222  3670 writeEA
+  7214                                  ;  223  3678 syntaxerror
+  7215                                  ;  224  3690 check2Ops
+  7216                                  ;  225  3700 genCode2
+  7217                                  ;  226  3709 genImmediate
+  7218                                  ;  227  3722 genCodeW
+  7219                                  ;  228  3731 writeEA
+  7220                                  ;  229  3739 genImmediate
+  7221                                  ;  230  3752 regmemerror
+  7222                                  ;  231  3764 ChangeDirection
+  7223                                  ;  232  3780 reg16error
+  7224                                  ;  233  3791 genCode2
+  7225                                  ;  234  3800 writeEA
+  7226                                  ;  235  3808 syntaxerror
+  7227                                  ;  236  3820 genCode8
+  7228                                  ;  237  3829 genCode16
+  7229                                  ;  238  3839 genCode8
+  7230                                  ;  239  3848 error1
+  7231                                  ;  240  3855 error1
+  7232                                  ;  241  3889 implerror
+  7233                                  ;  242  3899 segregerror
+  7234                                  ;  243  3911 setwflag
+  7235                                  ;  244  3920 error1
+  7236                                  ;  245  3927 error1
+  7237                                  ;  246  3934 error1
+  7238                                  ;  247  3951 get2Ops
+  7239                                  ;  248  3959 addrerror
+  7240                                  ;  249  3969 invaloperror
+  7241                                  ;  250  3982 immeerror
+  7242                                  ;  251  3992 addrerror
+  7243                                  ;  252  4002 setwflag
+  7244                                  ;  253  4019 getOpL
+  7245                                  ;  254  4026 need
+  7246                                  ;  255  4031 getOpR
+  7247                                  ;  256  4045 getOpR
+  7248                                  ;  257  4059 getOp1
+  7249                                  ;  258  4066 isToken
+  7250                                  ;  259  4074 getMEM
+  7251                                  ;  260  4081 invaloperror
+  7252                                  ;  261  4094 error1
+  7253                                  ;  262  4108 testReg
+  7254                                  ;  263  4116 searchLabel
+  7255                                  ;  264  4128 error1
+  7256                                  ;  265  4144 getTokeType
+  7257                                  ;  266  4156 getOp1
+  7258                                  ;  267  4163 syntaxerror
+  7259                                  ;  268  4175 getIndReg2
+  7260                                  ;  269  4186 getIndReg1
+  7261                                  ;  270  4197 isToken
+  7262                                  ;  271  4205 getTokeType
+  7263                                  ;  272  4217 numbererror
+  7264                                  ;  273  4229 isToken
+  7265                                  ;  274  4237 isToken
+  7266                                  ;  275  4245 errorexit
+  7267                                  ;  276  4266 indexerror
+  7268                                  ;  277  4277 indexerror
+  7269                                  ;  278  4301 indexerror
+  7270                                  ;  279  4312 indexerror
+  7271                                  ;  280  4332 gen66h
+  7272                                  ;  281  4348 error1
+  7273                                  ;  282  4374 putch
+  7274                                  ;  283  4442 strcpy
+  7275                                  ;  284  4457 DosInt
+  7276                                  ;  285  4473 DosInt
+  7277                                  ;  286  4496 DosInt
+  7278                                  ;  287  4515 DosInt
+  7279                                  ;  288  4549 writetty
+  7280                                  ;  289  4558 writetty
+  7281                                  ;Input: AS.C, List: AS.S,  Lines:  303
+  7282                                  ;Glob. variables:  193 max.:  200
+  7283                                  ;Local variables:    3 max.:  100, in 'searchLabel'
+  7284                                  ;Functions      :   84 max.:  300
+  7285                                  ;Calls          :  290 max.: 2000, NameField: 4590 max.:    65535
+  7286                                  ;Code until     :25998 max.: 30000, free: 4002
+  7287                                  ;Data (HeapEnd) :33595, resting stacksize: 31940
+  7288                                  ;Max. Const in 'testReg' :  658 max. 3000, free: 2342

@@ -94,7 +94,11 @@ int process() {
 /*    prs("\n Op:"); printhex8a(Op);
     prs(", Op2:"); printhex8a(Op2);
     prs(", R1No:"); printhex8a(R1No);
-    prs(", R2No:"); printhex8a(R2No);   */    
+    prs(", R2No:"); printhex8a(R2No);   */  
+        if (Op2 == ADR) {
+            imme=disp;
+            Op2=IMM;//continue with IMM    
+        }  
         if (Op2 == IMM) {// r,i     
             if (Op == REG) {               
                 c = wflag << 3;   
@@ -119,12 +123,8 @@ int process() {
                 writeEA(R2No);
                 return;   
         }          
-/*        if (R1Type == SEGREG) {//sreg,rm
-            if (OpSize != WORD) reg16error();
-                genCode8(0x8E);
-                writeEA(R1No);
-                return;   
-        }    */      
+         
+         
         syntaxerror();
         return;
     }    
@@ -174,7 +174,7 @@ int check2Ops() {
     if (Op == ADR) invaloperror(); 
     if (Op == IMM) immeerror();   
     if (Op2==   0) addrerror();
-    if (Op2== ADR) invaloperror();          
+//    if (Op2== ADR) invaloperror();//allowed in mov           
     setwflag();       
 }    
 int get2Ops() {
