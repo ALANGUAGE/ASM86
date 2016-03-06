@@ -66,8 +66,8 @@ char I_CMP[]=  {'C','M','P',0,          4, 7,     0xF1};
 char I_TEST[]= {'T','E','S','T',0,     41,0xA8,0x84,0xF6,0,0xF1};
 //  5: mov
 char I_MOV[]=  {'M','O','V',0,          5,        0xF1};
-char I_MOVSX[]={'M','O','V','S','X',0,  5,0xBE,   0xF1};
-char I_MOVZX[]={'M','O','V','Z','X',0,  5,0xB6,   0xF1};
+char I_MOVSX[]={'M','O','V','S','X',0, 51,0xBE,   0xF1};
+char I_MOVZX[]={'M','O','V','Z','X',0, 51,0xB6,   0xF1};
 //  6: single byte relative jump
 char I_JO []=  {'J','O',0,              6, 0,     0xF1};
 char I_JNO[]=  {'J','N','O',0,          6, 1,     0xF1};

@@ -1,8 +1,36 @@
 ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT     
 ;1=IMM, 2=REG, 3=ADR, 4=MEM   
-org 256             ;NASM
-not al              ;F6 D0       
-VA dw 8             ;08 00  
+org 256            ;NASM
+not al             ;F6 D0       
+VA dw 8            ;08 00   
+VB db "AB",6       ;41 42 06                 
+dec ax             ;48
+dec word cx        ;49    
+inc ax             ;40
+inc di             ;47
+inc byte [bx]      ;FE 07
+dec byte [bx]      ;FE 0F
+dec byte [bx+3]    ;FE 4F 03
+dec byte [bx-4]    ;FE 4F FC
+not cl             ;F6 D1
+dec cl             ;FE C9
+dec ecx            ;66 49
+dec byte [bx]      ;FE 0F
+dec byte [bx+3]    ;FE 4F 03
+dec byte [bx+258]  ;FE 8F 02 01
+dec byte [bx-4]    ;FE 4F FC
+;dec word [cx];inv effective adr
+;inc word  VA ;inv comb opcode+operands
+inc byte [VA]      ;FE 06 04 00
+inc word [VB]      ;FF 06 06 00
+inc word [VB+4]    ;FF 06 0A 00
+inc byte [bp]      ;FE 46 00  special case
+inc byte [bp+4]    ;FE 46 04
+inc byte [bp+258]  ;FE 86 02 01
+inc byte [bx+di+258];FE81 02 01
+inc byte [bp-4]    ;FE 46 FC
+inc byte [bx+di]   ;FE 01
+inc byte [bx+di-4] ;FE 41 FC
 not cx              ;F7 D1 
 not DX              ;F7 D2      
 not byte [bx+258]   ;F6 97 02 01   
@@ -90,4 +118,40 @@ add [bx+si], al     ;00 00
 add [bx+di], al     ;00 01
 add [bx+di], ax     ;01 01
 add al, [bx+di]     ;02 01
-add ax, [bx+di]     ;03 01
+add ax, [bx+di]     ;03 01    
+
+mov al, 0           ;B0 00   
+mov al, 3           ;B0 03   
+mov al, 127         ;B0 7F   
+mov al, 255         ;B0 FF   
+mov ax, 0           ;B8 00 00 
+mov ax, 259         ;B8 03 01 
+mov ax, 65535       ;B8 FF FF 
+mov bl, 3           ;B3 03   
+mov bx, 3           ;BB 03 00 
+mov bx, 259         ;BB 03 01 
+mov byte [VA], 3    ;C6 06 02 00 03  
+mov word [VA], 3    ;C7 06 02 00 03 00
+mov word [VA], 259  ;C7 06 02 00 03 01
+
+mov ax, es          ;8C C0
+mov ax, cs          ;8C C8
+mov ax, ss          ;8C D0
+mov ax, ds          ;8C D8
+mov ax, fs          ;8C E0
+mov ax, gs          ;8C E8   
+mov cx, es          ;8C C1
+mov dx, es          ;8C C2
+mov bx, ss          ;8C D3
+mov sp, ss          ;8C D4
+mov bp, fs          ;8C E5
+mov si, fs          ;8C E6
+mov di, fs          ;8C E7     
+mov [bx+di-4], es   ;8C 41 FC    
+mov [VA], es        ;8C 06 02 00
+mov [bp-4], ss      ;8C 56 FC
+mov word [bx+si],cs ;8C 08  
+mov es, ax          ;8E C0      
+mov ss, ax          ;8E D0      
+mov es, [bx+di-4]   ;8E 41 FC    
+mov es, [VA]        ;8E 06 02 00

@@ -2,95 +2,160 @@
 
 0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT     
 0000                ;1=IMM, 2=REG, 3=ADR, 4=MEM   
-0000                org 256             ;NASM
-0100 F6 D0          not al              ;F6 D0       
-0102 08 00          VA dw 8             ;08 00  
-0104 F7 D1          not cx              ;F7 D1 
-0106 F7 D2          not DX              ;F7 D2      
-0108 F6 97 02 01    not byte [bx+258]   ;F6 97 02 01   
-010C F6 11          not byte [bx+di]    ;F6 11       
-010E F6 51 FC       not byte [bx+di-4]  ;F6 51 FC     
-0111 F6 16 02 01    not byte [VA]       ;F6 16 01 00 
-0115 F7 16 02 01    not word [VA]       ;F7 16 01 00     
-0119 F7 D9          neg cx              ;F7 D9        
-011B F6 9F 02 01    neg byte [bx+258]   ;F6 9F 02 01   
-011F F6 19          neg byte [bx+di]    ;F6 19       
-0121 F6 59 FC       neg byte [bx+di-4]  ;F6 59 FC     
-0124 F6 1E 02 01    neg byte [VA]       ;F6 1E 02 00 
-0128 F7 1E 02 01    neg word [VA]       ;F7 1E 02 00 
-012C F6 E0          mul al              ;F6 E0       
-012E F7 E0          mul ax              ;F7 E0       
-0130 F7 E1          mul cx              ;F7 E1       
-0132 F6 A7 02 01    mul byte [bx+258]   ;F6 A7 02 01   
-0136 F6 21          mul byte [bx+di]    ;F6 21       
-0138 F6 61 FC       mul byte [bx+di-4]  ;F6 61 FC     
-013B F6 26 02 01    mul byte [VA]       ;F6 26 02 00 
-013F F7 26 02 01    mul word [VA]       ;F7 26 02 00 
-0143 F6 F0          div al              ;F6 F0       
-0145 F7 F0          div ax              ;F7 F0       
-0147 F7 F1          div cx              ;F7 F1       
-0149 F6 B7 02 01    div byte [bx+258]   ;F6 B7 02 01   
-014D F6 31          div byte [bx+di]    ;F6 31       
-014F F6 71 FC       div byte [bx+di-4]  ;F6 71 FC     
-0152 F6 36 02 01    div byte [VA]       ;F6 36 02 00 
-0156 F7 36 02 01    div word [VA]       ;F7 36 02 00 
-015A F6 F8          idiv al             ;F6 F8       
-015C F7 F8          idiv ax             ;F7 F8       
-015E F7 F9          idiv cx             ;F7 F9       
-0160 F6 BF 02 01    idiv byte [bx+258]  ;F6 BF 02 01   
-0164 F6 39          idiv byte [bx+di]   ;F6 39       
-0166 F6 79 FC       idiv byte [bx+di-4] ;F6 79 FC     
-0169 F6 3E 02 01    idiv byte [VA]      ;F6 3E 02 00 
-016D F7 3E 02 01    idiv word [VA]      ;F7 3E 02 00 
-0171                ;acc, rm           
-0171 F6 E8          imul al             ;F6 E8    
-0173 F7 E8          imul ax             ;F7 E8    
-0175 F7 E9          imul cx             ;F7 E9    
-0177 F6 AF 02 01    imul byte [bx+258]  ;F6 AF 02 01
-017B F6 29          imul byte [bx+di]   ;F6 29    
-017D F6 69 FC       imul byte [bx+di-4] ;F6 69 FC  
-0180 F6 2E 02 01    imul byte [VA]      ;F6 2E 01 00 
-0184 F7 2E 02 01    imul word [VA]      ;F7 2E 01 00 
-0188                
-0188 C4 01          les ax,  [bx+di]    ;C4 01
-018A 0F B2 0E 02 01    lss cx, [VA]        ;0F B2 0E [0400]  
-018F C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
-0192 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
-0195 0F B5 81 02 01    lgs ax, [VA+bx+di]  ;0F B5 81 01 00
-019A                ;mov al, [bp-4]     ;8A 46 FC
-019A                ;mov al, [VB+bx]    ;8A 87 06 00           
-019A                
-019A 04 04          add al, 4           ;04 04
-019C                ;add al, 259      ;;;04 03 bounds
-019C 83 C0 04       add ax, 4           ;83 C0 04
-019F 05 03 01       add ax, 259         ;05 03 01
-01A2 0C 04          or  al, 4           ;0C 04         
-01A4 15 03 01       adc ax, 259         ;15 03 01     
-01A7 80 C1 04       add cl, 4           ;80 C1 04
-01AA 83 C1 04       add cx, 4           ;83 C1 04 
-01AD 81 C1 03 01    add cx, 259         ;81 C1 03 01  
-01B1 80 C9 04       or  cl, 4           ;80 C9 04  
-01B4 80 C9 FF       or  cl, 255         ;80 C9 FF  
-01B7 83 C9 04       or  cx, 4           ;83 C9 04 
-01BA 83 C9 7F       or  cx, 127         ;83 C9 7F  
-01BD 81 C9 80 00    or  cx, 128         ;81 C9 80 00
-01C1 81 C9 FF 00    or  cx, 255         ;81 C9 FF 00
-01C5 81 C9 03 01    or  cx, 259         ;81 C9 03 01
-01C9 83 C4 02       add  sp, 2          ;83 C4 02 
-01CC 80 06 02 01 04    add byte [VA], 4    ;80 06 02 01 04
-01D1 83 06 02 01 04    add word [VA], 4    ;83 06 02 01 04  
-01D6 83 06 05 01 04    add word [VA+3],4   ;83 06 05 01 04   
-01DB                ;add word [VA+di]
-01DB 02 41 FC       add al, [bx+di-4]   ;02 41 FC    
-01DE 01 C3          add bx, ax          ;01 C3
-01E0 01 D8          add ax, bx          ;01 D8
-01E2 02 07          add al, [bx]        ;02 07
-01E4 03 07          add ax, [bx]        ;03 07
-01E6 03 0F          add cx, [bx]        ;03 0F
-01E8 01 0F          add [bx], cx        ;01 0F
-01EA 00 00          add [bx+si], al     ;00 00
-01EC 00 01          add [bx+di], al     ;00 01
-01EE 01 01          add [bx+di], ax     ;01 01
-01F0 02 01          add al, [bx+di]     ;02 01
-01F2 03 01          add ax, [bx+di]     ;03 01
-;END Errors: 0, COM file 244 bytes.
+0000                org 256            ;NASM
+0100 F6 D0          not al             ;F6 D0       
+0102 08 00          VA dw 8            ;08 00   
+0104 41 42 06       VB db "AB",6       ;41 42 06                 
+0107 48             dec ax             ;48
+0108 49             dec word cx        ;49    
+0109 40             inc ax             ;40
+010A 47             inc di             ;47
+010B FE 07          inc byte [bx]      ;FE 07
+010D FE 0F          dec byte [bx]      ;FE 0F
+010F FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0112 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0115 F6 D1          not cl             ;F6 D1
+0117 FE C9          dec cl             ;FE C9
+0119 66 49          dec ecx            ;66 49
+011B FE 0F          dec byte [bx]      ;FE 0F
+011D FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0120 FE 8F 02 01    dec byte [bx+258]  ;FE 8F 02 01
+0124 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0127                ;dec word [cx];inv effective adr
+0127                ;inc word  VA ;inv comb opcode+operands
+0127 FE 06 02 01    inc byte [VA]      ;FE 06 04 00
+012B FF 06 04 01    inc word [VB]      ;FF 06 06 00
+012F FF 06 08 01    inc word [VB+4]    ;FF 06 0A 00
+0133 FE 46 00       inc byte [bp]      ;FE 46 00  special case
+0136 FE 46 04       inc byte [bp+4]    ;FE 46 04
+0139 FE 86 02 01    inc byte [bp+258]  ;FE 86 02 01
+013D FE 81 02 01    inc byte [bx+di+258];FE81 02 01
+0141 FE 46 FC       inc byte [bp-4]    ;FE 46 FC
+0144 FE 01          inc byte [bx+di]   ;FE 01
+0146 FE 41 FC       inc byte [bx+di-4] ;FE 41 FC
+0149 F7 D1          not cx              ;F7 D1 
+014B F7 D2          not DX              ;F7 D2      
+014D F6 97 02 01    not byte [bx+258]   ;F6 97 02 01   
+0151 F6 11          not byte [bx+di]    ;F6 11       
+0153 F6 51 FC       not byte [bx+di-4]  ;F6 51 FC     
+0156 F6 16 02 01    not byte [VA]       ;F6 16 01 00 
+015A F7 16 02 01    not word [VA]       ;F7 16 01 00     
+015E F7 D9          neg cx              ;F7 D9        
+0160 F6 9F 02 01    neg byte [bx+258]   ;F6 9F 02 01   
+0164 F6 19          neg byte [bx+di]    ;F6 19       
+0166 F6 59 FC       neg byte [bx+di-4]  ;F6 59 FC     
+0169 F6 1E 02 01    neg byte [VA]       ;F6 1E 02 00 
+016D F7 1E 02 01    neg word [VA]       ;F7 1E 02 00 
+0171 F6 E0          mul al              ;F6 E0       
+0173 F7 E0          mul ax              ;F7 E0       
+0175 F7 E1          mul cx              ;F7 E1       
+0177 F6 A7 02 01    mul byte [bx+258]   ;F6 A7 02 01   
+017B F6 21          mul byte [bx+di]    ;F6 21       
+017D F6 61 FC       mul byte [bx+di-4]  ;F6 61 FC     
+0180 F6 26 02 01    mul byte [VA]       ;F6 26 02 00 
+0184 F7 26 02 01    mul word [VA]       ;F7 26 02 00 
+0188 F6 F0          div al              ;F6 F0       
+018A F7 F0          div ax              ;F7 F0       
+018C F7 F1          div cx              ;F7 F1       
+018E F6 B7 02 01    div byte [bx+258]   ;F6 B7 02 01   
+0192 F6 31          div byte [bx+di]    ;F6 31       
+0194 F6 71 FC       div byte [bx+di-4]  ;F6 71 FC     
+0197 F6 36 02 01    div byte [VA]       ;F6 36 02 00 
+019B F7 36 02 01    div word [VA]       ;F7 36 02 00 
+019F F6 F8          idiv al             ;F6 F8       
+01A1 F7 F8          idiv ax             ;F7 F8       
+01A3 F7 F9          idiv cx             ;F7 F9       
+01A5 F6 BF 02 01    idiv byte [bx+258]  ;F6 BF 02 01   
+01A9 F6 39          idiv byte [bx+di]   ;F6 39       
+01AB F6 79 FC       idiv byte [bx+di-4] ;F6 79 FC     
+01AE F6 3E 02 01    idiv byte [VA]      ;F6 3E 02 00 
+01B2 F7 3E 02 01    idiv word [VA]      ;F7 3E 02 00 
+01B6                ;acc, rm           
+01B6 F6 E8          imul al             ;F6 E8    
+01B8 F7 E8          imul ax             ;F7 E8    
+01BA F7 E9          imul cx             ;F7 E9    
+01BC F6 AF 02 01    imul byte [bx+258]  ;F6 AF 02 01
+01C0 F6 29          imul byte [bx+di]   ;F6 29    
+01C2 F6 69 FC       imul byte [bx+di-4] ;F6 69 FC  
+01C5 F6 2E 02 01    imul byte [VA]      ;F6 2E 01 00 
+01C9 F7 2E 02 01    imul word [VA]      ;F7 2E 01 00 
+01CD                
+01CD C4 01          les ax,  [bx+di]    ;C4 01
+01CF 0F B2 0E 02 01    lss cx, [VA]        ;0F B2 0E [0400]  
+01D4 C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
+01D7 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
+01DA 0F B5 81 02 01    lgs ax, [VA+bx+di]  ;0F B5 81 01 00
+01DF                ;mov al, [bp-4]     ;8A 46 FC
+01DF                ;mov al, [VB+bx]    ;8A 87 06 00           
+01DF                
+01DF 04 04          add al, 4           ;04 04
+01E1                ;add al, 259      ;;;04 03 bounds
+01E1 83 C0 04       add ax, 4           ;83 C0 04
+01E4 05 03 01       add ax, 259         ;05 03 01
+01E7 0C 04          or  al, 4           ;0C 04         
+01E9 15 03 01       adc ax, 259         ;15 03 01     
+01EC 80 C1 04       add cl, 4           ;80 C1 04
+01EF 83 C1 04       add cx, 4           ;83 C1 04 
+01F2 81 C1 03 01    add cx, 259         ;81 C1 03 01  
+01F6 80 C9 04       or  cl, 4           ;80 C9 04  
+01F9 80 C9 FF       or  cl, 255         ;80 C9 FF  
+01FC 83 C9 04       or  cx, 4           ;83 C9 04 
+01FF 83 C9 7F       or  cx, 127         ;83 C9 7F  
+0202 81 C9 80 00    or  cx, 128         ;81 C9 80 00
+0206 81 C9 FF 00    or  cx, 255         ;81 C9 FF 00
+020A 81 C9 03 01    or  cx, 259         ;81 C9 03 01
+020E 83 C4 02       add  sp, 2          ;83 C4 02 
+0211 80 06 02 01 04    add byte [VA], 4    ;80 06 02 01 04
+0216 83 06 02 01 04    add word [VA], 4    ;83 06 02 01 04  
+021B 83 06 05 01 04    add word [VA+3],4   ;83 06 05 01 04   
+0220                ;add word [VA+di]
+0220 02 41 FC       add al, [bx+di-4]   ;02 41 FC    
+0223 01 C3          add bx, ax          ;01 C3
+0225 01 D8          add ax, bx          ;01 D8
+0227 02 07          add al, [bx]        ;02 07
+0229 03 07          add ax, [bx]        ;03 07
+022B 03 0F          add cx, [bx]        ;03 0F
+022D 01 0F          add [bx], cx        ;01 0F
+022F 00 00          add [bx+si], al     ;00 00
+0231 00 01          add [bx+di], al     ;00 01
+0233 01 01          add [bx+di], ax     ;01 01
+0235 02 01          add al, [bx+di]     ;02 01
+0237 03 01          add ax, [bx+di]     ;03 01    
+0239                
+0239 B0 00          mov al, 0           ;B0 00   
+023B B0 03          mov al, 3           ;B0 03   
+023D B0 7F          mov al, 127         ;B0 7F   
+023F B0 FF          mov al, 255         ;B0 FF   
+0241 B8 00 00       mov ax, 0           ;B8 00 00 
+0244 B8 03 01       mov ax, 259         ;B8 03 01 
+0247 B8 FF FF       mov ax, 65535       ;B8 FF FF 
+024A B3 03          mov bl, 3           ;B3 03   
+024C BB 03 00       mov bx, 3           ;BB 03 00 
+024F BB 03 01       mov bx, 259         ;BB 03 01 
+0252 C6 06 02 01 03    mov byte [VA], 3    ;C6 06 02 00 03  
+0257 C7 06 02 01 03    mov word [VA], 3    ;C7 06 02 00 03 00
+025D C7 06 02 01 03    mov word [VA], 259  ;C7 06 02 00 03 01
+0263                
+0263 8C C0          mov ax, es          ;8C C0
+0265 8C C8          mov ax, cs          ;8C C8
+0267 8C D0          mov ax, ss          ;8C D0
+0269 8C D8          mov ax, ds          ;8C D8
+026B 8C E0          mov ax, fs          ;8C E0
+026D 8C E8          mov ax, gs          ;8C E8   
+026F 8C C1          mov cx, es          ;8C C1
+0271 8C C2          mov dx, es          ;8C C2
+0273 8C D3          mov bx, ss          ;8C D3
+0275 8C D4          mov sp, ss          ;8C D4
+0277 8C E5          mov bp, fs          ;8C E5
+0279 8C E6          mov si, fs          ;8C E6
+027B 8C E7          mov di, fs          ;8C E7     
+027D 8C 41 FC       mov [bx+di-4], es   ;8C 41 FC    
+0280 8C 06 02 01    mov [VA], es        ;8C 06 02 00
+0284 8C 56 FC       mov [bp-4], ss      ;8C 56 FC
+0287 8C 08          mov word [bx+si],cs ;8C 08  
+0289 8E C0          mov es, ax          ;8E C0      
+028B 8E D0          mov ss, ax          ;8E D0      
+028D 8E 41 FC       mov es, [bx+di-4]   ;8E 41 FC    
+0290 8E 06 02 01    mov es, [VA]        ;8E 06 02 00
+0294                
+;END Errors: 0, COM file 404 bytes.

@@ -1,4 +1,4 @@
-char LIST;              // listing on/off
+char LIST;              //listing on/off     
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName
@@ -39,15 +39,15 @@ char CodeType;          //1-207 by searchSymbol(), must be byte size
 char Code1;             //1. Opcode
 char Code2;             //2. Opcode
 char Code3;             //3. Opcode
-char RegNo;             //0 - 7 AL, CL, ...  set in testReg()  
+char R2No;              //0 - 7 AL, CL, ...  set in testReg()  
 char R1No;              //temp for 1. register
-char RegType;           //0=no reg, BYTE, WORD, DWORD, SEGREG
+char R2Type;            //0=no reg, BYTE, WORD, DWORD, SEGREG
 char R1Type;            //temp for 1. register 
 char OpSize;            //0, BYTE, WORD, DWORD by getCodeSize()
 char wflag;             //wordflag: 0=byte, 1=word/dword
-//char dflag;             //directionflag: 1=to reg MOV,ALU    
+char dflag;             //directionflag: 1=to reg MOV,ALU    
 char sflag;             //sign extended, imm8 to word PUSH,ALU,IMUL3 
-char regindexbase;      //combination of index and base reg
+char rm;                //combination of index and base reg
 char isDirect;          //set in getOpL and getMeM, need in WriteEA
 int disp;               //displacement      0-8 bytes
 unsigned int imme;      //immediate         0-8 bytes

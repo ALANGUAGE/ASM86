@@ -73,11 +73,11 @@ int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
   toupper(SymbolUpper);
 }
 int testReg() {
-//ret:RegNo: 0 - 7 AL, CL  set:RegType: 0=no reg,BYTE,WORD,SEGREG,DWORD
-  RegType=0;
+//ret:RegNo: 0 - 7 AL, CL  set:R2Type: 0=no reg,BYTE,WORD,SEGREG,DWORD
+  R2Type=0;
   if (strlen(Symbol) < 2) return 0;
   if (strlen(Symbol) > 3) return 0;
-  RegType=BYTE;
+  R2Type=BYTE;
   if (eqstr(SymbolUpper, "AL")) return 0;
   if (eqstr(SymbolUpper, "CL")) return 1;
   if (eqstr(SymbolUpper, "DL")) return 2;
@@ -86,7 +86,7 @@ int testReg() {
   if (eqstr(SymbolUpper, "CH")) return 5;
   if (eqstr(SymbolUpper, "DH")) return 6;
   if (eqstr(SymbolUpper, "BH")) return 7;
-  RegType=WORD;
+  R2Type=WORD;
   if (eqstr(SymbolUpper, "AX")) return 0;
   if (eqstr(SymbolUpper, "CX")) return 1;
   if (eqstr(SymbolUpper, "DX")) return 2;
@@ -95,14 +95,14 @@ int testReg() {
   if (eqstr(SymbolUpper, "BP")) return 5;
   if (eqstr(SymbolUpper, "SI")) return 6;
   if (eqstr(SymbolUpper, "DI")) return 7;
-  RegType=SEGREG;
+  R2Type=SEGREG;
   if (eqstr(SymbolUpper, "ES")) return 0;
   if (eqstr(SymbolUpper, "CS")) return 1;
   if (eqstr(SymbolUpper, "SS")) return 2;
   if (eqstr(SymbolUpper, "DS")) return 3;
   if (eqstr(SymbolUpper, "FS")) return 4;
   if (eqstr(SymbolUpper, "GS")) return 5;
-  RegType=DWORD;
+  R2Type=DWORD;                         
   if (eqstr(SymbolUpper, "EAX"))return 0;
   if (eqstr(SymbolUpper, "ECX"))return 1;
   if (eqstr(SymbolUpper, "EDX"))return 2;
@@ -111,5 +111,5 @@ int testReg() {
   if (eqstr(SymbolUpper, "EBP"))return 5;
   if (eqstr(SymbolUpper, "ESI"))return 6;
   if (eqstr(SymbolUpper, "EDI"))return 7;
-  RegType=0; return 0;
+  R2Type=0; return 0;
 }
