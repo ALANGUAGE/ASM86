@@ -155,20 +155,20 @@
    155 0000018B 8ED0                    mov ss, ax          ;8E D0      
    156 0000018D 8E41FC                  mov es, [bx+di-4]   ;8E 41 FC    
    157 00000190 8E06[0200]              mov es, [VA]        ;8E 06 02 00         
-   158                                  
-   159 00000194 8800                    mov [bx+si], al     ;88 00   
-   160 00000196 8808                    mov [bx+si], cl     ;88 08   
-   161 00000198 88C8                    mov al, cl          ;88 C8   
-   162 0000019A 88C1                    mov cl, al          ;88 C1   
-   163 0000019C 8A00                    mov al, [bx+si]     ;8A 00   
-   164 0000019E 8A41FC                  mov al, [bx+di-4]   ;8A 41 FC 
-   165 000001A1 8A08                    mov cl, [bx+si]     ;8A 08  
-   166 000001A3 8A81[0200]              mov al, [VA+bx+di] 
-   167 000001A7 8A81[FEFF]              mov al, [VA+bx+di-4]  
-   168 000001AB A0[0200]                mov al, [VA]        ;A0 02 00
-   169 000001AE A0[0500]                mov al, [VA+3]      ;A0 05 00
-   170 000001B1 A1[0200]                mov ax, [VA]        ;A1 02 00
-   171 000001B4 A2[0200]                mov [VA], al        ;A2 02 00 
-   172 000001B7 B0[0200]                mov al, VA          ;B0 02 00 error  
-   173 000001B9 B8[0200]                mov ax, VA          ;B8 02 00
-   174 000001BC C706[0200][0200]        mov word [VA], VA   ;C7 06 02 00 02 00
+   158 00000194 A0[0200]                mov al, [VA]        ;A0 02 00
+   159 00000197 A0[0500]                mov al, [VA+3]      ;A0 05 00
+   160 0000019A A1[0200]                mov ax, [VA]        ;A1 02 00
+   161 0000019D A2[0200]                mov [VA], al        ;A2 02 00 
+   162 000001A0 A3[0200]                mov [VA], ax        ;A3 02 00 
+   163 000001A3 B0[0200]                mov al, VA          ;B0 02 00 error  
+   164 000001A5 B8[0200]                mov ax, VA          ;B8 02 00
+   165 000001A8 C706[0200][0200]        mov word[VA], VA    ;C7 06 02 00 02 00
+   166 000001AE 8800                    mov [bx+si], al     ;88 00   
+   167 000001B0 8808                    mov [bx+si], cl     ;88 08   
+   168 000001B2 88C8                    mov al, cl          ;88 C8   
+   169 000001B4 88C1                    mov cl, al          ;88 C1   
+   170 000001B6 8A00                    mov al, [bx+si]     ;8A 00   
+   171 000001B8 8A41FC                  mov al, [bx+di-4]   ;8A 41 FC 
+   172 000001BB 8A08                    mov cl, [bx+si]     ;8A 08  
+   173 000001BD 8A80[0200]              mov al, [VA+bx+si]  ;8A 80 02 00
+   174 000001C1 8A80[FEFF]              mov al, [VA+bx+si-4];8A 80 FE FF  

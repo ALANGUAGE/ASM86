@@ -157,31 +157,22 @@
 028B 8E D0          mov ss, ax          ;8E D0      
 028D 8E 41 FC       mov es, [bx+di-4]   ;8E 41 FC    
 0290 8E 06 02 01    mov es, [VA]        ;8E 06 02 00         
-0294                
-;***** next line ERROR: syntax, Symbol: al
-0294                mov [bx+si], al     ;88 00   
-;***** next line ERROR: syntax, Symbol: cl
-0294                mov [bx+si], cl     ;88 08   
-;***** next line ERROR: syntax, Symbol: cl
-0294                mov al, cl          ;88 C8   
-;***** next line ERROR: syntax, Symbol: al
-0294                mov cl, al          ;88 C1   
-;***** next line ERROR: syntax, Symbol: si
-0294                mov al, [bx+si]     ;8A 00   
-;***** next line ERROR: syntax, Symbol: di
-0294                mov al, [bx+di-4]   ;8A 41 FC 
-;***** next line ERROR: syntax, Symbol: si
-0294                mov cl, [bx+si]     ;8A 08   
-;***** next line ERROR: syntax, Symbol: VA
-0294                mov al, [VA]        ;A0 02 00
-;***** next line ERROR: syntax, Symbol: VA
-0294                mov al, [VA+3]      ;A0 05 00
-;***** next line ERROR: syntax, Symbol: VA
-0294                mov ax, [VA]        ;A1 02 00
-;***** next line ERROR: syntax, Symbol: al
-0294                mov [VA], al        ;A2 02 00 
-0294 B0 02          mov al, VA          ;B0 02 00 error  
-0296 B8 02 01       mov ax, VA          ;B8 02 00
-0299 C7 06 02 01 02    mov word [VA], VA   ;C7 06 02 00 02 00
-029F                
-;END Errors: 11 ***ERROR*** , COM file 415 bytes.
+0294 A0 02 01       mov al, [VA]        ;A0 02 00
+0297 A0 05 01       mov al, [VA+3]      ;A0 05 00
+029A A1 02 01       mov ax, [VA]        ;A1 02 00
+029D A2 02 01       mov [VA], al        ;A2 02 00 
+02A0 A3 02 01       mov [VA], ax        ;A3 02 00 
+02A3 B0 02          mov al, VA          ;B0 02 00 error  
+02A5 B8 02 01       mov ax, VA          ;B8 02 00
+02A8 C7 06 02 01 02    mov word[VA], VA    ;C7 06 02 00 02 00
+02AE 88 00          mov [bx+si], al     ;88 00   
+02B0 88 08          mov [bx+si], cl     ;88 08   
+02B2 88 C8          mov al, cl          ;88 C8   
+02B4 88 C1          mov cl, al          ;88 C1   
+02B6 8A 00          mov al, [bx+si]     ;8A 00   
+02B8 8A 41 FC       mov al, [bx+di-4]   ;8A 41 FC 
+02BB 8A 08          mov cl, [bx+si]     ;8A 08  
+02BD 8A 80 02 01    mov al, [VA+bx+si]  ;8A 80 02 00
+02C1 8A 80 FE 00    mov al, [VA+bx+si-4];8A 80 FE FF  
+02C5                
+;END Errors: 0, Output: TE.LST, COM file 453 bytes.
