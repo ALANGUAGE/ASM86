@@ -822,9 +822,9 @@ I_JECXZ db 74,69,67,88,90,0,16,227,241
 ;-139 //  30: enter
 
 
-;-140 char I_ENTER[]={'E','N','T','E','R',0, 30, 0xC8,  0xF1};
+;-140 char I_ENTER[]={'E','N','T','E','R',0,  30,       0xF1};
 
-I_ENTER db 69,78,84,69,82,0,30,200,241
+I_ENTER db 69,78,84,69,82,0,30,241
 
 ;-141 // 100: directives
 
@@ -6558,46 +6558,117 @@ process:  ; *** PROC ***
 
 @@process274:
 
-;-235        
+;-235     
 
 
-;-236     if (CodeType==101) {// ORG nn
+;-236     if (CodeType == 30) {//enter i18,i8
 
 @@process273:
  mov al, [CodeType]
- cmp al, 101
+ cmp al, 30
  jne @@process277
 
-;-237         if (TokeType != DIGIT) error1("only digit allowed");
+;-237         genCode8(0xC8);
+
+ push 200
+ call genCode8
+ add  sp, 2
+
+;-238         Op=getOp1();
+
+ call getOp1
+ mov byte [Op], al
+
+;-239         if (Op == IMM) genCode16(SymbolInt);
+
+ mov al, [Op]
+ cmp al, 1
+ jne @@process278
+ push word [SymbolInt]
+ call genCode16
+ add  sp, 2
+
+;-240         else numbererror();
+
+ jmp @@process279
+@@process278:
+ call numbererror
+
+;-241         need(',');
+
+@@process279:
+ push 44
+ call need
+ add  sp, 2
+
+;-242         Op=getOp1();
+
+ call getOp1
+ mov byte [Op], al
+
+;-243         if (Op == IMM) genCode8 (SymbolInt);
+
+ mov al, [Op]
+ cmp al, 1
+ jne @@process280
+ push word [SymbolInt]
+ call genCode8
+ add  sp, 2
+
+;-244         else numbererror();           
+
+ jmp @@process281
+@@process280:
+ call numbererror
+
+;-245         return;
+
+@@process281:
+ jmp @@retn
+
+;-246     }
+
+
+;-247        
+
+
+;-248     if (CodeType==101) {// ORG nn
+
+@@process277:
+ mov al, [CodeType]
+ cmp al, 101
+ jne @@process282
+
+;-249         if (TokeType != DIGIT) error1("only digit allowed");
 
  mov al, [TokeType]
  cmp al, 1
- je  @@process278
+ je  @@process283
  push process_1
  call error1
  add  sp, 2
 
-;-238         PC=SymbolInt;
+;-250         PC=SymbolInt;
 
-@@process278:
+@@process283:
  mov ax, [SymbolInt]
  mov word [PC], ax
 
-;-239         return;
+;-251         return;
 
  jmp @@retn
 
-;-240     }
+;-252     }
 
 
-;-241     error1("Command not implemented or syntax error");
+;-253     error1("Command not implemented or syntax error");
 
-@@process277:
+@@process282:
  push process_2
  call error1
  add  sp, 2
 
-;-242 }    
+;-254 }    
 
 @@retn: LEAVE
  ret
@@ -6686,7 +6757,7 @@ process_2 db "Command not implemented or syntax error",0
 ; Number of unresolved CALLs :   76
 ;use archive file: AR.C
 
-;-243 // AR.C Archive
+;-255 // AR.C Archive
 
 ;Number of CALLs:    2 : writetty
 
@@ -6695,7 +6766,7 @@ writetty:  ; *** PROC ***
  mov  bx, 0
  int  16
 
-;-244 int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
+;-256 int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
 
  ret
 ; ENDP
@@ -6704,15 +6775,15 @@ writetty:  ; *** PROC ***
 cputs:  ; *** PROC ***
 ;Function : cputs, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   244 NULL bp+4    s
-;  201 var sign byte   244 NULL bp-2    c;
+;  200 ptr sign byte   256 NULL bp+4    s
+;  201 var sign byte   256 NULL bp-2    c;
  ENTER  2,0
-@@cputs279:
+@@cputs284:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@cputs280
+ je @@cputs285
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
@@ -6723,10 +6794,10 @@ cputs:  ; *** PROC ***
  call putch
  add  sp, 2
  inc  word [bp+4]
- jmp @@cputs279
-@@cputs280:
+ jmp @@cputs284
+@@cputs285:
 
-;-245 int mkneg(int n) { n; __asm {neg ax} }
+;-257 int mkneg(int n) { n; __asm {neg ax} }
  LEAVE
  ret
 ; ENDP
@@ -6735,40 +6806,40 @@ cputs:  ; *** PROC ***
 toupper:  ; *** PROC ***
 ;Function : toupper, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   245 NULL bp+4    s;
+;  200 ptr sign byte   257 NULL bp+4    s;
  ENTER  0,0
-@@toupper281:
+@@toupper286:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@toupper282
+ je @@toupper287
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 97 ;unsigned : 1
- jl  @@toupper283
+ jl  @@toupper288
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 122
- jg  @@toupper284
+ jg  @@toupper289
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  sub ax, 32
  mov  bx, [bp+4]
  mov  [bx], al
-@@toupper284:
-@@toupper283:
+@@toupper289:
+@@toupper288:
  inc  word [bp+4]
- jmp @@toupper281
-@@toupper282:
+ jmp @@toupper286
+@@toupper287:
 
-;-246 //int head1  (char *s) {char c; do{c=*s; c=letter(c); s++; }while(c) *s=0; }
+;-258 //int head1  (char *s) {char c; do{c=*s; c=letter(c); s++; }while(c) *s=0; }
 
 
-;-247 int strlen(char *s) { int c; c=0; while (*s!=0) {s++; c++;} return c; }
+;-259 int strlen(char *s) { int c; c=0; while (*s!=0) {s++; c++;} return c; }
  LEAVE
  ret
 ; ENDP
@@ -6777,25 +6848,25 @@ toupper:  ; *** PROC ***
 strlen:  ; *** PROC ***
 ;Function : strlen, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   247 NULL bp+4    s
-;  201 var sign word   247 NULL bp-2    c;
+;  200 ptr sign byte   259 NULL bp+4    s
+;  201 var sign word   259 NULL bp-2    c;
  ENTER  2,0
  mov eax, 0
  mov word [bp-2], ax
-@@strlen285:
+@@strlen290:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strlen286
+ je  @@strlen291
  inc  word [bp+4]
  inc  word [bp-2]
- jmp @@strlen285
-@@strlen286:
+ jmp @@strlen290
+@@strlen291:
  mov ax, [bp-2]
  jmp @@retn
 
-;-248 int strcpy1(char *s, char *t) {do { *s=*t; s++; t++; } while (*t!=0); *s=0; }
+;-260 int strcpy1(char *s, char *t) {do { *s=*t; s++; t++; } while (*t!=0); *s=0; }
 
 @@retn: LEAVE
  ret
@@ -6805,10 +6876,10 @@ strlen:  ; *** PROC ***
 strcpy:  ; *** PROC ***
 ;Function : strcpy, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   248 NULL bp+4    s
-;  201 ptr sign byte   248 NULL bp+6    t;
+;  200 ptr sign byte   260 NULL bp+4    s
+;  201 ptr sign byte   260 NULL bp+6    t;
  ENTER  0,0
-@@strcpy287:
+@@strcpy292:
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
@@ -6817,22 +6888,22 @@ strcpy:  ; *** PROC ***
  inc  word [bp+4]
  inc  word [bp+6]
 
-;-249   while (*t!=0); *s=0; return s; }
+;-261   while (*t!=0); *s=0; return s; }
 
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strcpy288
- jmp @@strcpy287
-@@strcpy288:
+ je  @@strcpy293
+ jmp @@strcpy292
+@@strcpy293:
  mov eax, 0
  mov  bx, [bp+4]
  mov  [bx], al
  mov ax, [bp+4]
  jmp @@retn
 
-;-250 int strncpy(char *s, char *t, int n) { if (_ n==0) return;
+;-262 int strncpy(char *s, char *t, int n) { if (_ n==0) return;
 
 @@retn: LEAVE
  ret
@@ -6842,24 +6913,24 @@ strcpy:  ; *** PROC ***
 digit:  ; *** PROC ***
 ;Function : digit, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   250 NULL bp+4    c;
+;  200 var sign byte   262 NULL bp+4    c;
  ENTER  0,0
  mov al, [bp+4]
  cmp al, 48
- jge @@digit289
+ jge @@digit294
  mov eax, 0
  jmp @@retn
-@@digit289:
+@@digit294:
  mov al, [bp+4]
  cmp al, 57
- jle @@digit290
+ jle @@digit295
  mov eax, 0
  jmp @@retn
-@@digit290:
+@@digit295:
  mov eax, 1
  jmp @@retn
 
-;-251 int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1; //XXXXXXXXXX
+;-263 int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1; //XXXXXXXXXX
 
 @@retn: LEAVE
  ret
@@ -6869,17 +6940,17 @@ digit:  ; *** PROC ***
 eqstr:  ; *** PROC ***
 ;Function : eqstr, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   251 NULL bp+4    p
-;  201 ptr sign byte   251 NULL bp+6    q;
+;  200 ptr sign byte   263 NULL bp+4    p
+;  201 ptr sign byte   263 NULL bp+6    q;
  ENTER  0,0
-@@eqstr291:
+@@eqstr296:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@eqstr292
+ je @@eqstr297
 
-;-252     if (*p != *q) return 0; p++; q++; }
+;-264     if (*p != *q) return 0; p++; q++; }
 
  mov bx, [bp+4]
  mov al, [bx]
@@ -6887,29 +6958,29 @@ eqstr:  ; *** PROC ***
  mov bx, [bp+6]
  cmp al, [bx]
  mov ah, 0
- je  @@eqstr293
+ je  @@eqstr298
  mov eax, 0
  jmp @@retn
-@@eqstr293:
+@@eqstr298:
  inc  word [bp+4]
  inc  word [bp+6]
 
-;-253     if(*q) return 0; return 1; }
+;-265     if(*q) return 0; return 1; }
 
- jmp @@eqstr291
-@@eqstr292:
+ jmp @@eqstr296
+@@eqstr297:
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@eqstr294
+ je @@eqstr299
  mov eax, 0
  jmp @@retn
-@@eqstr294:
+@@eqstr299:
  mov eax, 1
  jmp @@retn
 
-;-254 int strcat1(char *s, char *t) { while (*s != 0) s++; strcpy(s, t);  }
+;-266 int strcat1(char *s, char *t) { while (*s != 0) s++; strcpy(s, t);  }
 
 @@retn: LEAVE
  ret
@@ -6919,24 +6990,24 @@ eqstr:  ; *** PROC ***
 strcat1:  ; *** PROC ***
 ;Function : strcat1, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   254 NULL bp+4    s
-;  201 ptr sign byte   254 NULL bp+6    t;
+;  200 ptr sign byte   266 NULL bp+4    s
+;  201 ptr sign byte   266 NULL bp+6    t;
  ENTER  0,0
-@@strcat1295:
+@@strcat1300:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strcat1296
+ je  @@strcat1301
  inc  word [bp+4]
- jmp @@strcat1295
-@@strcat1296:
+ jmp @@strcat1300
+@@strcat1301:
  push word [bp+6]
  push word [bp+4]
  call strcpy
  add  sp, 4
 
-;-255 int basename(char *s) { char *p; p=0;
+;-267 int basename(char *s) { char *p; p=0;
  LEAVE
  ret
 ; ENDP
@@ -6945,13 +7016,13 @@ strcat1:  ; *** PROC ***
 openR:  ; *** PROC ***
 ;Function : openR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   255 NULL bp+4    s;
+;  200 ptr sign byte   267 NULL bp+4    s;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  ax, 15618
  call DosInt
 
-;-256 int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
+;-268 int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
  LEAVE
  ret
 ; ENDP
@@ -6960,14 +7031,14 @@ openR:  ; *** PROC ***
 creatR:  ; *** PROC ***
 ;Function : creatR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   256 NULL bp+4    s;
+;  200 ptr sign byte   268 NULL bp+4    s;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  cx, 0
  mov  ax, 15360
  call DosInt
 
-;-257 int readR (char *s, int fd) {dx=s; cx=1; bx=fd; ax=0x3F00; DosInt(); }
+;-269 int readR (char *s, int fd) {dx=s; cx=1; bx=fd; ax=0x3F00; DosInt(); }
  LEAVE
  ret
 ; ENDP
@@ -6976,9 +7047,9 @@ creatR:  ; *** PROC ***
 readRL:  ; *** PROC ***
 ;Function : readRL, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   257 NULL bp+4    s
-;  201 var sign word   257 NULL bp+6    fd
-;  202 var sign word   257 NULL bp+8    len;
+;  200 ptr sign byte   269 NULL bp+4    s
+;  201 var sign word   269 NULL bp+6    fd
+;  202 var sign word   269 NULL bp+8    len;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  cx, [bp+8]
@@ -6986,7 +7057,7 @@ readRL:  ; *** PROC ***
  mov  ax, 16128
  call DosInt
 
-;-258 int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
+;-270 int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
  LEAVE
  ret
 ; ENDP
@@ -6995,19 +7066,19 @@ readRL:  ; *** PROC ***
 fputcR:  ; *** PROC ***
 ;Function : fputcR, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   258 NULL bp+4    n
-;  201 var sign word   258 NULL bp+6    fd;
+;  200 ptr sign byte   270 NULL bp+4    n
+;  201 var sign word   270 NULL bp+6    fd;
  ENTER  0,0
 lea dx, [bp+4]
 
-;-259   cx=1; bx=fd; ax=0x4000; DosInt(); }
+;-271   cx=1; bx=fd; ax=0x4000; DosInt(); }
 
  mov  cx, 1
  mov  bx, [bp+6]
  mov  ax, 16384
  call DosInt
 
-;-260 int writeRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x4000; DosInt();}
+;-272 int writeRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x4000; DosInt();}
  LEAVE
  ret
 ; ENDP
@@ -7016,13 +7087,13 @@ lea dx, [bp+4]
 fcloseR:  ; *** PROC ***
 ;Function : fcloseR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word   260 NULL bp+4    fd;
+;  200 var sign word   272 NULL bp+4    fd;
  ENTER  0,0
  mov  bx, [bp+4]
  mov  ax, 15872
  int  33
 
-;-261 int exitR(char c) {ah=0x4C; al=c; inth 0x21; }
+;-273 int exitR(char c) {ah=0x4C; al=c; inth 0x21; }
  LEAVE
  ret
 ; ENDP
@@ -7031,13 +7102,13 @@ fcloseR:  ; *** PROC ***
 exitR:  ; *** PROC ***
 ;Function : exitR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   261 NULL bp+4    c;
+;  200 var sign byte   273 NULL bp+4    c;
  ENTER  0,0
  mov  ah, 76
  mov  al, [bp+4]
  int  33
 
-;-262 int setdta(char *s) {dx=s; ah=0x1A; inth 0x21; }
+;-274 int setdta(char *s) {dx=s; ah=0x1A; inth 0x21; }
  LEAVE
  ret
 ; ENDP
@@ -7052,24 +7123,24 @@ exitR:  ; *** PROC ***
 ; Number of unresolved CALLs :    5
 ;use archive file: AR.C
 
-;-263 // AR.C Archive
+;-275 // AR.C Archive
 
 ;Number of CALLs:    1 : putch
 
 putch:  ; *** PROC ***
 ;Function : putch, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   263 NULL bp+4    c;
+;  200 var sign byte   275 NULL bp+4    c;
  ENTER  0,0
 cmp byte [bp+4], 10
- jne @@putch297
+ jne @@putch302
  mov  al, 13
  call writetty
-@@putch297:
+@@putch302:
  mov  al, [bp+4]
  call writetty
 
-;-264 int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
+;-276 int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
  LEAVE
  ret
 ; ENDP
@@ -7077,11 +7148,11 @@ cmp byte [bp+4], 10
 
 DosInt:  ; *** PROC ***
  int  33
- jae short @@DosInt298
+ jae short @@DosInt303
  inc  word [DOS_ERR]
-@@DosInt298:
+@@DosInt303:
 
-;-265 int openR (char *s) { dx=s; ax=0x3D02;  DosInt(); }
+;-277 int openR (char *s) { dx=s; ax=0x3D02;  DosInt(); }
 
  ret
 ; ENDP
@@ -7099,7 +7170,7 @@ ret
 ;    3 def unsg byte     2    -        0 SYMBOLMAX=31
 ;    4 arr sign byte     3    8        0 Symbol[31]
 ;    5 arr sign byte     4   36        0 SymbolUpper[31]
-;    6 var unsg word     5   14        0 SymbolInt
+;    6 var unsg word     5   16        0 SymbolInt
 ;    7 def unsg byte     6    -        0 INPUTBUFMAX=127
 ;    8 arr sign byte     7    4        0 InputBuf[127]
 ;    9 ptr unsg byte     8   24        0 InputPtr
@@ -7129,9 +7200,9 @@ ret
 ;   33 def unsg byte    33    -        0 REG=2
 ;   34 def unsg byte    34    -        0 ADR=3
 ;   35 def unsg byte    35    -        0 MEM=4
-;   36 var sign byte    36   24        0 Op
+;   36 var sign byte    36   28        0 Op
 ;   37 var sign byte    37   29        0 Op2
-;   38 var sign byte    38   17        0 CodeType
+;   38 var sign byte    38   18        0 CodeType
 ;   39 var sign byte    39   13        0 Code1
 ;   40 var sign byte    40    8        0 Code2
 ;   41 var sign byte    41    3        0 Code3
@@ -7279,7 +7350,7 @@ ret
 ;  183 arr sign byte   136 NULL        0 I_LOOP[8]
 ;  184 arr sign byte   137 NULL        0 I_JCXZ[8]
 ;  185 arr sign byte   138 NULL        0 I_JECXZ[9]
-;  186 arr sign byte   140 NULL        0 I_ENTER[9]
+;  186 arr sign byte   140 NULL        0 I_ENTER[8]
 ;  187 arr sign byte   142 NULL        0 I_ORG[6]
 ;  188 arr sign byte   147 NULL        0 I_DB[5]
 ;  189 arr sign byte   148 NULL        0 I_DW[5]
@@ -7298,7 +7369,7 @@ ret
 ;    3    1   27 word   get2Ops
 ;    4    3   33 word   getOpL
 ;    5    2   41 word   getOpR
-;    6    2   51 word   getOp1
+;    6    4   51 word   getOp1
 ;    7    1   67 word   getMEM
 ;    8    1   90 word   getIndReg1
 ;    9    1   98 word   getIndReg2
@@ -7312,7 +7383,7 @@ ret
 ;   17    2   86 word   lookCode
 ;   18    1  101 word   getCodeSize
 ;   19    8  108 word   isToken
-;   20    1  113 word   need
+;   20    2  113 word   need
 ;   21    1  123 word   skipRest
 ;   22    1    1 word   getLine
 ;   23    1   17 word   ifEOL
@@ -7338,7 +7409,7 @@ ret
 ;   43    2  105 word   implerror
 ;   44    4  106 word   indexerror
 ;   45    3  107 word   invaloperror
-;   46    1  108 word   numbererror
+;   46    3  108 word   numbererror
 ;   47    1  109 word   regmemerror
 ;   48    3  110 word   reg16error
 ;   49    1  111 word   segregerror
@@ -7353,28 +7424,28 @@ ret
 ;   58    1    7 word   gen66h
 ;   59    5    9 word   genCode2
 ;   60   10   13 word   genCodeW
-;   61   23   17 word   genCode8
-;   62    7   28 word   genCode16
+;   61   25   17 word   genCode8
+;   62    8   28 word   genCode16
 ;   63   10   32 word   writeEA
 ;   64    4   74 word   genImmediate
 ;   65    1   11 word   process
-;   66    4  243 word   writetty
-;   67    8  244 word   cputs
-;   68    2  245 word   toupper
-;   69    3  247 word   strlen
-;   70    6  248 word   strcpy
-;   71    3  250 word   digit
-;   72   35  251 word   eqstr
-;   73    3  254 word   strcat1
-;   74    1  255 word   openR
-;   75    2  256 word   creatR
-;   76    2  257 word   readRL
-;   77    2  258 word   fputcR
-;   78    3  260 word   fcloseR
-;   79    5  261 word   exitR
-;   80    1  263 word   putch
-;   81    4  264 word   DosInt
-;   82 NULL  265 word   LastFunctionByt
+;   66    4  255 word   writetty
+;   67    8  256 word   cputs
+;   68    2  257 word   toupper
+;   69    3  259 word   strlen
+;   70    6  260 word   strcpy
+;   71    3  262 word   digit
+;   72   35  263 word   eqstr
+;   73    3  266 word   strcat1
+;   74    1  267 word   openR
+;   75    2  268 word   creatR
+;   76    2  269 word   readRL
+;   77    2  270 word   fputcR
+;   78    3  272 word   fcloseR
+;   79    5  273 word   exitR
+;   80    1  275 word   putch
+;   81    4  276 word   DosInt
+;   82 NULL  277 word   LastFunctionByt
 
 ;    #  addr name   list of CALLs
 
@@ -7685,21 +7756,29 @@ ret
 ;  304  4550 genCode8
 ;  305  4559 genCode8
 ;  306  4568 genCode8
-;  307  4577 error1
-;  308  4584 error1
-;  309  4610 putch
-;  310  4678 strcpy
-;  311  4693 DosInt
-;  312  4709 DosInt
-;  313  4732 DosInt
-;  314  4751 DosInt
-;  315  4785 writetty
-;  316  4794 writetty
-;Input: AS.C, List: AS.S,  Lines:  266
+;  307  4577 genCode8
+;  308  4586 getOp1
+;  309  4593 genCode16
+;  310  4603 numbererror
+;  311  4615 need
+;  312  4620 getOp1
+;  313  4627 genCode8
+;  314  4636 numbererror
+;  315  4648 error1
+;  316  4655 error1
+;  317  4681 putch
+;  318  4749 strcpy
+;  319  4764 DosInt
+;  320  4780 DosInt
+;  321  4803 DosInt
+;  322  4822 DosInt
+;  323  4856 writetty
+;  324  4865 writetty
+;Input: AS.C, List: AS.S,  Lines:  278
 ;Glob. variables:  194 max.:  200
 ;Local variables:    3 max.:  100, in 'searchLabel'
 ;Functions      :   83 max.:  300
-;Calls          :  317 max.: 2000, NameField: 4826 max.:    65535
+;Calls          :  325 max.: 2000, NameField: 4897 max.:    65535
 ;Code until     :25998 max.: 30000, free: 4002
 ;Data (HeapEnd) :33595, resting stacksize: 31940
 ;Max. Const in 'testReg' :  658 max. 3000, free: 2342

@@ -200,11 +200,14 @@
 02EE 68 00 01       push 256            ;68 00 01  
 02F1 68 FF 7F       push 32767          ;68 FF 7F
 02F4 68 00 80       push 32768          ;68 00 80
-02F7 68 FF FF       push 65535          ;68 FF FF
-02FA                
+02F7 68 FF FF       push 65535          ;68 FF FF   
 02FA CD 21          int 33
 02FC CC             int 3
 02FD CC             int3
 02FE CE             into
-02FF                
-;END Errors: 0, Output: TE.LST, COM file 511 bytes.
+02FF C8 00 00 00    enter 0,0           ;C8 0000 00
+0303 C8 00 01 00    enter 256,0         ;C8 0001 00
+0307 C8 00 80 FF    enter 32768,255     ;C8 0080 FF
+030B C8 D2 04 10    ENTER 1234,16
+030F                
+;END Errors: 0, Output: TE.LST, COM file 527 bytes.

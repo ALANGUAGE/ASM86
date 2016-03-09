@@ -232,6 +232,18 @@ int process() {
             }
         }
     }
+    
+    if (CodeType == 30) {//enter i18,i8
+        genCode8(0xC8);
+        Op=getOp1();
+        if (Op == IMM) genCode16(SymbolInt);
+        else numbererror();
+        need(',');
+        Op=getOp1();
+        if (Op == IMM) genCode8 (SymbolInt);
+        else numbererror();           
+        return;
+    }
        
     if (CodeType==101) {// ORG nn
         if (TokeType != DIGIT) error1("only digit allowed");

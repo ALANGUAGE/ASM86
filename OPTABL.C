@@ -137,7 +137,7 @@ char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
 //  30: enter
-char I_ENTER[]={'E','N','T','E','R',0, 30, 0xC8,  0xF1};
+char I_ENTER[]={'E','N','T','E','R',0,  30,       0xF1};
 // 100: directives
 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
 // section, segment .TEXT .DATA .BSS

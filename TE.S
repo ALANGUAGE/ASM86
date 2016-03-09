@@ -198,9 +198,12 @@ push 255            ;68 FF 00
 push 256            ;68 00 01  
 push 32767          ;68 FF 7F
 push 32768          ;68 00 80
-push 65535          ;68 FF FF
-
+push 65535          ;68 FF FF   
 int 33
 int 3
 int3
 into
+enter 0,0           ;C8 0000 00
+enter 256,0         ;C8 0001 00
+enter 32768,255     ;C8 0080 FF
+ENTER 1234,16
