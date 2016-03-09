@@ -48,7 +48,7 @@ char wflag;             //wordflag: 0=byte, 1=word/dword
 char dflag;             //directionflag: 1=to reg MOV,ALU    
 char sflag;             //sign extended, imm8 to word PUSH,ALU,IMUL3 
 char rm;                //combination of index and base reg
-char isDirect;          //set in getOpL and getMeM, need in WriteEA
+char isDirect;          //set in process and getMeM, need in WriteEA
 int disp;               //displacement      0-8 bytes
 unsigned int imme;      //immediate         0-8 bytes
 

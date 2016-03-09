@@ -8,15 +8,11 @@ int ChangeDirection() {
      
 int checkOpL() {
     if (Op == ADR) implerror();
-    if (R2Type == SEGREG) {segregerror(); return;}//only move,push,pop
+    if (R1Type==SEGREG) {segregerror();return;}//only move,push,pop
     setwflag();
     if (OpSize == 0) error1("no op size declared");
     if (OpSize == R1Type) return;
-    if (OpSize){
-        if (Op == MEM) return;
-        error1("Conflict OpSize and RegSize"); 
-        }
-    if (R1Type==0) error1("no register defined");
+    if (Op == REG) if (R1Type==0) error1("no register defined");
 }
     
 int check2Ops() {
@@ -25,7 +21,7 @@ int check2Ops() {
     if (Op == ADR) invaloperror(); 
     if (Op == IMM) immeerror();   
     if (Op2==   0) addrerror();
-//    if (Op2== ADR) invaloperror();//allowed in mov           
+    if (CodeType != 5) if (Op2==ADR) invaloperror();//allowed in mov           
     setwflag();       
 }    
 int get2Ops() {
@@ -36,7 +32,6 @@ int get2Ops() {
         
 int getOpL() {
 //set: op=0,IMM,REG,ADR,MEM
-    disp=0; imme=0; isDirect=1; 
     getOpR();
     Op=Op2;         Op2=0;
     R1No=R2No;      R2No=0;
@@ -77,7 +72,8 @@ int getMEM() {// e.g. [array+bp+si-4]
         getTokeType();
         c=getOp1();
         if (c ==   0) syntaxerror();
-        if (c == REG) {isDirect=0;
+        if (c == REG) {
+            isDirect=0;
             if (rm) rm=getIndReg2();
             else getIndReg1();
         }
@@ -120,9 +116,11 @@ int setwflag() {//word size, bit 0
     if (OpSize  == DWORD) {gen66h(); wflag=1;}
     if (OpSize  ==  WORD) wflag=1;
 }
-int setsflag() {//sign-extend, bit 1, only PUSH, ALU, IMUL3     
-    sflag=2;  
-    if(imme > 127) sflag = 0;
+int setsflag() {//sign-extend, bit 1, only PUSH, ALU, IMUL3 
+    unsigned int ui;    
+    sflag=2;   
+    ui = imme & 0xFF80; 
+    if(ui != 0) sflag = 0;    //vvv
     if (OpSize == BYTE) {
         if (imme > 255) error1("too big for byte r/m");
         sflag=0;//byte reg does not need sign extended   

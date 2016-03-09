@@ -71,10 +71,6 @@ int writeEA(char xxx) {//value for reg/operand
     if (len == 2) genCode16(disp);
 }
 
-int genImmediateSE() {
-    if (sflag) genCode8(imme);
-    else genImmediate();    
-}
 int genImmediate() { 
     if (wflag) genCode16(imme);
     else       genCode8 (imme);  

@@ -171,4 +171,32 @@ mov al, [bx+si]     ;8A 00
 mov al, [bx+di-4]   ;8A 41 FC 
 mov cl, [bx+si]     ;8A 08  
 mov al, [VA+bx+si]  ;8A 80 02 00
-mov al, [VA+bx+si-4];8A 80 FE FF  
+mov al, [VA+bx+si-4];8A 80 FE FF     
+
+push ax             ;50        
+push di             ;57        
+push word [VA]      ;FF 36 02 00
+push word [VB]      ;FF 36 04 00
+pop ax              ;58        
+pop di              ;5F        
+pop word [VA]       ;8F 06 02 00
+push es             ;06  
+push cs             ;0E  
+push ss             ;16  
+push ds             ;1E  
+push fs             ;0F A0
+push gs             ;0F A8
+pop es              ;07  
+;pop cs ;ERROR          
+pop ss              ;17  
+pop ds              ;1F  
+pop fs              ;0F A1
+pop gs              ;0F A9
+push 0              ;6A 00  
+push 127            ;6A 7F  
+push 128            ;68 80 00
+push 255            ;68 FF 00
+push 256            ;68 00 01  
+push 32767          ;68 FF 7F
+push 32768          ;68 00 80
+push 65535          ;68 FF FF

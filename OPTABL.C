@@ -102,8 +102,8 @@ char I_CALL[]= {'C','A','L','L',0,      7,0xE8, 2,0xF1};
 char I_RET[]=  {'R','E','T',0,          8,0xC3,0xC2,0xF1};
 char I_RETF[]= {'R','E','T','F',0,      8,0xCB,0xCA,0xF1};
 //  9: seg, r/m
-char I_PUSH[]= {'P','U','S','H',0,       9,0x50,  0xF1};//r16
-char I_POP[]=  {'P','O','P',0,           9,0x58,  0xF1};//r16
+char I_PUSH[]= {'P','U','S','H',0,      9,0x50,0xFF,6,6,0xF1};//r16
+char I_POP[]=  {'P','O','P',0,          9,0x58,0x8F,0,7,0xF1};//r16
 //  11: shift, rotates
 char I_ROL[]=  {'R','O','L',0,          11, 0,    0xF1};
 char I_ROR[]=  {'R','O','R',0,          11, 1,    0xF1};

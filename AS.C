@@ -9,7 +9,10 @@ char Version1[]="AS.C V0.07";//BAS.BAT, AS TE, NAS.BAT
 #include "GENCODE.C"
 
 int process() { 
-    char c;
+    char c;           
+    Op=Op2=R1Type=R2Type=R1No=R2No=dflag=wflag=rm=0;//char
+    disp=imme=0;//int
+    isDirect=1; //set in getMeM=0, need in WriteEA
     getTokeType();//0, DIGIT, ALNUME, NOALNUME
     OpSize=getCodeSize();//0, BYTE, WORD, DWORD
     getCodes();//set: Code1, Code2, Code3
@@ -19,8 +22,8 @@ int process() {
         return;
     }
   
-    if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv
-        getOpL();
+    if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv     
+        getOpL();    
         checkOpL();        
         if (Code2 <= 1) {//inc,dec
   	        if (Op == REG) {//short
@@ -67,7 +70,8 @@ int process() {
             c = sflag + 0x80;   
             genCodeW(c); 
             writeEA(Code1);  
-            genImmediateSE();
+            if (sflag) genCode8(imme);
+            else genImmediate();    
             return;     
         }  
         c = Code1 << 3;//r/m, r/r  
@@ -90,7 +94,6 @@ int process() {
     }
  
     if (CodeType == 5) {//mov (movsx, movzx=51)
-        dflag=0;
         check2Ops();    
 /*    prs("\n Op:"); printhex8a(Op);
     prs(", Op2:"); printhex8a(Op2);
@@ -173,7 +176,47 @@ int process() {
         genCode8(Code1); 
         return;
     }
-
+       
+    if (CodeType == 9) {//push, pop  
+        getOpL();
+        if (Code1 == 0x50) {//push only
+            if (Op == IMM) {//push imm8,16
+                setsflag();
+                genCode2(0x68, sflag);     
+                if (sflag) genCode8 (imme);
+                else       genCode16(imme);    
+                return;   
+            }   
+        }
+        if (R1Type == SEGREG) {
+            c = R1No <<3;
+            //todo check pop cs not allowed
+            if (R1No > 3) {//FS, GS
+                c += 122;
+                genCode8(0x0F);
+            }
+            OpCodePtr++;
+            c = c + *OpCodePtr;//is Code4   
+            genCode8(c);  
+            return; 
+        }  
+  
+        checkOpL();    
+        if (R1Type == BYTE) reg16error();
+        if (R1Type == WORD) {
+            genCode2(Code1, R1No);
+            return;   
+        }                
+        if (Op == MEM) {
+            genCode8(Code2);
+            writeEA(Code3);
+            return;   
+        }
+      
+        syntaxerror();
+        return;        
+    }
+       
     if (CodeType==101) {// ORG nn
         if (TokeType != DIGIT) error1("only digit allowed");
         PC=SymbolInt;

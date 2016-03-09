@@ -162,7 +162,7 @@
 029A A1 02 01       mov ax, [VA]        ;A1 02 00
 029D A2 02 01       mov [VA], al        ;A2 02 00 
 02A0 A3 02 01       mov [VA], ax        ;A3 02 00 
-02A3 B0 02          mov al, VA          ;B0 02 00 error  
+02A3 B0 02          mov al, VA          ;B0 02 00  
 02A5 B8 02 01       mov ax, VA          ;B8 02 00
 02A8 C7 06 02 01 02    mov word[VA], VA    ;C7 06 02 00 02 00
 02AE 88 00          mov [bx+si], al     ;88 00   
@@ -173,6 +173,34 @@
 02B8 8A 41 FC       mov al, [bx+di-4]   ;8A 41 FC 
 02BB 8A 08          mov cl, [bx+si]     ;8A 08  
 02BD 8A 80 02 01    mov al, [VA+bx+si]  ;8A 80 02 00
-02C1 8A 80 FE 00    mov al, [VA+bx+si-4];8A 80 FE FF  
+02C1 8A 80 FE 00    mov al, [VA+bx+si-4];8A 80 FE FF     
 02C5                
-;END Errors: 0, Output: TE.LST, COM file 453 bytes.
+02C5 50             push ax             ;50        
+02C6 57             push di             ;57        
+02C7 FF 36 02 01    push word [VA]      ;FF 36 02 00
+02CB FF 36 04 01    push word [VB]      ;FF 36 04 00
+02CF 58             pop ax              ;58        
+02D0 5F             pop di              ;5F        
+02D1 8F 06 02 01    pop word [VA]       ;8F 06 02 00
+02D5 06             push es             ;06  
+02D6 0E             push cs             ;0E  
+02D7 16             push ss             ;16  
+02D8 1E             push ds             ;1E  
+02D9 0F A0          push fs             ;0F A0
+02DB 0F A8          push gs             ;0F A8
+02DD 07             pop es              ;07  
+02DE                ;pop cs ;ERROR          
+02DE 17             pop ss              ;17  
+02DF 1F             pop ds              ;1F  
+02E0 0F A1          pop fs              ;0F A1
+02E2 0F A9          pop gs              ;0F A9
+02E4 6A 00          push 0              ;6A 00  
+02E6 6A 7F          push 127            ;6A 7F  
+02E8 68 80 00       push 128            ;68 80 00
+02EB 68 FF 00       push 255            ;68 FF 00
+02EE 68 00 01       push 256            ;68 00 01  
+02F1 68 FF 7F       push 32767          ;68 FF 7F
+02F4 68 00 80       push 32768          ;68 00 80
+02F7 68 FF FF       push 65535          ;68 FF FF
+02FA                
+;END Errors: 0, Output: TE.LST, COM file 506 bytes.

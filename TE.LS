@@ -160,7 +160,7 @@
    160 0000019A A1[0200]                mov ax, [VA]        ;A1 02 00
    161 0000019D A2[0200]                mov [VA], al        ;A2 02 00 
    162 000001A0 A3[0200]                mov [VA], ax        ;A3 02 00 
-   163 000001A3 B0[0200]                mov al, VA          ;B0 02 00 error  
+   163 000001A3 B0[0200]                mov al, VA          ;B0 02 00  
    164 000001A5 B8[0200]                mov ax, VA          ;B8 02 00
    165 000001A8 C706[0200][0200]        mov word[VA], VA    ;C7 06 02 00 02 00
    166 000001AE 8800                    mov [bx+si], al     ;88 00   
@@ -171,4 +171,32 @@
    171 000001B8 8A41FC                  mov al, [bx+di-4]   ;8A 41 FC 
    172 000001BB 8A08                    mov cl, [bx+si]     ;8A 08  
    173 000001BD 8A80[0200]              mov al, [VA+bx+si]  ;8A 80 02 00
-   174 000001C1 8A80[FEFF]              mov al, [VA+bx+si-4];8A 80 FE FF  
+   174 000001C1 8A80[FEFF]              mov al, [VA+bx+si-4];8A 80 FE FF     
+   175                                  
+   176 000001C5 50                      push ax             ;50        
+   177 000001C6 57                      push di             ;57        
+   178 000001C7 FF36[0200]              push word [VA]      ;FF 36 02 00
+   179 000001CB FF36[0400]              push word [VB]      ;FF 36 04 00
+   180 000001CF 58                      pop ax              ;58        
+   181 000001D0 5F                      pop di              ;5F        
+   182 000001D1 8F06[0200]              pop word [VA]       ;8F 06 02 00
+   183 000001D5 06                      push es             ;06  
+   184 000001D6 0E                      push cs             ;0E  
+   185 000001D7 16                      push ss             ;16  
+   186 000001D8 1E                      push ds             ;1E  
+   187 000001D9 0FA0                    push fs             ;0F A0
+   188 000001DB 0FA8                    push gs             ;0F A8
+   189 000001DD 07                      pop es              ;07  
+   190                                  ;pop cs ;ERROR          
+   191 000001DE 17                      pop ss              ;17  
+   192 000001DF 1F                      pop ds              ;1F  
+   193 000001E0 0FA1                    pop fs              ;0F A1
+   194 000001E2 0FA9                    pop gs              ;0F A9
+   195 000001E4 6A00                    push 0              ;6A 00  
+   196 000001E6 6A7F                    push 127            ;6A 7F  
+   197 000001E8 688000                  push 128            ;68 80 00
+   198 000001EB 68FF00                  push 255            ;68 FF 00
+   199 000001EE 680001                  push 256            ;68 00 01  
+   200 000001F1 68FF7F                  push 32767          ;68 FF 7F
+   201 000001F4 680080                  push 32768          ;68 00 80
+   202 000001F7 68FFFF                  push 65535          ;68 FF FF
