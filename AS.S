@@ -392,480 +392,484 @@ I_SCASW db 83,67,65,83,87,0,1,175,241
 
 I_LEAVE db 76,69,65,86,69,0,1,201,241
 
-;-27 char I_IRET[]= {'I','R','E','T',0,      1,0xCF,   0xF1};
+;-27 char I_INT3[]= {'I','N','T','3',0,      1,0xCC,   0xF1};
+
+I_INT3 db 73,78,84,51,0,1,204,241
+
+;-28 char I_INTO[]= {'I','N','T','O',0,      1,0xCE,   0xF1};
+
+I_INTO db 73,78,84,79,0,1,206,241
+
+;-29 char I_IRET[]= {'I','R','E','T',0,      1,0xCF,   0xF1};
 
 I_IRET db 73,82,69,84,0,1,207,241
 
-;-28 char I_XLAT[]= {'X','L','A','T',0,      1,0xD7,   0xF1};
+;-30 char I_XLAT[]= {'X','L','A','T',0,      1,0xD7,   0xF1};
 
 I_XLAT db 88,76,65,84,0,1,215,241
 
-;-29 char I_LOCK[]= {'L','O','C','K',0,      1,0xF0,   0xF1};
+;-31 char I_LOCK[]= {'L','O','C','K',0,      1,0xF0,   0xF1};
 
 I_LOCK db 76,79,67,75,0,1,240,241
 
-;-30 char I_REPNE[]={'R','E','P','N','E',0,  1,0xF2,   0xF1};
+;-32 char I_REPNE[]={'R','E','P','N','E',0,  1,0xF2,   0xF1};
 
 I_REPNE db 82,69,80,78,69,0,1,242,241
 
-;-31 char I_REPNZ[]={'R','E','P','N','Z',0,  1,0xF2,   0xF1};
+;-33 char I_REPNZ[]={'R','E','P','N','Z',0,  1,0xF2,   0xF1};
 
 I_REPNZ db 82,69,80,78,90,0,1,242,241
 
-;-32 char I_REPE[]= {'R','E','P','E',0,      1,0xF3,   0xF1};
+;-34 char I_REPE[]= {'R','E','P','E',0,      1,0xF3,   0xF1};
 
 I_REPE db 82,69,80,69,0,1,243,241
 
-;-33 char I_REPZ[]= {'R','E','P','Z',0,      1,0xF3,   0xF1};
+;-35 char I_REPZ[]= {'R','E','P','Z',0,      1,0xF3,   0xF1};
 
 I_REPZ db 82,69,80,90,0,1,243,241
 
-;-34 char I_HLT[]=  {'H','L','T',0,          1,0xF4,   0xF1};
+;-36 char I_HLT[]=  {'H','L','T',0,          1,0xF4,   0xF1};
 
 I_HLT db 72,76,84,0,1,244,241
 
-;-35 char I_CLC[]=  {'C','L','C',0,          1,0xF8,   0xF1};//clear carry
+;-37 char I_CLC[]=  {'C','L','C',0,          1,0xF8,   0xF1};//clear carry
 
 I_CLC db 67,76,67,0,1,248,241
 
-;-36 char I_STC[]=  {'S','T','C',0,          1,0xF9,   0xF1};//set carry
+;-38 char I_STC[]=  {'S','T','C',0,          1,0xF9,   0xF1};//set carry
 
 I_STC db 83,84,67,0,1,249,241
 
-;-37 char I_CLI[]=  {'C','L','I',0,          1,0xFA,   0xF1};//clear interrupt
+;-39 char I_CLI[]=  {'C','L','I',0,          1,0xFA,   0xF1};//clear interrupt
 
 I_CLI db 67,76,73,0,1,250,241
 
-;-38 char I_STI[]=  {'S','T','I',0,          1,0xFB,   0xF1};//set interrupt
+;-40 char I_STI[]=  {'S','T','I',0,          1,0xFB,   0xF1};//set interrupt
 
 I_STI db 83,84,73,0,1,251,241
 
-;-39 char I_CLD[]=  {'C','L','D',0,          1,0xFC,   0xF1};//clear direction
+;-41 char I_CLD[]=  {'C','L','D',0,          1,0xFC,   0xF1};//clear direction
 
 I_CLD db 67,76,68,0,1,252,241
 
-;-40 char I_STD[]=  {'S','T','D',0,          1,0xFD,   0xF1};//set direction
+;-42 char I_STD[]=  {'S','T','D',0,          1,0xFD,   0xF1};//set direction
 
 I_STD db 83,84,68,0,1,253,241
 
-;-41 // 2: mem reg 16 bit
+;-43 // 2: mem reg 16 bit
 
 
-;-42 char I_INC[]=  {'I','N','C',0,          2,0xFE, 0,0x40,0xF1};
+;-44 char I_INC[]=  {'I','N','C',0,          2,0xFE, 0,0x40,0xF1};
 
 I_INC db 73,78,67,0,2,254,0,64,241
 
-;-43 char I_DEC[]=  {'D','E','C',0,          2,0xFE, 1,0x48,0xF1};
+;-45 char I_DEC[]=  {'D','E','C',0,          2,0xFE, 1,0x48,0xF1};
 
 I_DEC db 68,69,67,0,2,254,1,72,241
 
-;-44 char I_NOT[]=  {'N','O','T',0,          2,0xF6, 2,     0xF1};
+;-46 char I_NOT[]=  {'N','O','T',0,          2,0xF6, 2,     0xF1};
 
 I_NOT db 78,79,84,0,2,246,2,241
 
-;-45 char I_NEG[]=  {'N','E','G',0,          2,0xF6, 3,     0xF1};
+;-47 char I_NEG[]=  {'N','E','G',0,          2,0xF6, 3,     0xF1};
 
 I_NEG db 78,69,71,0,2,246,3,241
 
-;-46 char I_MUL[]=  {'M','U','L',0,          2,0xF6, 4,     0xF1};
+;-48 char I_MUL[]=  {'M','U','L',0,          2,0xF6, 4,     0xF1};
 
 I_MUL db 77,85,76,0,2,246,4,241
 
-;-47 char I_IMUL[]= {'I','M','U','L',0,      2,0xF6, 5,     0xF1};//only acc
+;-49 char I_IMUL[]= {'I','M','U','L',0,      2,0xF6, 5,     0xF1};//only acc
 
 I_IMUL db 73,77,85,76,0,2,246,5,241
 
-;-48 char I_DIV[]=  {'D','I','V',0,          2,0xF6, 6,     0xF1};
+;-50 char I_DIV[]=  {'D','I','V',0,          2,0xF6, 6,     0xF1};
 
 I_DIV db 68,73,86,0,2,246,6,241
 
-;-49 char I_IDIV[]= {'I','D','I','V',0,      2,0xF6, 7,     0xF1};
+;-51 char I_IDIV[]= {'I','D','I','V',0,      2,0xF6, 7,     0xF1};
 
 I_IDIV db 73,68,73,86,0,2,246,7,241
 
-;-50 //  3: les, lda, lea, lss, lfs, lgs
+;-52 //  3: les, lda, lea, lss, lfs, lgs
 
 
-;-51 char I_LES[]=  {'L','E','S',0,          3,0xC4,     0xF1};
+;-53 char I_LES[]=  {'L','E','S',0,          3,0xC4,     0xF1};
 
 I_LES db 76,69,83,0,3,196,241
 
-;-52 char I_LDS[]=  {'L','D','S',0,          3,0xC5,     0xF1};
+;-54 char I_LDS[]=  {'L','D','S',0,          3,0xC5,     0xF1};
 
 I_LDS db 76,68,83,0,3,197,241
 
-;-53 char I_LEA[]=  {'L','E','A',0,          3,0x8D,     0xF1};//r, m16
+;-55 char I_LEA[]=  {'L','E','A',0,          3,0x8D,     0xF1};//r, m16
 
 I_LEA db 76,69,65,0,3,141,241
 
-;-54 char I_LSS[]=  {'L','S','S',0,          3,0x0F,0xB2,0xF1};
+;-56 char I_LSS[]=  {'L','S','S',0,          3,0x0F,0xB2,0xF1};
 
 I_LSS db 76,83,83,0,3,15,178,241
 
-;-55 char I_LFS[]=  {'L','F','S',0,          3,0x0F,0xB4,0xF1};
+;-57 char I_LFS[]=  {'L','F','S',0,          3,0x0F,0xB4,0xF1};
 
 I_LFS db 76,70,83,0,3,15,180,241
 
-;-56 char I_LGS[]=  {'L','G','S',0,          3,0x0F,0xB5,0xF1};
+;-58 char I_LGS[]=  {'L','G','S',0,          3,0x0F,0xB5,0xF1};
 
 I_LGS db 76,71,83,0,3,15,181,241
 
-;-57 //  4: acc,imm  reg,imm  index,reg
+;-59 //  4: acc,imm  reg,imm  index,reg
 
 
-;-58 char I_ADD[]=  {'A','D','D',0,          4, 0,     0xF1};
+;-60 char I_ADD[]=  {'A','D','D',0,          4, 0,     0xF1};
 
 I_ADD db 65,68,68,0,4,0,241
 
-;-59 char I_OR []=  {'O','R',0,              4, 1,     0xF1};
+;-61 char I_OR []=  {'O','R',0,              4, 1,     0xF1};
 
 I_OR db 79,82,0,4,1,241
 
-;-60 char I_ADC[]=  {'A','D','C',0,          4, 2,     0xF1};
+;-62 char I_ADC[]=  {'A','D','C',0,          4, 2,     0xF1};
 
 I_ADC db 65,68,67,0,4,2,241
 
-;-61 char I_SBB[]=  {'S','B','B',0,          4, 3,     0xF1};
+;-63 char I_SBB[]=  {'S','B','B',0,          4, 3,     0xF1};
 
 I_SBB db 83,66,66,0,4,3,241
 
-;-62 char I_AND[]=  {'A','N','D',0,          4, 4,     0xF1};
+;-64 char I_AND[]=  {'A','N','D',0,          4, 4,     0xF1};
 
 I_AND db 65,78,68,0,4,4,241
 
-;-63 char I_SUB[]=  {'S','U','B',0,          4, 5,     0xF1};
+;-65 char I_SUB[]=  {'S','U','B',0,          4, 5,     0xF1};
 
 I_SUB db 83,85,66,0,4,5,241
 
-;-64 char I_XOR[]=  {'X','O','R',0,          4, 6,     0xF1};
+;-66 char I_XOR[]=  {'X','O','R',0,          4, 6,     0xF1};
 
 I_XOR db 88,79,82,0,4,6,241
 
-;-65 char I_CMP[]=  {'C','M','P',0,          4, 7,     0xF1};
+;-67 char I_CMP[]=  {'C','M','P',0,          4, 7,     0xF1};
 
 I_CMP db 67,77,80,0,4,7,241
 
-;-66 char I_TEST[]= {'T','E','S','T',0,     41,0xA8,0x84,0xF6,0,0xF1};
+;-68 char I_TEST[]= {'T','E','S','T',0,     41,0xA8,0x84,0xF6,0,0xF1};
 
 I_TEST db 84,69,83,84,0,41,168,132,246,0,241
 
-;-67 //  5: mov
+;-69 //  5: mov
 
 
-;-68 char I_MOV[]=  {'M','O','V',0,          5,        0xF1};
+;-70 char I_MOV[]=  {'M','O','V',0,          5,        0xF1};
 
 I_MOV db 77,79,86,0,5,241
 
-;-69 char I_MOVSX[]={'M','O','V','S','X',0, 51,0xBE,   0xF1};
+;-71 char I_MOVSX[]={'M','O','V','S','X',0, 51,0xBE,   0xF1};
 
 I_MOVSX db 77,79,86,83,88,0,51,190,241
 
-;-70 char I_MOVZX[]={'M','O','V','Z','X',0, 51,0xB6,   0xF1};
+;-72 char I_MOVZX[]={'M','O','V','Z','X',0, 51,0xB6,   0xF1};
 
 I_MOVZX db 77,79,86,90,88,0,51,182,241
 
-;-71 //  6: single byte relative jump
+;-73 //  6: single byte relative jump
 
 
-;-72 char I_JO []=  {'J','O',0,              6, 0,     0xF1};
+;-74 char I_JO []=  {'J','O',0,              6, 0,     0xF1};
 
 I_JO db 74,79,0,6,0,241
 
-;-73 char I_JNO[]=  {'J','N','O',0,          6, 1,     0xF1};
+;-75 char I_JNO[]=  {'J','N','O',0,          6, 1,     0xF1};
 
 I_JNO db 74,78,79,0,6,1,241
 
-;-74 char I_JB []=  {'J','B',0,              6, 2,     0xF1};
+;-76 char I_JB []=  {'J','B',0,              6, 2,     0xF1};
 
 I_JB db 74,66,0,6,2,241
 
-;-75 char I_JC []=  {'J','C',0,              6, 2,     0xF1};
+;-77 char I_JC []=  {'J','C',0,              6, 2,     0xF1};
 
 I_JC db 74,67,0,6,2,241
 
-;-76 char I_JNB[]=  {'J','N','B',0,          6, 3,     0xF1};
+;-78 char I_JNB[]=  {'J','N','B',0,          6, 3,     0xF1};
 
 I_JNB db 74,78,66,0,6,3,241
 
-;-77 char I_JAE[]=  {'J','A','E',0,          6, 3,     0xF1};
+;-79 char I_JAE[]=  {'J','A','E',0,          6, 3,     0xF1};
 
 I_JAE db 74,65,69,0,6,3,241
 
-;-78 char I_JNC[]=  {'J','N','C',0,          6, 3,     0xF1};
+;-80 char I_JNC[]=  {'J','N','C',0,          6, 3,     0xF1};
 
 I_JNC db 74,78,67,0,6,3,241
 
-;-79 char I_JE []=  {'J','E',0,              6, 4,     0xF1};//  74 je i8rel
+;-81 char I_JE []=  {'J','E',0,              6, 4,     0xF1};//  74 je i8rel
 
 I_JE db 74,69,0,6,4,241
 
-;-80 char I_JZ []=  {'J','Z',0,              6, 4,     0xF1};//0F84 je i16r
+;-82 char I_JZ []=  {'J','Z',0,              6, 4,     0xF1};//0F84 je i16r
 
 I_JZ db 74,90,0,6,4,241
 
-;-81 char I_JNE[]=  {'J','N','E',0,          6, 5,     0xF1};
+;-83 char I_JNE[]=  {'J','N','E',0,          6, 5,     0xF1};
 
 I_JNE db 74,78,69,0,6,5,241
 
-;-82 char I_JNZ[]=  {'J','N','Z',0,          6, 5,     0xF1};
+;-84 char I_JNZ[]=  {'J','N','Z',0,          6, 5,     0xF1};
 
 I_JNZ db 74,78,90,0,6,5,241
 
-;-83 char I_JBE[]=  {'J','B','E',0,          6, 6,     0xF1};
+;-85 char I_JBE[]=  {'J','B','E',0,          6, 6,     0xF1};
 
 I_JBE db 74,66,69,0,6,6,241
 
-;-84 char I_JNA[]=  {'J','N','A',0,          6, 6,     0xF1};
+;-86 char I_JNA[]=  {'J','N','A',0,          6, 6,     0xF1};
 
 I_JNA db 74,78,65,0,6,6,241
 
-;-85 char I_JA []=  {'J','A',0,              6, 7,     0xF1};
+;-87 char I_JA []=  {'J','A',0,              6, 7,     0xF1};
 
 I_JA db 74,65,0,6,7,241
 
-;-86 char I_JS []=  {'J','S',0,              6, 8,     0xF1};
+;-88 char I_JS []=  {'J','S',0,              6, 8,     0xF1};
 
 I_JS db 74,83,0,6,8,241
 
-;-87 char I_JNS[]=  {'J','N','S',0,          6, 9,     0xF1};
+;-89 char I_JNS[]=  {'J','N','S',0,          6, 9,     0xF1};
 
 I_JNS db 74,78,83,0,6,9,241
 
-;-88 char I_JP []=  {'J','P',0,              6,10,     0xF1};
+;-90 char I_JP []=  {'J','P',0,              6,10,     0xF1};
 
 I_JP db 74,80,0,6,10,241
 
-;-89 char I_JPE[]=  {'J','P','E',0,          6,10,     0xF1};
+;-91 char I_JPE[]=  {'J','P','E',0,          6,10,     0xF1};
 
 I_JPE db 74,80,69,0,6,10,241
 
-;-90 char I_JNP[]=  {'J','N','P',0,          6,11,     0xF1};
+;-92 char I_JNP[]=  {'J','N','P',0,          6,11,     0xF1};
 
 I_JNP db 74,78,80,0,6,11,241
 
-;-91 char I_JPO[]=  {'J','P','O',0,          6,11,     0xF1};
+;-93 char I_JPO[]=  {'J','P','O',0,          6,11,     0xF1};
 
 I_JPO db 74,80,79,0,6,11,241
 
-;-92 char I_JL []=  {'J','L',0,              6,12,     0xF1};
+;-94 char I_JL []=  {'J','L',0,              6,12,     0xF1};
 
 I_JL db 74,76,0,6,12,241
 
-;-93 char I_JNL[]=  {'J','N','L',0,          6,13,     0xF1};
+;-95 char I_JNL[]=  {'J','N','L',0,          6,13,     0xF1};
 
 I_JNL db 74,78,76,0,6,13,241
 
-;-94 char I_JGE[]=  {'J','G','E',0,          6,13,     0xF1};
+;-96 char I_JGE[]=  {'J','G','E',0,          6,13,     0xF1};
 
 I_JGE db 74,71,69,0,6,13,241
 
-;-95 char I_JLE[]=  {'J','L','E',0,          6,14,     0xF1};
+;-97 char I_JLE[]=  {'J','L','E',0,          6,14,     0xF1};
 
 I_JLE db 74,76,69,0,6,14,241
 
-;-96 char I_JNG[]=  {'J','N','G',0,          6,14,     0xF1};
+;-98 char I_JNG[]=  {'J','N','G',0,          6,14,     0xF1};
 
 I_JNG db 74,78,71,0,6,14,241
 
-;-97 char I_JG []=  {'J','G',0,              6,15,     0xF1};
+;-99 char I_JG []=  {'J','G',0,              6,15,     0xF1};
 
 I_JG db 74,71,0,6,15,241
 
-;-98 //  7: jmp, call
+;-100 //  7: jmp, call
 
 
-;-99 char I_JMP[]=  {'J','M','P',0,          7,0xE9, 4,0xF1};
+;-101 char I_JMP[]=  {'J','M','P',0,          7,0xE9, 4,0xF1};
 
 I_JMP db 74,77,80,0,7,233,4,241
 
-;-100 char I_CALL[]= {'C','A','L','L',0,      7,0xE8, 2,0xF1};
+;-102 char I_CALL[]= {'C','A','L','L',0,      7,0xE8, 2,0xF1};
 
 I_CALL db 67,65,76,76,0,7,232,2,241
 
-;-101 //  8: ret
+;-103 //  8: ret
 
 
-;-102 char I_RET[]=  {'R','E','T',0,          8,0xC3,0xC2,0xF1};
+;-104 char I_RET[]=  {'R','E','T',0,          8,0xC3,0xC2,0xF1};
 
 I_RET db 82,69,84,0,8,195,194,241
 
-;-103 char I_RETF[]= {'R','E','T','F',0,      8,0xCB,0xCA,0xF1};
+;-105 char I_RETF[]= {'R','E','T','F',0,      8,0xCB,0xCA,0xF1};
 
 I_RETF db 82,69,84,70,0,8,203,202,241
 
-;-104 //  9: seg, r/m
+;-106 //  9: seg, r/m
 
 
-;-105 char I_PUSH[]= {'P','U','S','H',0,      9,0x50,0xFF,6,6,0xF1};//r16
+;-107 char I_PUSH[]= {'P','U','S','H',0,      9,0x50,0xFF,6,6,0xF1};//r16
 
 I_PUSH db 80,85,83,72,0,9,80,255,6,6,241
 
-;-106 char I_POP[]=  {'P','O','P',0,          9,0x58,0x8F,0,7,0xF1};//r16
+;-108 char I_POP[]=  {'P','O','P',0,          9,0x58,0x8F,0,7,0xF1};//r16
 
 I_POP db 80,79,80,0,9,88,143,0,7,241
 
-;-107 //  11: shift, rotates
+;-109 //  11: shift, rotates
 
 
-;-108 char I_ROL[]=  {'R','O','L',0,          11, 0,    0xF1};
+;-110 char I_ROL[]=  {'R','O','L',0,          11, 0,    0xF1};
 
 I_ROL db 82,79,76,0,11,0,241
 
-;-109 char I_ROR[]=  {'R','O','R',0,          11, 1,    0xF1};
+;-111 char I_ROR[]=  {'R','O','R',0,          11, 1,    0xF1};
 
 I_ROR db 82,79,82,0,11,1,241
 
-;-110 char I_RCL[]=  {'R','C','L',0,          11, 2,    0xF1};
+;-112 char I_RCL[]=  {'R','C','L',0,          11, 2,    0xF1};
 
 I_RCL db 82,67,76,0,11,2,241
 
-;-111 char I_RCR[]=  {'R','C','R',0,          11, 3,    0xF1};
+;-113 char I_RCR[]=  {'R','C','R',0,          11, 3,    0xF1};
 
 I_RCR db 82,67,82,0,11,3,241
 
-;-112 char I_SHL[]=  {'S','H','L',0,          11, 4,    0xF1};
+;-114 char I_SHL[]=  {'S','H','L',0,          11, 4,    0xF1};
 
 I_SHL db 83,72,76,0,11,4,241
 
-;-113 char I_SAL[]=  {'S','A','L',0,          11, 5,    0xF1};
+;-115 char I_SAL[]=  {'S','A','L',0,          11, 5,    0xF1};
 
 I_SAL db 83,65,76,0,11,5,241
 
-;-114 char I_SHR[]=  {'S','H','R',0,          11, 6,    0xF1};
+;-116 char I_SHR[]=  {'S','H','R',0,          11, 6,    0xF1};
 
 I_SHR db 83,72,82,0,11,6,241
 
-;-115 char I_SAR[]=  {'S','A','R',0,          11, 7,    0xF1};
+;-117 char I_SAR[]=  {'S','A','R',0,          11, 7,    0xF1};
 
 I_SAR db 83,65,82,0,11,7,241
 
-;-116 //  12: int
+;-118 //  12: int
 
 
-;-117 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
+;-119 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
 
 I_INT db 73,78,84,0,12,205,204,241
 
-;-118 char I_INTO[]= {'I','N','T','O',0,      12,0xCE,   0xF1};
-
-I_INTO db 73,78,84,79,0,12,206,241
-
-;-119 //  14: in/out
+;-120 //  14: in/out
 
 
-;-120 /*char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
+;-121 /*char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
 
 
-;-121 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};
+;-122 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};
 
 
-;-122 char I_INSW[]= {'I','N','S','W',0,      14,0x6D,   0xF1};
+;-123 char I_INSW[]= {'I','N','S','W',0,      14,0x6D,   0xF1};
 
 
-;-123 char I_INSD[]= {'I','N','S','D',0,      14,0x6D,   0xF1};
+;-124 char I_INSD[]= {'I','N','S','D',0,      14,0x6D,   0xF1};
 
 
-;-124 char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xEE,0xF1};
+;-125 char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xEE,0xF1};
 
 
-;-125 char I_OUTSB[]={'O','U','T','B',0,      14,0x6E,   0xF1};
+;-126 char I_OUTSB[]={'O','U','T','B',0,      14,0x6E,   0xF1};
 
 
-;-126 char I_OUTSW[]={'O','U','T','W',0,      14,0x6F,   0xF1};
+;-127 char I_OUTSW[]={'O','U','T','W',0,      14,0x6F,   0xF1};
 
 
-;-127 char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};*/
+;-128 char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};*/
 
 
-;-128 //  15: xchg
+;-129 //  15: xchg
 
 
-;-129 char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0x90,0xF1};
+;-130 char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0x90,0xF1};
 
 I_XCHG db 88,67,72,71,0,15,134,144,241
 
-;-130 //  16: loop, jcxz
+;-131 //  16: loop, jcxz
 
 
-;-131 char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
+;-132 char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
 
 I_LOOPNZ db 76,79,79,80,78,90,0,16,224,241
 
-;-132 char I_LOOPNE[]={'L','O','O','P','N','E',0, 16,0xE0,0xF1};
+;-133 char I_LOOPNE[]={'L','O','O','P','N','E',0, 16,0xE0,0xF1};
 
 I_LOOPNE db 76,79,79,80,78,69,0,16,224,241
 
-;-133 char I_LOOPZ[]={'L','O','O','P','Z',0,      16,0xE1,0xF1};
+;-134 char I_LOOPZ[]={'L','O','O','P','Z',0,      16,0xE1,0xF1};
 
 I_LOOPZ db 76,79,79,80,90,0,16,225,241
 
-;-134 char I_LOOPE[]={'L','O','O','P','E',0,      16,0xE1,0xF1};
+;-135 char I_LOOPE[]={'L','O','O','P','E',0,      16,0xE1,0xF1};
 
 I_LOOPE db 76,79,79,80,69,0,16,225,241
 
-;-135 char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
+;-136 char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
 
 I_LOOP db 76,79,79,80,0,16,226,241
 
-;-136 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
+;-137 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
 
 I_JCXZ db 74,67,88,90,0,16,227,241
 
-;-137 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
+;-138 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
 
 I_JECXZ db 74,69,67,88,90,0,16,227,241
 
-;-138 //  30: enter
+;-139 //  30: enter
 
 
-;-139 char I_ENTER[]={'E','N','T','E','R',0, 30, 0xC8,  0xF1};
+;-140 char I_ENTER[]={'E','N','T','E','R',0, 30, 0xC8,  0xF1};
 
 I_ENTER db 69,78,84,69,82,0,30,200,241
 
-;-140 // 100: directives
+;-141 // 100: directives
 
 
-;-141 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
+;-142 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
 
 I_ORG db 79,82,71,0,101,241
 
-;-142 // section, segment .TEXT .DATA .BSS
+;-143 // section, segment .TEXT .DATA .BSS
 
 
-;-143 /*char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
+;-144 /*char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
 
 
-;-144 char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
+;-145 char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
 
 
-;-145 char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};*/
+;-146 char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};*/
 
 
-;-146 char I_DB[]=   {'D','B',0,            200,        0xF1};
+;-147 char I_DB[]=   {'D','B',0,            200,        0xF1};
 
 I_DB db 68,66,0,200,241
 
-;-147 char I_DW[]=   {'D','W',0,            201,        0xF1};
+;-148 char I_DW[]=   {'D','W',0,            201,        0xF1};
 
 I_DW db 68,87,0,201,241
 
-;-148 char I_DD[]=   {'D','D',0,            202,        0xF1};
+;-149 char I_DD[]=   {'D','D',0,            202,        0xF1};
 
 I_DD db 68,68,0,202,241
 
-;-149 char I_RESB[]= {'R','E','S','B',0,    205,        0xF1};
+;-150 char I_RESB[]= {'R','E','S','B',0,    205,        0xF1};
 
 I_RESB db 82,69,83,66,0,205,241
 
-;-150 char I_RESW[]= {'R','E','S','W',0,    206,        0xF1};
+;-151 char I_RESW[]= {'R','E','S','W',0,    206,        0xF1};
 
 I_RESW db 82,69,83,87,0,206,241
 
-;-151 char I_RESD[]= {'R','E','S','D',0,    207,        0xF1};
+;-152 char I_RESD[]= {'R','E','S','D',0,    207,        0xF1};
 
 I_RESD db 82,69,83,68,0,207,241
 
-;-152 char I_END=0;// end of table char
+;-153 char I_END=0;// end of table char
 
 I_END db 0
 ;Back to main program: AS.C
@@ -6483,53 +6487,124 @@ process:  ; *** PROC ***
 ;-220     }
 
 
-;-221        
+;-221     
 
 
-;-222     if (CodeType==101) {// ORG nn
+;-222     if (CodeType == 12) {//int, int3
 
 @@process261:
  mov al, [CodeType]
- cmp al, 101
+ cmp al, 12
  jne @@process273
 
-;-223         if (TokeType != DIGIT) error1("only digit allowed");
+;-223         if (TokeType == DIGIT) {
 
  mov al, [TokeType]
  cmp al, 1
- je  @@process274
+ jne @@process274
+
+;-224             if (SymbolInt == 3) {
+
+ mov ax, [SymbolInt]
+ cmp ax, 3
+ jne @@process275
+
+;-225                 genCode8(Code2);
+
+ mov al, byte [Code2]
+ mov ah, 0
+ push ax
+ call genCode8
+ add  sp, 2
+
+;-226                 return;   
+
+ jmp @@retn
+
+;-227             }
+
+
+;-228             else {
+
+ jmp @@process276
+@@process275:
+
+;-229                 genCode8(Code1);
+
+ mov al, byte [Code1]
+ mov ah, 0
+ push ax
+ call genCode8
+ add  sp, 2
+
+;-230                 genCode8(SymbolInt);
+
+ push word [SymbolInt]
+ call genCode8
+ add  sp, 2
+
+;-231                 return;   
+
+ jmp @@retn
+
+;-232             }
+
+
+;-233         }
+
+@@process276:
+
+;-234     }
+
+@@process274:
+
+;-235        
+
+
+;-236     if (CodeType==101) {// ORG nn
+
+@@process273:
+ mov al, [CodeType]
+ cmp al, 101
+ jne @@process277
+
+;-237         if (TokeType != DIGIT) error1("only digit allowed");
+
+ mov al, [TokeType]
+ cmp al, 1
+ je  @@process278
  push process_1
  call error1
  add  sp, 2
 
-;-224         PC=SymbolInt;
+;-238         PC=SymbolInt;
 
-@@process274:
+@@process278:
  mov ax, [SymbolInt]
  mov word [PC], ax
 
-;-225         return;
+;-239         return;
 
  jmp @@retn
 
-;-226     }
+;-240     }
 
 
-;-227     error1("Command not implemented");
+;-241     error1("Command not implemented or syntax error");
 
-@@process273:
+@@process277:
  push process_2
  call error1
  add  sp, 2
 
-;-228 }    
+;-242 }    
 
 @@retn: LEAVE
  ret
 ; ENDP
 process_0 db "pop cs not allowed",0
 process_1 db "only digit allowed",0
-process_2 db "Command not implemented",0
+process_2 db "Command not implemented or syntax error",0
  
 ; missing functions: 
 ; digit
@@ -6611,7 +6686,7 @@ process_2 db "Command not implemented",0
 ; Number of unresolved CALLs :   76
 ;use archive file: AR.C
 
-;-229 // AR.C Archive
+;-243 // AR.C Archive
 
 ;Number of CALLs:    2 : writetty
 
@@ -6620,7 +6695,7 @@ writetty:  ; *** PROC ***
  mov  bx, 0
  int  16
 
-;-230 int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
+;-244 int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
 
  ret
 ; ENDP
@@ -6629,15 +6704,15 @@ writetty:  ; *** PROC ***
 cputs:  ; *** PROC ***
 ;Function : cputs, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   230 NULL bp+4    s
-;  201 var sign byte   230 NULL bp-2    c;
+;  200 ptr sign byte   244 NULL bp+4    s
+;  201 var sign byte   244 NULL bp-2    c;
  ENTER  2,0
-@@cputs275:
+@@cputs279:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@cputs276
+ je @@cputs280
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
@@ -6648,10 +6723,10 @@ cputs:  ; *** PROC ***
  call putch
  add  sp, 2
  inc  word [bp+4]
- jmp @@cputs275
-@@cputs276:
+ jmp @@cputs279
+@@cputs280:
 
-;-231 int mkneg(int n) { n; __asm {neg ax} }
+;-245 int mkneg(int n) { n; __asm {neg ax} }
  LEAVE
  ret
 ; ENDP
@@ -6660,40 +6735,40 @@ cputs:  ; *** PROC ***
 toupper:  ; *** PROC ***
 ;Function : toupper, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   231 NULL bp+4    s;
+;  200 ptr sign byte   245 NULL bp+4    s;
  ENTER  0,0
-@@toupper277:
+@@toupper281:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@toupper278
+ je @@toupper282
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 97 ;unsigned : 1
- jl  @@toupper279
+ jl  @@toupper283
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 122
- jg  @@toupper280
+ jg  @@toupper284
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  sub ax, 32
  mov  bx, [bp+4]
  mov  [bx], al
-@@toupper280:
-@@toupper279:
+@@toupper284:
+@@toupper283:
  inc  word [bp+4]
- jmp @@toupper277
-@@toupper278:
+ jmp @@toupper281
+@@toupper282:
 
-;-232 //int head1  (char *s) {char c; do{c=*s; c=letter(c); s++; }while(c) *s=0; }
+;-246 //int head1  (char *s) {char c; do{c=*s; c=letter(c); s++; }while(c) *s=0; }
 
 
-;-233 int strlen(char *s) { int c; c=0; while (*s!=0) {s++; c++;} return c; }
+;-247 int strlen(char *s) { int c; c=0; while (*s!=0) {s++; c++;} return c; }
  LEAVE
  ret
 ; ENDP
@@ -6702,25 +6777,25 @@ toupper:  ; *** PROC ***
 strlen:  ; *** PROC ***
 ;Function : strlen, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   233 NULL bp+4    s
-;  201 var sign word   233 NULL bp-2    c;
+;  200 ptr sign byte   247 NULL bp+4    s
+;  201 var sign word   247 NULL bp-2    c;
  ENTER  2,0
  mov eax, 0
  mov word [bp-2], ax
-@@strlen281:
+@@strlen285:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strlen282
+ je  @@strlen286
  inc  word [bp+4]
  inc  word [bp-2]
- jmp @@strlen281
-@@strlen282:
+ jmp @@strlen285
+@@strlen286:
  mov ax, [bp-2]
  jmp @@retn
 
-;-234 int strcpy1(char *s, char *t) {do { *s=*t; s++; t++; } while (*t!=0); *s=0; }
+;-248 int strcpy1(char *s, char *t) {do { *s=*t; s++; t++; } while (*t!=0); *s=0; }
 
 @@retn: LEAVE
  ret
@@ -6730,10 +6805,10 @@ strlen:  ; *** PROC ***
 strcpy:  ; *** PROC ***
 ;Function : strcpy, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   234 NULL bp+4    s
-;  201 ptr sign byte   234 NULL bp+6    t;
+;  200 ptr sign byte   248 NULL bp+4    s
+;  201 ptr sign byte   248 NULL bp+6    t;
  ENTER  0,0
-@@strcpy283:
+@@strcpy287:
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
@@ -6742,22 +6817,22 @@ strcpy:  ; *** PROC ***
  inc  word [bp+4]
  inc  word [bp+6]
 
-;-235   while (*t!=0); *s=0; return s; }
+;-249   while (*t!=0); *s=0; return s; }
 
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strcpy284
- jmp @@strcpy283
-@@strcpy284:
+ je  @@strcpy288
+ jmp @@strcpy287
+@@strcpy288:
  mov eax, 0
  mov  bx, [bp+4]
  mov  [bx], al
  mov ax, [bp+4]
  jmp @@retn
 
-;-236 int strncpy(char *s, char *t, int n) { if (_ n==0) return;
+;-250 int strncpy(char *s, char *t, int n) { if (_ n==0) return;
 
 @@retn: LEAVE
  ret
@@ -6767,24 +6842,24 @@ strcpy:  ; *** PROC ***
 digit:  ; *** PROC ***
 ;Function : digit, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   236 NULL bp+4    c;
+;  200 var sign byte   250 NULL bp+4    c;
  ENTER  0,0
  mov al, [bp+4]
  cmp al, 48
- jge @@digit285
+ jge @@digit289
  mov eax, 0
  jmp @@retn
-@@digit285:
+@@digit289:
  mov al, [bp+4]
  cmp al, 57
- jle @@digit286
+ jle @@digit290
  mov eax, 0
  jmp @@retn
-@@digit286:
+@@digit290:
  mov eax, 1
  jmp @@retn
 
-;-237 int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1; //XXXXXXXXXX
+;-251 int letter(char c) { if (digit(c)) return 1; if (c=='_') return 1; //XXXXXXXXXX
 
 @@retn: LEAVE
  ret
@@ -6794,17 +6869,17 @@ digit:  ; *** PROC ***
 eqstr:  ; *** PROC ***
 ;Function : eqstr, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   237 NULL bp+4    p
-;  201 ptr sign byte   237 NULL bp+6    q;
+;  200 ptr sign byte   251 NULL bp+4    p
+;  201 ptr sign byte   251 NULL bp+6    q;
  ENTER  0,0
-@@eqstr287:
+@@eqstr291:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@eqstr288
+ je @@eqstr292
 
-;-238     if (*p != *q) return 0; p++; q++; }
+;-252     if (*p != *q) return 0; p++; q++; }
 
  mov bx, [bp+4]
  mov al, [bx]
@@ -6812,29 +6887,29 @@ eqstr:  ; *** PROC ***
  mov bx, [bp+6]
  cmp al, [bx]
  mov ah, 0
- je  @@eqstr289
+ je  @@eqstr293
  mov eax, 0
  jmp @@retn
-@@eqstr289:
+@@eqstr293:
  inc  word [bp+4]
  inc  word [bp+6]
 
-;-239     if(*q) return 0; return 1; }
+;-253     if(*q) return 0; return 1; }
 
- jmp @@eqstr287
-@@eqstr288:
+ jmp @@eqstr291
+@@eqstr292:
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@eqstr290
+ je @@eqstr294
  mov eax, 0
  jmp @@retn
-@@eqstr290:
+@@eqstr294:
  mov eax, 1
  jmp @@retn
 
-;-240 int strcat1(char *s, char *t) { while (*s != 0) s++; strcpy(s, t);  }
+;-254 int strcat1(char *s, char *t) { while (*s != 0) s++; strcpy(s, t);  }
 
 @@retn: LEAVE
  ret
@@ -6844,24 +6919,24 @@ eqstr:  ; *** PROC ***
 strcat1:  ; *** PROC ***
 ;Function : strcat1, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   240 NULL bp+4    s
-;  201 ptr sign byte   240 NULL bp+6    t;
+;  200 ptr sign byte   254 NULL bp+4    s
+;  201 ptr sign byte   254 NULL bp+6    t;
  ENTER  0,0
-@@strcat1291:
+@@strcat1295:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strcat1292
+ je  @@strcat1296
  inc  word [bp+4]
- jmp @@strcat1291
-@@strcat1292:
+ jmp @@strcat1295
+@@strcat1296:
  push word [bp+6]
  push word [bp+4]
  call strcpy
  add  sp, 4
 
-;-241 int basename(char *s) { char *p; p=0;
+;-255 int basename(char *s) { char *p; p=0;
  LEAVE
  ret
 ; ENDP
@@ -6870,13 +6945,13 @@ strcat1:  ; *** PROC ***
 openR:  ; *** PROC ***
 ;Function : openR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   241 NULL bp+4    s;
+;  200 ptr sign byte   255 NULL bp+4    s;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  ax, 15618
  call DosInt
 
-;-242 int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
+;-256 int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
  LEAVE
  ret
 ; ENDP
@@ -6885,14 +6960,14 @@ openR:  ; *** PROC ***
 creatR:  ; *** PROC ***
 ;Function : creatR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   242 NULL bp+4    s;
+;  200 ptr sign byte   256 NULL bp+4    s;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  cx, 0
  mov  ax, 15360
  call DosInt
 
-;-243 int readR (char *s, int fd) {dx=s; cx=1; bx=fd; ax=0x3F00; DosInt(); }
+;-257 int readR (char *s, int fd) {dx=s; cx=1; bx=fd; ax=0x3F00; DosInt(); }
  LEAVE
  ret
 ; ENDP
@@ -6901,9 +6976,9 @@ creatR:  ; *** PROC ***
 readRL:  ; *** PROC ***
 ;Function : readRL, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   243 NULL bp+4    s
-;  201 var sign word   243 NULL bp+6    fd
-;  202 var sign word   243 NULL bp+8    len;
+;  200 ptr sign byte   257 NULL bp+4    s
+;  201 var sign word   257 NULL bp+6    fd
+;  202 var sign word   257 NULL bp+8    len;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  cx, [bp+8]
@@ -6911,7 +6986,7 @@ readRL:  ; *** PROC ***
  mov  ax, 16128
  call DosInt
 
-;-244 int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
+;-258 int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
  LEAVE
  ret
 ; ENDP
@@ -6920,19 +6995,19 @@ readRL:  ; *** PROC ***
 fputcR:  ; *** PROC ***
 ;Function : fputcR, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   244 NULL bp+4    n
-;  201 var sign word   244 NULL bp+6    fd;
+;  200 ptr sign byte   258 NULL bp+4    n
+;  201 var sign word   258 NULL bp+6    fd;
  ENTER  0,0
 lea dx, [bp+4]
 
-;-245   cx=1; bx=fd; ax=0x4000; DosInt(); }
+;-259   cx=1; bx=fd; ax=0x4000; DosInt(); }
 
  mov  cx, 1
  mov  bx, [bp+6]
  mov  ax, 16384
  call DosInt
 
-;-246 int writeRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x4000; DosInt();}
+;-260 int writeRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x4000; DosInt();}
  LEAVE
  ret
 ; ENDP
@@ -6941,13 +7016,13 @@ lea dx, [bp+4]
 fcloseR:  ; *** PROC ***
 ;Function : fcloseR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word   246 NULL bp+4    fd;
+;  200 var sign word   260 NULL bp+4    fd;
  ENTER  0,0
  mov  bx, [bp+4]
  mov  ax, 15872
  int  33
 
-;-247 int exitR(char c) {ah=0x4C; al=c; inth 0x21; }
+;-261 int exitR(char c) {ah=0x4C; al=c; inth 0x21; }
  LEAVE
  ret
 ; ENDP
@@ -6956,13 +7031,13 @@ fcloseR:  ; *** PROC ***
 exitR:  ; *** PROC ***
 ;Function : exitR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   247 NULL bp+4    c;
+;  200 var sign byte   261 NULL bp+4    c;
  ENTER  0,0
  mov  ah, 76
  mov  al, [bp+4]
  int  33
 
-;-248 int setdta(char *s) {dx=s; ah=0x1A; inth 0x21; }
+;-262 int setdta(char *s) {dx=s; ah=0x1A; inth 0x21; }
  LEAVE
  ret
 ; ENDP
@@ -6977,24 +7052,24 @@ exitR:  ; *** PROC ***
 ; Number of unresolved CALLs :    5
 ;use archive file: AR.C
 
-;-249 // AR.C Archive
+;-263 // AR.C Archive
 
 ;Number of CALLs:    1 : putch
 
 putch:  ; *** PROC ***
 ;Function : putch, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   249 NULL bp+4    c;
+;  200 var sign byte   263 NULL bp+4    c;
  ENTER  0,0
 cmp byte [bp+4], 10
- jne @@putch293
+ jne @@putch297
  mov  al, 13
  call writetty
-@@putch293:
+@@putch297:
  mov  al, [bp+4]
  call writetty
 
-;-250 int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
+;-264 int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
  LEAVE
  ret
 ; ENDP
@@ -7002,11 +7077,11 @@ cmp byte [bp+4], 10
 
 DosInt:  ; *** PROC ***
  int  33
- jae short @@DosInt294
+ jae short @@DosInt298
  inc  word [DOS_ERR]
-@@DosInt294:
+@@DosInt298:
 
-;-251 int openR (char *s) { dx=s; ax=0x3D02;  DosInt(); }
+;-265 int openR (char *s) { dx=s; ax=0x3D02;  DosInt(); }
 
  ret
 ; ENDP
@@ -7024,7 +7099,7 @@ ret
 ;    3 def unsg byte     2    -        0 SYMBOLMAX=31
 ;    4 arr sign byte     3    8        0 Symbol[31]
 ;    5 arr sign byte     4   36        0 SymbolUpper[31]
-;    6 var unsg word     5   12        0 SymbolInt
+;    6 var unsg word     5   14        0 SymbolInt
 ;    7 def unsg byte     6    -        0 INPUTBUFMAX=127
 ;    8 arr sign byte     7    4        0 InputBuf[127]
 ;    9 ptr unsg byte     8   24        0 InputPtr
@@ -7045,7 +7120,7 @@ ret
 ;   24 def unsg byte    24    -        0 LETTERE=2
 ;   25 def unsg byte    25    -        0 ALNUME=3
 ;   26 def unsg byte    26    -        0 NOALNUME=4
-;   27 var sign byte    27   21        0 TokeType
+;   27 var sign byte    27   22        0 TokeType
 ;   28 def unsg byte    28    -        0 BYTE=1
 ;   29 def unsg byte    29    -        0 WORD=2
 ;   30 def unsg byte    30    -        0 DWORD=3
@@ -7056,9 +7131,9 @@ ret
 ;   35 def unsg byte    35    -        0 MEM=4
 ;   36 var sign byte    36   24        0 Op
 ;   37 var sign byte    37   29        0 Op2
-;   38 var sign byte    38   16        0 CodeType
-;   39 var sign byte    39   12        0 Code1
-;   40 var sign byte    40    7        0 Code2
+;   38 var sign byte    38   17        0 CodeType
+;   39 var sign byte    39   13        0 Code1
+;   40 var sign byte    40    8        0 Code2
 ;   41 var sign byte    41    3        0 Code3
 ;   42 var sign byte    42   18        0 R2No
 ;   43 var sign byte    43   16        0 R1No
@@ -7113,105 +7188,106 @@ ret
 ;   92 arr sign byte    24 NULL        0 I_SCASB[9]
 ;   93 arr sign byte    25 NULL        0 I_SCASW[9]
 ;   94 arr sign byte    26 NULL        0 I_LEAVE[9]
-;   95 arr sign byte    27 NULL        0 I_IRET[8]
-;   96 arr sign byte    28 NULL        0 I_XLAT[8]
-;   97 arr sign byte    29 NULL        0 I_LOCK[8]
-;   98 arr sign byte    30 NULL        0 I_REPNE[9]
-;   99 arr sign byte    31 NULL        0 I_REPNZ[9]
-;  100 arr sign byte    32 NULL        0 I_REPE[8]
-;  101 arr sign byte    33 NULL        0 I_REPZ[8]
-;  102 arr sign byte    34 NULL        0 I_HLT[7]
-;  103 arr sign byte    35 NULL        0 I_CLC[7]
-;  104 arr sign byte    36 NULL        0 I_STC[7]
-;  105 arr sign byte    37 NULL        0 I_CLI[7]
-;  106 arr sign byte    38 NULL        0 I_STI[7]
-;  107 arr sign byte    39 NULL        0 I_CLD[7]
-;  108 arr sign byte    40 NULL        0 I_STD[7]
-;  109 arr sign byte    42 NULL        0 I_INC[9]
-;  110 arr sign byte    43 NULL        0 I_DEC[9]
-;  111 arr sign byte    44 NULL        0 I_NOT[8]
-;  112 arr sign byte    45 NULL        0 I_NEG[8]
-;  113 arr sign byte    46 NULL        0 I_MUL[8]
-;  114 arr sign byte    47 NULL        0 I_IMUL[9]
-;  115 arr sign byte    48 NULL        0 I_DIV[8]
-;  116 arr sign byte    49 NULL        0 I_IDIV[9]
-;  117 arr sign byte    51 NULL        0 I_LES[7]
-;  118 arr sign byte    52 NULL        0 I_LDS[7]
-;  119 arr sign byte    53 NULL        0 I_LEA[7]
-;  120 arr sign byte    54 NULL        0 I_LSS[8]
-;  121 arr sign byte    55 NULL        0 I_LFS[8]
-;  122 arr sign byte    56 NULL        0 I_LGS[8]
-;  123 arr sign byte    58 NULL        0 I_ADD[7]
-;  124 arr sign byte    59 NULL        0 I_OR[6]
-;  125 arr sign byte    60 NULL        0 I_ADC[7]
-;  126 arr sign byte    61 NULL        0 I_SBB[7]
-;  127 arr sign byte    62 NULL        0 I_AND[7]
-;  128 arr sign byte    63 NULL        0 I_SUB[7]
-;  129 arr sign byte    64 NULL        0 I_XOR[7]
-;  130 arr sign byte    65 NULL        0 I_CMP[7]
-;  131 arr sign byte    66 NULL        0 I_TEST[11]
-;  132 arr sign byte    68 NULL        0 I_MOV[6]
-;  133 arr sign byte    69 NULL        0 I_MOVSX[9]
-;  134 arr sign byte    70 NULL        0 I_MOVZX[9]
-;  135 arr sign byte    72 NULL        0 I_JO[6]
-;  136 arr sign byte    73 NULL        0 I_JNO[7]
-;  137 arr sign byte    74 NULL        0 I_JB[6]
-;  138 arr sign byte    75 NULL        0 I_JC[6]
-;  139 arr sign byte    76 NULL        0 I_JNB[7]
-;  140 arr sign byte    77 NULL        0 I_JAE[7]
-;  141 arr sign byte    78 NULL        0 I_JNC[7]
-;  142 arr sign byte    79 NULL        0 I_JE[6]
-;  143 arr sign byte    80 NULL        0 I_JZ[6]
-;  144 arr sign byte    81 NULL        0 I_JNE[7]
-;  145 arr sign byte    82 NULL        0 I_JNZ[7]
-;  146 arr sign byte    83 NULL        0 I_JBE[7]
-;  147 arr sign byte    84 NULL        0 I_JNA[7]
-;  148 arr sign byte    85 NULL        0 I_JA[6]
-;  149 arr sign byte    86 NULL        0 I_JS[6]
-;  150 arr sign byte    87 NULL        0 I_JNS[7]
-;  151 arr sign byte    88 NULL        0 I_JP[6]
-;  152 arr sign byte    89 NULL        0 I_JPE[7]
-;  153 arr sign byte    90 NULL        0 I_JNP[7]
-;  154 arr sign byte    91 NULL        0 I_JPO[7]
-;  155 arr sign byte    92 NULL        0 I_JL[6]
-;  156 arr sign byte    93 NULL        0 I_JNL[7]
-;  157 arr sign byte    94 NULL        0 I_JGE[7]
-;  158 arr sign byte    95 NULL        0 I_JLE[7]
-;  159 arr sign byte    96 NULL        0 I_JNG[7]
-;  160 arr sign byte    97 NULL        0 I_JG[6]
-;  161 arr sign byte    99 NULL        0 I_JMP[8]
-;  162 arr sign byte   100 NULL        0 I_CALL[9]
-;  163 arr sign byte   102 NULL        0 I_RET[8]
-;  164 arr sign byte   103 NULL        0 I_RETF[9]
-;  165 arr sign byte   105 NULL        0 I_PUSH[11]
-;  166 arr sign byte   106 NULL        0 I_POP[10]
-;  167 arr sign byte   108 NULL        0 I_ROL[7]
-;  168 arr sign byte   109 NULL        0 I_ROR[7]
-;  169 arr sign byte   110 NULL        0 I_RCL[7]
-;  170 arr sign byte   111 NULL        0 I_RCR[7]
-;  171 arr sign byte   112 NULL        0 I_SHL[7]
-;  172 arr sign byte   113 NULL        0 I_SAL[7]
-;  173 arr sign byte   114 NULL        0 I_SHR[7]
-;  174 arr sign byte   115 NULL        0 I_SAR[7]
-;  175 arr sign byte   117 NULL        0 I_INT[8]
-;  176 arr sign byte   118 NULL        0 I_INTO[8]
-;  177 arr sign byte   129 NULL        0 I_XCHG[9]
-;  178 arr sign byte   131 NULL        0 I_LOOPNZ[10]
-;  179 arr sign byte   132 NULL        0 I_LOOPNE[10]
-;  180 arr sign byte   133 NULL        0 I_LOOPZ[9]
-;  181 arr sign byte   134 NULL        0 I_LOOPE[9]
-;  182 arr sign byte   135 NULL        0 I_LOOP[8]
-;  183 arr sign byte   136 NULL        0 I_JCXZ[8]
-;  184 arr sign byte   137 NULL        0 I_JECXZ[9]
-;  185 arr sign byte   139 NULL        0 I_ENTER[9]
-;  186 arr sign byte   141 NULL        0 I_ORG[6]
-;  187 arr sign byte   146 NULL        0 I_DB[5]
-;  188 arr sign byte   147 NULL        0 I_DW[5]
-;  189 arr sign byte   148 NULL        0 I_DD[5]
-;  190 arr sign byte   149 NULL        0 I_RESB[7]
-;  191 arr sign byte   150 NULL        0 I_RESW[7]
-;  192 arr sign byte   151 NULL        0 I_RESD[7]
-;  193 var sign byte   152 NULL        0 I_END
+;   95 arr sign byte    27 NULL        0 I_INT3[8]
+;   96 arr sign byte    28 NULL        0 I_INTO[8]
+;   97 arr sign byte    29 NULL        0 I_IRET[8]
+;   98 arr sign byte    30 NULL        0 I_XLAT[8]
+;   99 arr sign byte    31 NULL        0 I_LOCK[8]
+;  100 arr sign byte    32 NULL        0 I_REPNE[9]
+;  101 arr sign byte    33 NULL        0 I_REPNZ[9]
+;  102 arr sign byte    34 NULL        0 I_REPE[8]
+;  103 arr sign byte    35 NULL        0 I_REPZ[8]
+;  104 arr sign byte    36 NULL        0 I_HLT[7]
+;  105 arr sign byte    37 NULL        0 I_CLC[7]
+;  106 arr sign byte    38 NULL        0 I_STC[7]
+;  107 arr sign byte    39 NULL        0 I_CLI[7]
+;  108 arr sign byte    40 NULL        0 I_STI[7]
+;  109 arr sign byte    41 NULL        0 I_CLD[7]
+;  110 arr sign byte    42 NULL        0 I_STD[7]
+;  111 arr sign byte    44 NULL        0 I_INC[9]
+;  112 arr sign byte    45 NULL        0 I_DEC[9]
+;  113 arr sign byte    46 NULL        0 I_NOT[8]
+;  114 arr sign byte    47 NULL        0 I_NEG[8]
+;  115 arr sign byte    48 NULL        0 I_MUL[8]
+;  116 arr sign byte    49 NULL        0 I_IMUL[9]
+;  117 arr sign byte    50 NULL        0 I_DIV[8]
+;  118 arr sign byte    51 NULL        0 I_IDIV[9]
+;  119 arr sign byte    53 NULL        0 I_LES[7]
+;  120 arr sign byte    54 NULL        0 I_LDS[7]
+;  121 arr sign byte    55 NULL        0 I_LEA[7]
+;  122 arr sign byte    56 NULL        0 I_LSS[8]
+;  123 arr sign byte    57 NULL        0 I_LFS[8]
+;  124 arr sign byte    58 NULL        0 I_LGS[8]
+;  125 arr sign byte    60 NULL        0 I_ADD[7]
+;  126 arr sign byte    61 NULL        0 I_OR[6]
+;  127 arr sign byte    62 NULL        0 I_ADC[7]
+;  128 arr sign byte    63 NULL        0 I_SBB[7]
+;  129 arr sign byte    64 NULL        0 I_AND[7]
+;  130 arr sign byte    65 NULL        0 I_SUB[7]
+;  131 arr sign byte    66 NULL        0 I_XOR[7]
+;  132 arr sign byte    67 NULL        0 I_CMP[7]
+;  133 arr sign byte    68 NULL        0 I_TEST[11]
+;  134 arr sign byte    70 NULL        0 I_MOV[6]
+;  135 arr sign byte    71 NULL        0 I_MOVSX[9]
+;  136 arr sign byte    72 NULL        0 I_MOVZX[9]
+;  137 arr sign byte    74 NULL        0 I_JO[6]
+;  138 arr sign byte    75 NULL        0 I_JNO[7]
+;  139 arr sign byte    76 NULL        0 I_JB[6]
+;  140 arr sign byte    77 NULL        0 I_JC[6]
+;  141 arr sign byte    78 NULL        0 I_JNB[7]
+;  142 arr sign byte    79 NULL        0 I_JAE[7]
+;  143 arr sign byte    80 NULL        0 I_JNC[7]
+;  144 arr sign byte    81 NULL        0 I_JE[6]
+;  145 arr sign byte    82 NULL        0 I_JZ[6]
+;  146 arr sign byte    83 NULL        0 I_JNE[7]
+;  147 arr sign byte    84 NULL        0 I_JNZ[7]
+;  148 arr sign byte    85 NULL        0 I_JBE[7]
+;  149 arr sign byte    86 NULL        0 I_JNA[7]
+;  150 arr sign byte    87 NULL        0 I_JA[6]
+;  151 arr sign byte    88 NULL        0 I_JS[6]
+;  152 arr sign byte    89 NULL        0 I_JNS[7]
+;  153 arr sign byte    90 NULL        0 I_JP[6]
+;  154 arr sign byte    91 NULL        0 I_JPE[7]
+;  155 arr sign byte    92 NULL        0 I_JNP[7]
+;  156 arr sign byte    93 NULL        0 I_JPO[7]
+;  157 arr sign byte    94 NULL        0 I_JL[6]
+;  158 arr sign byte    95 NULL        0 I_JNL[7]
+;  159 arr sign byte    96 NULL        0 I_JGE[7]
+;  160 arr sign byte    97 NULL        0 I_JLE[7]
+;  161 arr sign byte    98 NULL        0 I_JNG[7]
+;  162 arr sign byte    99 NULL        0 I_JG[6]
+;  163 arr sign byte   101 NULL        0 I_JMP[8]
+;  164 arr sign byte   102 NULL        0 I_CALL[9]
+;  165 arr sign byte   104 NULL        0 I_RET[8]
+;  166 arr sign byte   105 NULL        0 I_RETF[9]
+;  167 arr sign byte   107 NULL        0 I_PUSH[11]
+;  168 arr sign byte   108 NULL        0 I_POP[10]
+;  169 arr sign byte   110 NULL        0 I_ROL[7]
+;  170 arr sign byte   111 NULL        0 I_ROR[7]
+;  171 arr sign byte   112 NULL        0 I_RCL[7]
+;  172 arr sign byte   113 NULL        0 I_RCR[7]
+;  173 arr sign byte   114 NULL        0 I_SHL[7]
+;  174 arr sign byte   115 NULL        0 I_SAL[7]
+;  175 arr sign byte   116 NULL        0 I_SHR[7]
+;  176 arr sign byte   117 NULL        0 I_SAR[7]
+;  177 arr sign byte   119 NULL        0 I_INT[8]
+;  178 arr sign byte   130 NULL        0 I_XCHG[9]
+;  179 arr sign byte   132 NULL        0 I_LOOPNZ[10]
+;  180 arr sign byte   133 NULL        0 I_LOOPNE[10]
+;  181 arr sign byte   134 NULL        0 I_LOOPZ[9]
+;  182 arr sign byte   135 NULL        0 I_LOOPE[9]
+;  183 arr sign byte   136 NULL        0 I_LOOP[8]
+;  184 arr sign byte   137 NULL        0 I_JCXZ[8]
+;  185 arr sign byte   138 NULL        0 I_JECXZ[9]
+;  186 arr sign byte   140 NULL        0 I_ENTER[9]
+;  187 arr sign byte   142 NULL        0 I_ORG[6]
+;  188 arr sign byte   147 NULL        0 I_DB[5]
+;  189 arr sign byte   148 NULL        0 I_DW[5]
+;  190 arr sign byte   149 NULL        0 I_DD[5]
+;  191 arr sign byte   150 NULL        0 I_RESB[7]
+;  192 arr sign byte   151 NULL        0 I_RESW[7]
+;  193 arr sign byte   152 NULL        0 I_RESD[7]
+;  194 var sign byte   153 NULL        0 I_END
 
 
 ;   # Calls Line Width  Name   list of functions
@@ -7277,350 +7353,353 @@ ret
 ;   58    1    7 word   gen66h
 ;   59    5    9 word   genCode2
 ;   60   10   13 word   genCodeW
-;   61   20   17 word   genCode8
+;   61   23   17 word   genCode8
 ;   62    7   28 word   genCode16
 ;   63   10   32 word   writeEA
 ;   64    4   74 word   genImmediate
 ;   65    1   11 word   process
-;   66    4  229 word   writetty
-;   67    8  230 word   cputs
-;   68    2  231 word   toupper
-;   69    3  233 word   strlen
-;   70    6  234 word   strcpy
-;   71    3  236 word   digit
-;   72   35  237 word   eqstr
-;   73    3  240 word   strcat1
-;   74    1  241 word   openR
-;   75    2  242 word   creatR
-;   76    2  243 word   readRL
-;   77    2  244 word   fputcR
-;   78    3  246 word   fcloseR
-;   79    5  247 word   exitR
-;   80    1  249 word   putch
-;   81    4  250 word   DosInt
-;   82 NULL  251 word   LastFunctionByt
+;   66    4  243 word   writetty
+;   67    8  244 word   cputs
+;   68    2  245 word   toupper
+;   69    3  247 word   strlen
+;   70    6  248 word   strcpy
+;   71    3  250 word   digit
+;   72   35  251 word   eqstr
+;   73    3  254 word   strcat1
+;   74    1  255 word   openR
+;   75    2  256 word   creatR
+;   76    2  257 word   readRL
+;   77    2  258 word   fputcR
+;   78    3  260 word   fcloseR
+;   79    5  261 word   exitR
+;   80    1  263 word   putch
+;   81    4  264 word   DosInt
+;   82 NULL  265 word   LastFunctionByt
 
 ;    #  addr name   list of CALLs
 
-;    0  1360 implerror
-;    1  1370 segregerror
-;    2  1382 setwflag
-;    3  1391 error1
-;    4  1398 error1
-;    5  1415 get2Ops
-;    6  1423 addrerror
-;    7  1433 invaloperror
-;    8  1446 immeerror
-;    9  1456 addrerror
-;   10  1466 invaloperror
-;   11  1479 setwflag
-;   12  1496 getOpL
-;   13  1503 need
-;   14  1508 getOpR
-;   15  1522 getOpR
-;   16  1536 getOp1
-;   17  1543 isToken
-;   18  1551 getMEM
-;   19  1558 invaloperror
-;   20  1571 error1
-;   21  1585 testReg
-;   22  1593 searchLabel
-;   23  1605 error1
-;   24  1621 getTokeType
-;   25  1633 getOp1
-;   26  1640 syntaxerror
-;   27  1652 getIndReg2
-;   28  1663 getIndReg1
-;   29  1674 isToken
-;   30  1682 getTokeType
-;   31  1694 numbererror
-;   32  1706 isToken
-;   33  1714 isToken
-;   34  1722 errorexit
-;   35  1743 indexerror
-;   36  1754 indexerror
-;   37  1778 indexerror
-;   38  1789 indexerror
-;   39  1809 gen66h
-;   40  1828 error1
-;   41  1841 getLine
-;   42  1849 getTokeType
-;   43  1861 storeLabel
-;   44  1872 getTokeType
-;   45  1884 lookCode
-;   46  1893 process
-;   47  1901 getVariable
-;   48  1913 skipRest
-;   49  1922 error1
-;   50  1929 error1
-;   51  1936 printLine
-;   52  1960 skipBlank
-;   53  1970 digit
-;   54  1976 getDigit
-;   55  1985 letterE
-;   56  1993 getName
-;   57  2014 searchLabel
-;   58  2026 error1
-;   59  2033 strcpy
-;   60  2040 errorexit
-;   61  2050 errorexit
-;   62  2080 eqstr
-;   63  2086 strlen
-;   64  2107 storeLabel
-;   65  2118 getTokeType
-;   66  2130 lookCode
-;   67  2139 errorexit
-;   68  2149 errorexit
-;   69  2159 getTokeType
-;   70  2171 genCode8
-;   71  2180 skipBlank
-;   72  2190 isToken
-;   73  2198 genCode8
-;   74  2207 isToken
-;   75  2215 getTokeType
-;   76  2227 genCode16
-;   77  2237 isToken
-;   78  2245 errorexit
-;   79  2264 eqstr
-;   80  2282 eqstr
-;   81  2288 getTokeType
-;   82  2300 eqstr
-;   83  2306 getTokeType
-;   84  2318 eqstr
-;   85  2324 getTokeType
-;   86  2346 skipBlank
-;   87  2363 isToken
-;   88  2371 getTokeType
-;   89  2383 error1
-;   90  2390 prs
-;   91  2394 prc
-;   92  2407 getTokeType
-;   93  2419 error1
-;   94  2436 readRL
-;   95  2443 errorexit
-;   96  2453 errorexit
-;   97  2463 ifEOL
-;   98  2477 readRL
-;   99  2513 digit
-;  100  2519 letterE
-;  101  2546 digit
-;  102  2566 alnumE
-;  103  2573 errorexit
-;  104  2583 strcpy
-;  105  2590 toupper
-;  106  2606 strlen
-;  107  2613 strlen
-;  108  2620 eqstr
-;  109  2626 eqstr
-;  110  2632 eqstr
-;  111  2638 eqstr
-;  112  2644 eqstr
-;  113  2650 eqstr
-;  114  2656 eqstr
-;  115  2662 eqstr
-;  116  2668 eqstr
-;  117  2674 eqstr
-;  118  2680 eqstr
-;  119  2686 eqstr
-;  120  2692 eqstr
-;  121  2698 eqstr
-;  122  2704 eqstr
-;  123  2710 eqstr
-;  124  2716 eqstr
-;  125  2722 eqstr
-;  126  2728 eqstr
-;  127  2734 eqstr
-;  128  2740 eqstr
-;  129  2746 eqstr
-;  130  2752 eqstr
-;  131  2758 eqstr
-;  132  2764 eqstr
-;  133  2770 eqstr
-;  134  2776 eqstr
-;  135  2782 eqstr
-;  136  2788 eqstr
-;  137  2794 eqstr
-;  138  2814 prs
-;  139  2818 printhex16
-;  140  2829 prs
-;  141  2833 prc
-;  142  2837 printhex8a
-;  143  2848 prc
-;  144  2852 prs
-;  145  2856 prscomment
-;  146  2873 writetty
-;  147  2882 writetty
-;  148  2891 fputcR
-;  149  2913 prc
-;  150  2929 prc
-;  151  2950 printhex4
-;  152  2960 printhex4
-;  153  2982 prc
-;  154  3004 printhex8a
-;  155  3015 printhex8a
-;  156  3040 printIntU
-;  157  3050 prc
-;  158  3063 prs
-;  159  3067 prs
-;  160  3071 prs
-;  161  3075 prs
-;  162  3091 error1
-;  163  3098 end1
-;  164  3116 error1
-;  165  3133 error1
-;  166  3150 error1
-;  167  3167 error1
-;  168  3185 error1
-;  169  3205 error1
-;  170  3224 error1
-;  171  3243 error1
-;  172  3261 error1
-;  173  3280 error1
-;  174  3299 error1
-;  175  3315 errorexit
-;  176  3336 errorexit
-;  177  3351 getarg
-;  178  3358 parse
-;  179  3364 epilog
-;  180  3371 end1
-;  181  3395 cputs
-;  182  3401 cputs
-;  183  3407 exitR
-;  184  3413 toupper
-;  185  3421 strcpy
-;  186  3428 strcat1
-;  187  3436 strcpy
-;  188  3443 strcat1
-;  189  3451 strcpy
-;  190  3458 strcat1
-;  191  3466 openR
-;  192  3472 cputs
-;  193  3478 cputs
-;  194  3484 exitR
-;  195  3490 creatR
-;  196  3497 cputs
-;  197  3503 cputs
-;  198  3509 exitR
-;  199  3515 creatR
-;  200  3522 cputs
-;  201  3528 cputs
-;  202  3534 exitR
-;  203  3540 prs
-;  204  3544 prs
-;  205  3548 prs
-;  206  3552 prs
-;  207  3556 prs
-;  208  3560 prs
-;  209  3564 prs
-;  210  3568 prs
-;  211  3572 prs
-;  212  3589 prs
-;  213  3593 printIntU
-;  214  3603 prs
-;  215  3607 prs
-;  216  3611 prs
-;  217  3615 prs
-;  218  3619 printIntU
-;  219  3629 prs
-;  220  3633 fputcR
-;  221  3647 fcloseR
-;  222  3655 fcloseR
-;  223  3663 fcloseR
-;  224  3671 exitR
-;  225  3693 genCode8
-;  226  3715 genCode8
-;  227  3735 genCode8
-;  228  3755 errorexit
-;  229  3777 genCode8
-;  230  3786 genCode8
-;  231  3811 genCode8
-;  232  3820 genCode8
-;  233  3829 genCode16
-;  234  3852 genCode16
-;  235  3862 genCode8
-;  236  3881 getTokeType
-;  237  3893 getCodeSize
-;  238  3905 getCodes
-;  239  3914 genCode8
-;  240  3923 getOpL
-;  241  3930 checkOpL
-;  242  3939 genCode2
-;  243  3948 getTokeType
-;  244  3960 implerror
-;  245  3970 genCodeW
-;  246  3979 writeEA
-;  247  3987 check2Ops
-;  248  3997 reg16error
-;  249  4008 addrerror
-;  250  4018 genCode8
-;  251  4027 genCode8
-;  252  4036 writeEA
-;  253  4044 check2Ops
-;  254  4054 setsflag
-;  255  4063 genCodeW
-;  256  4072 genImmediate
-;  257  4085 genCodeW
-;  258  4094 writeEA
-;  259  4102 genCode8
-;  260  4111 genImmediate
-;  261  4124 genCodeW
-;  262  4133 writeEA
-;  263  4141 genCodeW
-;  264  4150 writeEA
-;  265  4158 syntaxerror
-;  266  4170 check2Ops
-;  267  4180 genCode2
-;  268  4189 genImmediate
-;  269  4202 genCodeW
-;  270  4211 writeEA
-;  271  4219 genImmediate
-;  272  4232 regmemerror
-;  273  4244 ChangeDirection
-;  274  4260 reg16error
-;  275  4271 genCode2
-;  276  4280 writeEA
-;  277  4288 genCodeW
-;  278  4297 genCode16
-;  279  4307 genCodeW
-;  280  4316 genCode16
-;  281  4326 genCodeW
-;  282  4335 writeEA
-;  283  4343 ChangeDirection
-;  284  4359 genCodeW
-;  285  4368 writeEA
-;  286  4376 syntaxerror
-;  287  4388 genCode8
-;  288  4397 genCode16
-;  289  4407 genCode8
-;  290  4416 getOpL
-;  291  4423 setsflag
-;  292  4432 genCode2
-;  293  4441 genCode8
-;  294  4450 genCode16
-;  295  4460 error1
-;  296  4467 genCode8
-;  297  4476 genCode8
-;  298  4485 checkOpL
-;  299  4494 reg16error
-;  300  4505 genCode2
-;  301  4514 genCode8
-;  302  4523 writeEA
-;  303  4531 syntaxerror
-;  304  4543 error1
-;  305  4550 error1
-;  306  4576 putch
-;  307  4644 strcpy
-;  308  4659 DosInt
-;  309  4675 DosInt
-;  310  4698 DosInt
-;  311  4717 DosInt
-;  312  4751 writetty
-;  313  4760 writetty
-;Input: AS.C, List: AS.S,  Lines:  252
-;Glob. variables:  193 max.:  200
+;    0  1367 implerror
+;    1  1377 segregerror
+;    2  1389 setwflag
+;    3  1398 error1
+;    4  1405 error1
+;    5  1422 get2Ops
+;    6  1430 addrerror
+;    7  1440 invaloperror
+;    8  1453 immeerror
+;    9  1463 addrerror
+;   10  1473 invaloperror
+;   11  1486 setwflag
+;   12  1503 getOpL
+;   13  1510 need
+;   14  1515 getOpR
+;   15  1529 getOpR
+;   16  1543 getOp1
+;   17  1550 isToken
+;   18  1558 getMEM
+;   19  1565 invaloperror
+;   20  1578 error1
+;   21  1592 testReg
+;   22  1600 searchLabel
+;   23  1612 error1
+;   24  1628 getTokeType
+;   25  1640 getOp1
+;   26  1647 syntaxerror
+;   27  1659 getIndReg2
+;   28  1670 getIndReg1
+;   29  1681 isToken
+;   30  1689 getTokeType
+;   31  1701 numbererror
+;   32  1713 isToken
+;   33  1721 isToken
+;   34  1729 errorexit
+;   35  1750 indexerror
+;   36  1761 indexerror
+;   37  1785 indexerror
+;   38  1796 indexerror
+;   39  1816 gen66h
+;   40  1835 error1
+;   41  1848 getLine
+;   42  1856 getTokeType
+;   43  1868 storeLabel
+;   44  1879 getTokeType
+;   45  1891 lookCode
+;   46  1900 process
+;   47  1908 getVariable
+;   48  1920 skipRest
+;   49  1929 error1
+;   50  1936 error1
+;   51  1943 printLine
+;   52  1967 skipBlank
+;   53  1977 digit
+;   54  1983 getDigit
+;   55  1992 letterE
+;   56  2000 getName
+;   57  2021 searchLabel
+;   58  2033 error1
+;   59  2040 strcpy
+;   60  2047 errorexit
+;   61  2057 errorexit
+;   62  2087 eqstr
+;   63  2093 strlen
+;   64  2114 storeLabel
+;   65  2125 getTokeType
+;   66  2137 lookCode
+;   67  2146 errorexit
+;   68  2156 errorexit
+;   69  2166 getTokeType
+;   70  2178 genCode8
+;   71  2187 skipBlank
+;   72  2197 isToken
+;   73  2205 genCode8
+;   74  2214 isToken
+;   75  2222 getTokeType
+;   76  2234 genCode16
+;   77  2244 isToken
+;   78  2252 errorexit
+;   79  2271 eqstr
+;   80  2289 eqstr
+;   81  2295 getTokeType
+;   82  2307 eqstr
+;   83  2313 getTokeType
+;   84  2325 eqstr
+;   85  2331 getTokeType
+;   86  2353 skipBlank
+;   87  2370 isToken
+;   88  2378 getTokeType
+;   89  2390 error1
+;   90  2397 prs
+;   91  2401 prc
+;   92  2414 getTokeType
+;   93  2426 error1
+;   94  2443 readRL
+;   95  2450 errorexit
+;   96  2460 errorexit
+;   97  2470 ifEOL
+;   98  2484 readRL
+;   99  2520 digit
+;  100  2526 letterE
+;  101  2553 digit
+;  102  2573 alnumE
+;  103  2580 errorexit
+;  104  2590 strcpy
+;  105  2597 toupper
+;  106  2613 strlen
+;  107  2620 strlen
+;  108  2627 eqstr
+;  109  2633 eqstr
+;  110  2639 eqstr
+;  111  2645 eqstr
+;  112  2651 eqstr
+;  113  2657 eqstr
+;  114  2663 eqstr
+;  115  2669 eqstr
+;  116  2675 eqstr
+;  117  2681 eqstr
+;  118  2687 eqstr
+;  119  2693 eqstr
+;  120  2699 eqstr
+;  121  2705 eqstr
+;  122  2711 eqstr
+;  123  2717 eqstr
+;  124  2723 eqstr
+;  125  2729 eqstr
+;  126  2735 eqstr
+;  127  2741 eqstr
+;  128  2747 eqstr
+;  129  2753 eqstr
+;  130  2759 eqstr
+;  131  2765 eqstr
+;  132  2771 eqstr
+;  133  2777 eqstr
+;  134  2783 eqstr
+;  135  2789 eqstr
+;  136  2795 eqstr
+;  137  2801 eqstr
+;  138  2821 prs
+;  139  2825 printhex16
+;  140  2836 prs
+;  141  2840 prc
+;  142  2844 printhex8a
+;  143  2855 prc
+;  144  2859 prs
+;  145  2863 prscomment
+;  146  2880 writetty
+;  147  2889 writetty
+;  148  2898 fputcR
+;  149  2920 prc
+;  150  2936 prc
+;  151  2957 printhex4
+;  152  2967 printhex4
+;  153  2989 prc
+;  154  3011 printhex8a
+;  155  3022 printhex8a
+;  156  3047 printIntU
+;  157  3057 prc
+;  158  3070 prs
+;  159  3074 prs
+;  160  3078 prs
+;  161  3082 prs
+;  162  3098 error1
+;  163  3105 end1
+;  164  3123 error1
+;  165  3140 error1
+;  166  3157 error1
+;  167  3174 error1
+;  168  3192 error1
+;  169  3212 error1
+;  170  3231 error1
+;  171  3250 error1
+;  172  3268 error1
+;  173  3287 error1
+;  174  3306 error1
+;  175  3322 errorexit
+;  176  3343 errorexit
+;  177  3358 getarg
+;  178  3365 parse
+;  179  3371 epilog
+;  180  3378 end1
+;  181  3402 cputs
+;  182  3408 cputs
+;  183  3414 exitR
+;  184  3420 toupper
+;  185  3428 strcpy
+;  186  3435 strcat1
+;  187  3443 strcpy
+;  188  3450 strcat1
+;  189  3458 strcpy
+;  190  3465 strcat1
+;  191  3473 openR
+;  192  3479 cputs
+;  193  3485 cputs
+;  194  3491 exitR
+;  195  3497 creatR
+;  196  3504 cputs
+;  197  3510 cputs
+;  198  3516 exitR
+;  199  3522 creatR
+;  200  3529 cputs
+;  201  3535 cputs
+;  202  3541 exitR
+;  203  3547 prs
+;  204  3551 prs
+;  205  3555 prs
+;  206  3559 prs
+;  207  3563 prs
+;  208  3567 prs
+;  209  3571 prs
+;  210  3575 prs
+;  211  3579 prs
+;  212  3596 prs
+;  213  3600 printIntU
+;  214  3610 prs
+;  215  3614 prs
+;  216  3618 prs
+;  217  3622 prs
+;  218  3626 printIntU
+;  219  3636 prs
+;  220  3640 fputcR
+;  221  3654 fcloseR
+;  222  3662 fcloseR
+;  223  3670 fcloseR
+;  224  3678 exitR
+;  225  3700 genCode8
+;  226  3722 genCode8
+;  227  3742 genCode8
+;  228  3762 errorexit
+;  229  3784 genCode8
+;  230  3793 genCode8
+;  231  3818 genCode8
+;  232  3827 genCode8
+;  233  3836 genCode16
+;  234  3859 genCode16
+;  235  3869 genCode8
+;  236  3888 getTokeType
+;  237  3900 getCodeSize
+;  238  3912 getCodes
+;  239  3921 genCode8
+;  240  3930 getOpL
+;  241  3937 checkOpL
+;  242  3946 genCode2
+;  243  3955 getTokeType
+;  244  3967 implerror
+;  245  3977 genCodeW
+;  246  3986 writeEA
+;  247  3994 check2Ops
+;  248  4004 reg16error
+;  249  4015 addrerror
+;  250  4025 genCode8
+;  251  4034 genCode8
+;  252  4043 writeEA
+;  253  4051 check2Ops
+;  254  4061 setsflag
+;  255  4070 genCodeW
+;  256  4079 genImmediate
+;  257  4092 genCodeW
+;  258  4101 writeEA
+;  259  4109 genCode8
+;  260  4118 genImmediate
+;  261  4131 genCodeW
+;  262  4140 writeEA
+;  263  4148 genCodeW
+;  264  4157 writeEA
+;  265  4165 syntaxerror
+;  266  4177 check2Ops
+;  267  4187 genCode2
+;  268  4196 genImmediate
+;  269  4209 genCodeW
+;  270  4218 writeEA
+;  271  4226 genImmediate
+;  272  4239 regmemerror
+;  273  4251 ChangeDirection
+;  274  4267 reg16error
+;  275  4278 genCode2
+;  276  4287 writeEA
+;  277  4295 genCodeW
+;  278  4304 genCode16
+;  279  4314 genCodeW
+;  280  4323 genCode16
+;  281  4333 genCodeW
+;  282  4342 writeEA
+;  283  4350 ChangeDirection
+;  284  4366 genCodeW
+;  285  4375 writeEA
+;  286  4383 syntaxerror
+;  287  4395 genCode8
+;  288  4404 genCode16
+;  289  4414 genCode8
+;  290  4423 getOpL
+;  291  4430 setsflag
+;  292  4439 genCode2
+;  293  4448 genCode8
+;  294  4457 genCode16
+;  295  4467 error1
+;  296  4474 genCode8
+;  297  4483 genCode8
+;  298  4492 checkOpL
+;  299  4501 reg16error
+;  300  4512 genCode2
+;  301  4521 genCode8
+;  302  4530 writeEA
+;  303  4538 syntaxerror
+;  304  4550 genCode8
+;  305  4559 genCode8
+;  306  4568 genCode8
+;  307  4577 error1
+;  308  4584 error1
+;  309  4610 putch
+;  310  4678 strcpy
+;  311  4693 DosInt
+;  312  4709 DosInt
+;  313  4732 DosInt
+;  314  4751 DosInt
+;  315  4785 writetty
+;  316  4794 writetty
+;Input: AS.C, List: AS.S,  Lines:  266
+;Glob. variables:  194 max.:  200
 ;Local variables:    3 max.:  100, in 'searchLabel'
 ;Functions      :   83 max.:  300
-;Calls          :  314 max.: 2000, NameField: 4792 max.:    65535
+;Calls          :  317 max.: 2000, NameField: 4826 max.:    65535
 ;Code until     :25998 max.: 30000, free: 4002
 ;Data (HeapEnd) :33595, resting stacksize: 31940
 ;Max. Const in 'testReg' :  658 max. 3000, free: 2342

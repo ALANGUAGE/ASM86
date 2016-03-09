@@ -24,6 +24,8 @@ char I_LODSW[]={'L','O','D','S','W',0,  1,0xAD,   0xF1};
 char I_SCASB[]={'S','C','A','S','B',0,  1,0xAE,   0xF1};
 char I_SCASW[]={'S','C','A','S','W',0,  1,0xAF,   0xF1};
 char I_LEAVE[]={'L','E','A','V','E',0,  1,0xC9,   0xF1};
+char I_INT3[]= {'I','N','T','3',0,      1,0xCC,   0xF1};
+char I_INTO[]= {'I','N','T','O',0,      1,0xCE,   0xF1};
 char I_IRET[]= {'I','R','E','T',0,      1,0xCF,   0xF1};
 char I_XLAT[]= {'X','L','A','T',0,      1,0xD7,   0xF1};
 char I_LOCK[]= {'L','O','C','K',0,      1,0xF0,   0xF1};
@@ -115,7 +117,6 @@ char I_SHR[]=  {'S','H','R',0,          11, 6,    0xF1};
 char I_SAR[]=  {'S','A','R',0,          11, 7,    0xF1};
 //  12: int
 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
-char I_INTO[]= {'I','N','T','O',0,      12,0xCE,   0xF1};
 //  14: in/out
 /*char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};

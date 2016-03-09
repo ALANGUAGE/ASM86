@@ -201,8 +201,10 @@
 02F1 68 FF 7F       push 32767          ;68 FF 7F
 02F4 68 00 80       push 32768          ;68 00 80
 02F7 68 FF FF       push 65535          ;68 FF FF
-;***** next line ERROR: pop cs not allowed, Symbol: cs
-02FA 0F             pop cs ;ERROR  
-02FB 90             nop
-02FC                
-;END Errors: 1 ***ERROR*** , Output: TE.LST, COM file 508 bytes.
+02FA                
+02FA CD 21          int 33
+02FC CC             int 3
+02FD CC             int3
+02FE CE             into
+02FF                
+;END Errors: 0, Output: TE.LST, COM file 511 bytes.

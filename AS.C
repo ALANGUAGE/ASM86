@@ -218,12 +218,26 @@ int process() {
         syntaxerror();
         return;        
     }
+    
+    if (CodeType == 12) {//int, int3
+        if (TokeType == DIGIT) {
+            if (SymbolInt == 3) {
+                genCode8(Code2);
+                return;   
+            }
+            else {
+                genCode8(Code1);
+                genCode8(SymbolInt);
+                return;   
+            }
+        }
+    }
        
     if (CodeType==101) {// ORG nn
         if (TokeType != DIGIT) error1("only digit allowed");
         PC=SymbolInt;
         return;
     }
-    error1("Command not implemented");
+    error1("Command not implemented or syntax error");
 }    
            
