@@ -188,8 +188,7 @@
 02D8 1E             push ds             ;1E  
 02D9 0F A0          push fs             ;0F A0
 02DB 0F A8          push gs             ;0F A8
-02DD 07             pop es              ;07  
-02DE                ;pop cs ;ERROR          
+02DD 07             pop es              ;07          
 02DE 17             pop ss              ;17  
 02DF 1F             pop ds              ;1F  
 02E0 0F A1          pop fs              ;0F A1
@@ -202,5 +201,8 @@
 02F1 68 FF 7F       push 32767          ;68 FF 7F
 02F4 68 00 80       push 32768          ;68 00 80
 02F7 68 FF FF       push 65535          ;68 FF FF
-02FA                
-;END Errors: 0, Output: TE.LST, COM file 506 bytes.
+;***** next line ERROR: pop cs not allowed, Symbol: cs
+02FA 0F             pop cs ;ERROR  
+02FB 90             nop
+02FC                
+;END Errors: 1 ***ERROR*** , Output: TE.LST, COM file 508 bytes.

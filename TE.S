@@ -186,8 +186,7 @@ push ss             ;16
 push ds             ;1E  
 push fs             ;0F A0
 push gs             ;0F A8
-pop es              ;07  
-;pop cs ;ERROR          
+pop es              ;07          
 pop ss              ;17  
 pop ds              ;1F  
 pop fs              ;0F A1

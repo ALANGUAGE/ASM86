@@ -189,8 +189,10 @@ int process() {
             }   
         }
         if (R1Type == SEGREG) {
+            if (Code1 == 0x58) {
+                if (R1No == 1) error1("pop cs not allowed");   
+            }
             c = R1No <<3;
-            //todo check pop cs not allowed
             if (R1No > 3) {//FS, GS
                 c += 122;
                 genCode8(0x0F);
