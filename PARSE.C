@@ -1,7 +1,11 @@
 int parse() {
-  LabelNamePtr= &LabelNames;
+  LabelNamePtr= &LabelNames;    
+  
   do {
-    PCStart=PC; OpSize=0; OpPrintIndex=0; PrintR=' ';
+    PCStart=PC; 
+    OpSize=0;
+    OpPrintIndex=0; 
+    PrintRA=' ';
     getLine();
     InputPtr = &InputBuf;
     getTokeType();//getCode in SymbolUpper,set TokeType,isLabel by getName

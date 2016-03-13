@@ -56,16 +56,24 @@ unsigned int imme;      //immediate         0-8 bytes
 char OpPos[OPMAXLEN];   //array for one opcode to list
 int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
-char PrintR;            //print 'R' if relocative
+char PrintRA;           //print r8, R16, A16 (relocative, absolute)
 
 #define LABELNAMESMAX 969//next number - 31
 char LabelNames[1000];  //space for names of all labels
-char *LabelNamePtr;     // first free position
+char *LabelNamePtr;     //first free position
 #define LABELADRMAX 100
 unsigned int LabelAddr[LABELADRMAX];//addr of each label
 int LabelMaxIx=0;       //actual number of stored labels
 int LabelIx;            //actual number of just searched label
 
+#define JMPCALLMAX 500  //max. jmp and call
+#define JMPCALLNAMESMAX 1969//next number - 31
+char JmpCallNames[2000];//space for names of jmp, call
+char JmpCallNamePtr;    //first free position 
+unsigned int JmpCallAddr[JMPCALLMAX];//addr to be fixed
+char JmpCallRelAbs      [JMPCALLMAX];//r8, R16, A16
+int JmpCallIx;          //actual number of jmp, call
+ 
 #define FILEBINMAX 2000 //next number - max. oplength
 char FileBin  [FILEBINMAX];//output binary file
 unsigned int BinLen=0;  //length of binary file

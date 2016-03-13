@@ -4,19 +4,20 @@ int printLine() {
     printhex16(PCStart);
     if (OpPrintIndex == 0) prs("                ");
     else {
-        prc(PrintR);
+//        prc(' ');
         i=0;
         do {
             c=OpPos[i];
-            printhex8a(c); 
             prc(' ');
+            printhex8a(c); 
             i++;
         } while (i < OpPrintIndex);
-        do {// fill rest with blank
+        while (i < OPMAXLEN) {// fill rest with blank
             prs("   ");
             i++;
-        } while (i < OPMAXLEN);
+        }
     }
+    prc(PrintRA);
     prscomment(InputBuf);
 }
 int prc(unsigned char c) {//print char 

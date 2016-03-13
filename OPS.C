@@ -119,10 +119,15 @@ int setwflag() {//word size, bit 0
 int setsflag() {//sign-extend, bit 1, only PUSH, ALU, IMUL3 
     unsigned int ui;    
     sflag=2;   
-    ui = imme & 0xFF80; 
-    if(ui != 0) sflag = 0;    //vvv
+    ui = imme & 0xFF80;//is greater than signed 127? 
+    if(ui != 0) sflag = 0;
     if (OpSize == BYTE) {
         if (imme > 255) error1("too big for byte r/m");
         sflag=0;//byte reg does not need sign extended   
     }
+}
+int checkConstSize(unsigned int ui) {//vvv    
+    if (ui > 127   ) return 0;//is near; return sflag
+    if (ui < 0xFF80) return 0;//-128dez    
+    return 2;// is short        
 }

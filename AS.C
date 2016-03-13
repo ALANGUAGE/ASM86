@@ -167,6 +167,36 @@ int process() {
         return;
     }    
     
+    if (CodeType == 6) {//Jcc short jumps       
+
+
+        if (TokeType == ALNUME) {
+            LabelIx=searchLabel();
+            if (LabelIx) {
+                disp=LabelAddr[LabelIx];
+                disp = disp - PC;
+                if (checkConstSize(disp) ) {
+                    genCode2(Code1, 0x70);       
+                    disp -= 2; 
+                    genCode8(disp);   
+                } else {     
+                    genCode8(0x0F);
+                    genCode2(Code1, 0x80);       
+                    disp -= 4; 
+                    genCode16(disp);                       
+                }    
+            }
+            else {//jump forward
+                genCode8(0x0F);
+                genCode2(Code1, 0x80);
+                genCode16(0);
+                PrintRA='R';
+                
+            }   
+        }
+        return;   
+    }
+    
     if (CodeType ==  8) {//ret,retf
         if (TokeType == DIGIT) {
             genCode8(Code2);
@@ -202,7 +232,6 @@ int process() {
             genCode8(c);  
             return; 
         }  
-  
         checkOpL();    
         if (R1Type == BYTE) reg16error();
         if (R1Type == WORD) {
@@ -214,22 +243,15 @@ int process() {
             writeEA(Code3);
             return;   
         }
-      
         syntaxerror();
         return;        
     }
     
-    if (CodeType == 12) {//int, int3
-        if (TokeType == DIGIT) {
-            if (SymbolInt == 3) {
-                genCode8(Code2);
-                return;   
-            }
-            else {
-                genCode8(Code1);
-                genCode8(SymbolInt);
-                return;   
-            }
+    if (CodeType == 12) {//int
+        if (TokeType == DIGIT) {            
+            genCode8(Code1);
+            genCode8(SymbolInt);
+            return;   
         }
     }
     
@@ -246,7 +268,7 @@ int process() {
     }
        
     if (CodeType==101) {// ORG nn
-        if (TokeType != DIGIT) error1("only digit allowed");
+        if (TokeType != DIGIT) numbererror();
         PC=SymbolInt;
         return;
     }

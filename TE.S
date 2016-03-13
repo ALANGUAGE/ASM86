@@ -199,11 +199,20 @@ push 256            ;68 00 01
 push 32767          ;68 FF 7F
 push 32768          ;68 00 80
 push 65535          ;68 FF FF   
-int 33
-int 3
-int3
-into
+L2: int 33          ;CD 21
+int 3               ;CD 03
+int3                ;CC
+into                ;CE
 enter 0,0           ;C8 0000 00
 enter 256,0         ;C8 0001 00
 enter 32768,255     ;C8 0080 FF
-ENTER 1234,16
+ENTER 1234,16       ;C8 D204 10     
+L1:
+jo L1               ;70 FE
+JG L1               ;7F FC
+jc L2               ;72 E4    
+jc VB               ;0F 82 EA FD   
+jno VA              ;0F 81 E4 FD
+jc L5               ;0F 82 04 00
+jo L5               ;0F 80 00 00
+L5:

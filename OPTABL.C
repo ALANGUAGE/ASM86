@@ -129,13 +129,13 @@ char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};*/
 //  15: xchg
 char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0x90,0xF1};
 //  16: loop, jcxz
-char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
+/*char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
 char I_LOOPNE[]={'L','O','O','P','N','E',0, 16,0xE0,0xF1};
 char I_LOOPZ[]={'L','O','O','P','Z',0,      16,0xE1,0xF1};
 char I_LOOPE[]={'L','O','O','P','E',0,      16,0xE1,0xF1};
 char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
-char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
+char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};*/
 //  30: enter
 char I_ENTER[]={'E','N','T','E','R',0,  30,       0xF1};
 // 100: directives
