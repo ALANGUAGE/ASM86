@@ -72,7 +72,7 @@ char JmpCallNames[2000];//space for names of jmp, call
 char JmpCallNamePtr;    //first free position 
 unsigned int JmpCallAddr[JMPCALLMAX];//addr to be fixed
 char JmpCallRelAbs      [JMPCALLMAX];//r8, R16, A16
-int JmpCallIx;          //actual number of jmp, call
+int JmpCallMaxIx;       //actual number of jmp, call
  
 #define FILEBINMAX 2000 //next number - max. oplength
 char FileBin  [FILEBINMAX];//output binary file
