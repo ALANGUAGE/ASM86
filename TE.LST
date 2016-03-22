@@ -217,8 +217,9 @@
 031A 0F 81 E4 FD    jno VA              ;0F 81 E4 FD
 031E 0F 82 00 00   Rjc L5               ;0F 82 04 00
 0322 0F 80 00 00   Rjo L6               ;0F 80 01 00
-0326                L5:
-0326 90             nop
-0327                L6:
-0327                
-;END open jmp/call: 2 L5[0000] L6[0322] [0326], Errors: 0, Output: TE.LST, TE.COM= 551 bytes
+0326 90             L5:  nop            ;90
+0327 0F 82 00 00   RL6:  jc L7          ;0F 82 02 00
+032B 31 C0          xor ax, ax          ;31 C0
+032D                L7:  
+032D                
+;END open jmp/call: 3 L5[0322] L6[0326] L7[032B], Errors: 0, Output: TE.LST, TE.COM= 557 bytes

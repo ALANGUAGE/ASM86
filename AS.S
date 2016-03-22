@@ -234,7 +234,7 @@ PrintRA db 0
 ;-60 
 
 
-;-61 #define LABELNAMESMAX 969//next number - 31
+;-61 #define LABELNAMESMAX 969//next number - SYMBOLMAX
 
 
 ;-62 char LabelNames[1000];  //space for names of all labels
@@ -252,11 +252,11 @@ LabelNamePtr dw 0
 
 LabelAddr resw 100
 
-;-66 int LabelMaxIx=0;       //actual number of stored labels. 1 to LABELADRMAX-1
+;-66 int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
 
 LabelMaxIx dw 0
 
-;-67 int LabelIx;            //actual number of just searched label
+;-67 int LabelIx;            //actual # of just searched label
 
 LabelIx dw 0
 
@@ -266,7 +266,7 @@ LabelIx dw 0
 ;-69 #define JMPCALLMAX 500  //max. jmp and call
 
 
-;-70 #define JMPCALLNAMESMAX 1969//next number - 31
+;-70 #define JMPCALLNAMESMAX 1969//next number - SYMBOLMAX
 
 
 ;-71 char JmpCallNames[2000];//space for names of jmp, call
@@ -285,14 +285,14 @@ JmpCallAddr resw 500
 
 JmpCallRelAbs resb 500
 
-;-75 int JmpCallMaxIx=0;     //actual number of jmp, call. 1 to JMPCALLMAX-1
+;-75 int JmpCallMaxIx=0;     //actual # of jmp, call. 1 to JMPCALLMAX-1
 
 JmpCallMaxIx dw 0
 
 ;-76  
 
 
-;-77 #define FILEBINMAX 2000 //next number - max. oplength
+;-77 #define FILEBINMAX 2000 
 
 
 ;-78 char FileBin  [FILEBINMAX];//output binary file
@@ -4964,7 +4964,7 @@ fixJmpCall:  ; *** PROC ***
 ;-44     int i;  unsigned int hex;  char *p;
 
 
-;-45     i=0;     
+;-45     i=1;     
 
 ;Function : fixJmpCall, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
@@ -4972,7 +4972,7 @@ fixJmpCall:  ; *** PROC ***
 ;  201 var unsg word    44 NULL bp-4    hex
 ;  202 ptr sign byte    44 NULL bp-6    p;
  ENTER  6,0
- mov eax, 0
+ mov eax, 1
  mov word [bp-2], ax
 
 ;-46     prs("\n;END open jmp/call: "); 
@@ -4987,7 +4987,7 @@ fixJmpCall:  ; *** PROC ***
  call printIntU
  add  sp, 2
 
-;-48     p = &JmpCallNames;
+;-48     p = &JmpCallNames;   
 
  mov ax, JmpCallNames
  mov word [bp-6], ax
@@ -6594,11 +6594,11 @@ process:  ; *** PROC ***
  call searchLabel
  mov word [LabelIx], ax
 
-;-175             if (LabelIx) {//vvv
+;-175             if (LabelIx > 0) {
 
  mov ax, [LabelIx]
- or  al, al
- je @@process267
+ cmp ax, 0
+ jle @@process267
 
 ;-176                 disp=LabelAddr[LabelIx];
 

@@ -42,10 +42,10 @@ int getarg() {
 
 int fixJmpCall() {
     int i;  unsigned int hex;  char *p;
-    i=0;     
+    i=1;     
     prs("\n;END open jmp/call: "); 
     printIntU(JmpCallMaxIx);      
-    p = &JmpCallNames;
+    p = &JmpCallNames;   
     while (i <= JmpCallMaxIx) {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;

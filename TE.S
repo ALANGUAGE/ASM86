@@ -215,6 +215,7 @@ jc VB               ;0F 82 EA FD
 jno VA              ;0F 81 E4 FD
 jc L5               ;0F 82 04 00
 jo L6               ;0F 80 01 00
-L5:
-nop
-L6:
+L5:  nop            ;90
+L6:  jc L7          ;0F 82 02 00
+xor ax, ax          ;31 C0
+L7:  
