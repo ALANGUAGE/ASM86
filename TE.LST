@@ -1,8 +1,8 @@
 ;AS.C V0.07, Source: TE.S, Output: TE.LST, TE.COM
 
-0000                 ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT     
-0000                 ;1=IMM, 2=REG, 3=ADR, 4=MEM   
-0000                 org 256            ;NASM
+0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT     
+0000                ;1=IMM, 2=REG, 3=ADR, 4=MEM   
+0000                org 256            ;NASM
 0100 F6 D0          not al             ;F6 D0       
 0102 08 00          VA dw 8            ;08 00   
 0104 41 42 06       VB db "AB",6       ;41 42 06                 
@@ -21,8 +21,8 @@
 011D FE 4F 03       dec byte [bx+3]    ;FE 4F 03
 0120 FE 8F 02 01    dec byte [bx+258]  ;FE 8F 02 01
 0124 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
-0127                 ;dec word [cx];inv effective adr
-0127                 ;inc word  VA ;inv comb opcode+operands
+0127                ;dec word [cx];inv effective adr
+0127                ;inc word  VA ;inv comb opcode+operands
 0127 FE 06 02 01    inc byte [VA]      ;FE 06 04 00
 012B FF 06 04 01    inc word [VB]      ;FF 06 06 00
 012F FF 06 08 01    inc word [VB+4]    ;FF 06 0A 00
@@ -70,7 +70,7 @@
 01AB F6 79 FC       idiv byte [bx+di-4] ;F6 79 FC     
 01AE F6 3E 02 01    idiv byte [VA]      ;F6 3E 02 00 
 01B2 F7 3E 02 01    idiv word [VA]      ;F7 3E 02 00 
-01B6                 ;acc, rm           
+01B6                ;acc, rm           
 01B6 F6 E8          imul al             ;F6 E8    
 01B8 F7 E8          imul ax             ;F7 E8    
 01BA F7 E9          imul cx             ;F7 E9    
@@ -79,17 +79,17 @@
 01C2 F6 69 FC       imul byte [bx+di-4] ;F6 69 FC  
 01C5 F6 2E 02 01    imul byte [VA]      ;F6 2E 01 00 
 01C9 F7 2E 02 01    imul word [VA]      ;F7 2E 01 00 
-01CD                 
+01CD                
 01CD C4 01          les ax,  [bx+di]    ;C4 01
 01CF 0F B2 0E 02 01 lss cx, [VA]        ;0F B2 0E [0400]  
 01D4 C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC 
 01D7 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
 01DA 0F B5 81 02 01 lgs ax, [VA+bx+di]  ;0F B5 81 01 00
-01DF                 ;mov al, [bp-4]     ;8A 46 FC
-01DF                 ;mov al, [VB+bx]    ;8A 87 06 00           
-01DF                 
+01DF                ;mov al, [bp-4]     ;8A 46 FC
+01DF                ;mov al, [VB+bx]    ;8A 87 06 00           
+01DF                
 01DF 04 04          add al, 4           ;04 04
-01E1                 ;add al, 259      ;;;04 03 bounds
+01E1                ;add al, 259      ;;;04 03 bounds
 01E1 83 C0 04       add ax, 4           ;83 C0 04
 01E4 05 03 01       add ax, 259         ;05 03 01
 01E7 0C 04          or  al, 4           ;0C 04         
@@ -108,7 +108,7 @@
 0211 80 06 02 01 04 add byte [VA], 4    ;80 06 02 01 04
 0216 83 06 02 01 04 add word [VA], 4    ;83 06 02 01 04  
 021B 83 06 05 01 04 add word [VA+3],4   ;83 06 05 01 04   
-0220                 ;add word [VA+di]
+0220                ;add word [VA+di]
 0220 02 41 FC       add al, [bx+di-4]   ;02 41 FC    
 0223 01 C3          add bx, ax          ;01 C3
 0225 01 D8          add ax, bx          ;01 D8
@@ -121,7 +121,7 @@
 0233 01 01          add [bx+di], ax     ;01 01
 0235 02 01          add al, [bx+di]     ;02 01
 0237 03 01          add ax, [bx+di]     ;03 01    
-0239                 
+0239                
 0239 B0 00          mov al, 0           ;B0 00   
 023B B0 03          mov al, 3           ;B0 03   
 023D B0 7F          mov al, 127         ;B0 7F   
@@ -135,7 +135,7 @@
 0252 C6 06 02 01 03 mov byte [VA], 3    ;C6 06 02 00 03  
 0257 C7 06 02 01 03 mov word [VA], 3    ;C7 06 02 00 03 00
 025D C7 06 02 01 03 mov word [VA], 259  ;C7 06 02 00 03 01
-0263                 
+0263                
 0263 8C C0          mov ax, es          ;8C C0
 0265 8C C8          mov ax, cs          ;8C C8
 0267 8C D0          mov ax, ss          ;8C D0
@@ -174,7 +174,7 @@
 02BB 8A 08          mov cl, [bx+si]     ;8A 08  
 02BD 8A 80 02 01    mov al, [VA+bx+si]  ;8A 80 02 00
 02C1 8A 80 FE 00    mov al, [VA+bx+si-4];8A 80 FE FF     
-02C5                 
+02C5                
 02C5 50             push ax             ;50        
 02C6 57             push di             ;57        
 02C7 FF 36 02 01    push word [VA]      ;FF 36 02 00
@@ -209,14 +209,16 @@
 0304 C8 00 01 00    enter 256,0         ;C8 0001 00
 0308 C8 00 80 FF    enter 32768,255     ;C8 0080 FF
 030C C8 D2 04 10    ENTER 1234,16       ;C8 D204 10     
-0310                 L1:
+0310                L1:
 0310 70 FE          jo L1               ;70 FE
 0312 7F FC          JG L1               ;7F FC
 0314 72 E4          jc L2               ;72 E4    
 0316 0F 82 EA FD    jc VB               ;0F 82 EA FD   
 031A 0F 81 E4 FD    jno VA              ;0F 81 E4 FD
 031E 0F 82 00 00   Rjc L5               ;0F 82 04 00
-0322 0F 80 00 00   Rjo L5               ;0F 80 00 00
-0326                 L5:
-0326                 
-;END Errors: 0, Output: TE.LST, COM file 550 bytes.
+0322 0F 80 00 00   Rjo L6               ;0F 80 01 00
+0326                L5:
+0326 90             nop
+0327                L6:
+0327                
+;END open jmp/call: 2 L5[0000] L6[0322] [0326], Errors: 0, Output: TE.LST, TE.COM= 551 bytes

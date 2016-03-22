@@ -126,7 +126,7 @@ int setsflag() {//sign-extend, bit 1, only PUSH, ALU, IMUL3
         sflag=0;//byte reg does not need sign extended   
     }
 }
-int checkConstSize(unsigned int ui) {//vvv    
+int checkConstSize(unsigned int ui) {    
     if (ui > 127   ) return 0;//is near; return sflag
     if (ui < 0xFF80) return 0;//-128dez    
     return 2;// is short        

@@ -1,7 +1,11 @@
 int parse() {
     LabelNamePtr  = &LabelNames;    
     JmpCallNamePtr= &JmpCallNames;
-    do {
+    LabelMaxIx=0;    
+    JmpCallMaxIx=0;  
+    BinLen=0;
+    
+    do {//process a new line
         PCStart=PC; 
         OpSize=0;
         OpPrintIndex=0; 
@@ -23,7 +27,7 @@ int parse() {
             skipRest();
         }
         else if (TokeType >ALNUME) error1("Label or instruction expected");
-        else if (TokeType==DIGIT ) error1("No digit allowed @ start of line");
+        else if (TokeType==DIGIT ) error1("No digit allowed at start of line");
         printLine();
     } while (DOS_NoBytes != 0 );
 }
@@ -41,36 +45,36 @@ int getTokeType() {
 
 int storeJmpCall() {
     unsigned int i;
-    JmpCallNamePtr=strcpy(JmpCallNamePtr, Symbol);
-    JmpCallNamePtr++;
-    i = JmpCallNamePtr - &JmpCallNames;
-    if ( i >= JMPCALLNAMESMAX) errorexit("too long JmpCall names");
     JmpCallMaxIx++;
     if (JmpCallMaxIx >= JMPCALLMAX) errorexit("too many JmpCalls");
+    JmpCallNamePtr=strcpy(JmpCallNamePtr, Symbol);
+    JmpCallNamePtr++;
+    i = JmpCallNamePtr - &JmpCallNames;    
+    if ( i >= JMPCALLNAMESMAX) errorexit("too many JmpCall names");
     JmpCallAddr[JmpCallMaxIx] = PC;   
-    JmpCallRelAbs[JmpCallMaxIx] = '*';//set correct value r,R,A in CodeType 6+7             
+    JmpCallRelAbs[JmpCallMaxIx] = '*';
+    //set correct value r,R,A in CodeType 6+7             
 }
 
 int storeLabel() {
     unsigned int i;
+    LabelMaxIx++;
+    if (LabelMaxIx >= LABELADRMAX) errorexit("too many labels");
     if(searchLabel()) error1("duplicate label");
     LabelNamePtr=strcpy(LabelNamePtr, Symbol);
     LabelNamePtr++;
     i = LabelNamePtr - &LabelNames;
-    if (i >= LABELNAMESMAX) errorexit("too long label names");
-    LabelMaxIx++;
-    if (LabelMaxIx >= LABELADRMAX) errorexit("too many labels");
+    if (i >= LABELNAMESMAX) errorexit("too many label names");
     LabelAddr[LabelMaxIx] = PC;
 }   
 
 int searchLabel() {
-    int LIx; char *p; int j;
+    int LIx; char *p;
     p = &LabelNames;
     LIx = 1;
     while (LIx <= LabelMaxIx) {
-        if (eqstr(p, Symbol)) return LIx;//pos of label
-        j=strlen(p);
-        p=p+j; 
+        if (eqstr(p, Symbol)) return LIx;//pos of label                    
+        p=strlen(p) + p;                  
         p++; 
         LIx++;
     }

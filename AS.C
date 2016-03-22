@@ -172,7 +172,7 @@ int process() {
 
         if (TokeType == ALNUME) {
             LabelIx=searchLabel();
-            if (LabelIx) {
+            if (LabelIx > 0) {
                 disp=LabelAddr[LabelIx];
                 disp = disp - PC;
                 if (checkConstSize(disp) ) {
@@ -191,11 +191,14 @@ int process() {
                 genCode2(Code1, 0x80);
                 genCode16(0);
                 PrintRA='R';
-                
+                storeJmpCall();
+                JmpCallRelAbs[JmpCallMaxIx] = 'R';//rel16
             }   
         }
         return;   
     }
+
+
     
     if (CodeType ==  8) {//ret,retf
         if (TokeType == DIGIT) {

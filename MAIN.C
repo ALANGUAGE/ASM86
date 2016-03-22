@@ -1,6 +1,7 @@
 int main() {
     getarg(); 
     parse(); 
+    fixJmpCall();
     epilog(); 
     end1();
 }
@@ -39,15 +40,40 @@ int getarg() {
     prs("\n");
 }
 
+int fixJmpCall() {
+    int i;  unsigned int hex;  char *p;
+    i=0;     
+    prs("\n;END open jmp/call: "); 
+    printIntU(JmpCallMaxIx);      
+    p = &JmpCallNames;
+    while (i <= JmpCallMaxIx) {
+        strcpy(Symbol, p);
+        p = strlen(Symbol) + p;
+        p++;
+        prc(' '); 
+        prs(Symbol);
+        prc('[');  
+        hex = JmpCallAddr[i];
+        printhex16(hex);
+        prc(']');
+            
+            
+        i++;
+    }
+}
+
 int epilog() { 
-    int i; int j; char c;
-    prs("\n;END Errors: "); 
+    unsigned int i; char c;
+    prs("\, Errors: "); 
     printIntU(ErrorCount);
     if (ErrorCount) prs(" ***ERROR*** ");
-    prs(", Output: "); prs(namelst);
-    prs(", COM file "); 
+    prs(", Output: "); 
+    prs(namelst);
+    prs(", ");
+    prs(namebin); 
+    prs("= ");
     printIntU(BinLen); 
-    prs(" bytes.");
+    prs(" bytes");
 
     i=0;
     do {
@@ -58,8 +84,8 @@ int epilog() {
 }
 
 int end1(int n) {
-  fcloseR(asm_fd);
-  fcloseR(lst_fd);
-  fcloseR(bin_fd);
-  exitR(n);
+    fcloseR(asm_fd);
+    fcloseR(lst_fd);
+    fcloseR(bin_fd);
+    exitR(n);
 }

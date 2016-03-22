@@ -2,7 +2,7 @@ int printLine() {
     int i; char c;
     prs("\n"); 
     printhex16(PCStart);
-    if (OpPrintIndex == 0) prs("                ");
+    if (OpPrintIndex == 0) prs("               ");
     else {
 //        prc(' ');
         i=0;
