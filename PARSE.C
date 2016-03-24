@@ -65,7 +65,7 @@ int storeLabel() {
     LabelNamePtr++;
     i = LabelNamePtr - &LabelNames;
     if (i >= LABELNAMESMAX) errorexit("too many label names");
-    LabelAddr[LabelMaxIx] = PC;
+    LabelAddr[LabelMaxIx] = PC + Origin;
 }   
 
 int searchLabel() {

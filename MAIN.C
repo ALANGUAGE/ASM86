@@ -41,30 +41,53 @@ int getarg() {
 }
 
 int fixJmpCall() {
-    int i;  unsigned int hex;  char *p;
+    int i;  unsigned int hex;  char *p; int Ix; char c;
     i=1;     
     prs("\n;END open jmp/call: "); 
     printIntU(JmpCallMaxIx);      
+    prs(". "); 
     p = &JmpCallNames;   
     while (i <= JmpCallMaxIx) {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;
         p++;
-        prc(' '); 
         prs(Symbol);
-        prc('[');  
+        prc(' ');  
         hex = JmpCallAddr[i];
         printhex16(hex);
-        prc(']');
+//        prs(" -> ");
             
+        Ix=searchLabel();
+        if (Ix == 0) error1("Label not found");
+        disp = LabelAddr[Ix];
+//        printhex16(disp);
+//        prs("=");
+        disp = disp - hex;
+        disp = disp - Origin;
+//        printhex16(disp);
+        prs(", ");    
+        
+        c = JmpCallRelAbs[i];
+        if (c == 'R') {
+            hex = hex - 2;//fix at start of word              
+/*            prs(", hex:");
+            printhex16(hex);
+            prs(", disp:");
+            printhex16(disp);
+            prs(". ");           */            
+            FileBin[hex] = disp;//fix low byte    
+            hex++;
+            disp = disp >> 8;
+            FileBin[hex] = disp;
+        } else errorexit("Intern. JmpCallRelAbs[Ix] is not R");
             
         i++;
     }
 }
 
 int epilog() { 
-    unsigned int i; char c;
-    prs("\, Errors: "); 
+    unsigned int i; char c;     int j;
+    prs("\nErrors: "); 
     printIntU(ErrorCount);
     if (ErrorCount) prs(" ***ERROR*** ");
     prs(", Output: "); 
@@ -73,14 +96,37 @@ int epilog() {
     prs(namebin); 
     prs("= ");
     printIntU(BinLen); 
-    prs(" bytes");
+    prs(" bytes.");
 
     i=0;
     do {
         c = FileBin[i];
-        fputcR(c, bin_fd);
+        fputcR(c, bin_fd);  
+//printhex8a(c); prc(' ');      
         i++;
     } while (i < BinLen);
+
+  prs("\nLabels: "); 
+  printIntU(LabelMaxIx); 
+  prs(". ");     
+/*  prs("size: ");
+  i= &LabelNames; i=LabelNamePtr-i; printIntU(i); 
+  prs(". >>");
+  i= &LabelNames;
+  do { c=*i; if (c==0) c=' '; prc(c); i++;
+  } while (i < LabelNamePtr); prs("<< \n");  */
+
+    i = 1;
+    LabelNamePtr= &LabelNames;
+    do {
+      prs(LabelNamePtr); prc(' ');
+      j=LabelAddr[i]; printhex16(j); prs(", ");
+      j=strlen(LabelNamePtr);//get end of actual name
+      LabelNamePtr=LabelNamePtr+j;
+      LabelNamePtr++;
+      i++;
+    } while (i <= LabelMaxIx);
+
 }
 
 int end1(int n) {

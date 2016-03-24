@@ -174,7 +174,8 @@ int process() {
             LabelIx=searchLabel();
             if (LabelIx > 0) {
                 disp=LabelAddr[LabelIx];
-                disp = disp - PC;
+                disp = disp - PC;   
+                disp = disp - Origin;
                 if (checkConstSize(disp) ) {
                     genCode2(Code1, 0x70);       
                     disp -= 2; 
@@ -272,7 +273,7 @@ int process() {
        
     if (CodeType==101) {// ORG nn
         if (TokeType != DIGIT) numbererror();
-        PC=SymbolInt;
+        Origin=SymbolInt;
         return;
     }
     error1("Command not implemented or syntax error");

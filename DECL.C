@@ -12,12 +12,13 @@ char namebin[67];       //output file name .COM
 int  asm_fd;            //input file descriptor
 int lst_fd;             //list file descriptor
 int bin_fd;             //output file descriptor
-int DOS_ERR;            //global var
-int ErrorCount;         //number of errors
+int DOS_ERR=0;          //global var
+int ErrorCount=0;       //number of errors
 int DOS_NoBytes;        //number of bytes read (0 or 1)
 char DOS_ByteRead;      //the byte just read by DOS
 
-unsigned int PC;        //program counter, ORG nn
+unsigned int PC=0;      //program counter
+unsigned int Origin=0;  //ORG nn
 unsigned int PCStart;   //PC at start of line by PrintLine()
 char isLabel;           //by getName()
 #define DIGIT    1      //0-9
@@ -80,3 +81,4 @@ unsigned int BinLen=0;  //length of binary file
 
 char *arglen=0x80;      // for main only
 char *argv=0x82;        // for main only
+ 
