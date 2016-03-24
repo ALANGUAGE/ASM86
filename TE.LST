@@ -221,7 +221,15 @@
 0227 0F 82 00 00   RL6:  jc L7          ;0F 82 02 00
 022B 31 C0          xor ax, ax          ;31 C0
 022D                L7:  
-022D                
-;END open jmp/call: 3. L5 0222, L6 0226, L7 022B, 
-Errors: 0, Output: TE.LST, TE.COM= 557 bytes.
-Labels: 7. VA 0102, VB 0104, L2 02FA, L1 0310, L5 0326, L6 0327, L7 032D, 
+022D EB E1          jmp L1              ;EB E1  
+022F E9 D0 FD       jmp VA              ;E9 D0 FD
+0232 E8 DB FF       call L1             ;E8 DB FF
+0235 E8 CA FD       call VA             ;E8 CA FD
+0238 E9 00 00      Rjmp L8              ;E9 04 00
+023B E8 00 00      Rcall L8             ;E8 01 00
+023E 90             nop                 ;90    
+023F                L8:
+023F                
+;END open jmp/call: 5. L5 0222, L6 0226, L7 022B, L8 023B, L8 023E, 
+Errors: 0, Output: TE.LST, TE.COM= 575 bytes.
+Labels: 8. VA 0102, VB 0104, L2 02FA, L1 0310, L5 0326, L6 0327, L7 032D, L8 033F, 

@@ -219,3 +219,11 @@ L5:  nop            ;90
 L6:  jc L7          ;0F 82 02 00
 xor ax, ax          ;31 C0
 L7:  
+jmp L1              ;EB E1  
+jmp VA              ;E9 D0 FD
+call L1             ;E8 DB FF
+call VA             ;E8 CA FD
+jmp L8              ;E9 04 00
+call L8             ;E8 01 00
+nop                 ;90    
+L8:

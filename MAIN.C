@@ -115,7 +115,6 @@ int epilog() {
   i= &LabelNames;
   do { c=*i; if (c==0) c=' '; prc(c); i++;
   } while (i < LabelNamePtr); prs("<< \n");  */
-
     i = 1;
     LabelNamePtr= &LabelNames;
     do {

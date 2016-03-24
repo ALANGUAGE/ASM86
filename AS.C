@@ -167,9 +167,7 @@ int process() {
         return;
     }    
     
-    if (CodeType == 6) {//Jcc short jumps       
-
-
+    if (CodeType == 6) {//Jcc       
         if (TokeType == ALNUME) {
             LabelIx=searchLabel();
             if (LabelIx > 0) {
@@ -177,17 +175,17 @@ int process() {
                 disp = disp - PC;   
                 disp = disp - Origin;
                 if (checkConstSize(disp) ) {
-                    genCode2(Code1, 0x70);       
+                    genCode2(Code1, 0x70);//short       
                     disp -= 2; 
                     genCode8(disp);   
                 } else {     
                     genCode8(0x0F);
-                    genCode2(Code1, 0x80);       
+                    genCode2(Code1, 0x80);//near       
                     disp -= 4; 
                     genCode16(disp);                       
                 }    
             }
-            else {//jump forward
+            else {//jump forward, near only
                 genCode8(0x0F);
                 genCode2(Code1, 0x80);
                 genCode16(0);
@@ -195,11 +193,45 @@ int process() {
                 storeJmpCall();
                 JmpCallRelAbs[JmpCallMaxIx] = 'R';//rel16
             }   
-        }
-        return;   
+        return; 
+        }  
     }
 
-
+    if (CodeType == 7) {//jmp, call
+        if (TokeType == ALNUME) {
+            LabelIx=searchLabel();
+            if (LabelIx > 0) {
+                disp=LabelAddr[LabelIx];
+                disp = disp - PC;   
+                disp = disp - Origin;
+                if (checkConstSize(disp) ) {
+                    if (Code1 == 0xE9) {//jmp only
+                        genCode8(0xEB);//short       
+                        disp -= 2; 
+                        genCode8(disp);
+                    } 
+                    else {     
+                        genCode8(Code1);//near    
+                        disp -= 3; 
+                        genCode16(disp);                       
+                    }    
+                } 
+                else {     
+                    genCode8(Code1);//near    
+                    disp -= 3; 
+                    genCode16(disp);                       
+                }    
+            }
+            else {//jump forward, near only
+                genCode8(Code1);
+                genCode16(0);
+                PrintRA='R';
+                storeJmpCall();
+                JmpCallRelAbs[JmpCallMaxIx] = 'R';//rel16
+            }   
+        return; 
+        }          
+    }
     
     if (CodeType ==  8) {//ret,retf
         if (TokeType == DIGIT) {
