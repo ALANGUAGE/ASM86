@@ -215,21 +215,28 @@
 0214 72 E4          jc L2               ;72 E4    
 0216 0F 82 EA FD    jc VB               ;0F 82 EA FD   
 021A 0F 81 E4 FD    jno VA              ;0F 81 E4 FD
-021E 0F 82 00 00   Rjc L5               ;0F 82 04 00
-0222 0F 80 00 00   Rjo L6               ;0F 80 01 00
+021E 0F 82 00 00   *jc L5               ;0F 82 04 00
+0222 0F 80 00 00   *jo L6               ;0F 80 01 00
 0226 90             L5:  nop            ;90
-0227 0F 82 00 00   RL6:  jc L7          ;0F 82 02 00
+0227 0F 82 00 00   *L6:  jc L7          ;0F 82 02 00
 022B 31 C0          xor ax, ax          ;31 C0
 022D                L7:  
 022D EB E1          jmp L1              ;EB E1  
 022F E9 D0 FD       jmp VA              ;E9 D0 FD
 0232 E8 DB FF       call L1             ;E8 DB FF
 0235 E8 CA FD       call VA             ;E8 CA FD
-0238 E9 00 00      Rjmp L8              ;E9 04 00
-023B E8 00 00      Rcall L8             ;E8 01 00
+0238 E9 00 00      *jmp L8              ;E9 04 00
+023B E8 00 00      *call L8             ;E8 01 00
 023E 90             nop                 ;90    
 023F                L8:
-023F                
-;END open jmp/call: 5. L5 0222, L6 0226, L7 022B, L8 023B, L8 023E, 
-Errors: 0, Output: TE.LST, TE.COM= 575 bytes.
-Labels: 8. VA 0102, VB 0104, L2 02FA, L1 0310, L5 0326, L6 0327, L7 032D, L8 033F, 
+023F 00             eins resb 1
+0240 00 00          zwei resb 2 
+0242 00 00 00 00 00 Z16  resb 16
+0252 00 00          einsw resw 1
+0254 00 00 00 00    Einsd resd 1
+0258 00 00 00 00 00 dreiw resw 3  
+;***** next line ERROR: syntax, Symbol: resb
+025E 00             nu resb 0
+025F 90             nop
+0260                
+;END open jmp/call: 5. Errors: 1 ***ERROR*** , Out: TE.LST, TE.COM= 608 bytes. Labels: 15. 

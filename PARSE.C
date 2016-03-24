@@ -52,8 +52,6 @@ int storeJmpCall() {
     i = JmpCallNamePtr - &JmpCallNames;    
     if ( i >= JMPCALLNAMESMAX) errorexit("too many JmpCall names");
     JmpCallAddr[JmpCallMaxIx] = PC;   
-    JmpCallRelAbs[JmpCallMaxIx] = '*';
-    //set correct value r,R,A in CodeType 6+7             
 }
 
 int storeLabel() {
@@ -82,17 +80,17 @@ int searchLabel() {
 }   
 
 int getVariable() { 
-    char c;
+    char c; unsigned int i;
     storeLabel();
     getTokeType(); 
-    if(TokeType==ALNUME) {// getName
+    if(TokeType==ALNUME) {//getName
         lookCode();
-        if (CodeType < 200) errorexit("D or RES B,W,D expected");
-        if (CodeType > 207) errorexit("D or RES B,W,D expected");
-        if (CodeType== 200) {// DB
+        if (CodeType < 200) dataexit();
+        if (CodeType > 205) dataexit();
+        if (CodeType== 200) {//DB
             do { 
                 getTokeType();
-                if (TokeType ==DIGIT) genCode8(SymbolInt);
+                if (TokeType == DIGIT) genCode8(SymbolInt);
                 else {
                     skipBlank();
                     if (isToken('"')) {
@@ -106,17 +104,31 @@ int getVariable() {
                 }
             } while (isToken(','));
         }
-        if (CodeType== 201) {// DW
+        if (CodeType== 201) {//DW
             do { 
                 getTokeType();
                 if (TokeType ==DIGIT) genCode16(SymbolInt);
             } while (isToken(','));
-        }
+        } 
+        if (CodeType == 202) implerror();
+        if (CodeType >= 203) {//resb, resw, resd
+            getTokeType();
+            if (TokeType == DIGIT) {
+                i=0;  
+                if (SymbolInt <= 0) syntaxerror();
+                do {
+                    if (CodeType == 203) genCode8(0);
+                    if (CodeType == 204) genCode16(0);
+                    if (CodeType == 205) {genCode16(0);genCode16(0);}    
+                    i++;
+                } while (i < SymbolInt);   
+            } else numbererror();  
+        }    
     }
-    else errorexit("DB,DW,DD or RESB,W,D expected");
+    else dataexit();
 }
 
-int lookCode() {// ret: CodeType, *OpCodePtr
+int lookCode() {//ret: CodeType, *OpCodePtr
     CodeType=0;
     OpCodePtr= &I_START;
     OpCodePtr++;

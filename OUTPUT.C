@@ -112,5 +112,6 @@ int reg16error()   {error1("only reg16, no segreg allowed");}
 int segregerror()  {error1("segment register not allowed");}
 int syntaxerror()  {error1("syntax");}
          
-int addrexit()     {errorexit("illegal address");}
+int addrexit()     {errorexit("illegal address");}   
+int dataexit()     {errorexit("DB,DW,DD or RESB,W,D expected");}
 int internexit()   {errorexit("intern compiler error");}

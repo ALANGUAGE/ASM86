@@ -227,3 +227,10 @@ jmp L8              ;E9 04 00
 call L8             ;E8 01 00
 nop                 ;90    
 L8:
+eins resb 1
+zwei resb 2 
+Z16  resb 16
+einsw resw 1
+Einsd resd 1
+dreiw resw 3  
+nop

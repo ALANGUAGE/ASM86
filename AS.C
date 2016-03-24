@@ -189,9 +189,8 @@ int process() {
                 genCode8(0x0F);
                 genCode2(Code1, 0x80);
                 genCode16(0);
-                PrintRA='R';
+                PrintRA='*';
                 storeJmpCall();
-                JmpCallRelAbs[JmpCallMaxIx] = 'R';//rel16
             }   
         return; 
         }  
@@ -225,12 +224,11 @@ int process() {
             else {//jump forward, near only
                 genCode8(Code1);
                 genCode16(0);
-                PrintRA='R';
+                PrintRA='*';
                 storeJmpCall();
-                JmpCallRelAbs[JmpCallMaxIx] = 'R';//rel16
             }   
         return; 
-        }          
+        }
     }
     
     if (CodeType ==  8) {//ret,retf

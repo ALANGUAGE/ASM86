@@ -219,11 +219,19 @@
    219 00000227 0F820200                L6:  jc L7          ;0F 82 02 00
    220 0000022B 31C0                    xor ax, ax          ;31 C0
    221                                  L7:  
-   222 0000022D EBE1                    jmp L1
-   223 0000022F E9D0FD                  jmp VA
-   224 00000232 E8DBFF                  call L1
-   225 00000235 E8CAFD                  call VA
-   226 00000238 E90400                  jmp L8
-   227 0000023B E80100                  call L8
-   228 0000023E 90                      nop
+   222 0000022D EBE1                    jmp L1              ;EB E1  
+   223 0000022F E9D0FD                  jmp VA              ;E9 D0 FD
+   224 00000232 E8DBFF                  call L1             ;E8 DB FF
+   225 00000235 E8CAFD                  call VA             ;E8 CA FD
+   226 00000238 E90400                  jmp L8              ;E9 04 00
+   227 0000023B E80100                  call L8             ;E8 01 00
+   228 0000023E 90                      nop                 ;90    
    229                                  L8:
+   230 0000023F <res 00000001>          eins resb 1
+   231 00000240 <res 00000002>          zwei resb 2 
+   232 00000242 <res 00000010>          Z16  resb 16
+   233 00000252 <res 00000002>          einsw resw 1
+   234 00000254 <res 00000004>          Einsd resd 1
+   235 00000258 <res 00000006>          dreiw resw 3  
+   236                                  nu resb 0
+   237 0000025E 90                      nop
