@@ -326,11 +326,24 @@ int process() {
         return;
     }
        
-    if (CodeType==101) {// ORG nn
+    if (CodeType==101) {//ORG nn
         if (TokeType != DIGIT) numbererror();
         Origin=SymbolInt;
         return;
     }
+    
+    if (CodeType == 102) {//section, segment  
+        //getTokeType();//ignore .bss .text .data 
+        AbsoluteLab=0;//nasm resets erevy time
+        return;  
+    }
+               
+    if (CodeType == 110) {//absolute
+        if (TokeType != DIGIT) numbererror();
+        AbsoluteLab=SymbolInt;
+        return;           
+    }
+               
     error1("Command not implemented or syntax error");
 }    
            

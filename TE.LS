@@ -227,20 +227,31 @@
    227 0000023B E80100                  call L8             ;E8 01 00
    228 0000023E 90                      nop                 ;90    
    229                                  L8:
-   230 0000023F <res 00000001>          eins resb 1
-   231 00000240 <res 00000002>          zwei resb 2 
-   232 00000242 <res 00000010>          Z16  resb 16
-   233 00000252 <res 00000002>          einsw resw 1
-   234 00000254 <res 00000004>          Einsd resd 1
-   235 00000258 <res 00000006>          dreiw resw 3  
-   236 0000025E 90                      nop                 ;90   
-   237 0000025F D0CB                    ror bl, 1           ;D0 CB       
-   238 00000261 D1CB                    ror bx, 1           ;D1 CB        
-   239 00000263 D1E3                    shl bx, 1           ;D1 E3        
-   240 00000265 D1C0                    rol ax, 1           ;D1 C0        
-   241 00000267 D2E0                    shl al, cl          ;D2 E0        
-   242 00000269 D3E0                    shl ax, cl          ;D3 E0        
-   243 0000026B C0E003                  sal al, 3           ;C0 E0 03      
-   244 0000026E C1E303                  sal bx, 3           ;C1 E3 03      
-   245 00000271 C02E[0200]03            shr byte [VA], 3    ;C0 2E 02 00 03
-   246 00000276 C12E[0200]03            shr word [VA], 3    ;C1 2E 02 00 03
+   230 0000023F 90                      nop                 ;90   
+   231 00000240 D0CB                    ror bl, 1           ;D0 CB       
+   232 00000242 D1CB                    ror bx, 1           ;D1 CB        
+   233 00000244 D1E3                    shl bx, 1           ;D1 E3        
+   234 00000246 D1C0                    rol ax, 1           ;D1 C0        
+   235 00000248 D2E0                    shl al, cl          ;D2 E0        
+   236 0000024A D3E0                    shl ax, cl          ;D3 E0        
+   237 0000024C C0E003                  sal al, 3           ;C0 E0 03      
+   238 0000024F C1E303                  sal bx, 3           ;C1 E3 03      
+   239 00000252 C02E[0200]03            shr byte [VA], 3    ;C0 2E 02 00 03
+   240 00000257 C12E[0200]03            shr word [VA], 3    ;C1 2E 02 00 03
+   241                                  section .bss
+   242                                  absolute 4096
+   243 00001000 <res 00000001>          eins resb 1  
+   244 00001001 <res 00000008>          acht resd 2
+   245 00001009 <res 00000006>          sechs resw 3
+   246 0000100F <res 00000002>          zwei resb 2  
+   247                                  absolute 1044
+   248 00000414 <res 00000004>          Einsd resd 1
+   249 00000418 <res 00000006>          dreiw resw 3  
+   250                                  section .text   
+   251 0000025C A00010                  mov al, [eins]      ;A0 00 10
+   252 0000025F A00110                  mov al, [acht]      ;A0 01 10  
+   253 00000262 A00910                  mov al, [sechs]     ;A0 09 10
+   254 00000265 A10F10                  mov ax, [zwei]      ;A1 0F 10
+   255 00000268 A01404                  mov al, [Einsd]     ;A0 14 04
+   256 0000026B A01804                  mov al, [dreiw]     ;A0 18 04
+   257                                                      

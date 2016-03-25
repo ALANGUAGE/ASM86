@@ -227,12 +227,6 @@ jmp L8              ;E9 04 00
 call L8             ;E8 01 00
 nop                 ;90    
 L8:
-eins resb 1
-zwei resb 2 
-Z16  resb 16
-einsw resw 1
-Einsd resd 1
-dreiw resw 3  
 nop                 ;90   
 ror bl, 1           ;D0 CB       
 ror bx, 1           ;D1 CB        
@@ -244,3 +238,20 @@ sal al, 3           ;C0 E0 03
 sal bx, 3           ;C1 E3 03      
 shr byte [VA], 3    ;C0 2E 02 00 03
 shr word [VA], 3    ;C1 2E 02 00 03
+section .bss
+absolute 4096
+eins resb 1  
+acht resd 2
+sechs resw 3
+zwei resb 2  
+absolute 1044
+Einsd resd 1
+dreiw resw 3  
+section .text   
+mov al, [eins]      ;A0 00 10
+mov al, [acht]      ;A0 01 10  
+mov al, [sechs]     ;A0 09 10
+mov ax, [zwei]      ;A1 0F 10
+mov al, [Einsd]     ;A0 14 04
+mov al, [dreiw]     ;A0 18 04
+                    

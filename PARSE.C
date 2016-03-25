@@ -80,7 +80,7 @@ int searchLabel() {
 }   
 
 int getVariable() { 
-    char c; unsigned int i;
+    char c; 
     storeLabel();
     getTokeType(); 
     if(TokeType==ALNUME) {//getName
@@ -114,14 +114,12 @@ int getVariable() {
         if (CodeType >= 203) {//resb, resw, resd
             getTokeType();
             if (TokeType == DIGIT) {
-                i=0;  
-                if (SymbolInt <= 0) syntaxerror();
-                do {
-                    if (CodeType == 203) genCode8(0);
-                    if (CodeType == 204) genCode16(0);
-                    if (CodeType == 205) {genCode16(0);genCode16(0);}    
-                    i++;
-                } while (i < SymbolInt);   
+                if (SymbolInt <= 0) syntaxerror();   
+                if (AbsoluteLab == 0) error1("Absolute is null");
+                LabelAddr[LabelMaxIx] = AbsoluteLab; 
+                if (CodeType == 204) SymbolInt=SymbolInt+SymbolInt;//resw
+                if (CodeType == 205) SymbolInt=SymbolInt * 4;//resd                  
+                AbsoluteLab = AbsoluteLab + SymbolInt;
             } else numbererror();  
         }    
     }

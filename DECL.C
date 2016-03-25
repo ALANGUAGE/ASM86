@@ -3,7 +3,7 @@ char LIST;              //listing on/off
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName
 unsigned int SymbolInt; //integer value set in getDigit
-#define INPUTBUFMAX 127
+#define INPUTBUFMAX 255
 char InputBuf[INPUTBUFMAX];//filled in getLine, no overflow test
 unsigned char *InputPtr;//position in InputBuf
 char namein [67];       //input file name  .S
@@ -18,7 +18,8 @@ int DOS_NoBytes;        //number of bytes read (0 or 1)
 char DOS_ByteRead;      //the byte just read by DOS
 
 unsigned int PC=0;      //program counter
-unsigned int Origin=0;  //ORG nn
+unsigned int Origin=0;  //ORG nn   
+unsigned int AbsoluteLab=0;//uninitialised data
 unsigned int PCStart;   //PC at start of line by PrintLine()
 char isLabel;           //by getName()
 #define DIGIT    1      //0-9
