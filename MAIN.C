@@ -73,7 +73,7 @@ int fixJmpCall() {
 
 int epilog() { 
     unsigned int i; char c;     int j;
-    prs(". Errors: "); 
+    prs("\n Errors: "); 
     printIntU(ErrorCount);
     if (ErrorCount) prs(" ***ERROR*** ");
     prs(", Out: "); 

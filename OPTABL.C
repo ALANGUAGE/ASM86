@@ -112,8 +112,8 @@ char I_ROR[]=  {'R','O','R',0,          11, 1,    0xF1};
 char I_RCL[]=  {'R','C','L',0,          11, 2,    0xF1};
 char I_RCR[]=  {'R','C','R',0,          11, 3,    0xF1};
 char I_SHL[]=  {'S','H','L',0,          11, 4,    0xF1};
-char I_SAL[]=  {'S','A','L',0,          11, 5,    0xF1};
-char I_SHR[]=  {'S','H','R',0,          11, 6,    0xF1};
+char I_SAL[]=  {'S','A','L',0,          11, 4,    0xF1};
+char I_SHR[]=  {'S','H','R',0,          11, 5,    0xF1};
 char I_SAR[]=  {'S','A','R',0,          11, 7,    0xF1};
 //  12: int
 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
@@ -141,9 +141,9 @@ char I_ENTER[]={'E','N','T','E','R',0,  30,       0xF1};
 // 100: directives
 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
 // section, segment .TEXT .DATA .BSS
-/*char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
+char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
 char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
-char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};*/
+char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};
 char I_DB[]=   {'D','B',0,            200,        0xF1};
 char I_DW[]=   {'D','W',0,            201,        0xF1};
 char I_DD[]=   {'D','D',0,            202,        0xF1};

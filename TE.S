@@ -233,4 +233,14 @@ Z16  resb 16
 einsw resw 1
 Einsd resd 1
 dreiw resw 3  
-nop
+nop                 ;90   
+ror bl, 1           ;D0 CB       
+ror bx, 1           ;D1 CB        
+shl bx, 1           ;D1 E3        
+rol ax, 1           ;D1 C0        
+shl al, cl          ;D2 E0        
+shl ax, cl          ;D3 E0        
+sal al, 3           ;C0 E0 03      
+sal bx, 3           ;C1 E3 03      
+shr byte [VA], 3    ;C0 2E 02 00 03
+shr word [VA], 3    ;C1 2E 02 00 03

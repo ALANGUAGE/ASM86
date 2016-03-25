@@ -233,5 +233,14 @@
    233 00000252 <res 00000002>          einsw resw 1
    234 00000254 <res 00000004>          Einsd resd 1
    235 00000258 <res 00000006>          dreiw resw 3  
-   236                                  nu resb 0
-   237 0000025E 90                      nop
+   236 0000025E 90                      nop                 ;90   
+   237 0000025F D0CB                    ror bl, 1           ;D0 CB       
+   238 00000261 D1CB                    ror bx, 1           ;D1 CB        
+   239 00000263 D1E3                    shl bx, 1           ;D1 E3        
+   240 00000265 D1C0                    rol ax, 1           ;D1 C0        
+   241 00000267 D2E0                    shl al, cl          ;D2 E0        
+   242 00000269 D3E0                    shl ax, cl          ;D3 E0        
+   243 0000026B C0E003                  sal al, 3           ;C0 E0 03      
+   244 0000026E C1E303                  sal bx, 3           ;C1 E3 03      
+   245 00000271 C02E[0200]03            shr byte [VA], 3    ;C0 2E 02 00 03
+   246 00000276 C12E[0200]03            shr word [VA], 3    ;C1 2E 02 00 03

@@ -21,7 +21,7 @@ int check2Ops() {
     if (Op == ADR) invaloperror(); 
     if (Op == IMM) immeerror();   
     if (Op2==   0) addrerror();
-    if (CodeType != 5) if (Op2==ADR) invaloperror();//allowed in mov           
+    if (CodeType != 5) if (Op2==ADR) invaloperror();//only mov           
     setwflag();       
 }    
 int get2Ops() {

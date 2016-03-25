@@ -1,4 +1,4 @@
-char Version1[]="AS.C V0.07";//BAS.BAT, AS TE, NAS.BAT
+char Version1[]="AS.C V0.1";//BAS.BAT, AS TE, NAS.BAT
 #include "DECL.C"
 #include "OPTABL.C"   
 #include "OPS.C"
@@ -280,6 +280,31 @@ int process() {
         syntaxerror();
         return;        
     }
+    
+    if (CodeType == 11) {//shift, rotate
+        check2Ops();
+        if (Op2 == IMM) {
+            if (imme == 1) {
+                genCodeW(0xD0);
+                writeEA(Code1);
+                return;
+            }
+            genCodeW(0xC0);//80186
+            writeEA(Code1);
+            genCode8(imme);
+            return;    
+        }
+        if (Op2 == REG) {
+            if (R2Type == BYTE) {
+                if (R2No == 1) {//CL-REG 
+                    if (R1Type == WORD) wflag=1;//hack
+                    genCodeW(0xD2);
+                    writeEA(Code1);
+                    return;   
+                }   
+            }
+        }    
+    }     
     
     if (CodeType == 12) {//int
         if (TokeType == DIGIT) {            
