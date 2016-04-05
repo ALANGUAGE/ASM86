@@ -104,13 +104,19 @@ int getVariable() {
                 }
             } while (isToken(','));
         }
-        if (CodeType== 201) {//DW
+        if (CodeType == 201) {//DW
             do { 
                 getTokeType();
                 if (TokeType ==DIGIT) genCode16(SymbolInt);
             } while (isToken(','));
         } 
-        if (CodeType == 202) implerror();
+        if (CodeType == 202) {//DD
+            do { 
+                getTokeType();
+                if (TokeType ==DIGIT) { genCode16(SymbolInt);
+                                    genCode16(0);}//todo genCode32(SymbolLong);
+            } while (isToken(','));
+        } 
         if (CodeType >= 203) {//resb, resw, resd
             getTokeType();
             if (TokeType == DIGIT) {

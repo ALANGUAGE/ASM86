@@ -29,6 +29,10 @@ int genCode16(unsigned int i) {
     genCode8(i); i=i >> 8;
     genCode8(i);
 }
+int genCode32(unsigned long L) {
+    genCode16(L); L=L >>16;
+    genCode16(L);
+}
 int writeEA(char xxx) {//value for reg/operand
 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
 //mod-bits: mode76, reg/opcode543, r/m210   
@@ -72,6 +76,7 @@ int writeEA(char xxx) {//value for reg/operand
 }
 
 int genImmediate() { 
-    if (wflag) genCode16(imme);
+    if (wflag) if (OpSize == DWORD) genCode32(imme);//todo imme long
+        else genCode16(imme);
     else       genCode8 (imme);  
 }    

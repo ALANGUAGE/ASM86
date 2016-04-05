@@ -2,7 +2,8 @@ char LIST;              //listing on/off
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName
-unsigned int SymbolInt; //integer value set in getDigit
+unsigned int SymbolInt; //integer value set in getDigit   
+unsigned long SymbolLong;//integer value set in getDigit
 #define INPUTBUFMAX 255
 char InputBuf[INPUTBUFMAX];//filled in getLine, no overflow test
 unsigned char *InputPtr;//position in InputBuf

@@ -1,7 +1,6 @@
 
-; A.COM CComp V0.7, Arglen: 5, Argv: AS.C, Source: AS.C, Output asm: AS.S
-;PROTECTED: 0 V86 OFF.  32bit: ON. 
-org  256 ; NASM ON
+; A.COM V0.8, Source: AS.C, Out asm: AS.S
+org  256 
 jmp main
 
 ;-1 char Version1[]="AS.C V0.1";//BAS.BAT, AS TE, NAS.BAT
@@ -21,300 +20,340 @@ LIST db 0
 
 ;-3 char Symbol[SYMBOLMAX]; //next symbol to decode
 
+section .bss
+absolute 30000
 Symbol resb 31
+section .text
 
 ;-4 char SymbolUpper[SYMBOLMAX];//set toupper in getName
 
+section .bss
+absolute 30031
 SymbolUpper resb 31
+section .text
 
-;-5 unsigned int SymbolInt; //integer value set in getDigit
+;-5 unsigned int SymbolInt; //integer value set in getDigit   
 
 SymbolInt dw 0
 
-;-6 #define INPUTBUFMAX 255
+;-6 unsigned long SymbolLong;//integer value set in getDigit
+
+SymbolLong dd 0
+
+;-7 #define INPUTBUFMAX 255
 
 
-;-7 char InputBuf[INPUTBUFMAX];//filled in getLine, no overflow test
+;-8 char InputBuf[INPUTBUFMAX];//filled in getLine, no overflow test
 
+section .bss
+absolute 30062
 InputBuf resb 255
+section .text
 
-;-8 unsigned char *InputPtr;//position in InputBuf
+;-9 unsigned char *InputPtr;//position in InputBuf
 
 InputPtr dw 0
 
-;-9 char namein [67];       //input file name  .S
+;-10 char namein [67];       //input file name  .S
 
+section .bss
+absolute 30317
 namein resb 67
+section .text
 
-;-10 char namelst[67];       //list file name   .LST
+;-11 char namelst[67];       //list file name   .LST
 
+section .bss
+absolute 30384
 namelst resb 67
+section .text
 
-;-11 char namebin[67];       //output file name .COM
+;-12 char namebin[67];       //output file name .COM
 
+section .bss
+absolute 30451
 namebin resb 67
+section .text
 
-;-12 int  asm_fd;            //input file descriptor
+;-13 int  asm_fd;            //input file descriptor
 
 asm_fd dw 0
 
-;-13 int lst_fd;             //list file descriptor
+;-14 int lst_fd;             //list file descriptor
 
 lst_fd dw 0
 
-;-14 int bin_fd;             //output file descriptor
+;-15 int bin_fd;             //output file descriptor
 
 bin_fd dw 0
 
-;-15 int DOS_ERR=0;          //global var
+;-16 int DOS_ERR=0;          //global var
 
 DOS_ERR dw 0
 
-;-16 int ErrorCount=0;       //number of errors
+;-17 int ErrorCount=0;       //number of errors
 
 ErrorCount dw 0
 
-;-17 int DOS_NoBytes;        //number of bytes read (0 or 1)
+;-18 int DOS_NoBytes;        //number of bytes read (0 or 1)
 
 DOS_NoBytes dw 0
 
-;-18 char DOS_ByteRead;      //the byte just read by DOS
+;-19 char DOS_ByteRead;      //the byte just read by DOS
 
 DOS_ByteRead db 0
 
-;-19 
+;-20 
 
 
-;-20 unsigned int PC=0;      //program counter
+;-21 unsigned int PC=0;      //program counter
 
 PC dw 0
 
-;-21 unsigned int Origin=0;  //ORG nn   
+;-22 unsigned int Origin=0;  //ORG nn   
 
 Origin dw 0
 
-;-22 unsigned int AbsoluteLab=0;//uninitialised data
+;-23 unsigned int AbsoluteLab=0;//uninitialised data
 
 AbsoluteLab dw 0
 
-;-23 unsigned int PCStart;   //PC at start of line by PrintLine()
+;-24 unsigned int PCStart;   //PC at start of line by PrintLine()
 
 PCStart dw 0
 
-;-24 char isLabel;           //by getName()
+;-25 char isLabel;           //by getName()
 
 isLabel db 0
 
-;-25 #define DIGIT    1      //0-9
+;-26 #define DIGIT    1      //0-9
 
 
-;-26 #define LETTERE  2      //a-z A-Z @ . _
+;-27 #define LETTERE  2      //a-z A-Z @ . _
 
 
-;-27 #define ALNUME   3      //a-z A-Z @ . _  0-9
+;-28 #define ALNUME   3      //a-z A-Z @ . _  0-9
 
 
-;-28 #define NOALNUME 4      //other char
+;-29 #define NOALNUME 4      //other char
 
 
-;-29 char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
+;-30 char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 
 TokeType db 0
 
-;-30 #define BYTE     1
+;-31 #define BYTE     1
 
 
-;-31 #define WORD     2
+;-32 #define WORD     2
 
 
-;-32 #define DWORD    3
+;-33 #define DWORD    3
 
 
-;-33 #define SEGREG   4
+;-34 #define SEGREG   4
 
 
-;-34 #define IMM      1      //const  ,123
+;-35 #define IMM      1      //const  ,123
 
 
-;-35 #define REG      2      //       ,BX    mode=11
+;-36 #define REG      2      //       ,BX    mode=11
 
 
-;-36 #define ADR      3      //DIRECT: VALUE  ,var1  mod=00, r/m=110
+;-37 #define ADR      3      //DIRECT: VALUE  ,var1  mod=00, r/m=110
 
 
-;-37 #define MEM      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
+;-38 #define MEM      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
 
 
-;-38 char Op;                //1. operand: 0, IMM, REG, ADR, MEM  
+;-39 char Op;                //1. operand: 0, IMM, REG, ADR, MEM  
 
 Op db 0
 
-;-39 char Op2;               //2. operand
+;-40 char Op2;               //2. operand
 
 Op2 db 0
 
-;-40 char CodeType;          //1-207 by searchSymbol(), must be byte size
+;-41 char CodeType;          //1-207 by searchSymbol(), must be byte size
 
 CodeType db 0
 
-;-41 char Code1;             //1. Opcode
+;-42 char Code1;             //1. Opcode
 
 Code1 db 0
 
-;-42 char Code2;             //2. Opcode
+;-43 char Code2;             //2. Opcode
 
 Code2 db 0
 
-;-43 char Code3;             //3. Opcode
+;-44 char Code3;             //3. Opcode
 
 Code3 db 0
 
-;-44 char R2No;              //0 - 7 AL, CL, ...  set in testReg()  
+;-45 char R2No;              //0 - 7 AL, CL, ...  set in testReg()  
 
 R2No db 0
 
-;-45 char R1No;              //temp for 1. register
+;-46 char R1No;              //temp for 1. register
 
 R1No db 0
 
-;-46 char R2Type;            //0=no reg, BYTE, WORD, DWORD, SEGREG
+;-47 char R2Type;            //0=no reg, BYTE, WORD, DWORD, SEGREG
 
 R2Type db 0
 
-;-47 char R1Type;            //temp for 1. register 
+;-48 char R1Type;            //temp for 1. register 
 
 R1Type db 0
 
-;-48 char OpSize;            //0, BYTE, WORD, DWORD by getCodeSize()
+;-49 char OpSize;            //0, BYTE, WORD, DWORD by getCodeSize()
 
 OpSize db 0
 
-;-49 char wflag;             //wordflag: 0=byte, 1=word/dword
+;-50 char wflag;             //wordflag: 0=byte, 1=word/dword
 
 wflag db 0
 
-;-50 char dflag;             //directionflag: 1=to reg MOV,ALU    
+;-51 char dflag;             //directionflag: 1=to reg MOV,ALU    
 
 dflag db 0
 
-;-51 char sflag;             //sign extended, imm8 to word PUSH,ALU,IMUL3 
+;-52 char sflag;             //sign extended, imm8 to word PUSH,ALU,IMUL3 
 
 sflag db 0
 
-;-52 char rm;                //combination of index and base reg
+;-53 char rm;                //combination of index and base reg
 
 rm db 0
 
-;-53 char isDirect;          //set in process and getMeM, need in WriteEA
+;-54 char isDirect;          //set in process and getMeM, need in WriteEA
 
 isDirect db 0
 
-;-54 int disp;               //displacement      0-8 bytes
+;-55 int disp;               //displacement      0-8 bytes
 
 disp dw 0
 
-;-55 unsigned int imme;      //immediate         0-8 bytes
+;-56 unsigned int imme;      //immediate         0-8 bytes
 
 imme dw 0
 
-;-56 
+;-57 
 
 
-;-57 #define OPMAXLEN 5
+;-58 #define OPMAXLEN 5
 
 
-;-58 char OpPos[OPMAXLEN];   //array for one opcode to list
+;-59 char OpPos[OPMAXLEN];   //array for one opcode to list
 
+section .bss
+absolute 30518
 OpPos resb 5
+section .text
 
-;-59 int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
+;-60 int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
 
 OpPrintIndex dw 0
 
-;-60 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
+;-61 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
 
 OpCodePtr dw 0
 
-;-61 char PrintRA;           //print * for forward relocative jmp
+;-62 char PrintRA;           //print * for forward relocative jmp
 
 PrintRA db 0
 
-;-62 
+;-63 
 
 
-;-63 #define LABELNAMESMAX 3969//next number - SYMBOLMAX
+;-64 #define LABELNAMESMAX 3969//next number - SYMBOLMAX
 
 
-;-64 char LabelNames[4000];  //space for names of all labels
+;-65 char LabelNames[4000];  //space for names of all labels
 
+section .bss
+absolute 30523
 LabelNames resb 4000
+section .text
 
-;-65 char *LabelNamePtr;     //first free position
+;-66 char *LabelNamePtr;     //first free position
 
 LabelNamePtr dw 0
 
-;-66 #define LABELADRMAX 600
+;-67 #define LABELADRMAX 600
 
 
-;-67 unsigned int LabelAddr[LABELADRMAX];//addr of each label
+;-68 unsigned int LabelAddr[LABELADRMAX];//addr of each label
 
+section .bss
+absolute 34523
 LabelAddr resw 600
+section .text
 
-;-68 int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
+;-69 int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
 
 LabelMaxIx dw 0
 
-;-69 int LabelIx;            //actual # of just searched label
+;-70 int LabelIx;            //actual # of just searched label
 
 LabelIx dw 0
 
-;-70 
+;-71 
 
 
-;-71 #define JMPCALLNAMESMAX 1969//next number - SYMBOLMAX
+;-72 #define JMPCALLNAMESMAX 1969//next number - SYMBOLMAX
 
 
-;-72 char JmpCallNames[2000];//space for names of jmp, call
+;-73 char JmpCallNames[2000];//space for names of jmp, call
 
+section .bss
+absolute 35723
 JmpCallNames resb 2000
+section .text
 
-;-73 char *JmpCallNamePtr;   //first free position 
+;-74 char *JmpCallNamePtr;   //first free position 
 
 JmpCallNamePtr dw 0
 
-;-74 #define JMPCALLMAX 500  //max. jmp and call
+;-75 #define JMPCALLMAX 500  //max. jmp and call
 
 
-;-75 unsigned int JmpCallAddr[JMPCALLMAX];//addr to be fixed
+;-76 unsigned int JmpCallAddr[JMPCALLMAX];//addr to be fixed
 
+section .bss
+absolute 37723
 JmpCallAddr resw 500
+section .text
 
-;-76 int JmpCallMaxIx=0;     //actual # of jmp, call. 1 to JMPCALLMAX-1
+;-77 int JmpCallMaxIx=0;     //actual # of jmp, call. 1 to JMPCALLMAX-1
 
 JmpCallMaxIx dw 0
 
-;-77  
+;-78  
 
 
-;-78 #define FILEBINMAX 20000 
+;-79 #define FILEBINMAX 20000 
 
 
-;-79 char FileBin  [FILEBINMAX];//output binary file
+;-80 char FileBin  [FILEBINMAX];//output binary file
 
+section .bss
+absolute 38723
 FileBin resb 20000
+section .text
 
-;-80 unsigned int BinLen=0;  //length of binary file
+;-81 unsigned int BinLen=0;  //length of binary file
 
 BinLen dw 0
 
-;-81 
+;-82 
 
 
-;-82 char *arglen=0x80;      // for main only
+;-83 char *arglen=0x80;      // for main only
 
 arglen dw 128
 
-;-83 char *argv=0x82;        // for main only
+;-84 char *argv=0x82;        // for main only
 
 argv dw 130
 ;Back to main program: AS.C
@@ -790,29 +829,37 @@ I_INT db 73,78,84,0,12,205,204,241
 ;-120 //  14: in/out
 
 
-;-121 /*char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
+;-121 char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
 
+I_IN db 73,78,0,14,228,236,241
 
 ;-122 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};
 
+I_INSB db 73,78,83,66,0,14,108,241
 
 ;-123 char I_INSW[]= {'I','N','S','W',0,      14,0x6D,   0xF1};
 
+I_INSW db 73,78,83,87,0,14,109,241
 
 ;-124 char I_INSD[]= {'I','N','S','D',0,      14,0x6D,   0xF1};
 
+I_INSD db 73,78,83,68,0,14,109,241
 
 ;-125 char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xEE,0xF1};
 
+I_OUT db 79,85,84,0,14,230,238,241
 
 ;-126 char I_OUTSB[]={'O','U','T','B',0,      14,0x6E,   0xF1};
 
+I_OUTSB db 79,85,84,66,0,14,110,241
 
 ;-127 char I_OUTSW[]={'O','U','T','W',0,      14,0x6F,   0xF1};
 
+I_OUTSW db 79,85,84,87,0,14,111,241
 
-;-128 char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};*/
+;-128 char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};
 
+I_OUTSD db 79,85,84,68,0,14,111,241
 
 ;-129 //  15: xchg
 
@@ -824,26 +871,33 @@ I_XCHG db 88,67,72,71,0,15,134,144,241
 ;-131 //  16: loop, jcxz
 
 
-;-132 /*char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
+;-132 char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
 
+I_LOOPNZ db 76,79,79,80,78,90,0,16,224,241
 
 ;-133 char I_LOOPNE[]={'L','O','O','P','N','E',0, 16,0xE0,0xF1};
 
+I_LOOPNE db 76,79,79,80,78,69,0,16,224,241
 
 ;-134 char I_LOOPZ[]={'L','O','O','P','Z',0,      16,0xE1,0xF1};
 
+I_LOOPZ db 76,79,79,80,90,0,16,225,241
 
 ;-135 char I_LOOPE[]={'L','O','O','P','E',0,      16,0xE1,0xF1};
 
+I_LOOPE db 76,79,79,80,69,0,16,225,241
 
 ;-136 char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
 
+I_LOOP db 76,79,79,80,0,16,226,241
 
 ;-137 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
 
+I_JCXZ db 74,67,88,90,0,16,227,241
 
-;-138 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};*/
+;-138 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
 
+I_JECXZ db 74,69,67,88,90,0,16,227,241
 
 ;-139 //  30: enter
 
@@ -919,7 +973,7 @@ ChangeDirection:  ; *** PROC ***
 
 ;Function : ChangeDirection, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte     2 NULL bp-2    c;
+;  250 var sign byte     2 NULL bp-2    c;
  ENTER  2,0
  mov al, [Op]
  mov byte [bp-2], al
@@ -1344,7 +1398,7 @@ getMEM:  ; *** PROC ***
 
 ;Function : getMEM, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    69 NULL bp-2    c;
+;  250 var sign byte    69 NULL bp-2    c;
  ENTER  2,0
  mov eax, 0
  mov word [disp], ax
@@ -1550,7 +1604,7 @@ getIndReg1:  ; *** PROC ***
 getIndReg2:  ; *** PROC ***
 ;Function : getIndReg2, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    98 NULL bp-2    m;
+;  250 var sign byte    98 NULL bp-2    m;
  ENTER  2,0
  mov eax, 4
  mov byte [bp-2], al
@@ -1725,7 +1779,7 @@ setsflag:  ; *** PROC ***
 
 ;Function : setsflag, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word   120 NULL bp-2    ui;
+;  250 var unsg word   120 NULL bp-2    ui;
  ENTER  2,0
  mov eax, 2
  mov byte [sflag], al
@@ -1785,7 +1839,7 @@ checkConstSize:  ; *** PROC ***
 
 ;Function : checkConstSize, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word   129 NULL bp+4    ui;
+;  250 var unsg word   129 NULL bp+4    ui;
  ENTER  0,0
  mov ax, [bp+4]
  cmp ax, 127
@@ -2011,7 +2065,7 @@ getTokeType:  ; *** PROC ***
 
 ;Function : getTokeType, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    36 NULL bp-2    c;
+;  250 var sign byte    36 NULL bp-2    c;
  ENTER  2,0
  call skipBlank
 
@@ -2106,7 +2160,7 @@ storeJmpCall:  ; *** PROC ***
 
 ;Function : storeJmpCall, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    47 NULL bp-2    i;
+;  250 var unsg word    47 NULL bp-2    i;
  ENTER  2,0
  inc  word [JmpCallMaxIx]
 
@@ -2178,7 +2232,7 @@ storeLabel:  ; *** PROC ***
 
 ;Function : storeLabel, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    58 NULL bp-2    i;
+;  250 var unsg word    58 NULL bp-2    i;
  ENTER  2,0
  inc  word [LabelMaxIx]
 
@@ -2262,8 +2316,8 @@ searchLabel:  ; *** PROC ***
 
 ;Function : searchLabel, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word    70 NULL bp-2    LIx
-;  201 ptr sign byte    70 NULL bp-4    p;
+;  250 var sign word    70 NULL bp-2    LIx
+;  251 ptr sign byte    70 NULL bp-4    p;
  ENTER  4,0
  mov ax, LabelNames
  mov word [bp-4], ax
@@ -2340,7 +2394,7 @@ getVariable:  ; *** PROC ***
 
 ;Function : getVariable, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    83 NULL bp-2    c;
+;  250 var sign byte    83 NULL bp-2    c;
  ENTER  2,0
  call storeLabel
 
@@ -2472,7 +2526,7 @@ getVariable:  ; *** PROC ***
 ;-106         }
 
 
-;-107         if (CodeType== 201) {//DW
+;-107         if (CodeType == 201) {//DW
 
 @@getVariable89:
  mov al, [CodeType]
@@ -2510,111 +2564,147 @@ getVariable:  ; *** PROC ***
 ;-112         } 
 
 
-;-113         if (CodeType == 202) implerror();
+;-113         if (CodeType == 202) {//DD
 
 @@getVariable97:
  mov al, [CodeType]
  cmp al, 202
  jne @@getVariable101
- call implerror
 
-;-114         if (CodeType >= 203) {//resb, resw, resd
+;-114             do { 
 
-@@getVariable101:
- mov al, [CodeType]
- cmp al, 203 ;unsigned : 1
- jl  @@getVariable102
+@@getVariable102:
 
-;-115             getTokeType();
+;-115                 getTokeType();
 
  call getTokeType
 
-;-116             if (TokeType == DIGIT) {
+;-116                 if (TokeType ==DIGIT) { genCode16(SymbolInt);
 
  mov al, [TokeType]
  cmp al, 1
  jne @@getVariable103
+ push word [SymbolInt]
+ call genCode16
+ add  sp, 2
 
-;-117                 if (SymbolInt <= 0) syntaxerror();   
+;-117                                     genCode16(0);}//todo genCode32(SymbolLong);
+
+ push 0
+ call genCode16
+ add  sp, 2
+
+;-118             } while (isToken(','));
+
+@@getVariable103:
+ push 44
+ call isToken
+ add  sp, 2
+ or  al, al
+ je @@getVariable104
+ jmp @@getVariable102
+@@getVariable104:
+
+;-119         } 
+
+
+;-120         if (CodeType >= 203) {//resb, resw, resd
+
+@@getVariable101:
+ mov al, [CodeType]
+ cmp al, 203 ;unsigned : 1
+ jl  @@getVariable105
+
+;-121             getTokeType();
+
+ call getTokeType
+
+;-122             if (TokeType == DIGIT) {
+
+ mov al, [TokeType]
+ cmp al, 1
+ jne @@getVariable106
+
+;-123                 if (SymbolInt <= 0) syntaxerror();   
 
  mov ax, [SymbolInt]
  cmp ax, 0
- ja  @@getVariable104
+ ja  @@getVariable107
  call syntaxerror
 
-;-118                 if (AbsoluteLab == 0) error1("Absolute is null");
+;-124                 if (AbsoluteLab == 0) error1("Absolute is null");
 
-@@getVariable104:
+@@getVariable107:
  mov ax, [AbsoluteLab]
  cmp ax, 0
- jne @@getVariable105
+ jne @@getVariable108
  push getVariable_0
  call error1
  add  sp, 2
 
-;-119                 LabelAddr[LabelMaxIx] = AbsoluteLab; 
+;-125                 LabelAddr[LabelMaxIx] = AbsoluteLab; 
 
-@@getVariable105:
+@@getVariable108:
  mov ax, [AbsoluteLab]
  mov bx, [LabelMaxIx]
  shl bx, 1
  mov [LabelAddr+bx], ax
 
-;-120                 if (CodeType == 204) SymbolInt=SymbolInt+SymbolInt;//resw
+;-126                 if (CodeType == 204) SymbolInt=SymbolInt+SymbolInt;//resw
 
  mov al, [CodeType]
  cmp al, 204
- jne @@getVariable106
+ jne @@getVariable109
  mov ax, [SymbolInt]
  add ax, [SymbolInt]
  mov word [SymbolInt], ax
 
-;-121                 if (CodeType == 205) SymbolInt=SymbolInt * 4;//resd                  
+;-127                 if (CodeType == 205) SymbolInt=SymbolInt * 4;//resd                  
 
-@@getVariable106:
+@@getVariable109:
  mov al, [CodeType]
  cmp al, 205
- jne @@getVariable107
+ jne @@getVariable110
  mov ax, [SymbolInt]
  mov ebx, 4
  mul ebx
  mov word [SymbolInt], ax
 
-;-122                 AbsoluteLab = AbsoluteLab + SymbolInt;
+;-128                 AbsoluteLab = AbsoluteLab + SymbolInt;
 
-@@getVariable107:
+@@getVariable110:
  mov ax, [AbsoluteLab]
  add ax, [SymbolInt]
  mov word [AbsoluteLab], ax
 
-;-123             } else numbererror();  
+;-129             } else numbererror();  
 
- jmp @@getVariable108
-@@getVariable103:
+ jmp @@getVariable111
+@@getVariable106:
  call numbererror
 
-;-124         }    
+;-130         }    
 
-@@getVariable108:
+@@getVariable111:
 
-;-125     }
+;-131     }
 
-@@getVariable102:
+@@getVariable105:
 
-;-126     else dataexit();
+;-132     else dataexit();
 
- jmp @@getVariable109
+ jmp @@getVariable112
 @@getVariable86:
  call dataexit
 
-;-127 }
+;-133 }
 
-@@getVariable109:
+@@getVariable112:
 
-;-128 
+;-134 
 
 
-;-129 int lookCode() {//ret: CodeType, *OpCodePtr
+;-135 int lookCode() {//ret: CodeType, *OpCodePtr
  LEAVE
  ret
 ; ENDP
@@ -2622,25 +2712,25 @@ getVariable_0 db "Absolute is null",0
 
 lookCode:  ; *** PROC ***
 
-;-130     CodeType=0;
+;-136     CodeType=0;
 
  mov eax, 0
  mov byte [CodeType], al
 
-;-131     OpCodePtr= &I_START;
+;-137     OpCodePtr= &I_START;
 
  mov ax, I_START
  mov word [OpCodePtr], ax
 
-;-132     OpCodePtr++;
+;-138     OpCodePtr++;
 
  inc  word [OpCodePtr]
 
-;-133     do  {
+;-139     do  {
 
-@@lookCode110:
+@@lookCode113:
 
-;-134         if (eqstr(SymbolUpper, OpCodePtr))  {
+;-140         if (eqstr(SymbolUpper, OpCodePtr))  {
 
  push word [OpCodePtr]
  lea  ax, [SymbolUpper]
@@ -2648,72 +2738,72 @@ lookCode:  ; *** PROC ***
  call eqstr
  add  sp, 4
  or  al, al
- je @@lookCode111
+ je @@lookCode114
 
-;-135             while(*OpCodePtr!=0) OpCodePtr++;
+;-141             while(*OpCodePtr!=0) OpCodePtr++;
 
-@@lookCode112:
+@@lookCode115:
  mov bx, [OpCodePtr]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@lookCode113
+ je  @@lookCode116
  inc  word [OpCodePtr]
 
-;-136             OpCodePtr++; 
+;-142             OpCodePtr++; 
 
- jmp @@lookCode112
-@@lookCode113:
+ jmp @@lookCode115
+@@lookCode116:
  inc  word [OpCodePtr]
 
-;-137             CodeType =*OpCodePtr;
+;-143             CodeType =*OpCodePtr;
 
  mov bx, [OpCodePtr]
  mov al, [bx]
  mov ah, 0
  mov byte [CodeType], al
 
-;-138             return;
+;-144             return;
 
  jmp @@retn
 
-;-139         }
+;-145         }
 
 
-;-140     while(*OpCodePtr!=0xF1) OpCodePtr++;
+;-146     while(*OpCodePtr!=0xF1) OpCodePtr++;
 
-@@lookCode111:
 @@lookCode114:
+@@lookCode117:
  mov bx, [OpCodePtr]
  mov al, [bx]
  mov ah, 0
  cmp ax, 241
- je  @@lookCode115
+ je  @@lookCode118
  inc  word [OpCodePtr]
 
-;-141     OpCodePtr++;
+;-147     OpCodePtr++;
 
- jmp @@lookCode114
-@@lookCode115:
+ jmp @@lookCode117
+@@lookCode118:
  inc  word [OpCodePtr]
 
-;-142     } while(*OpCodePtr!=0);
+;-148     } while(*OpCodePtr!=0);
 
  mov bx, [OpCodePtr]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@lookCode116
- jmp @@lookCode110
-@@lookCode116:
+ je  @@lookCode119
+ jmp @@lookCode113
+@@lookCode119:
 
-;-143 }
-
-
-;-144 
+;-149 }
 
 
-;-145 int getCodeSize() {
+;-150 
+
+
+;-151 int getCodeSize() {
 
 @@retn:
  ret
@@ -2721,13 +2811,13 @@ lookCode:  ; *** PROC ***
 
 getCodeSize:  ; *** PROC ***
 
-;-146     if (TokeType ==ALNUME) {
+;-152     if (TokeType ==ALNUME) {
 
  mov al, [TokeType]
  cmp al, 3
- jne @@getCodeSize117
+ jne @@getCodeSize120
 
-;-147         if (eqstr(SymbolUpper,"BYTE")) {getTokeType(); return BYTE;}
+;-153         if (eqstr(SymbolUpper,"BYTE")) {getTokeType(); return BYTE;}
 
  push getCodeSize_0
  lea  ax, [SymbolUpper]
@@ -2735,53 +2825,53 @@ getCodeSize:  ; *** PROC ***
  call eqstr
  add  sp, 4
  or  al, al
- je @@getCodeSize118
+ je @@getCodeSize121
  call getTokeType
  mov eax, 1
  jmp @@retn
 
-;-148         if (eqstr(SymbolUpper,"WORD")) {getTokeType(); return WORD;}
+;-154         if (eqstr(SymbolUpper,"WORD")) {getTokeType(); return WORD;}
 
-@@getCodeSize118:
+@@getCodeSize121:
  push getCodeSize_1
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@getCodeSize119
+ je @@getCodeSize122
  call getTokeType
  mov eax, 2
  jmp @@retn
 
-;-149         if (eqstr(SymbolUpper,"DWORD")){getTokeType(); return DWORD;}
+;-155         if (eqstr(SymbolUpper,"DWORD")){getTokeType(); return DWORD;}
 
-@@getCodeSize119:
+@@getCodeSize122:
  push getCodeSize_2
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@getCodeSize120
+ je @@getCodeSize123
  call getTokeType
  mov eax, 3
  jmp @@retn
 
-;-150     } 
+;-156     } 
+
+@@getCodeSize123:
+
+;-157     return 0;
 
 @@getCodeSize120:
-
-;-151     return 0;
-
-@@getCodeSize117:
  mov eax, 0
  jmp @@retn
 
-;-152 }
+;-158 }
 
 
-;-153 int isToken(char c) {
+;-159 int isToken(char c) {
 
 @@retn:
  ret
@@ -2792,44 +2882,44 @@ getCodeSize_2 db "DWORD",0
 
 isToken:  ; *** PROC ***
 
-;-154     skipBlank();
+;-160     skipBlank();
 
 ;Function : isToken, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   153 NULL bp+4    c;
+;  250 var sign byte   159 NULL bp+4    c;
  ENTER  0,0
  call skipBlank
 
-;-155     if (*InputPtr == c) {
+;-161     if (*InputPtr == c) {
 
  mov bx, [InputPtr]
  mov al, [bx]
  mov ah, 0
  cmp al, [bp+4]
- jne @@isToken121
+ jne @@isToken124
 
-;-156         InputPtr++; 
+;-162         InputPtr++; 
 
  inc  word [InputPtr]
 
-;-157         return 1;
+;-163         return 1;
 
  mov eax, 1
  jmp @@retn
 
-;-158         } 
+;-164         } 
 
 
-;-159     return 0;
+;-165     return 0;
 
-@@isToken121:
+@@isToken124:
  mov eax, 0
  jmp @@retn
 
-;-160 }
+;-166 }
 
 
-;-161 int need(char c) {
+;-167 int need(char c) {
 
 @@retn: LEAVE
  ret
@@ -2837,11 +2927,11 @@ isToken:  ; *** PROC ***
 
 need:  ; *** PROC ***
 
-;-162     if (isToken(c)) {
+;-168     if (isToken(c)) {
 
 ;Function : need, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   161 NULL bp+4    c;
+;  250 var sign byte   167 NULL bp+4    c;
  ENTER  0,0
  mov al, byte [bp+4]
  mov ah, 0
@@ -2849,31 +2939,31 @@ need:  ; *** PROC ***
  call isToken
  add  sp, 2
  or  al, al
- je @@need122
+ je @@need125
 
-;-163         getTokeType();
+;-169         getTokeType();
 
  call getTokeType
 
-;-164         return;
+;-170         return;
 
  jmp @@retn
 
-;-165         }
+;-171         }
 
 
-;-166     error1();
+;-172     error1();
 
-@@need122:
+@@need125:
  call error1
 
-;-167     prs(". need: ");
+;-173     prs(". need: ");
 
  push need_0
  call prs
  add  sp, 2
 
-;-168     prc(c);
+;-174     prc(c);
 
  mov al, byte [bp+4]
  mov ah, 0
@@ -2881,10 +2971,10 @@ need:  ; *** PROC ***
  call prc
  add  sp, 2
 
-;-169 }
+;-175 }
 
 
-;-170 int skipRest() {
+;-176 int skipRest() {
 
 @@retn: LEAVE
  ret
@@ -2893,22 +2983,22 @@ need_0 db ". need: ",0
 
 skipRest:  ; *** PROC ***
 
-;-171     getTokeType(); 
+;-177     getTokeType(); 
 
  call getTokeType
 
-;-172     if(TokeType)error1("extra char ignored");
+;-178     if(TokeType)error1("extra char ignored");
 
  mov al, [TokeType]
  or  al, al
- je @@skipRest123
+ je @@skipRest126
  push skipRest_0
  call error1
  add  sp, 2
 
-;-173 }
+;-179 }
 
-@@skipRest123:
+@@skipRest126:
  ret
 ; ENDP
 skipRest_0 db "extra char ignored",0
@@ -2930,7 +3020,7 @@ getLine:  ; *** PROC ***
 
 ;Function : getLine, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word     2 NULL bp-2    i;
+;  250 var unsg word     2 NULL bp-2    i;
  ENTER  2,0
  mov ax, InputBuf
  mov word [InputPtr], ax
@@ -2943,7 +3033,7 @@ getLine:  ; *** PROC ***
 
 ;-5   do {
 
-@@getLine124:
+@@getLine127:
 
 ;-6     DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
 
@@ -2959,22 +3049,22 @@ getLine:  ; *** PROC ***
 
  mov ax, [DOS_ERR]
  or  al, al
- je @@getLine125
+ je @@getLine128
  push getLine_0
  call errorexit
  add  sp, 2
 
 ;-8     if (DOS_NoBytes == 0) return;
 
-@@getLine125:
+@@getLine128:
  mov ax, [DOS_NoBytes]
  cmp ax, 0
- jne @@getLine126
+ jne @@getLine129
  jmp @@retn
 
 ;-9     *InputPtr = DOS_ByteRead;
 
-@@getLine126:
+@@getLine129:
  mov al, [DOS_ByteRead]
  mov  bx, [InputPtr]
  mov  [bx], al
@@ -2993,23 +3083,23 @@ getLine:  ; *** PROC ***
 
  mov ax, [bp-2]
  cmp ax, 255 ;unsigned : 0
- jb  @@getLine127
+ jb  @@getLine130
  push getLine_1
  call errorexit
  add  sp, 2
 
 ;-13   } while (ifEOL(DOS_ByteRead) == 0);
 
-@@getLine127:
+@@getLine130:
  mov al, byte [DOS_ByteRead]
  mov ah, 0
  push ax
  call ifEOL
  add  sp, 2
  cmp al, 0
- jne @@getLine128
- jmp @@getLine124
-@@getLine128:
+ jne @@getLine131
+ jmp @@getLine127
+@@getLine131:
 
 ;-14   InputPtr--;
 
@@ -3038,20 +3128,20 @@ ifEOL:  ; *** PROC ***
 
 ;Function : ifEOL, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    17 NULL bp+4    c;
+;  250 var sign byte    17 NULL bp+4    c;
  ENTER  0,0
  mov al, [bp+4]
  cmp al, 10
- jne @@ifEOL129
+ jne @@ifEOL132
  mov eax, 1
  jmp @@retn
 
 ;-19   if (c == 13) {
 
-@@ifEOL129:
+@@ifEOL132:
  mov al, [bp+4]
  cmp al, 13
- jne @@ifEOL130
+ jne @@ifEOL133
 
 ;-20     DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
 
@@ -3070,7 +3160,7 @@ ifEOL:  ; *** PROC ***
 
 ;-22   return 0;
 
-@@ifEOL130:
+@@ifEOL133:
  mov eax, 0
  jmp @@retn
 
@@ -3095,24 +3185,24 @@ skipBlank:  ; *** PROC ***
  mov al, [bx]
  mov ah, 0
  cmp ax, 32
- jne @@skipBlank131
+ jne @@skipBlank134
  inc  word [InputPtr]
  jmp @@skipblank1
 
 ;-27     if (*InputPtr == 9  ) { InputPtr++; goto skipblank1; }
 
-@@skipBlank131:
+@@skipBlank134:
  mov bx, [InputPtr]
  mov al, [bx]
  mov ah, 0
  cmp ax, 9
- jne @@skipBlank132
+ jne @@skipBlank135
  inc  word [InputPtr]
  jmp @@skipblank1
 
 ;-28 }
 
-@@skipBlank132:
+@@skipBlank135:
 
 ;-29 int letterE(char c) {
 
@@ -3125,75 +3215,75 @@ letterE:  ; *** PROC ***
 
 ;Function : letterE, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    29 NULL bp+4    c;
+;  250 var sign byte    29 NULL bp+4    c;
  ENTER  0,0
  mov al, [bp+4]
  cmp al, 95
- jne @@letterE133
+ jne @@letterE136
  mov eax, 1
  jmp @@retn
 
 ;-31   if (c=='.') return 1;
 
-@@letterE133:
+@@letterE136:
  mov al, [bp+4]
  cmp al, 46
- jne @@letterE134
+ jne @@letterE137
  mov eax, 1
  jmp @@retn
 
 ;-32   if (c=='?') return 1;
 
-@@letterE134:
+@@letterE137:
  mov al, [bp+4]
  cmp al, 63
- jne @@letterE135
+ jne @@letterE138
  mov eax, 1
  jmp @@retn
 
 ;-33   if (c=='$') return 1;
 
-@@letterE135:
+@@letterE138:
  mov al, [bp+4]
  cmp al, 36
- jne @@letterE136
+ jne @@letterE139
  mov eax, 1
  jmp @@retn
 
 ;-34   if (c> 'z') return 0;
 
-@@letterE136:
+@@letterE139:
  mov al, [bp+4]
  cmp al, 122
- jle @@letterE137
+ jle @@letterE140
  mov eax, 0
  jmp @@retn
 
 ;-35   if (c< '@') return 0; // at included
 
-@@letterE137:
+@@letterE140:
  mov al, [bp+4]
  cmp al, 64
- jge @@letterE138
+ jge @@letterE141
  mov eax, 0
  jmp @@retn
 
 ;-36   if (c> 'Z') { if (c< 'a') return 0; }
 
-@@letterE138:
+@@letterE141:
  mov al, [bp+4]
  cmp al, 90
- jle @@letterE139
+ jle @@letterE142
  mov al, [bp+4]
  cmp al, 97
- jge @@letterE140
+ jge @@letterE143
  mov eax, 0
  jmp @@retn
-@@letterE140:
+@@letterE143:
 
 ;-37   return 1;
 
-@@letterE139:
+@@letterE142:
  mov eax, 1
  jmp @@retn
 
@@ -3212,7 +3302,7 @@ alnumE:  ; *** PROC ***
 
 ;Function : alnumE, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    39 NULL bp+4    c;
+;  250 var sign byte    39 NULL bp+4    c;
  ENTER  0,0
  mov al, byte [bp+4]
  mov ah, 0
@@ -3220,26 +3310,26 @@ alnumE:  ; *** PROC ***
  call digit
  add  sp, 2
  or  al, al
- je @@alnumE141
+ je @@alnumE144
  mov eax, 1
  jmp @@retn
 
 ;-41   if (letterE(c)) return 1;
 
-@@alnumE141:
+@@alnumE144:
  mov al, byte [bp+4]
  mov ah, 0
  push ax
  call letterE
  add  sp, 2
  or  al, al
- je @@alnumE142
+ je @@alnumE145
  mov eax, 1
  jmp @@retn
 
 ;-42   return 0;
 
-@@alnumE142:
+@@alnumE145:
  mov eax, 0
  jmp @@retn
 
@@ -3261,15 +3351,15 @@ getDigit:  ; *** PROC ***
 
 ;Function : getDigit, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg byte    44 NULL bp+4    c
-;  201 var unsg word    45 NULL bp-2    CastInt;
+;  250 var unsg byte    44 NULL bp+4    c
+;  251 var unsg word    45 NULL bp-2    CastInt;
  ENTER  2,0
  mov eax, 0
  mov word [SymbolInt], ax
 
 ;-47   do {
 
-@@getDigit143:
+@@getDigit146:
 
 ;-48     c-='0';
 
@@ -3313,9 +3403,9 @@ getDigit:  ; *** PROC ***
  call digit
  add  sp, 2
  or  al, al
- je @@getDigit144
- jmp @@getDigit143
-@@getDigit144:
+ je @@getDigit147
+ jmp @@getDigit146
+@@getDigit147:
 
 ;-55 }
 
@@ -3334,9 +3424,9 @@ getName:  ; *** PROC ***
 
 ;Function : getName, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg byte    56 NULL bp+4    c
-;  201 ptr sign byte    57 NULL bp-2    p
-;  202 var unsg word    57 NULL bp-4    i;
+;  250 var unsg byte    56 NULL bp+4    c
+;  251 ptr sign byte    57 NULL bp-2    p
+;  252 var unsg word    57 NULL bp-4    i;
  ENTER  4,0
  mov ax, Symbol
  mov word [bp-2], ax
@@ -3353,14 +3443,14 @@ getName:  ; *** PROC ***
 
 ;-61   while (alnumE(c)) {
 
-@@getName145:
+@@getName148:
  mov al, byte [bp+4]
  mov ah, 0
  push ax
  call alnumE
  add  sp, 2
  or  al, al
- je @@getName146
+ je @@getName149
 
 ;-62     InputPtr++;
 
@@ -3393,32 +3483,32 @@ getName:  ; *** PROC ***
 
  mov ax, [bp-4]
  cmp ax, 31 ;unsigned : 0
- jb  @@getName147
+ jb  @@getName150
  push getName_0
  call errorexit
  add  sp, 2
 
 ;-68   }
 
-@@getName147:
+@@getName150:
 
 ;-69   if (c == ':') isLabel=1; else isLabel=0;
 
- jmp @@getName145
-@@getName146:
+ jmp @@getName148
+@@getName149:
  mov al, [bp+4]
  cmp al, 58
- jne @@getName148
+ jne @@getName151
  mov eax, 1
  mov byte [isLabel], al
- jmp @@getName149
-@@getName148:
+ jmp @@getName152
+@@getName151:
  mov eax, 0
  mov byte [isLabel], al
 
 ;-70   p--;
 
-@@getName149:
+@@getName152:
  dec  word [bp-2]
 
 ;-71   *p = 0;
@@ -3469,25 +3559,25 @@ testReg:  ; *** PROC ***
  call strlen
  add  sp, 2
  cmp al, 2
- jge @@testReg150
+ jge @@testReg153
  mov eax, 0
  jmp @@retn
 
 ;-79   if (strlen(Symbol) > 3) return 0;
 
-@@testReg150:
+@@testReg153:
  lea  ax, [Symbol]
  push ax
  call strlen
  add  sp, 2
  cmp al, 3
- jle @@testReg151
+ jle @@testReg154
  mov eax, 0
  jmp @@retn
 
 ;-80   R2Type=BYTE;
 
-@@testReg151:
+@@testReg154:
  mov eax, 1
  mov byte [R2Type], al
 
@@ -3499,104 +3589,104 @@ testReg:  ; *** PROC ***
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg152
+ je @@testReg155
  mov eax, 0
  jmp @@retn
 
 ;-82   if (eqstr(SymbolUpper, "CL")) return 1;
 
-@@testReg152:
+@@testReg155:
  push testReg_1
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg153
+ je @@testReg156
  mov eax, 1
  jmp @@retn
 
 ;-83   if (eqstr(SymbolUpper, "DL")) return 2;
 
-@@testReg153:
+@@testReg156:
  push testReg_2
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg154
+ je @@testReg157
  mov eax, 2
  jmp @@retn
 
 ;-84   if (eqstr(SymbolUpper, "BL")) return 3;
 
-@@testReg154:
+@@testReg157:
  push testReg_3
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg155
+ je @@testReg158
  mov eax, 3
  jmp @@retn
 
 ;-85   if (eqstr(SymbolUpper, "AH")) return 4;
 
-@@testReg155:
+@@testReg158:
  push testReg_4
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg156
+ je @@testReg159
  mov eax, 4
  jmp @@retn
 
 ;-86   if (eqstr(SymbolUpper, "CH")) return 5;
 
-@@testReg156:
+@@testReg159:
  push testReg_5
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg157
+ je @@testReg160
  mov eax, 5
  jmp @@retn
 
 ;-87   if (eqstr(SymbolUpper, "DH")) return 6;
 
-@@testReg157:
+@@testReg160:
  push testReg_6
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg158
+ je @@testReg161
  mov eax, 6
  jmp @@retn
 
 ;-88   if (eqstr(SymbolUpper, "BH")) return 7;
 
-@@testReg158:
+@@testReg161:
  push testReg_7
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg159
+ je @@testReg162
  mov eax, 7
  jmp @@retn
 
 ;-89   R2Type=WORD;
 
-@@testReg159:
+@@testReg162:
  mov eax, 2
  mov byte [R2Type], al
 
@@ -3608,104 +3698,104 @@ testReg:  ; *** PROC ***
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg160
+ je @@testReg163
  mov eax, 0
  jmp @@retn
 
 ;-91   if (eqstr(SymbolUpper, "CX")) return 1;
 
-@@testReg160:
+@@testReg163:
  push testReg_9
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg161
+ je @@testReg164
  mov eax, 1
  jmp @@retn
 
 ;-92   if (eqstr(SymbolUpper, "DX")) return 2;
 
-@@testReg161:
+@@testReg164:
  push testReg_10
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg162
+ je @@testReg165
  mov eax, 2
  jmp @@retn
 
 ;-93   if (eqstr(SymbolUpper, "BX")) return 3;
 
-@@testReg162:
+@@testReg165:
  push testReg_11
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg163
+ je @@testReg166
  mov eax, 3
  jmp @@retn
 
 ;-94   if (eqstr(SymbolUpper, "SP")) return 4;
 
-@@testReg163:
+@@testReg166:
  push testReg_12
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg164
+ je @@testReg167
  mov eax, 4
  jmp @@retn
 
 ;-95   if (eqstr(SymbolUpper, "BP")) return 5;
 
-@@testReg164:
+@@testReg167:
  push testReg_13
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg165
+ je @@testReg168
  mov eax, 5
  jmp @@retn
 
 ;-96   if (eqstr(SymbolUpper, "SI")) return 6;
 
-@@testReg165:
+@@testReg168:
  push testReg_14
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg166
+ je @@testReg169
  mov eax, 6
  jmp @@retn
 
 ;-97   if (eqstr(SymbolUpper, "DI")) return 7;
 
-@@testReg166:
+@@testReg169:
  push testReg_15
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg167
+ je @@testReg170
  mov eax, 7
  jmp @@retn
 
 ;-98   R2Type=SEGREG;
 
-@@testReg167:
+@@testReg170:
  mov eax, 4
  mov byte [R2Type], al
 
@@ -3717,78 +3807,78 @@ testReg:  ; *** PROC ***
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg168
+ je @@testReg171
  mov eax, 0
  jmp @@retn
 
 ;-100   if (eqstr(SymbolUpper, "CS")) return 1;
 
-@@testReg168:
+@@testReg171:
  push testReg_17
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg169
+ je @@testReg172
  mov eax, 1
  jmp @@retn
 
 ;-101   if (eqstr(SymbolUpper, "SS")) return 2;
 
-@@testReg169:
+@@testReg172:
  push testReg_18
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg170
+ je @@testReg173
  mov eax, 2
  jmp @@retn
 
 ;-102   if (eqstr(SymbolUpper, "DS")) return 3;
 
-@@testReg170:
+@@testReg173:
  push testReg_19
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg171
+ je @@testReg174
  mov eax, 3
  jmp @@retn
 
 ;-103   if (eqstr(SymbolUpper, "FS")) return 4;
 
-@@testReg171:
+@@testReg174:
  push testReg_20
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg172
+ je @@testReg175
  mov eax, 4
  jmp @@retn
 
 ;-104   if (eqstr(SymbolUpper, "GS")) return 5;
 
-@@testReg172:
+@@testReg175:
  push testReg_21
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg173
+ je @@testReg176
  mov eax, 5
  jmp @@retn
 
 ;-105   R2Type=DWORD;                         
 
-@@testReg173:
+@@testReg176:
  mov eax, 3
  mov byte [R2Type], al
 
@@ -3800,104 +3890,104 @@ testReg:  ; *** PROC ***
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg174
+ je @@testReg177
  mov eax, 0
  jmp @@retn
 
 ;-107   if (eqstr(SymbolUpper, "ECX"))return 1;
 
-@@testReg174:
+@@testReg177:
  push testReg_23
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg175
+ je @@testReg178
  mov eax, 1
  jmp @@retn
 
 ;-108   if (eqstr(SymbolUpper, "EDX"))return 2;
 
-@@testReg175:
+@@testReg178:
  push testReg_24
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg176
+ je @@testReg179
  mov eax, 2
  jmp @@retn
 
 ;-109   if (eqstr(SymbolUpper, "EBX"))return 3;
 
-@@testReg176:
+@@testReg179:
  push testReg_25
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg177
+ je @@testReg180
  mov eax, 3
  jmp @@retn
 
 ;-110   if (eqstr(SymbolUpper, "ESP"))return 4;
 
-@@testReg177:
+@@testReg180:
  push testReg_26
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg178
+ je @@testReg181
  mov eax, 4
  jmp @@retn
 
 ;-111   if (eqstr(SymbolUpper, "EBP"))return 5;
 
-@@testReg178:
+@@testReg181:
  push testReg_27
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg179
+ je @@testReg182
  mov eax, 5
  jmp @@retn
 
 ;-112   if (eqstr(SymbolUpper, "ESI"))return 6;
 
-@@testReg179:
+@@testReg182:
  push testReg_28
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg180
+ je @@testReg183
  mov eax, 6
  jmp @@retn
 
 ;-113   if (eqstr(SymbolUpper, "EDI"))return 7;
 
-@@testReg180:
+@@testReg183:
  push testReg_29
  lea  ax, [SymbolUpper]
  push ax
  call eqstr
  add  sp, 4
  or  al, al
- je @@testReg181
+ je @@testReg184
  mov eax, 7
  jmp @@retn
 
 ;-114   R2Type=0; return 0;
 
-@@testReg181:
+@@testReg184:
  mov eax, 0
  mov byte [R2Type], al
  mov eax, 0
@@ -3956,8 +4046,8 @@ printLine:  ; *** PROC ***
 
 ;Function : printLine, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word     2 NULL bp-2    i
-;  201 var sign byte     2 NULL bp-4    c;
+;  250 var sign word     2 NULL bp-2    i
+;  251 var sign byte     2 NULL bp-4    c;
  ENTER  4,0
  push printLine_0
  call prs
@@ -3973,15 +4063,15 @@ printLine:  ; *** PROC ***
 
  mov ax, [OpPrintIndex]
  cmp ax, 0
- jne @@printLine182
+ jne @@printLine185
  push printLine_1
  call prs
  add  sp, 2
 
 ;-6     else {
 
- jmp @@printLine183
-@@printLine182:
+ jmp @@printLine186
+@@printLine185:
 
 ;-7 //        prc(' ');
 
@@ -3993,7 +4083,7 @@ printLine:  ; *** PROC ***
 
 ;-9         do {
 
-@@printLine184:
+@@printLine187:
 
 ;-10             c=OpPos[i];
 
@@ -4023,16 +4113,16 @@ printLine:  ; *** PROC ***
 
  mov ax, [bp-2]
  cmp ax, [OpPrintIndex]
- jge @@printLine185
- jmp @@printLine184
-@@printLine185:
+ jge @@printLine188
+ jmp @@printLine187
+@@printLine188:
 
 ;-15         while (i < OPMAXLEN) {// fill rest with blank
 
-@@printLine186:
+@@printLine189:
  mov ax, [bp-2]
  cmp ax, 5
- jge @@printLine187
+ jge @@printLine190
 
 ;-16             prs("   ");
 
@@ -4049,12 +4139,12 @@ printLine:  ; *** PROC ***
 
 ;-19     }
 
- jmp @@printLine186
-@@printLine187:
+ jmp @@printLine189
+@@printLine190:
 
 ;-20     prc(PrintRA);
 
-@@printLine183:
+@@printLine186:
  mov al, byte [PrintRA]
  mov ah, 0
  push ax
@@ -4085,16 +4175,16 @@ prc:  ; *** PROC ***
 
 ;Function : prc, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg byte    23 NULL bp+4    c;
+;  250 var unsg byte    23 NULL bp+4    c;
  ENTER  0,0
  mov al, [LIST]
  or  al, al
- je @@prc188
+ je @@prc191
 
 ;-25         if ( _ c==10) {
 
 cmp byte [bp+4], 10
- jne @@prc189
+ jne @@prc192
 
 ;-26             ax=13; 
 
@@ -4109,7 +4199,7 @@ cmp byte [bp+4], 10
 
 ;-29         al=c; 
 
-@@prc189:
+@@prc192:
  mov  al, [bp+4]
 
 ;-30         writetty(); 
@@ -4121,7 +4211,7 @@ cmp byte [bp+4], 10
 
 ;-32     fputcR(c,lst_fd); 
 
-@@prc188:
+@@prc191:
  push word [lst_fd]
  mov al, byte [bp+4]
  mov ah, 0
@@ -4149,15 +4239,15 @@ prscomment:  ; *** PROC ***
 
 ;Function : prscomment, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr unsg byte    35 NULL bp+4    s
-;  201 var unsg byte    36 NULL bp-2    c;
+;  250 ptr unsg byte    35 NULL bp+4    s
+;  251 var unsg byte    36 NULL bp-2    c;
  ENTER  2,0
-@@prscomment190:
+@@prscomment193:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@prscomment191
+ je @@prscomment194
 
 ;-38         c=*s;
 
@@ -4183,8 +4273,8 @@ prscomment:  ; *** PROC ***
 
 ;-42 }
 
- jmp @@prscomment190
-@@prscomment191:
+ jmp @@prscomment193
+@@prscomment194:
 
 ;-43 int prs(unsigned char *s) {
  LEAVE
@@ -4203,21 +4293,21 @@ prs:  ; *** PROC ***
 
 ;Function : prs, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 ptr unsg byte    43 NULL bp+4    s
-;  201 var unsg byte    44 NULL bp-2    c
-;  202 var sign word    45 NULL bp-4    com;
+;  250 ptr unsg byte    43 NULL bp+4    s
+;  251 var unsg byte    44 NULL bp-2    c
+;  252 var sign word    45 NULL bp-4    com;
  ENTER  4,0
  mov eax, 0
  mov word [bp-4], ax
 
 ;-47     while (*s) { 
 
-@@prs192:
+@@prs195:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@prs193
+ je @@prs196
 
 ;-48         c=*s; 
 
@@ -4230,39 +4320,39 @@ prs:  ; *** PROC ***
 
  mov al, [bp-2]
  cmp al, 34
- jne @@prs194
+ jne @@prs197
 
 ;-50             if (com) com=0; 
 
  mov ax, [bp-4]
  or  al, al
- je @@prs195
+ je @@prs198
  mov eax, 0
  mov word [bp-4], ax
 
 ;-51                 else com=1;  
 
- jmp @@prs196
-@@prs195:
+ jmp @@prs199
+@@prs198:
  mov eax, 1
  mov word [bp-4], ax
 
 ;-52         }
 
-@@prs196:
+@@prs199:
 
 ;-53         if (c==92) { 
 
-@@prs194:
+@@prs197:
  mov al, [bp-2]
  cmp al, 92
- jne @@prs197
+ jne @@prs200
 
 ;-54             if (com==0) { 
 
  mov ax, [bp-4]
  cmp ax, 0
- jne @@prs198
+ jne @@prs201
 
 ;-55                 s++; 
 
@@ -4279,30 +4369,30 @@ prs:  ; *** PROC ***
 
  mov al, [bp-2]
  cmp al, 110
- jne @@prs199
+ jne @@prs202
  mov eax, 10
  mov byte [bp-2], al
 
 ;-58                 if (c=='t') c= 9; 
 
-@@prs199:
+@@prs202:
  mov al, [bp-2]
  cmp al, 116
- jne @@prs200
+ jne @@prs203
  mov eax, 9
  mov byte [bp-2], al
 
 ;-59             } 
 
-@@prs200:
+@@prs203:
 
 ;-60         } 
 
-@@prs198:
+@@prs201:
 
 ;-61         prc(c); 
 
-@@prs197:
+@@prs200:
  mov al, byte [bp-2]
  mov ah, 0
  push ax
@@ -4318,8 +4408,8 @@ prs:  ; *** PROC ***
 
 ;-64 }
 
- jmp @@prs192
-@@prs193:
+ jmp @@prs195
+@@prs196:
 
 ;-65 int printhex8a(unsigned char c) { 
  LEAVE
@@ -4335,8 +4425,8 @@ printhex8a:  ; *** PROC ***
 
 ;Function : printhex8a, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg byte    65 NULL bp+4    c
-;  201 var unsg byte    66 NULL bp-2    nib;
+;  250 var unsg byte    65 NULL bp+4    c
+;  251 var unsg byte    66 NULL bp-2    nib;
  ENTER  2,0
  mov al, [bp+4]
  shr al, 4
@@ -4372,7 +4462,7 @@ printhex4:  ; *** PROC ***
 
 ;Function : printhex4, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg byte    70 NULL bp+4    c;
+;  250 var unsg byte    70 NULL bp+4    c;
  ENTER  0,0
  add  byte [bp+4], 48
 
@@ -4380,12 +4470,12 @@ printhex4:  ; *** PROC ***
 
  mov al, [bp+4]
  cmp al, 57
- jle @@printhex4201
+ jle @@printhex4204
  add  byte [bp+4], 7
 
 ;-73     prc(c);      
 
-@@printhex4201:
+@@printhex4204:
  mov al, byte [bp+4]
  mov ah, 0
  push ax
@@ -4409,8 +4499,8 @@ printhex16:  ; *** PROC ***
 
 ;Function : printhex16, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    75 NULL bp+4    i
-;  201 var unsg word    76 NULL bp-2    half;
+;  250 var unsg word    75 NULL bp+4    i
+;  251 var unsg word    76 NULL bp-2    half;
  ENTER  2,0
  mov ax, [bp+4]
  shr ax, 8
@@ -4445,11 +4535,11 @@ printIntU:  ; *** PROC ***
 
 ;Function : printIntU, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    80 NULL bp+4    n
-;  201 var unsg word    81 NULL bp-2    e;
+;  250 var unsg word    80 NULL bp+4    n
+;  251 var unsg word    81 NULL bp-2    e;
  ENTER  2,0
 cmp word [bp+4], 10 ;unsigned : 0
- jb  @@printIntU202
+ jb  @@printIntU205
 
 ;-83         e=n/10; //DIV
 
@@ -4470,7 +4560,7 @@ cmp word [bp+4], 10 ;unsigned : 0
 
 ;-86     n = n % 10; //unsigned mod
 
-@@printIntU202:
+@@printIntU205:
  mov ax, [bp+4]
  mov bx, 10
  mov dx, 0
@@ -4505,7 +4595,7 @@ error1:  ; *** PROC ***
 
 ;Function : error1, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte    91 NULL bp+4    s;
+;  250 ptr sign byte    91 NULL bp+4    s;
  ENTER  0,0
  mov eax, 1
  mov byte [LIST], al
@@ -4555,7 +4645,7 @@ errorexit:  ; *** PROC ***
 
 ;Function : errorexit, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte    99 NULL bp+4    s;
+;  250 ptr sign byte    99 NULL bp+4    s;
  ENTER  0,0
  push word [bp+4]
  call error1
@@ -4779,9 +4869,9 @@ getarg:  ; *** PROC ***
 
 ;Function : getarg, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word    10 NULL bp-2    arglen1
-;  201 var sign word    10 NULL bp-4    i
-;  202 ptr sign byte    10 NULL bp-6    c;
+;  250 var sign word    10 NULL bp-2    arglen1
+;  251 var sign word    10 NULL bp-4    i
+;  252 ptr sign byte    10 NULL bp-6    c;
  ENTER  6,0
  mov bx, [arglen]
  mov al, [bx]
@@ -4792,7 +4882,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [bp-2]
  cmp ax, 0
- jne @@getarg203
+ jne @@getarg206
 
 ;-13         cputs(Version1);
 
@@ -4818,7 +4908,7 @@ getarg:  ; *** PROC ***
 
 ;-17     i=arglen1+129; 
 
-@@getarg203:
+@@getarg206:
  mov ax, [bp-2]
  add ax, 129
  mov word [bp-4], ax
@@ -4910,7 +5000,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [DOS_ERR]
  or  al, al
- je @@getarg204
+ je @@getarg207
  push getarg_4
  call cputs
  add  sp, 2
@@ -4924,7 +5014,7 @@ getarg:  ; *** PROC ***
 
 ;-30     lst_fd=creatR(namelst);
 
-@@getarg204:
+@@getarg207:
  lea  ax, [namelst]
  push ax
  call creatR
@@ -4935,7 +5025,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [DOS_ERR]
  or  al, al
- je @@getarg205
+ je @@getarg208
  push getarg_5
  call cputs
  add  sp, 2
@@ -4949,7 +5039,7 @@ getarg:  ; *** PROC ***
 
 ;-32     bin_fd=creatR(namebin);
 
-@@getarg205:
+@@getarg208:
  lea  ax, [namebin]
  push ax
  call creatR
@@ -4960,7 +5050,7 @@ getarg:  ; *** PROC ***
 
  mov ax, [DOS_ERR]
  or  al, al
- je @@getarg206
+ je @@getarg209
  push getarg_6
  call cputs
  add  sp, 2
@@ -4977,7 +5067,7 @@ getarg:  ; *** PROC ***
 
 ;-35     prs(";"); 
 
-@@getarg206:
+@@getarg209:
  push getarg_7
  call prs
  add  sp, 2
@@ -5057,11 +5147,11 @@ fixJmpCall:  ; *** PROC ***
 
 ;Function : fixJmpCall, Number of local variables: 5
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word    44 NULL bp-2    i
-;  201 var unsg word    44 NULL bp-4    hex
-;  202 ptr sign byte    44 NULL bp-6    p
-;  203 var sign word    44 NULL bp-8    Ix
-;  204 var sign byte    44 NULL bp-10    c;
+;  250 var sign word    44 NULL bp-2    i
+;  251 var unsg word    44 NULL bp-4    hex
+;  252 ptr sign byte    44 NULL bp-6    p
+;  253 var sign word    44 NULL bp-8    Ix
+;  254 var sign byte    44 NULL bp-10    c;
  ENTER  10,0
  mov eax, 1
  mov word [bp-2], ax
@@ -5085,10 +5175,10 @@ fixJmpCall:  ; *** PROC ***
 
 ;-49     while (i <= JmpCallMaxIx) {
 
-@@fixJmpCall207:
+@@fixJmpCall210:
  mov ax, [bp-2]
  cmp ax, [JmpCallMaxIx]
- jg  @@fixJmpCall208
+ jg  @@fixJmpCall211
 
 ;-50         strcpy(Symbol, p);
 
@@ -5139,14 +5229,14 @@ fixJmpCall:  ; *** PROC ***
 
  mov ax, [bp-8]
  cmp ax, 0
- jne @@fixJmpCall209
+ jne @@fixJmpCall212
  push fixJmpCall_1
  call error1
  add  sp, 2
 
 ;-60         disp = LabelAddr[Ix];
 
-@@fixJmpCall209:
+@@fixJmpCall212:
  mov bx, [bp-8]
  shl bx, 1
  mov ax, [LabelAddr + bx]
@@ -5207,8 +5297,8 @@ fixJmpCall:  ; *** PROC ***
 
 ;-72 }
 
- jmp @@fixJmpCall207
-@@fixJmpCall208:
+ jmp @@fixJmpCall210
+@@fixJmpCall211:
 
 ;-73 
 
@@ -5229,9 +5319,9 @@ epilog:  ; *** PROC ***
 
 ;Function : epilog, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    75 NULL bp-2    i
-;  201 var sign byte    75 NULL bp-4    c
-;  202 var sign word    75 NULL bp-6    j;
+;  250 var unsg word    75 NULL bp-2    i
+;  251 var sign byte    75 NULL bp-4    c
+;  252 var sign word    75 NULL bp-6    j;
  ENTER  6,0
  push epilog_0
  call prs
@@ -5247,14 +5337,14 @@ epilog:  ; *** PROC ***
 
  mov ax, [ErrorCount]
  or  al, al
- je @@epilog210
+ je @@epilog213
  push epilog_1
  call prs
  add  sp, 2
 
 ;-79     prs(", Out: "); 
 
-@@epilog210:
+@@epilog213:
  push epilog_2
  call prs
  add  sp, 2
@@ -5307,7 +5397,7 @@ epilog:  ; *** PROC ***
 
 ;-88     do {
 
-@@epilog211:
+@@epilog214:
 
 ;-89         c = FileBin[i];
 
@@ -5335,9 +5425,9 @@ epilog:  ; *** PROC ***
 
  mov ax, [bp-2]
  cmp ax, [BinLen]
- jge @@epilog212
- jmp @@epilog211
-@@epilog212:
+ jge @@epilog215
+ jmp @@epilog214
+@@epilog215:
 
 ;-94 
 
@@ -5436,7 +5526,7 @@ end1:  ; *** PROC ***
 
 ;Function : end1, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word   117 NULL bp+4    n;
+;  250 var sign word   117 NULL bp+4    n;
  ENTER  0,0
  push word [asm_fd]
  call fcloseR
@@ -5529,8 +5619,8 @@ genCode2:  ; *** PROC ***
 
 ;Function : genCode2, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte     9 NULL bp+4    c
-;  201 var sign byte     9 NULL bp+6    d;
+;  250 var sign byte     9 NULL bp+4    c
+;  251 var sign byte     9 NULL bp+6    d;
  ENTER  0,0
  mov al, [bp+4]
  add al, [bp+6]
@@ -5558,7 +5648,7 @@ genCodeW:  ; *** PROC ***
 
 ;Function : genCodeW, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    13 NULL bp+4    c;
+;  250 var sign byte    13 NULL bp+4    c;
  ENTER  0,0
  mov al, [bp+4]
  add al, [wflag]
@@ -5589,7 +5679,7 @@ genCode8:  ; *** PROC ***
 
 ;Function : genCode8, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    17 NULL bp+4    c;
+;  250 var sign byte    17 NULL bp+4    c;
  ENTER  0,0
  mov al, [bp+4]
  mov bx, [BinLen]
@@ -5607,17 +5697,17 @@ genCode8:  ; *** PROC ***
 
  mov ax, [BinLen]
  cmp ax, 20000 ;unsigned : 0
- jb  @@genCode8213
+ jb  @@genCode8216
  push genCode8_0
  call errorexit
  add  sp, 2
 
 ;-23     if (OpPrintIndex < OPMAXLEN) {
 
-@@genCode8213:
+@@genCode8216:
  mov ax, [OpPrintIndex]
  cmp ax, 5
- jge @@genCode8214
+ jge @@genCode8217
 
 ;-24         OpPos[OpPrintIndex]=c;
 
@@ -5634,7 +5724,7 @@ genCode8:  ; *** PROC ***
 
 ;-27 }
 
-@@genCode8214:
+@@genCode8217:
 
 ;-28 int genCode16(unsigned int i) {
  LEAVE
@@ -5648,7 +5738,7 @@ genCode16:  ; *** PROC ***
 
 ;Function : genCode16, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var unsg word    28 NULL bp+4    i;
+;  250 var unsg word    28 NULL bp+4    i;
  ENTER  0,0
  push word [bp+4]
  call genCode8
@@ -5666,267 +5756,308 @@ genCode16:  ; *** PROC ***
 ;-31 }
 
 
-;-32 int writeEA(char xxx) {//value for reg/operand
+;-32 int genCode32(unsigned long L) {
+ LEAVE
+ ret
+; ENDP
+
+genCode32:  ; *** PROC ***
+
+;-33     genCode16(L); L=L >>16;
+
+;Function : genCode32, Number of local variables: 1
+;   # type sign width line used address name   list of local variables
+;  250 var unsg dwrd    32 NULL bp+4    L;
+ ENTER  0,0
+ push dword [bp+4]
+ call genCode16
+ add  sp, 4
+ mov eax, [bp+4]
+ shr eax, 16
+ mov dword [bp+4], eax
+
+;-34     genCode16(L);
+
+ push dword [bp+4]
+ call genCode16
+ add  sp, 4
+
+;-35 }
+
+
+;-36 int writeEA(char xxx) {//value for reg/operand
  LEAVE
  ret
 ; ENDP
 
 writeEA:  ; *** PROC ***
 
-;-33 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
+;-37 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
 
 
-;-34 //mod-bits: mode76, reg/opcode543, r/m210   
+;-38 //mod-bits: mode76, reg/opcode543, r/m210   
 
 
-;-35 //Op: 0, IMM, REG, ADR, MEM   
+;-39 //Op: 0, IMM, REG, ADR, MEM   
 
 
-;-36     char len;
+;-40     char len;
 
 
-;-37     len=0;   
+;-41     len=0;   
 
 ;Function : writeEA, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    32 NULL bp+4    xxx
-;  201 var sign byte    36 NULL bp-2    len;
+;  250 var sign byte    36 NULL bp+4    xxx
+;  251 var sign byte    40 NULL bp-2    len;
  ENTER  2,0
  mov eax, 0
  mov byte [bp-2], al
 
-;-38     xxx = xxx << 3;//in reg/opcode field      
+;-42     xxx = xxx << 3;//in reg/opcode field      
 
  mov al, [bp+4]
  shl al, 3
  mov byte [bp+4], al
 
-;-39     if (Op == REG) {
+;-43     if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne @@writeEA215
+ jne @@writeEA218
 
-;-40         xxx |= 0xC0;     
+;-44         xxx |= 0xC0;     
 
  or  byte [bp+4], 192
 
-;-41         if (Op2 <= IMM) xxx = xxx + R1No;//empty or IMM 
+;-45         if (Op2 <= IMM) xxx = xxx + R1No;//empty or IMM 
 
  mov al, [Op2]
  cmp al, 1
- jg  @@writeEA216
+ jg  @@writeEA219
  mov al, [bp+4]
  add al, [R1No]
  mov byte [bp+4], al
 
-;-42             else {
+;-46             else {
 
- jmp @@writeEA217
-@@writeEA216:
+ jmp @@writeEA220
+@@writeEA219:
 
-;-43                 if (Op2 == REG) xxx = xxx + R1No;
+;-47                 if (Op2 == REG) xxx = xxx + R1No;
 
  mov al, [Op2]
  cmp al, 2
- jne @@writeEA218
+ jne @@writeEA221
  mov al, [bp+4]
  add al, [R1No]
  mov byte [bp+4], al
 
-;-44                 else            xxx = xxx + R2No;  
+;-48                 else            xxx = xxx + R2No;  
 
- jmp @@writeEA219
-@@writeEA218:
+ jmp @@writeEA222
+@@writeEA221:
  mov al, [bp+4]
  add al, [R2No]
  mov byte [bp+4], al
 
-;-45             }
+;-49             }
 
-@@writeEA219:
+@@writeEA222:
 
-;-46         } 
+;-50         } 
 
-@@writeEA217:
+@@writeEA220:
 
-;-47     if (Op == MEM) {
+;-51     if (Op == MEM) {
 
-@@writeEA215:
+@@writeEA218:
  mov al, [Op]
  cmp al, 4
- jne @@writeEA220
+ jne @@writeEA223
 
-;-48         if (isDirect) {
+;-52         if (isDirect) {
 
  mov al, [isDirect]
  or  al, al
- je @@writeEA221
+ je @@writeEA224
 
-;-49             xxx |= 6;
+;-53             xxx |= 6;
 
  or  byte [bp+4], 6
 
-;-50             len = 2;
+;-54             len = 2;
 
  mov eax, 2
  mov byte [bp-2], al
 
-;-51         }
+;-55         }
 
 
-;-52         else { 
+;-56         else { 
 
- jmp @@writeEA222
-@@writeEA221:
+ jmp @@writeEA225
+@@writeEA224:
 
-;-53             xxx = xxx + rm;   
+;-57             xxx = xxx + rm;   
 
  mov al, [bp+4]
  add al, [rm]
  mov byte [bp+4], al
 
-;-54             if (rm == 6) {//make [BP+00]
+;-58             if (rm == 6) {//make [BP+00]
 
  mov al, [rm]
  cmp al, 6
- jne @@writeEA223
+ jne @@writeEA226
 
-;-55                 len=1;
+;-59                 len=1;
 
  mov eax, 1
  mov byte [bp-2], al
 
-;-56                 if (disp == 0) xxx |= 0x40;
+;-60                 if (disp == 0) xxx |= 0x40;
 
  mov ax, [disp]
  cmp ax, 0
- jne @@writeEA224
+ jne @@writeEA227
  or  byte [bp+4], 64
 
-;-57             }
+;-61             }
 
-@@writeEA224:
+@@writeEA227:
 
-;-58 
+;-62 
 
 
-;-59             if (disp) {
+;-63             if (disp) {
 
-@@writeEA223:
+@@writeEA226:
  mov ax, [disp]
  or  al, al
- je @@writeEA225
+ je @@writeEA228
 
-;-60                 ax = disp;
+;-64                 ax = disp;
 
  mov  ax, [disp]
 
-;-61                 if(ax > 127) len=2;
+;-65                 if(ax > 127) len=2;
 
  cmp  ax, 127
- jle @@writeEA226
+ jle @@writeEA229
  mov eax, 2
  mov byte [bp-2], al
 
-;-62                 else len=1;
+;-66                 else len=1;
 
- jmp @@writeEA227
-@@writeEA226:
+ jmp @@writeEA230
+@@writeEA229:
  mov eax, 1
  mov byte [bp-2], al
 
-;-63                 if (len == 1) xxx |= 0x40;
+;-67                 if (len == 1) xxx |= 0x40;
 
-@@writeEA227:
+@@writeEA230:
  mov al, [bp-2]
  cmp al, 1
- jne @@writeEA228
+ jne @@writeEA231
  or  byte [bp+4], 64
 
-;-64                 else xxx |= 0x80;
+;-68                 else xxx |= 0x80;
 
- jmp @@writeEA229
-@@writeEA228:
+ jmp @@writeEA232
+@@writeEA231:
  or  byte [bp+4], 128
 
-;-65             }
+;-69             }
 
-@@writeEA229:
+@@writeEA232:
 
-;-66         }
+;-70         }
+
+@@writeEA228:
+
+;-71     }  
 
 @@writeEA225:
 
-;-67     }  
-
-@@writeEA222:
-
-;-68     
+;-72     
 
 
-;-69     genCode8(xxx);// gen second byte
+;-73     genCode8(xxx);// gen second byte
 
-@@writeEA220:
+@@writeEA223:
  mov al, byte [bp+4]
  mov ah, 0
  push ax
  call genCode8
  add  sp, 2
 
-;-70     if (len == 1) genCode8 (disp);
+;-74     if (len == 1) genCode8 (disp);
 
  mov al, [bp-2]
  cmp al, 1
- jne @@writeEA230
+ jne @@writeEA233
  push word [disp]
  call genCode8
  add  sp, 2
 
-;-71     if (len == 2) genCode16(disp);
+;-75     if (len == 2) genCode16(disp);
 
-@@writeEA230:
+@@writeEA233:
  mov al, [bp-2]
  cmp al, 2
- jne @@writeEA231
+ jne @@writeEA234
  push word [disp]
  call genCode16
  add  sp, 2
 
-;-72 }
+;-76 }
 
-@@writeEA231:
+@@writeEA234:
 
-;-73 
+;-77 
 
 
-;-74 int genImmediate() { 
+;-78 int genImmediate() { 
  LEAVE
  ret
 ; ENDP
 
 genImmediate:  ; *** PROC ***
 
-;-75     if (wflag) genCode16(imme);
+;-79     if (wflag) if (OpSize == DWORD) genCode32(imme);//todo imme long
 
  mov al, [wflag]
  or  al, al
- je @@genImmediate232
+ je @@genImmediate235
+ mov al, [OpSize]
+ cmp al, 3
+ jne @@genImmediate236
+ push word [imme]
+ call genCode32
+ add  sp, 2
+
+;-80         else genCode16(imme);
+
+ jmp @@genImmediate237
+@@genImmediate236:
  push word [imme]
  call genCode16
  add  sp, 2
 
-;-76     else       genCode8 (imme);  
+;-81     else       genCode8 (imme);  
 
- jmp @@genImmediate233
-@@genImmediate232:
+@@genImmediate237:
+ jmp @@genImmediate238
+@@genImmediate235:
  push word [imme]
  call genCode8
  add  sp, 2
 
-;-77 }    
+;-82 }    
 
-@@genImmediate233:
+@@genImmediate238:
  ret
 ; ENDP
 ;Back to main program: AS.C
@@ -5946,7 +6077,7 @@ process:  ; *** PROC ***
 
 ;Function : process, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte    12 NULL bp-2    c;
+;  250 var sign byte    12 NULL bp-2    c;
  ENTER  2,0
  mov eax, 0
  mov byte [rm], al
@@ -5990,7 +6121,7 @@ process:  ; *** PROC ***
 
  mov al, [CodeType]
  cmp al, 1
- jne @@process234
+ jne @@process239
 
 ;-21         genCode8(Code1);
 
@@ -6012,10 +6143,10 @@ process:  ; *** PROC ***
 
 ;-25     if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv     
 
-@@process234:
+@@process239:
  mov al, [CodeType]
  cmp al, 2
- jne @@process235
+ jne @@process240
 
 ;-26         getOpL();    
 
@@ -6029,19 +6160,19 @@ process:  ; *** PROC ***
 
  mov al, [Code2]
  cmp al, 1
- jg  @@process236
+ jg  @@process241
 
 ;-29   	        if (Op == REG) {//short
 
  mov al, [Op]
  cmp al, 2
- jne @@process237
+ jne @@process242
 
 ;-30                 if (wflag) {genCode2(Code3, R1No); return; }
 
  mov al, [wflag]
  or  al, al
- je @@process238
+ je @@process243
  mov al, byte [R1No]
  mov ah, 0
  push ax
@@ -6054,18 +6185,18 @@ process:  ; *** PROC ***
 
 ;-31             }
 
-@@process238:
+@@process243:
 
 ;-32         }
 
-@@process237:
+@@process242:
 
 ;-33         if (Code2 == 5) {//imul extension?
 
-@@process236:
+@@process241:
  mov al, [Code2]
  cmp al, 5
- jne @@process239
+ jne @@process244
 
 ;-34             getTokeType();
 
@@ -6075,16 +6206,16 @@ process:  ; *** PROC ***
 
  mov al, [TokeType]
  or  al, al
- je @@process240
+ je @@process245
  call implerror
 
 ;-36         }
 
-@@process240:
+@@process245:
 
 ;-37         genCodeW(Code1);           
 
-@@process239:
+@@process244:
  mov al, byte [Code1]
  mov ah, 0
  push ax
@@ -6111,10 +6242,10 @@ process:  ; *** PROC ***
 
 ;-42     if (CodeType == 3) {//les,lds,lea,lss,lfs,lgs
 
-@@process235:
+@@process240:
  mov al, [CodeType]
  cmp al, 3
- jne @@process241
+ jne @@process246
 
 ;-43         check2Ops();    //setwflag not applicable
 
@@ -6124,15 +6255,15 @@ process:  ; *** PROC ***
 
  mov al, [R1Type]
  cmp al, 2
- je  @@process242
+ je  @@process247
  call reg16error
 
 ;-45         if (Op2 != MEM) addrerror();//only m16 
 
-@@process242:
+@@process247:
  mov al, [Op2]
  cmp al, 4
- je  @@process243
+ je  @@process248
  call addrerror
 
 ;-46         
@@ -6140,7 +6271,7 @@ process:  ; *** PROC ***
 
 ;-47         genCode8(Code1);//les,lds,lea
 
-@@process243:
+@@process248:
  mov al, byte [Code1]
  mov ah, 0
  push ax
@@ -6151,7 +6282,7 @@ process:  ; *** PROC ***
 
  mov al, [Code1]
  cmp al, 15
- jne @@process244
+ jne @@process249
  mov al, byte [Code2]
  mov ah, 0
  push ax
@@ -6160,7 +6291,7 @@ process:  ; *** PROC ***
 
 ;-49         Op=Op2;//set MEM for writeEA
 
-@@process244:
+@@process249:
  mov al, [Op2]
  mov byte [Op], al
 
@@ -6184,10 +6315,10 @@ process:  ; *** PROC ***
 
 ;-54     if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
 
-@@process241:
+@@process246:
  mov al, [CodeType]
  cmp al, 4
- jne @@process245
+ jne @@process250
 
 ;-55         check2Ops();    
 
@@ -6197,7 +6328,7 @@ process:  ; *** PROC ***
 
  mov al, [Op2]
  cmp al, 1
- jne @@process246
+ jne @@process251
 
 ;-57             setsflag();   
 
@@ -6207,19 +6338,19 @@ process:  ; *** PROC ***
 
  mov al, [Op]
  cmp al, 2
- jne @@process247
+ jne @@process252
 
 ;-59                 if (R1No == 0) {// acc,imm   
 
  mov al, [R1No]
  cmp al, 0
- jne @@process248
+ jne @@process253
 
 ;-60                     if (sflag == 0) {                        
 
  mov al, [sflag]
  cmp al, 0
- jne @@process249
+ jne @@process254
 
 ;-61                         c = Code1 << 3;
 
@@ -6252,18 +6383,18 @@ process:  ; *** PROC ***
 
 ;-67                 }
 
-@@process249:
+@@process254:
 
 ;-68             }
 
-@@process248:
+@@process253:
 
 ;-69             //r/m, imm: 80 sign-extended,TTT,imm
 
 
 ;-70             c = sflag + 0x80;   
 
-@@process247:
+@@process252:
  mov al, [sflag]
  add al, 128
  mov byte [bp-2], al
@@ -6288,20 +6419,20 @@ process:  ; *** PROC ***
 
  mov al, [sflag]
  or  al, al
- je @@process250
+ je @@process255
  push word [imme]
  call genCode8
  add  sp, 2
 
 ;-74             else genImmediate();    
 
- jmp @@process251
-@@process250:
+ jmp @@process256
+@@process255:
  call genImmediate
 
 ;-75             return;     
 
-@@process251:
+@@process256:
  jmp @@retn
 
 ;-76         }  
@@ -6309,7 +6440,7 @@ process:  ; *** PROC ***
 
 ;-77         c = Code1 << 3;//r/m, r/r  
 
-@@process246:
+@@process251:
  mov al, [Code1]
  shl al, 3
  mov byte [bp-2], al
@@ -6318,13 +6449,13 @@ process:  ; *** PROC ***
 
  mov al, [Op]
  cmp al, 2
- jne @@process252
+ jne @@process257
 
 ;-79             if (Op2 == MEM) {//reg, mem      
 
  mov al, [Op2]
  cmp al, 4
- jne @@process253
+ jne @@process258
 
 ;-80                 c += 2;//add direction flag
 
@@ -6360,14 +6491,14 @@ process:  ; *** PROC ***
 
 ;-86         }
 
-@@process253:
+@@process258:
 
 ;-87         if (Op2 == REG) {//mem,reg    reg,reg
 
-@@process252:
+@@process257:
  mov al, [Op2]
  cmp al, 2
- jne @@process254
+ jne @@process259
 
 ;-88             genCodeW(c);
 
@@ -6394,7 +6525,7 @@ process:  ; *** PROC ***
 
 ;-92         syntaxerror();        
 
-@@process254:
+@@process259:
  call syntaxerror
 
 ;-93         return;
@@ -6409,10 +6540,10 @@ process:  ; *** PROC ***
 
 ;-96     if (CodeType == 5) {//mov (movsx, movzx=51)
 
-@@process245:
+@@process250:
  mov al, [CodeType]
  cmp al, 5
- jne @@process255
+ jne @@process260
 
 ;-97         check2Ops();    
 
@@ -6434,7 +6565,7 @@ process:  ; *** PROC ***
 
  mov al, [Op2]
  cmp al, 3
- jne @@process256
+ jne @@process261
 
 ;-103             imme=disp;
 
@@ -6451,16 +6582,16 @@ process:  ; *** PROC ***
 
 ;-106         if (Op2 == IMM) {// r,i     
 
-@@process256:
+@@process261:
  mov al, [Op2]
  cmp al, 1
- jne @@process257
+ jne @@process262
 
 ;-107             if (Op == REG) {               
 
  mov al, [Op]
  cmp al, 2
- jne @@process258
+ jne @@process263
 
 ;-108                 c = wflag << 3;   
 
@@ -6496,10 +6627,10 @@ process:  ; *** PROC ***
 
 ;-114             if (Op == MEM) {// m,i  
 
-@@process258:
+@@process263:
  mov al, [Op]
  cmp al, 4
- jne @@process259
+ jne @@process264
 
 ;-115                 genCodeW(0xC6);
 
@@ -6526,7 +6657,7 @@ process:  ; *** PROC ***
 
 ;-120             regmemerror();
 
-@@process259:
+@@process264:
  call regmemerror
 
 ;-121             return;
@@ -6538,29 +6669,29 @@ process:  ; *** PROC ***
 
 ;-123         if (R1Type == SEGREG) ChangeDirection();//sreg,rm
 
-@@process257:
+@@process262:
  mov al, [R1Type]
  cmp al, 4
- jne @@process260
+ jne @@process265
  call ChangeDirection
 
 ;-124         if (R2Type == SEGREG) {//rm,sreg
 
-@@process260:
+@@process265:
  mov al, [R2Type]
  cmp al, 4
- jne @@process261
+ jne @@process266
 
 ;-125             if (OpSize != WORD) reg16error();
 
  mov al, [OpSize]
  cmp al, 2
- je  @@process262
+ je  @@process267
  call reg16error
 
 ;-126                 genCode2(0x8C, dflag);
 
-@@process262:
+@@process267:
  mov al, byte [dflag]
  mov ah, 0
  push ax
@@ -6585,28 +6716,28 @@ process:  ; *** PROC ***
 
 ;-130         if (Op2 == MEM) {//acc, moffs16
 
-@@process261:
+@@process266:
  mov al, [Op2]
  cmp al, 4
- jne @@process263
+ jne @@process268
 
 ;-131             if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne @@process264
+ jne @@process269
 
 ;-132                 if (R1No == 0) {
 
  mov al, [R1No]
  cmp al, 0
- jne @@process265
+ jne @@process270
 
 ;-133                     if (isDirect) {
 
  mov al, [isDirect]
  or  al, al
- je @@process266
+ je @@process271
 
 ;-134                         genCodeW(0xA0);
 
@@ -6629,40 +6760,40 @@ process:  ; *** PROC ***
 
 ;-138                 }   
 
-@@process266:
+@@process271:
 
 ;-139             }   
 
-@@process265:
+@@process270:
 
 ;-140         } 
 
-@@process264:
+@@process269:
 
 ;-141         if (Op == MEM) {//moffs16, acc
 
-@@process263:
+@@process268:
  mov al, [Op]
  cmp al, 4
- jne @@process267
+ jne @@process272
 
 ;-142             if (Op2 == REG) {
 
  mov al, [Op2]
  cmp al, 2
- jne @@process268
+ jne @@process273
 
 ;-143                 if (R2No == 0) {
 
  mov al, [R2No]
  cmp al, 0
- jne @@process269
+ jne @@process274
 
 ;-144                     if (isDirect) {
 
  mov al, [isDirect]
  or  al, al
- je @@process270
+ je @@process275
 
 ;-145                         genCodeW(0xA2);
 
@@ -6685,25 +6816,25 @@ process:  ; *** PROC ***
 
 ;-149                 }   
 
-@@process270:
+@@process275:
 
 ;-150             }
 
-@@process269:
+@@process274:
 
 ;-151         
 
 
 ;-152         }
 
-@@process268:
+@@process273:
 
 ;-153         if (Op2 == REG) {//rm, r
 
-@@process267:
+@@process272:
  mov al, [Op2]
  cmp al, 2
- jne @@process271
+ jne @@process276
 
 ;-154             genCodeW(0x88);     
 
@@ -6728,16 +6859,16 @@ process:  ; *** PROC ***
 
 ;-158         if (Op2 == MEM) {//r, m
 
-@@process271:
+@@process276:
  mov al, [Op2]
  cmp al, 4
- jne @@process272
+ jne @@process277
 
 ;-159             if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne @@process273
+ jne @@process278
 
 ;-160                 ChangeDirection();
 
@@ -6766,11 +6897,11 @@ process:  ; *** PROC ***
 
 ;-165         }         
 
-@@process273:
+@@process278:
 
 ;-166         syntaxerror();
 
-@@process272:
+@@process277:
  call syntaxerror
 
 ;-167         return;
@@ -6785,16 +6916,16 @@ process:  ; *** PROC ***
 
 ;-170     if (CodeType == 6) {//Jcc       
 
-@@process255:
+@@process260:
  mov al, [CodeType]
  cmp al, 6
- jne @@process274
+ jne @@process279
 
 ;-171         if (TokeType == ALNUME) {
 
  mov al, [TokeType]
  cmp al, 3
- jne @@process275
+ jne @@process280
 
 ;-172             LabelIx=searchLabel();
 
@@ -6805,7 +6936,7 @@ process:  ; *** PROC ***
 
  mov ax, [LabelIx]
  cmp ax, 0
- jle @@process276
+ jle @@process281
 
 ;-174                 disp=LabelAddr[LabelIx];
 
@@ -6832,7 +6963,7 @@ process:  ; *** PROC ***
  call checkConstSize
  add  sp, 2
  or  al, al
- je @@process277
+ je @@process282
 
 ;-178                     genCode2(Code1, 0x70);//short       
 
@@ -6855,8 +6986,8 @@ process:  ; *** PROC ***
 
 ;-181                 } else {     
 
- jmp @@process278
-@@process277:
+ jmp @@process283
+@@process282:
 
 ;-182                     genCode8(0x0F);
 
@@ -6888,12 +7019,12 @@ process:  ; *** PROC ***
 
 ;-187             }
 
-@@process278:
+@@process283:
 
 ;-188             else {//jump forward, near only
 
- jmp @@process279
-@@process276:
+ jmp @@process284
+@@process281:
 
 ;-189                 genCode8(0x0F);
 
@@ -6930,7 +7061,7 @@ process:  ; *** PROC ***
 
 ;-195         return; 
 
-@@process279:
+@@process284:
  jmp @@retn
 
 ;-196         }  
@@ -6938,23 +7069,23 @@ process:  ; *** PROC ***
 
 ;-197     }
 
-@@process275:
+@@process280:
 
 ;-198 
 
 
 ;-199     if (CodeType == 7) {//jmp, call
 
-@@process274:
+@@process279:
  mov al, [CodeType]
  cmp al, 7
- jne @@process280
+ jne @@process285
 
 ;-200         if (TokeType == ALNUME) {
 
  mov al, [TokeType]
  cmp al, 3
- jne @@process281
+ jne @@process286
 
 ;-201             LabelIx=searchLabel();
 
@@ -6965,7 +7096,7 @@ process:  ; *** PROC ***
 
  mov ax, [LabelIx]
  cmp ax, 0
- jle @@process282
+ jle @@process287
 
 ;-203                 disp=LabelAddr[LabelIx];
 
@@ -6992,13 +7123,13 @@ process:  ; *** PROC ***
  call checkConstSize
  add  sp, 2
  or  al, al
- je @@process283
+ je @@process288
 
 ;-207                     if (Code1 == 0xE9) {//jmp only
 
  mov al, [Code1]
  cmp al, 233
- jne @@process284
+ jne @@process289
 
 ;-208                         genCode8(0xEB);//short       
 
@@ -7021,8 +7152,8 @@ process:  ; *** PROC ***
 
 ;-212                     else {     
 
- jmp @@process285
-@@process284:
+ jmp @@process290
+@@process289:
 
 ;-213                         genCode8(Code1);//near    
 
@@ -7047,12 +7178,12 @@ process:  ; *** PROC ***
 
 ;-217                 } 
 
-@@process285:
+@@process290:
 
 ;-218                 else {     
 
- jmp @@process286
-@@process283:
+ jmp @@process291
+@@process288:
 
 ;-219                     genCode8(Code1);//near    
 
@@ -7077,12 +7208,12 @@ process:  ; *** PROC ***
 
 ;-223             }
 
-@@process286:
+@@process291:
 
 ;-224             else {//jump forward, near only
 
- jmp @@process287
-@@process282:
+ jmp @@process292
+@@process287:
 
 ;-225                 genCode8(Code1);
 
@@ -7112,7 +7243,7 @@ process:  ; *** PROC ***
 
 ;-230         return; 
 
-@@process287:
+@@process292:
  jmp @@retn
 
 ;-231         }
@@ -7120,23 +7251,23 @@ process:  ; *** PROC ***
 
 ;-232     }
 
-@@process281:
+@@process286:
 
 ;-233     
 
 
 ;-234     if (CodeType ==  8) {//ret,retf
 
-@@process280:
+@@process285:
  mov al, [CodeType]
  cmp al, 8
- jne @@process288
+ jne @@process293
 
 ;-235         if (TokeType == DIGIT) {
 
  mov al, [TokeType]
  cmp al, 1
- jne @@process289
+ jne @@process294
 
 ;-236             genCode8(Code2);
 
@@ -7161,7 +7292,7 @@ process:  ; *** PROC ***
 
 ;-240         genCode8(Code1); 
 
-@@process289:
+@@process294:
  mov al, byte [Code1]
  mov ah, 0
  push ax
@@ -7180,10 +7311,10 @@ process:  ; *** PROC ***
 
 ;-244     if (CodeType == 9) {//push, pop  
 
-@@process288:
+@@process293:
  mov al, [CodeType]
  cmp al, 9
- jne @@process290
+ jne @@process295
 
 ;-245         getOpL();
 
@@ -7193,13 +7324,13 @@ process:  ; *** PROC ***
 
  mov al, [Code1]
  cmp al, 80
- jne @@process291
+ jne @@process296
 
 ;-247             if (Op == IMM) {//push imm8,16
 
  mov al, [Op]
  cmp al, 1
- jne @@process292
+ jne @@process297
 
 ;-248                 setsflag();
 
@@ -7218,22 +7349,22 @@ process:  ; *** PROC ***
 
  mov al, [sflag]
  or  al, al
- je @@process293
+ je @@process298
  push word [imme]
  call genCode8
  add  sp, 2
 
 ;-251                 else       genCode16(imme);    
 
- jmp @@process294
-@@process293:
+ jmp @@process299
+@@process298:
  push word [imme]
  call genCode16
  add  sp, 2
 
 ;-252                 return;   
 
-@@process294:
+@@process299:
  jmp @@retn
 
 ;-253             }   
@@ -7241,37 +7372,37 @@ process:  ; *** PROC ***
 
 ;-254         }
 
-@@process292:
+@@process297:
 
 ;-255         if (R1Type == SEGREG) {
 
-@@process291:
+@@process296:
  mov al, [R1Type]
  cmp al, 4
- jne @@process295
+ jne @@process300
 
 ;-256             if (Code1 == 0x58) {
 
  mov al, [Code1]
  cmp al, 88
- jne @@process296
+ jne @@process301
 
 ;-257                 if (R1No == 1) error1("pop cs not allowed");   
 
  mov al, [R1No]
  cmp al, 1
- jne @@process297
+ jne @@process302
  push process_0
  call error1
  add  sp, 2
 
 ;-258             }
 
-@@process297:
+@@process302:
 
 ;-259             c = R1No <<3;
 
-@@process296:
+@@process301:
  mov al, [R1No]
  shl al, 3
  mov byte [bp-2], al
@@ -7280,7 +7411,7 @@ process:  ; *** PROC ***
 
  mov al, [R1No]
  cmp al, 3
- jle @@process298
+ jle @@process303
 
 ;-261                 c += 122;
 
@@ -7297,7 +7428,7 @@ process:  ; *** PROC ***
 
 ;-264             OpCodePtr++;
 
-@@process298:
+@@process303:
  inc  word [OpCodePtr]
 
 ;-265             c = c + *OpCodePtr;//is Code4   
@@ -7325,22 +7456,22 @@ process:  ; *** PROC ***
 
 ;-269         checkOpL();    
 
-@@process295:
+@@process300:
  call checkOpL
 
 ;-270         if (R1Type == BYTE) reg16error();
 
  mov al, [R1Type]
  cmp al, 1
- jne @@process299
+ jne @@process304
  call reg16error
 
 ;-271         if (R1Type == WORD) {
 
-@@process299:
+@@process304:
  mov al, [R1Type]
  cmp al, 2
- jne @@process300
+ jne @@process305
 
 ;-272             genCode2(Code1, R1No);
 
@@ -7362,10 +7493,10 @@ process:  ; *** PROC ***
 
 ;-275         if (Op == MEM) {
 
-@@process300:
+@@process305:
  mov al, [Op]
  cmp al, 4
- jne @@process301
+ jne @@process306
 
 ;-276             genCode8(Code2);
 
@@ -7392,7 +7523,7 @@ process:  ; *** PROC ***
 
 ;-280         syntaxerror();
 
-@@process301:
+@@process306:
  call syntaxerror
 
 ;-281         return;        
@@ -7407,10 +7538,10 @@ process:  ; *** PROC ***
 
 ;-284     if (CodeType == 11) {//shift, rotate
 
-@@process290:
+@@process295:
  mov al, [CodeType]
  cmp al, 11
- jne @@process302
+ jne @@process307
 
 ;-285         check2Ops();
 
@@ -7420,13 +7551,13 @@ process:  ; *** PROC ***
 
  mov al, [Op2]
  cmp al, 1
- jne @@process303
+ jne @@process308
 
 ;-287             if (imme == 1) {
 
  mov ax, [imme]
  cmp ax, 1
- jne @@process304
+ jne @@process309
 
 ;-288                 genCodeW(0xD0);
 
@@ -7451,7 +7582,7 @@ process:  ; *** PROC ***
 
 ;-292             genCodeW(0xC0);//80186
 
-@@process304:
+@@process309:
  push 192
  call genCodeW
  add  sp, 2
@@ -7479,34 +7610,34 @@ process:  ; *** PROC ***
 
 ;-297         if (Op2 == REG) {
 
-@@process303:
+@@process308:
  mov al, [Op2]
  cmp al, 2
- jne @@process305
+ jne @@process310
 
 ;-298             if (R2Type == BYTE) {
 
  mov al, [R2Type]
  cmp al, 1
- jne @@process306
+ jne @@process311
 
 ;-299                 if (R2No == 1) {//CL-REG 
 
  mov al, [R2No]
  cmp al, 1
- jne @@process307
+ jne @@process312
 
 ;-300                     if (R1Type == WORD) wflag=1;//hack
 
  mov al, [R1Type]
  cmp al, 2
- jne @@process308
+ jne @@process313
  mov eax, 1
  mov byte [wflag], al
 
 ;-301                     genCodeW(0xD2);
 
-@@process308:
+@@process313:
  push 210
  call genCodeW
  add  sp, 2
@@ -7528,31 +7659,31 @@ process:  ; *** PROC ***
 
 ;-305             }
 
-@@process307:
+@@process312:
 
 ;-306         }    
 
-@@process306:
+@@process311:
 
 ;-307     }     
 
-@@process305:
+@@process310:
 
 ;-308     
 
 
 ;-309     if (CodeType == 12) {//int
 
-@@process302:
+@@process307:
  mov al, [CodeType]
  cmp al, 12
- jne @@process309
+ jne @@process314
 
 ;-310         if (TokeType == DIGIT) {            
 
  mov al, [TokeType]
  cmp al, 1
- jne @@process310
+ jne @@process315
 
 ;-311             genCode8(Code1);
 
@@ -7577,17 +7708,17 @@ process:  ; *** PROC ***
 
 ;-315     }
 
-@@process310:
+@@process315:
 
 ;-316     
 
 
 ;-317     if (CodeType == 30) {//enter i18,i8
 
-@@process309:
+@@process314:
  mov al, [CodeType]
  cmp al, 30
- jne @@process311
+ jne @@process316
 
 ;-318         genCode8(0xC8);
 
@@ -7604,20 +7735,20 @@ process:  ; *** PROC ***
 
  mov al, [Op]
  cmp al, 1
- jne @@process312
+ jne @@process317
  push word [SymbolInt]
  call genCode16
  add  sp, 2
 
 ;-321         else numbererror();
 
- jmp @@process313
-@@process312:
+ jmp @@process318
+@@process317:
  call numbererror
 
 ;-322         need(',');
 
-@@process313:
+@@process318:
  push 44
  call need
  add  sp, 2
@@ -7631,20 +7762,20 @@ process:  ; *** PROC ***
 
  mov al, [Op]
  cmp al, 1
- jne @@process314
+ jne @@process319
  push word [SymbolInt]
  call genCode8
  add  sp, 2
 
 ;-325         else numbererror();           
 
- jmp @@process315
-@@process314:
+ jmp @@process320
+@@process319:
  call numbererror
 
 ;-326         return;
 
-@@process315:
+@@process320:
  jmp @@retn
 
 ;-327     }
@@ -7655,21 +7786,21 @@ process:  ; *** PROC ***
 
 ;-329     if (CodeType==101) {//ORG nn
 
-@@process311:
+@@process316:
  mov al, [CodeType]
  cmp al, 101
- jne @@process316
+ jne @@process321
 
 ;-330         if (TokeType != DIGIT) numbererror();
 
  mov al, [TokeType]
  cmp al, 1
- je  @@process317
+ je  @@process322
  call numbererror
 
 ;-331         Origin=SymbolInt;
 
-@@process317:
+@@process322:
  mov ax, [SymbolInt]
  mov word [Origin], ax
 
@@ -7685,10 +7816,10 @@ process:  ; *** PROC ***
 
 ;-335     if (CodeType == 102) {//section, segment  
 
-@@process316:
+@@process321:
  mov al, [CodeType]
  cmp al, 102
- jne @@process318
+ jne @@process323
 
 ;-336         //getTokeType();//ignore .bss .text .data 
 
@@ -7710,21 +7841,21 @@ process:  ; *** PROC ***
 
 ;-341     if (CodeType == 110) {//absolute
 
-@@process318:
+@@process323:
  mov al, [CodeType]
  cmp al, 110
- jne @@process319
+ jne @@process324
 
 ;-342         if (TokeType != DIGIT) numbererror();
 
  mov al, [TokeType]
  cmp al, 1
- je  @@process320
+ je  @@process325
  call numbererror
 
 ;-343         AbsoluteLab=SymbolInt;
 
-@@process320:
+@@process325:
  mov ax, [SymbolInt]
  mov word [AbsoluteLab], ax
 
@@ -7740,7 +7871,7 @@ process:  ; *** PROC ***
 
 ;-347     error1("Command not implemented or syntax error");
 
-@@process319:
+@@process324:
  push process_1
  call error1
  add  sp, 2
@@ -7854,15 +7985,15 @@ writetty:  ; *** PROC ***
 cputs:  ; *** PROC ***
 ;Function : cputs, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   350 NULL bp+4    s
-;  201 var sign byte   350 NULL bp-2    c;
+;  250 ptr sign byte   350 NULL bp+4    s
+;  251 var sign byte   350 NULL bp-2    c;
  ENTER  2,0
-@@cputs321:
+@@cputs326:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@cputs322
+ je @@cputs327
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
@@ -7873,8 +8004,8 @@ cputs:  ; *** PROC ***
  call putch
  add  sp, 2
  inc  word [bp+4]
- jmp @@cputs321
-@@cputs322:
+ jmp @@cputs326
+@@cputs327:
 
 ;-351 int mkneg(int n) { n; __asm {neg ax} }
  LEAVE
@@ -7885,35 +8016,35 @@ cputs:  ; *** PROC ***
 toupper:  ; *** PROC ***
 ;Function : toupper, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   351 NULL bp+4    s;
+;  250 ptr sign byte   351 NULL bp+4    s;
  ENTER  0,0
-@@toupper323:
+@@toupper328:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@toupper324
+ je @@toupper329
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 97 ;unsigned : 1
- jl  @@toupper325
+ jl  @@toupper330
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 122
- jg  @@toupper326
+ jg  @@toupper331
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  sub ax, 32
  mov  bx, [bp+4]
  mov  [bx], al
-@@toupper326:
-@@toupper325:
+@@toupper331:
+@@toupper330:
  inc  word [bp+4]
- jmp @@toupper323
-@@toupper324:
+ jmp @@toupper328
+@@toupper329:
 
 ;-352 //int head1  (char *s) {char c; do{c=*s; c=letter(c); s++; }while(c) *s=0; }
 
@@ -7927,21 +8058,21 @@ toupper:  ; *** PROC ***
 strlen:  ; *** PROC ***
 ;Function : strlen, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   353 NULL bp+4    s
-;  201 var sign word   353 NULL bp-2    c;
+;  250 ptr sign byte   353 NULL bp+4    s
+;  251 var sign word   353 NULL bp-2    c;
  ENTER  2,0
  mov eax, 0
  mov word [bp-2], ax
-@@strlen327:
+@@strlen332:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strlen328
+ je  @@strlen333
  inc  word [bp+4]
  inc  word [bp-2]
- jmp @@strlen327
-@@strlen328:
+ jmp @@strlen332
+@@strlen333:
  mov ax, [bp-2]
  jmp @@retn
 
@@ -7955,10 +8086,10 @@ strlen:  ; *** PROC ***
 strcpy:  ; *** PROC ***
 ;Function : strcpy, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   354 NULL bp+4    s
-;  201 ptr sign byte   354 NULL bp+6    t;
+;  250 ptr sign byte   354 NULL bp+4    s
+;  251 ptr sign byte   354 NULL bp+6    t;
  ENTER  0,0
-@@strcpy329:
+@@strcpy334:
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
@@ -7973,9 +8104,9 @@ strcpy:  ; *** PROC ***
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strcpy330
- jmp @@strcpy329
-@@strcpy330:
+ je  @@strcpy335
+ jmp @@strcpy334
+@@strcpy335:
  mov eax, 0
  mov  bx, [bp+4]
  mov  [bx], al
@@ -7992,20 +8123,20 @@ strcpy:  ; *** PROC ***
 digit:  ; *** PROC ***
 ;Function : digit, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   356 NULL bp+4    c;
+;  250 var sign byte   356 NULL bp+4    c;
  ENTER  0,0
  mov al, [bp+4]
  cmp al, 48
- jge @@digit331
+ jge @@digit336
  mov eax, 0
  jmp @@retn
-@@digit331:
+@@digit336:
  mov al, [bp+4]
  cmp al, 57
- jle @@digit332
+ jle @@digit337
  mov eax, 0
  jmp @@retn
-@@digit332:
+@@digit337:
  mov eax, 1
  jmp @@retn
 
@@ -8019,15 +8150,15 @@ digit:  ; *** PROC ***
 eqstr:  ; *** PROC ***
 ;Function : eqstr, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   357 NULL bp+4    p
-;  201 ptr sign byte   357 NULL bp+6    q;
+;  250 ptr sign byte   357 NULL bp+4    p
+;  251 ptr sign byte   357 NULL bp+6    q;
  ENTER  0,0
-@@eqstr333:
+@@eqstr338:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@eqstr334
+ je @@eqstr339
 
 ;-358     if (*p != *q) return 0; p++; q++; }
 
@@ -8037,25 +8168,25 @@ eqstr:  ; *** PROC ***
  mov bx, [bp+6]
  cmp al, [bx]
  mov ah, 0
- je  @@eqstr335
+ je  @@eqstr340
  mov eax, 0
  jmp @@retn
-@@eqstr335:
+@@eqstr340:
  inc  word [bp+4]
  inc  word [bp+6]
 
 ;-359     if(*q) return 0; return 1; }
 
- jmp @@eqstr333
-@@eqstr334:
+ jmp @@eqstr338
+@@eqstr339:
  mov bx, [bp+6]
  mov al, [bx]
  mov ah, 0
  or  al, al
- je @@eqstr336
+ je @@eqstr341
  mov eax, 0
  jmp @@retn
-@@eqstr336:
+@@eqstr341:
  mov eax, 1
  jmp @@retn
 
@@ -8069,18 +8200,18 @@ eqstr:  ; *** PROC ***
 strcat1:  ; *** PROC ***
 ;Function : strcat1, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   360 NULL bp+4    s
-;  201 ptr sign byte   360 NULL bp+6    t;
+;  250 ptr sign byte   360 NULL bp+4    s
+;  251 ptr sign byte   360 NULL bp+6    t;
  ENTER  0,0
-@@strcat1337:
+@@strcat1342:
  mov bx, [bp+4]
  mov al, [bx]
  mov ah, 0
  cmp ax, 0
- je  @@strcat1338
+ je  @@strcat1343
  inc  word [bp+4]
- jmp @@strcat1337
-@@strcat1338:
+ jmp @@strcat1342
+@@strcat1343:
  push word [bp+6]
  push word [bp+4]
  call strcpy
@@ -8095,7 +8226,7 @@ strcat1:  ; *** PROC ***
 openR:  ; *** PROC ***
 ;Function : openR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   361 NULL bp+4    s;
+;  250 ptr sign byte   361 NULL bp+4    s;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  ax, 15618
@@ -8110,7 +8241,7 @@ openR:  ; *** PROC ***
 creatR:  ; *** PROC ***
 ;Function : creatR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   362 NULL bp+4    s;
+;  250 ptr sign byte   362 NULL bp+4    s;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  cx, 0
@@ -8126,9 +8257,9 @@ creatR:  ; *** PROC ***
 readRL:  ; *** PROC ***
 ;Function : readRL, Number of local variables: 3
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   363 NULL bp+4    s
-;  201 var sign word   363 NULL bp+6    fd
-;  202 var sign word   363 NULL bp+8    len;
+;  250 ptr sign byte   363 NULL bp+4    s
+;  251 var sign word   363 NULL bp+6    fd
+;  252 var sign word   363 NULL bp+8    len;
  ENTER  0,0
  mov  dx, [bp+4]
  mov  cx, [bp+8]
@@ -8145,8 +8276,8 @@ readRL:  ; *** PROC ***
 fputcR:  ; *** PROC ***
 ;Function : fputcR, Number of local variables: 2
 ;   # type sign width line used address name   list of local variables
-;  200 ptr sign byte   364 NULL bp+4    n
-;  201 var sign word   364 NULL bp+6    fd;
+;  250 ptr sign byte   364 NULL bp+4    n
+;  251 var sign word   364 NULL bp+6    fd;
  ENTER  0,0
 lea dx, [bp+4]
 
@@ -8166,7 +8297,7 @@ lea dx, [bp+4]
 fcloseR:  ; *** PROC ***
 ;Function : fcloseR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign word   366 NULL bp+4    fd;
+;  250 var sign word   366 NULL bp+4    fd;
  ENTER  0,0
  mov  bx, [bp+4]
  mov  ax, 15872
@@ -8181,7 +8312,7 @@ fcloseR:  ; *** PROC ***
 exitR:  ; *** PROC ***
 ;Function : exitR, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   367 NULL bp+4    c;
+;  250 var sign byte   367 NULL bp+4    c;
  ENTER  0,0
  mov  ah, 76
  mov  al, [bp+4]
@@ -8209,13 +8340,13 @@ exitR:  ; *** PROC ***
 putch:  ; *** PROC ***
 ;Function : putch, Number of local variables: 1
 ;   # type sign width line used address name   list of local variables
-;  200 var sign byte   369 NULL bp+4    c;
+;  250 var sign byte   369 NULL bp+4    c;
  ENTER  0,0
 cmp byte [bp+4], 10
- jne @@putch339
+ jne @@putch344
  mov  al, 13
  call writetty
-@@putch339:
+@@putch344:
  mov  al, [bp+4]
  call writetty
 
@@ -8227,9 +8358,9 @@ cmp byte [bp+4], 10
 
 DosInt:  ; *** PROC ***
  int  33
- jae short @@DosInt340
+ jae short @@DosInt345
  inc  word [DOS_ERR]
-@@DosInt340:
+@@DosInt345:
 
 ;-371 int openR (char *s) { dx=s; ax=0x3D02;  DosInt(); }
 
@@ -8247,201 +8378,217 @@ ret
 ;    1 arr sign byte     1    2        0 Version1[9]
 ;    2 var sign byte     1    3        0 LIST
 ;    3 def unsg byte     2    -        0 SYMBOLMAX=31
-;    4 arr sign byte     3   11        0 Symbol[31]
-;    5 arr sign byte     4   36        0 SymbolUpper[31]
-;    6 var unsg word     5   23        0 SymbolInt
-;    7 def unsg byte     6    -        0 INPUTBUFMAX=255
-;    8 arr sign byte     7    4        0 InputBuf[255]
-;    9 ptr unsg byte     8   24        0 InputPtr
-;   10 arr sign byte     9    5        0 namein[67]
-;   11 arr sign byte    10    6        0 namelst[67]
-;   12 arr sign byte    11    6        0 namebin[67]
-;   13 var sign word    12    4        0 asm_fd
-;   14 var sign word    13    3        0 lst_fd
-;   15 var sign word    14    3        0 bin_fd
-;   16 var sign word    15    6        0 DOS_ERR
-;   17 var sign word    16    4        0 ErrorCount
-;   18 var sign word    17    4        0 DOS_NoBytes
-;   19 var sign byte    18    4        0 DOS_ByteRead
-;   20 var unsg word    20    7        0 PC
-;   21 var unsg word    21    5        0 Origin
-;   22 var unsg word    22    6        0 AbsoluteLab
-;   23 var unsg word    23    2        0 PCStart
-;   24 var sign byte    24    3        0 isLabel
-;   25 def unsg byte    25    -        0 DIGIT=1
-;   26 def unsg byte    26    -        0 LETTERE=2
-;   27 def unsg byte    27    -        0 ALNUME=3
-;   28 def unsg byte    28    -        0 NOALNUME=4
-;   29 var sign byte    29   26        0 TokeType
-;   30 def unsg byte    30    -        0 BYTE=1
-;   31 def unsg byte    31    -        0 WORD=2
-;   32 def unsg byte    32    -        0 DWORD=3
-;   33 def unsg byte    33    -        0 SEGREG=4
-;   34 def unsg byte    34    -        0 IMM=1
-;   35 def unsg byte    35    -        0 REG=2
-;   36 def unsg byte    36    -        0 ADR=3
-;   37 def unsg byte    37    -        0 MEM=4
-;   38 var sign byte    38   28        0 Op
-;   39 var sign byte    39   31        0 Op2
-;   40 var sign byte    40   27        0 CodeType
-;   41 var sign byte    41   23        0 Code1
-;   42 var sign byte    42    7        0 Code2
-;   43 var sign byte    43    3        0 Code3
-;   44 var sign byte    44   19        0 R2No
-;   45 var sign byte    45   16        0 R1No
-;   46 var sign byte    46   18        0 R2Type
-;   47 var sign byte    47   15        0 R1Type
-;   48 var sign byte    48   13        0 OpSize
-;   49 var sign byte    49    9        0 wflag
-;   50 var sign byte    50    3        0 dflag
-;   51 var sign byte    51    8        0 sflag
-;   52 var sign byte    52   15        0 rm
-;   53 var sign byte    53    5        0 isDirect
-;   54 var sign word    54   48        0 disp
-;   55 var unsg word    55   12        0 imme
-;   56 def unsg byte    57    -        0 OPMAXLEN=5
-;   57 arr sign byte    58    2        0 OpPos[5]
-;   58 var sign word    59    6        0 OpPrintIndex
-;   59 ptr sign byte    60   19        0 OpCodePtr
-;   60 var sign byte    61    4        0 PrintRA
-;   61 def unsg byte    63    -        0 LABELNAMESMAX=3969
-;   62 arr sign byte    64    3        0 LabelNames[4000]
-;   63 ptr sign byte    65    5        0 LabelNamePtr
-;   64 def unsg byte    66    -        0 LABELADRMAX=600
-;   65 arr unsg word    67    7        0 LabelAddr[600]
-;   66 var sign word    68    7        0 LabelMaxIx
-;   67 var sign word    69   10        0 LabelIx
-;   68 def unsg byte    71    -        0 JMPCALLNAMESMAX=1969
-;   69 arr sign byte    72    3        0 JmpCallNames[2000]
-;   70 ptr sign byte    73    5        0 JmpCallNamePtr
-;   71 def unsg byte    74    -        0 JMPCALLMAX=500
-;   72 arr unsg word    75    2        0 JmpCallAddr[500]
-;   73 var sign word    76    6        0 JmpCallMaxIx
-;   74 def unsg byte    78    -        0 FILEBINMAX=20000
-;   75 arr sign byte    79    4        0 FileBin[20000]
-;   76 var unsg word    80    6        0 BinLen
-;   77 ptr sign byte    82    1        0 arglen
-;   78 ptr sign byte    83    4        0 argv
-;   79 var sign byte     1    1        0 I_START
-;   80 arr sign byte     4 NULL        0 I_PUSHA[9]
-;   81 arr sign byte     5 NULL        0 I_POPA[8]
-;   82 arr sign byte     6 NULL        0 I_NOP[7]
-;   83 arr sign byte     7 NULL        0 I_CBW[7]
-;   84 arr sign byte     8 NULL        0 I_CWDE[8]
-;   85 arr sign byte     9 NULL        0 I_CWD[7]
-;   86 arr sign byte    10 NULL        0 I_CDQ[7]
-;   87 arr sign byte    11 NULL        0 I_WAIT[8]
-;   88 arr sign byte    12 NULL        0 I_PUSHF[9]
-;   89 arr sign byte    13 NULL        0 I_POPF[8]
-;   90 arr sign byte    14 NULL        0 I_SAHF[8]
-;   91 arr sign byte    15 NULL        0 I_LAHF[8]
-;   92 arr sign byte    16 NULL        0 I_MOVSB[9]
-;   93 arr sign byte    17 NULL        0 I_MOVSW[9]
-;   94 arr sign byte    18 NULL        0 I_CMPSB[9]
-;   95 arr sign byte    19 NULL        0 I_CMPSW[9]
-;   96 arr sign byte    20 NULL        0 I_STOSB[9]
-;   97 arr sign byte    21 NULL        0 I_STOSW[9]
-;   98 arr sign byte    22 NULL        0 I_LODSB[9]
-;   99 arr sign byte    23 NULL        0 I_LODSW[9]
-;  100 arr sign byte    24 NULL        0 I_SCASB[9]
-;  101 arr sign byte    25 NULL        0 I_SCASW[9]
-;  102 arr sign byte    26 NULL        0 I_LEAVE[9]
-;  103 arr sign byte    27 NULL        0 I_INT3[8]
-;  104 arr sign byte    28 NULL        0 I_INTO[8]
-;  105 arr sign byte    29 NULL        0 I_IRET[8]
-;  106 arr sign byte    30 NULL        0 I_XLAT[8]
-;  107 arr sign byte    31 NULL        0 I_LOCK[8]
-;  108 arr sign byte    32 NULL        0 I_REPNE[9]
-;  109 arr sign byte    33 NULL        0 I_REPNZ[9]
-;  110 arr sign byte    34 NULL        0 I_REPE[8]
-;  111 arr sign byte    35 NULL        0 I_REPZ[8]
-;  112 arr sign byte    36 NULL        0 I_HLT[7]
-;  113 arr sign byte    37 NULL        0 I_CLC[7]
-;  114 arr sign byte    38 NULL        0 I_STC[7]
-;  115 arr sign byte    39 NULL        0 I_CLI[7]
-;  116 arr sign byte    40 NULL        0 I_STI[7]
-;  117 arr sign byte    41 NULL        0 I_CLD[7]
-;  118 arr sign byte    42 NULL        0 I_STD[7]
-;  119 arr sign byte    44 NULL        0 I_INC[9]
-;  120 arr sign byte    45 NULL        0 I_DEC[9]
-;  121 arr sign byte    46 NULL        0 I_NOT[8]
-;  122 arr sign byte    47 NULL        0 I_NEG[8]
-;  123 arr sign byte    48 NULL        0 I_MUL[8]
-;  124 arr sign byte    49 NULL        0 I_IMUL[9]
-;  125 arr sign byte    50 NULL        0 I_DIV[8]
-;  126 arr sign byte    51 NULL        0 I_IDIV[9]
-;  127 arr sign byte    53 NULL        0 I_LES[7]
-;  128 arr sign byte    54 NULL        0 I_LDS[7]
-;  129 arr sign byte    55 NULL        0 I_LEA[7]
-;  130 arr sign byte    56 NULL        0 I_LSS[8]
-;  131 arr sign byte    57 NULL        0 I_LFS[8]
-;  132 arr sign byte    58 NULL        0 I_LGS[8]
-;  133 arr sign byte    60 NULL        0 I_ADD[7]
-;  134 arr sign byte    61 NULL        0 I_OR[6]
-;  135 arr sign byte    62 NULL        0 I_ADC[7]
-;  136 arr sign byte    63 NULL        0 I_SBB[7]
-;  137 arr sign byte    64 NULL        0 I_AND[7]
-;  138 arr sign byte    65 NULL        0 I_SUB[7]
-;  139 arr sign byte    66 NULL        0 I_XOR[7]
-;  140 arr sign byte    67 NULL        0 I_CMP[7]
-;  141 arr sign byte    68 NULL        0 I_TEST[11]
-;  142 arr sign byte    70 NULL        0 I_MOV[6]
-;  143 arr sign byte    71 NULL        0 I_MOVSX[9]
-;  144 arr sign byte    72 NULL        0 I_MOVZX[9]
-;  145 arr sign byte    74 NULL        0 I_JO[6]
-;  146 arr sign byte    75 NULL        0 I_JNO[7]
-;  147 arr sign byte    76 NULL        0 I_JB[6]
-;  148 arr sign byte    77 NULL        0 I_JC[6]
-;  149 arr sign byte    78 NULL        0 I_JNB[7]
-;  150 arr sign byte    79 NULL        0 I_JAE[7]
-;  151 arr sign byte    80 NULL        0 I_JNC[7]
-;  152 arr sign byte    81 NULL        0 I_JE[6]
-;  153 arr sign byte    82 NULL        0 I_JZ[6]
-;  154 arr sign byte    83 NULL        0 I_JNE[7]
-;  155 arr sign byte    84 NULL        0 I_JNZ[7]
-;  156 arr sign byte    85 NULL        0 I_JBE[7]
-;  157 arr sign byte    86 NULL        0 I_JNA[7]
-;  158 arr sign byte    87 NULL        0 I_JA[6]
-;  159 arr sign byte    88 NULL        0 I_JS[6]
-;  160 arr sign byte    89 NULL        0 I_JNS[7]
-;  161 arr sign byte    90 NULL        0 I_JP[6]
-;  162 arr sign byte    91 NULL        0 I_JPE[7]
-;  163 arr sign byte    92 NULL        0 I_JNP[7]
-;  164 arr sign byte    93 NULL        0 I_JPO[7]
-;  165 arr sign byte    94 NULL        0 I_JL[6]
-;  166 arr sign byte    95 NULL        0 I_JNL[7]
-;  167 arr sign byte    96 NULL        0 I_JGE[7]
-;  168 arr sign byte    97 NULL        0 I_JLE[7]
-;  169 arr sign byte    98 NULL        0 I_JNG[7]
-;  170 arr sign byte    99 NULL        0 I_JG[6]
-;  171 arr sign byte   101 NULL        0 I_JMP[8]
-;  172 arr sign byte   102 NULL        0 I_CALL[9]
-;  173 arr sign byte   104 NULL        0 I_RET[8]
-;  174 arr sign byte   105 NULL        0 I_RETF[9]
-;  175 arr sign byte   107 NULL        0 I_PUSH[11]
-;  176 arr sign byte   108 NULL        0 I_POP[10]
-;  177 arr sign byte   110 NULL        0 I_ROL[7]
-;  178 arr sign byte   111 NULL        0 I_ROR[7]
-;  179 arr sign byte   112 NULL        0 I_RCL[7]
-;  180 arr sign byte   113 NULL        0 I_RCR[7]
-;  181 arr sign byte   114 NULL        0 I_SHL[7]
-;  182 arr sign byte   115 NULL        0 I_SAL[7]
-;  183 arr sign byte   116 NULL        0 I_SHR[7]
-;  184 arr sign byte   117 NULL        0 I_SAR[7]
-;  185 arr sign byte   119 NULL        0 I_INT[8]
-;  186 arr sign byte   130 NULL        0 I_XCHG[9]
-;  187 arr sign byte   140 NULL        0 I_ENTER[8]
-;  188 arr sign byte   142 NULL        0 I_ORG[6]
-;  189 arr sign byte   144 NULL        0 I_SECTION[10]
-;  190 arr sign byte   145 NULL        0 I_SEGMENT[10]
-;  191 arr sign byte   146 NULL        0 I_ABSOLUTE[11]
-;  192 arr sign byte   147 NULL        0 I_DB[5]
-;  193 arr sign byte   148 NULL        0 I_DW[5]
-;  194 arr sign byte   149 NULL        0 I_DD[5]
-;  195 arr sign byte   150 NULL        0 I_RESB[7]
-;  196 arr sign byte   151 NULL        0 I_RESW[7]
-;  197 arr sign byte   152 NULL        0 I_RESD[7]
-;  198 var sign byte   153 NULL        0 I_END
+;    4 arr sign byte     3   11    30000 Symbol[31]
+;    5 arr sign byte     4   36    30031 SymbolUpper[31]
+;    6 var unsg word     5   24        0 SymbolInt
+;    7 var unsg dwrd     6 NULL        0 SymbolLong
+;    8 def unsg byte     7    -        0 INPUTBUFMAX=255
+;    9 arr sign byte     8    4    30062 InputBuf[255]
+;   10 ptr unsg byte     9   24        0 InputPtr
+;   11 arr sign byte    10    5    30317 namein[67]
+;   12 arr sign byte    11    6    30384 namelst[67]
+;   13 arr sign byte    12    6    30451 namebin[67]
+;   14 var sign word    13    4        0 asm_fd
+;   15 var sign word    14    3        0 lst_fd
+;   16 var sign word    15    3        0 bin_fd
+;   17 var sign word    16    6        0 DOS_ERR
+;   18 var sign word    17    4        0 ErrorCount
+;   19 var sign word    18    4        0 DOS_NoBytes
+;   20 var sign byte    19    4        0 DOS_ByteRead
+;   21 var unsg word    21    7        0 PC
+;   22 var unsg word    22    5        0 Origin
+;   23 var unsg word    23    6        0 AbsoluteLab
+;   24 var unsg word    24    2        0 PCStart
+;   25 var sign byte    25    3        0 isLabel
+;   26 def unsg byte    26    -        0 DIGIT=1
+;   27 def unsg byte    27    -        0 LETTERE=2
+;   28 def unsg byte    28    -        0 ALNUME=3
+;   29 def unsg byte    29    -        0 NOALNUME=4
+;   30 var sign byte    30   27        0 TokeType
+;   31 def unsg byte    31    -        0 BYTE=1
+;   32 def unsg byte    32    -        0 WORD=2
+;   33 def unsg byte    33    -        0 DWORD=3
+;   34 def unsg byte    34    -        0 SEGREG=4
+;   35 def unsg byte    35    -        0 IMM=1
+;   36 def unsg byte    36    -        0 REG=2
+;   37 def unsg byte    37    -        0 ADR=3
+;   38 def unsg byte    38    -        0 MEM=4
+;   39 var sign byte    39   28        0 Op
+;   40 var sign byte    40   31        0 Op2
+;   41 var sign byte    41   27        0 CodeType
+;   42 var sign byte    42   23        0 Code1
+;   43 var sign byte    43    7        0 Code2
+;   44 var sign byte    44    3        0 Code3
+;   45 var sign byte    45   19        0 R2No
+;   46 var sign byte    46   16        0 R1No
+;   47 var sign byte    47   18        0 R2Type
+;   48 var sign byte    48   15        0 R1Type
+;   49 var sign byte    49   14        0 OpSize
+;   50 var sign byte    50    9        0 wflag
+;   51 var sign byte    51    3        0 dflag
+;   52 var sign byte    52    8        0 sflag
+;   53 var sign byte    53   15        0 rm
+;   54 var sign byte    54    5        0 isDirect
+;   55 var sign word    55   48        0 disp
+;   56 var unsg word    56   13        0 imme
+;   57 def unsg byte    58    -        0 OPMAXLEN=5
+;   58 arr sign byte    59    2    30518 OpPos[5]
+;   59 var sign word    60    6        0 OpPrintIndex
+;   60 ptr sign byte    61   19        0 OpCodePtr
+;   61 var sign byte    62    4        0 PrintRA
+;   62 def unsg byte    64    -        0 LABELNAMESMAX=3969
+;   63 arr sign byte    65    3    30523 LabelNames[4000]
+;   64 ptr sign byte    66    5        0 LabelNamePtr
+;   65 def unsg byte    67    -        0 LABELADRMAX=600
+;   66 arr unsg word    68    7    34523 LabelAddr[600]
+;   67 var sign word    69    7        0 LabelMaxIx
+;   68 var sign word    70   10        0 LabelIx
+;   69 def unsg byte    72    -        0 JMPCALLNAMESMAX=1969
+;   70 arr sign byte    73    3    35723 JmpCallNames[2000]
+;   71 ptr sign byte    74    5        0 JmpCallNamePtr
+;   72 def unsg byte    75    -        0 JMPCALLMAX=500
+;   73 arr unsg word    76    2    37723 JmpCallAddr[500]
+;   74 var sign word    77    6        0 JmpCallMaxIx
+;   75 def unsg byte    79    -        0 FILEBINMAX=20000
+;   76 arr sign byte    80    4    38723 FileBin[20000]
+;   77 var unsg word    81    6        0 BinLen
+;   78 ptr sign byte    83    1        0 arglen
+;   79 ptr sign byte    84    4        0 argv
+;   80 var sign byte     1    1        0 I_START
+;   81 arr sign byte     4 NULL        0 I_PUSHA[9]
+;   82 arr sign byte     5 NULL        0 I_POPA[8]
+;   83 arr sign byte     6 NULL        0 I_NOP[7]
+;   84 arr sign byte     7 NULL        0 I_CBW[7]
+;   85 arr sign byte     8 NULL        0 I_CWDE[8]
+;   86 arr sign byte     9 NULL        0 I_CWD[7]
+;   87 arr sign byte    10 NULL        0 I_CDQ[7]
+;   88 arr sign byte    11 NULL        0 I_WAIT[8]
+;   89 arr sign byte    12 NULL        0 I_PUSHF[9]
+;   90 arr sign byte    13 NULL        0 I_POPF[8]
+;   91 arr sign byte    14 NULL        0 I_SAHF[8]
+;   92 arr sign byte    15 NULL        0 I_LAHF[8]
+;   93 arr sign byte    16 NULL        0 I_MOVSB[9]
+;   94 arr sign byte    17 NULL        0 I_MOVSW[9]
+;   95 arr sign byte    18 NULL        0 I_CMPSB[9]
+;   96 arr sign byte    19 NULL        0 I_CMPSW[9]
+;   97 arr sign byte    20 NULL        0 I_STOSB[9]
+;   98 arr sign byte    21 NULL        0 I_STOSW[9]
+;   99 arr sign byte    22 NULL        0 I_LODSB[9]
+;  100 arr sign byte    23 NULL        0 I_LODSW[9]
+;  101 arr sign byte    24 NULL        0 I_SCASB[9]
+;  102 arr sign byte    25 NULL        0 I_SCASW[9]
+;  103 arr sign byte    26 NULL        0 I_LEAVE[9]
+;  104 arr sign byte    27 NULL        0 I_INT3[8]
+;  105 arr sign byte    28 NULL        0 I_INTO[8]
+;  106 arr sign byte    29 NULL        0 I_IRET[8]
+;  107 arr sign byte    30 NULL        0 I_XLAT[8]
+;  108 arr sign byte    31 NULL        0 I_LOCK[8]
+;  109 arr sign byte    32 NULL        0 I_REPNE[9]
+;  110 arr sign byte    33 NULL        0 I_REPNZ[9]
+;  111 arr sign byte    34 NULL        0 I_REPE[8]
+;  112 arr sign byte    35 NULL        0 I_REPZ[8]
+;  113 arr sign byte    36 NULL        0 I_HLT[7]
+;  114 arr sign byte    37 NULL        0 I_CLC[7]
+;  115 arr sign byte    38 NULL        0 I_STC[7]
+;  116 arr sign byte    39 NULL        0 I_CLI[7]
+;  117 arr sign byte    40 NULL        0 I_STI[7]
+;  118 arr sign byte    41 NULL        0 I_CLD[7]
+;  119 arr sign byte    42 NULL        0 I_STD[7]
+;  120 arr sign byte    44 NULL        0 I_INC[9]
+;  121 arr sign byte    45 NULL        0 I_DEC[9]
+;  122 arr sign byte    46 NULL        0 I_NOT[8]
+;  123 arr sign byte    47 NULL        0 I_NEG[8]
+;  124 arr sign byte    48 NULL        0 I_MUL[8]
+;  125 arr sign byte    49 NULL        0 I_IMUL[9]
+;  126 arr sign byte    50 NULL        0 I_DIV[8]
+;  127 arr sign byte    51 NULL        0 I_IDIV[9]
+;  128 arr sign byte    53 NULL        0 I_LES[7]
+;  129 arr sign byte    54 NULL        0 I_LDS[7]
+;  130 arr sign byte    55 NULL        0 I_LEA[7]
+;  131 arr sign byte    56 NULL        0 I_LSS[8]
+;  132 arr sign byte    57 NULL        0 I_LFS[8]
+;  133 arr sign byte    58 NULL        0 I_LGS[8]
+;  134 arr sign byte    60 NULL        0 I_ADD[7]
+;  135 arr sign byte    61 NULL        0 I_OR[6]
+;  136 arr sign byte    62 NULL        0 I_ADC[7]
+;  137 arr sign byte    63 NULL        0 I_SBB[7]
+;  138 arr sign byte    64 NULL        0 I_AND[7]
+;  139 arr sign byte    65 NULL        0 I_SUB[7]
+;  140 arr sign byte    66 NULL        0 I_XOR[7]
+;  141 arr sign byte    67 NULL        0 I_CMP[7]
+;  142 arr sign byte    68 NULL        0 I_TEST[11]
+;  143 arr sign byte    70 NULL        0 I_MOV[6]
+;  144 arr sign byte    71 NULL        0 I_MOVSX[9]
+;  145 arr sign byte    72 NULL        0 I_MOVZX[9]
+;  146 arr sign byte    74 NULL        0 I_JO[6]
+;  147 arr sign byte    75 NULL        0 I_JNO[7]
+;  148 arr sign byte    76 NULL        0 I_JB[6]
+;  149 arr sign byte    77 NULL        0 I_JC[6]
+;  150 arr sign byte    78 NULL        0 I_JNB[7]
+;  151 arr sign byte    79 NULL        0 I_JAE[7]
+;  152 arr sign byte    80 NULL        0 I_JNC[7]
+;  153 arr sign byte    81 NULL        0 I_JE[6]
+;  154 arr sign byte    82 NULL        0 I_JZ[6]
+;  155 arr sign byte    83 NULL        0 I_JNE[7]
+;  156 arr sign byte    84 NULL        0 I_JNZ[7]
+;  157 arr sign byte    85 NULL        0 I_JBE[7]
+;  158 arr sign byte    86 NULL        0 I_JNA[7]
+;  159 arr sign byte    87 NULL        0 I_JA[6]
+;  160 arr sign byte    88 NULL        0 I_JS[6]
+;  161 arr sign byte    89 NULL        0 I_JNS[7]
+;  162 arr sign byte    90 NULL        0 I_JP[6]
+;  163 arr sign byte    91 NULL        0 I_JPE[7]
+;  164 arr sign byte    92 NULL        0 I_JNP[7]
+;  165 arr sign byte    93 NULL        0 I_JPO[7]
+;  166 arr sign byte    94 NULL        0 I_JL[6]
+;  167 arr sign byte    95 NULL        0 I_JNL[7]
+;  168 arr sign byte    96 NULL        0 I_JGE[7]
+;  169 arr sign byte    97 NULL        0 I_JLE[7]
+;  170 arr sign byte    98 NULL        0 I_JNG[7]
+;  171 arr sign byte    99 NULL        0 I_JG[6]
+;  172 arr sign byte   101 NULL        0 I_JMP[8]
+;  173 arr sign byte   102 NULL        0 I_CALL[9]
+;  174 arr sign byte   104 NULL        0 I_RET[8]
+;  175 arr sign byte   105 NULL        0 I_RETF[9]
+;  176 arr sign byte   107 NULL        0 I_PUSH[11]
+;  177 arr sign byte   108 NULL        0 I_POP[10]
+;  178 arr sign byte   110 NULL        0 I_ROL[7]
+;  179 arr sign byte   111 NULL        0 I_ROR[7]
+;  180 arr sign byte   112 NULL        0 I_RCL[7]
+;  181 arr sign byte   113 NULL        0 I_RCR[7]
+;  182 arr sign byte   114 NULL        0 I_SHL[7]
+;  183 arr sign byte   115 NULL        0 I_SAL[7]
+;  184 arr sign byte   116 NULL        0 I_SHR[7]
+;  185 arr sign byte   117 NULL        0 I_SAR[7]
+;  186 arr sign byte   119 NULL        0 I_INT[8]
+;  187 arr sign byte   121 NULL        0 I_IN[7]
+;  188 arr sign byte   122 NULL        0 I_INSB[8]
+;  189 arr sign byte   123 NULL        0 I_INSW[8]
+;  190 arr sign byte   124 NULL        0 I_INSD[8]
+;  191 arr sign byte   125 NULL        0 I_OUT[8]
+;  192 arr sign byte   126 NULL        0 I_OUTSB[8]
+;  193 arr sign byte   127 NULL        0 I_OUTSW[8]
+;  194 arr sign byte   128 NULL        0 I_OUTSD[8]
+;  195 arr sign byte   130 NULL        0 I_XCHG[9]
+;  196 arr sign byte   132 NULL        0 I_LOOPNZ[10]
+;  197 arr sign byte   133 NULL        0 I_LOOPNE[10]
+;  198 arr sign byte   134 NULL        0 I_LOOPZ[9]
+;  199 arr sign byte   135 NULL        0 I_LOOPE[9]
+;  200 arr sign byte   136 NULL        0 I_LOOP[8]
+;  201 arr sign byte   137 NULL        0 I_JCXZ[8]
+;  202 arr sign byte   138 NULL        0 I_JECXZ[9]
+;  203 arr sign byte   140 NULL        0 I_ENTER[8]
+;  204 arr sign byte   142 NULL        0 I_ORG[6]
+;  205 arr sign byte   144 NULL        0 I_SECTION[10]
+;  206 arr sign byte   145 NULL        0 I_SEGMENT[10]
+;  207 arr sign byte   146 NULL        0 I_ABSOLUTE[11]
+;  208 arr sign byte   147 NULL        0 I_DB[5]
+;  209 arr sign byte   148 NULL        0 I_DW[5]
+;  210 arr sign byte   149 NULL        0 I_DD[5]
+;  211 arr sign byte   150 NULL        0 I_RESB[7]
+;  212 arr sign byte   151 NULL        0 I_RESW[7]
+;  213 arr sign byte   152 NULL        0 I_RESD[7]
+;  214 var sign byte   153 NULL        0 I_END
 
 
 ;   # Calls Line Width  Name   list of functions
@@ -8460,16 +8607,16 @@ ret
 ;   11    2  119 word   setsflag
 ;   12    2  129 word   checkConstSize
 ;   13    1    1 word   parse
-;   14   15   35 word   getTokeType
+;   14   16   35 word   getTokeType
 ;   15    2   46 word   storeJmpCall
 ;   16    2   57 word   storeLabel
 ;   17    5   69 word   searchLabel
 ;   18    1   82 word   getVariable
-;   19    2  129 word   lookCode
-;   20    1  145 word   getCodeSize
-;   21    8  153 word   isToken
-;   22    2  161 word   need
-;   23    1  170 word   skipRest
+;   19    2  135 word   lookCode
+;   20    1  151 word   getCodeSize
+;   21    9  159 word   isToken
+;   22    2  167 word   need
+;   23    1  176 word   skipRest
 ;   24    1    1 word   getLine
 ;   25    1   17 word   ifEOL
 ;   26    3   24 word   skipBlank
@@ -8491,7 +8638,7 @@ ret
 ;   42 NULL  103 word   allowederror
 ;   43    3  104 word   addrerror
 ;   44    1  105 word   immeerror
-;   45    3  106 word   implerror
+;   45    2  106 word   implerror
 ;   46    4  107 word   indexerror
 ;   47    3  108 word   invaloperror
 ;   48    6  109 word   numbererror
@@ -8512,411 +8659,418 @@ ret
 ;   63    8    9 word   genCode2
 ;   64   13   13 word   genCodeW
 ;   65   33   17 word   genCode8
-;   66   13   28 word   genCode16
-;   67   13   32 word   writeEA
-;   68    4   74 word   genImmediate
-;   69    1   11 word   process
-;   70    4  349 word   writetty
-;   71    8  350 word   cputs
-;   72    2  351 word   toupper
-;   73    4  353 word   strlen
-;   74    8  354 word   strcpy
-;   75    3  356 word   digit
-;   76   35  357 word   eqstr
-;   77    3  360 word   strcat1
-;   78    1  361 word   openR
-;   79    2  362 word   creatR
-;   80    2  363 word   readRL
-;   81    2  364 word   fputcR
-;   82    3  366 word   fcloseR
-;   83    5  367 word   exitR
-;   84    1  369 word   putch
-;   85    4  370 word   DosInt
-;   86 NULL  371 word   LastFunctionByt
+;   66   17   28 word   genCode16
+;   67    1   32 word   genCode32
+;   68   13   36 word   writeEA
+;   69    4   78 word   genImmediate
+;   70    1   11 word   process
+;   71    4  349 word   writetty
+;   72    8  350 word   cputs
+;   73    2  351 word   toupper
+;   74    4  353 word   strlen
+;   75    8  354 word   strcpy
+;   76    3  356 word   digit
+;   77   35  357 word   eqstr
+;   78    3  360 word   strcat1
+;   79    1  361 word   openR
+;   80    2  362 word   creatR
+;   81    2  363 word   readRL
+;   82    2  364 word   fputcR
+;   83    3  366 word   fcloseR
+;   84    5  367 word   exitR
+;   85    1  369 word   putch
+;   86    4  370 word   DosInt
+;   87 NULL  371 word   LastFunctionByt
 
 ;    #  addr name   list of CALLs
 
-;    0  1442 implerror
-;    1  1452 segregerror
-;    2  1464 setwflag
-;    3  1473 error1
-;    4  1480 error1
-;    5  1497 get2Ops
-;    6  1505 addrerror
-;    7  1515 invaloperror
-;    8  1528 immeerror
-;    9  1538 addrerror
-;   10  1548 invaloperror
-;   11  1561 setwflag
-;   12  1578 getOpL
-;   13  1585 need
-;   14  1590 getOpR
-;   15  1604 getOpR
-;   16  1618 getOp1
-;   17  1625 isToken
-;   18  1633 getMEM
-;   19  1640 invaloperror
-;   20  1653 error1
-;   21  1667 testReg
-;   22  1675 searchLabel
-;   23  1687 error1
-;   24  1703 getTokeType
-;   25  1715 getOp1
-;   26  1722 syntaxerror
-;   27  1734 getIndReg2
-;   28  1745 getIndReg1
-;   29  1756 isToken
-;   30  1764 getTokeType
-;   31  1776 numbererror
-;   32  1788 isToken
-;   33  1796 isToken
-;   34  1804 errorexit
-;   35  1825 indexerror
-;   36  1836 indexerror
-;   37  1860 indexerror
-;   38  1871 indexerror
-;   39  1891 gen66h
-;   40  1910 error1
-;   41  1941 getLine
-;   42  1949 getTokeType
-;   43  1961 storeLabel
-;   44  1972 getTokeType
-;   45  1984 lookCode
-;   46  1993 process
-;   47  2001 getVariable
-;   48  2013 skipRest
-;   49  2022 error1
-;   50  2029 error1
-;   51  2036 printLine
-;   52  2060 skipBlank
-;   53  2070 digit
-;   54  2076 getDigit
-;   55  2085 letterE
-;   56  2093 getName
-;   57  2116 errorexit
-;   58  2126 strcpy
-;   59  2133 errorexit
-;   60  2156 errorexit
-;   61  2166 searchLabel
-;   62  2178 error1
-;   63  2185 strcpy
-;   64  2192 errorexit
-;   65  2220 eqstr
-;   66  2226 strlen
-;   67  2247 storeLabel
-;   68  2258 getTokeType
-;   69  2270 lookCode
-;   70  2279 dataexit
-;   71  2288 dataexit
-;   72  2297 getTokeType
-;   73  2309 genCode8
-;   74  2318 skipBlank
-;   75  2328 isToken
-;   76  2336 genCode8
-;   77  2345 isToken
-;   78  2353 getTokeType
-;   79  2365 genCode16
-;   80  2375 isToken
-;   81  2383 implerror
-;   82  2393 getTokeType
-;   83  2405 syntaxerror
-;   84  2417 error1
-;   85  2424 numbererror
-;   86  2436 dataexit
-;   87  2454 eqstr
-;   88  2472 eqstr
-;   89  2478 getTokeType
-;   90  2490 eqstr
-;   91  2496 getTokeType
-;   92  2508 eqstr
-;   93  2514 getTokeType
-;   94  2536 skipBlank
-;   95  2553 isToken
-;   96  2561 getTokeType
-;   97  2573 error1
-;   98  2580 prs
-;   99  2584 prc
-;  100  2597 getTokeType
-;  101  2609 error1
-;  102  2626 readRL
-;  103  2633 errorexit
-;  104  2643 errorexit
-;  105  2653 ifEOL
-;  106  2667 readRL
-;  107  2703 digit
-;  108  2709 letterE
-;  109  2736 digit
-;  110  2756 alnumE
-;  111  2763 errorexit
-;  112  2773 strcpy
-;  113  2780 toupper
-;  114  2796 strlen
-;  115  2803 strlen
-;  116  2810 eqstr
-;  117  2816 eqstr
-;  118  2822 eqstr
-;  119  2828 eqstr
-;  120  2834 eqstr
-;  121  2840 eqstr
-;  122  2846 eqstr
-;  123  2852 eqstr
-;  124  2858 eqstr
-;  125  2864 eqstr
-;  126  2870 eqstr
-;  127  2876 eqstr
-;  128  2882 eqstr
-;  129  2888 eqstr
-;  130  2894 eqstr
-;  131  2900 eqstr
-;  132  2906 eqstr
-;  133  2912 eqstr
-;  134  2918 eqstr
-;  135  2924 eqstr
-;  136  2930 eqstr
-;  137  2936 eqstr
-;  138  2942 eqstr
-;  139  2948 eqstr
-;  140  2954 eqstr
-;  141  2960 eqstr
-;  142  2966 eqstr
-;  143  2972 eqstr
-;  144  2978 eqstr
-;  145  2984 eqstr
-;  146  3004 prs
-;  147  3008 printhex16
-;  148  3019 prs
-;  149  3023 prc
-;  150  3027 printhex8a
-;  151  3038 prs
-;  152  3042 prc
-;  153  3046 prscomment
-;  154  3063 writetty
-;  155  3072 writetty
-;  156  3081 fputcR
-;  157  3103 prc
-;  158  3119 prc
-;  159  3140 printhex4
-;  160  3150 printhex4
-;  161  3172 prc
-;  162  3194 printhex8a
-;  163  3205 printhex8a
-;  164  3230 printIntU
-;  165  3240 prc
-;  166  3253 prs
-;  167  3257 prs
-;  168  3261 prs
-;  169  3265 prs
-;  170  3281 error1
-;  171  3288 end1
-;  172  3306 error1
-;  173  3323 error1
-;  174  3340 error1
-;  175  3357 error1
-;  176  3375 error1
-;  177  3395 error1
-;  178  3414 error1
-;  179  3433 error1
-;  180  3451 error1
-;  181  3470 error1
-;  182  3489 error1
-;  183  3505 errorexit
-;  184  3524 errorexit
-;  185  3545 errorexit
-;  186  3560 getarg
-;  187  3567 parse
-;  188  3573 fixJmpCall
-;  189  3584 epilog
-;  190  3591 end1
-;  191  3615 cputs
-;  192  3621 cputs
-;  193  3627 exitR
-;  194  3633 toupper
-;  195  3641 strcpy
-;  196  3648 strcat1
-;  197  3656 strcpy
-;  198  3663 strcat1
-;  199  3671 strcpy
-;  200  3678 strcat1
-;  201  3686 openR
-;  202  3692 cputs
-;  203  3698 cputs
-;  204  3704 exitR
-;  205  3710 creatR
-;  206  3717 cputs
-;  207  3723 cputs
-;  208  3729 exitR
-;  209  3735 creatR
-;  210  3742 cputs
-;  211  3748 cputs
-;  212  3754 exitR
-;  213  3760 prs
-;  214  3764 prs
-;  215  3768 prs
-;  216  3772 prs
-;  217  3776 prs
-;  218  3780 prs
-;  219  3784 prs
-;  220  3788 prs
-;  221  3792 prs
-;  222  3820 prs
-;  223  3824 printIntU
-;  224  3834 strcpy
-;  225  3841 strlen
-;  226  3848 searchLabel
-;  227  3860 error1
-;  228  3880 prs
-;  229  3884 printIntU
-;  230  3894 prs
-;  231  3898 prs
-;  232  3902 prs
-;  233  3906 prs
-;  234  3910 prs
-;  235  3914 prs
-;  236  3918 printIntU
-;  237  3928 prs
-;  238  3932 fputcR
-;  239  3939 prs
-;  240  3943 printIntU
-;  241  3953 prs
-;  242  3964 fcloseR
-;  243  3972 fcloseR
-;  244  3980 fcloseR
-;  245  3988 exitR
-;  246  4010 genCode8
-;  247  4032 genCode8
-;  248  4052 genCode8
-;  249  4072 errorexit
-;  250  4094 genCode8
-;  251  4103 genCode8
-;  252  4128 genCode8
-;  253  4137 genCode8
-;  254  4146 genCode16
-;  255  4169 genCode16
-;  256  4179 genCode8
-;  257  4198 getTokeType
-;  258  4210 getCodeSize
-;  259  4222 getCodes
-;  260  4231 genCode8
-;  261  4240 getOpL
-;  262  4247 checkOpL
-;  263  4256 genCode2
-;  264  4265 getTokeType
-;  265  4277 implerror
-;  266  4287 genCodeW
-;  267  4296 writeEA
-;  268  4304 check2Ops
-;  269  4314 reg16error
-;  270  4325 addrerror
-;  271  4335 genCode8
-;  272  4344 genCode8
-;  273  4353 writeEA
-;  274  4361 check2Ops
-;  275  4371 setsflag
-;  276  4380 genCodeW
-;  277  4389 genImmediate
-;  278  4402 genCodeW
-;  279  4411 writeEA
-;  280  4419 genCode8
-;  281  4428 genImmediate
-;  282  4441 genCodeW
-;  283  4450 writeEA
-;  284  4458 genCodeW
-;  285  4467 writeEA
-;  286  4475 syntaxerror
-;  287  4487 check2Ops
-;  288  4497 genCode2
-;  289  4506 genImmediate
-;  290  4519 genCodeW
-;  291  4528 writeEA
-;  292  4536 genImmediate
-;  293  4549 regmemerror
-;  294  4561 ChangeDirection
-;  295  4577 reg16error
-;  296  4588 genCode2
-;  297  4597 writeEA
-;  298  4605 genCodeW
-;  299  4614 genCode16
-;  300  4624 genCodeW
-;  301  4633 genCode16
-;  302  4643 genCodeW
-;  303  4652 writeEA
-;  304  4660 ChangeDirection
-;  305  4676 genCodeW
-;  306  4685 writeEA
-;  307  4693 syntaxerror
-;  308  4705 searchLabel
-;  309  4717 checkConstSize
-;  310  4732 genCode2
-;  311  4741 genCode8
-;  312  4750 genCode8
-;  313  4759 genCode2
-;  314  4768 genCode16
-;  315  4778 genCode8
-;  316  4787 genCode2
-;  317  4796 genCode16
-;  318  4806 storeJmpCall
-;  319  4819 searchLabel
-;  320  4831 checkConstSize
-;  321  4846 genCode8
-;  322  4855 genCode8
-;  323  4864 genCode8
-;  324  4873 genCode16
-;  325  4883 genCode8
-;  326  4892 genCode16
-;  327  4902 genCode8
-;  328  4911 genCode16
-;  329  4921 storeJmpCall
-;  330  4934 genCode8
-;  331  4943 genCode16
-;  332  4953 genCode8
-;  333  4962 getOpL
-;  334  4969 setsflag
-;  335  4978 genCode2
-;  336  4987 genCode8
-;  337  4996 genCode16
-;  338  5006 error1
-;  339  5013 genCode8
-;  340  5022 genCode8
-;  341  5031 checkOpL
-;  342  5040 reg16error
-;  343  5051 genCode2
-;  344  5060 genCode8
-;  345  5069 writeEA
-;  346  5077 syntaxerror
-;  347  5089 check2Ops
-;  348  5099 genCodeW
-;  349  5108 writeEA
-;  350  5116 genCodeW
-;  351  5125 writeEA
-;  352  5133 genCode8
-;  353  5142 genCodeW
-;  354  5151 writeEA
-;  355  5159 genCode8
-;  356  5168 genCode8
-;  357  5177 genCode8
-;  358  5186 getOp1
-;  359  5193 genCode16
-;  360  5203 numbererror
-;  361  5215 need
-;  362  5220 getOp1
-;  363  5227 genCode8
-;  364  5236 numbererror
-;  365  5248 numbererror
-;  366  5260 numbererror
-;  367  5272 error1
-;  368  5298 putch
-;  369  5366 strcpy
-;  370  5381 DosInt
-;  371  5397 DosInt
-;  372  5420 DosInt
-;  373  5439 DosInt
-;  374  5473 writetty
-;  375  5482 writetty
+;    0  1565 implerror
+;    1  1575 segregerror
+;    2  1587 setwflag
+;    3  1596 error1
+;    4  1603 error1
+;    5  1620 get2Ops
+;    6  1628 addrerror
+;    7  1638 invaloperror
+;    8  1651 immeerror
+;    9  1661 addrerror
+;   10  1671 invaloperror
+;   11  1684 setwflag
+;   12  1701 getOpL
+;   13  1708 need
+;   14  1713 getOpR
+;   15  1727 getOpR
+;   16  1741 getOp1
+;   17  1748 isToken
+;   18  1756 getMEM
+;   19  1763 invaloperror
+;   20  1776 error1
+;   21  1790 testReg
+;   22  1798 searchLabel
+;   23  1810 error1
+;   24  1826 getTokeType
+;   25  1838 getOp1
+;   26  1845 syntaxerror
+;   27  1857 getIndReg2
+;   28  1868 getIndReg1
+;   29  1879 isToken
+;   30  1887 getTokeType
+;   31  1899 numbererror
+;   32  1911 isToken
+;   33  1919 isToken
+;   34  1927 errorexit
+;   35  1948 indexerror
+;   36  1959 indexerror
+;   37  1983 indexerror
+;   38  1994 indexerror
+;   39  2014 gen66h
+;   40  2033 error1
+;   41  2064 getLine
+;   42  2072 getTokeType
+;   43  2084 storeLabel
+;   44  2095 getTokeType
+;   45  2107 lookCode
+;   46  2116 process
+;   47  2124 getVariable
+;   48  2136 skipRest
+;   49  2145 error1
+;   50  2152 error1
+;   51  2159 printLine
+;   52  2183 skipBlank
+;   53  2193 digit
+;   54  2199 getDigit
+;   55  2208 letterE
+;   56  2216 getName
+;   57  2239 errorexit
+;   58  2249 strcpy
+;   59  2256 errorexit
+;   60  2279 errorexit
+;   61  2289 searchLabel
+;   62  2301 error1
+;   63  2308 strcpy
+;   64  2315 errorexit
+;   65  2343 eqstr
+;   66  2349 strlen
+;   67  2370 storeLabel
+;   68  2381 getTokeType
+;   69  2393 lookCode
+;   70  2402 dataexit
+;   71  2411 dataexit
+;   72  2420 getTokeType
+;   73  2432 genCode8
+;   74  2441 skipBlank
+;   75  2451 isToken
+;   76  2459 genCode8
+;   77  2468 isToken
+;   78  2476 getTokeType
+;   79  2488 genCode16
+;   80  2498 isToken
+;   81  2506 getTokeType
+;   82  2518 genCode16
+;   83  2528 genCode16
+;   84  2538 isToken
+;   85  2546 getTokeType
+;   86  2558 syntaxerror
+;   87  2570 error1
+;   88  2577 numbererror
+;   89  2589 dataexit
+;   90  2607 eqstr
+;   91  2625 eqstr
+;   92  2631 getTokeType
+;   93  2643 eqstr
+;   94  2649 getTokeType
+;   95  2661 eqstr
+;   96  2667 getTokeType
+;   97  2689 skipBlank
+;   98  2706 isToken
+;   99  2714 getTokeType
+;  100  2726 error1
+;  101  2733 prs
+;  102  2737 prc
+;  103  2750 getTokeType
+;  104  2762 error1
+;  105  2779 readRL
+;  106  2786 errorexit
+;  107  2796 errorexit
+;  108  2806 ifEOL
+;  109  2820 readRL
+;  110  2856 digit
+;  111  2862 letterE
+;  112  2889 digit
+;  113  2909 alnumE
+;  114  2916 errorexit
+;  115  2926 strcpy
+;  116  2933 toupper
+;  117  2949 strlen
+;  118  2956 strlen
+;  119  2963 eqstr
+;  120  2969 eqstr
+;  121  2975 eqstr
+;  122  2981 eqstr
+;  123  2987 eqstr
+;  124  2993 eqstr
+;  125  2999 eqstr
+;  126  3005 eqstr
+;  127  3011 eqstr
+;  128  3017 eqstr
+;  129  3023 eqstr
+;  130  3029 eqstr
+;  131  3035 eqstr
+;  132  3041 eqstr
+;  133  3047 eqstr
+;  134  3053 eqstr
+;  135  3059 eqstr
+;  136  3065 eqstr
+;  137  3071 eqstr
+;  138  3077 eqstr
+;  139  3083 eqstr
+;  140  3089 eqstr
+;  141  3095 eqstr
+;  142  3101 eqstr
+;  143  3107 eqstr
+;  144  3113 eqstr
+;  145  3119 eqstr
+;  146  3125 eqstr
+;  147  3131 eqstr
+;  148  3137 eqstr
+;  149  3157 prs
+;  150  3161 printhex16
+;  151  3172 prs
+;  152  3176 prc
+;  153  3180 printhex8a
+;  154  3191 prs
+;  155  3195 prc
+;  156  3199 prscomment
+;  157  3216 writetty
+;  158  3225 writetty
+;  159  3234 fputcR
+;  160  3256 prc
+;  161  3272 prc
+;  162  3293 printhex4
+;  163  3303 printhex4
+;  164  3325 prc
+;  165  3347 printhex8a
+;  166  3358 printhex8a
+;  167  3383 printIntU
+;  168  3393 prc
+;  169  3406 prs
+;  170  3410 prs
+;  171  3414 prs
+;  172  3418 prs
+;  173  3434 error1
+;  174  3441 end1
+;  175  3459 error1
+;  176  3476 error1
+;  177  3493 error1
+;  178  3510 error1
+;  179  3528 error1
+;  180  3548 error1
+;  181  3567 error1
+;  182  3586 error1
+;  183  3604 error1
+;  184  3623 error1
+;  185  3642 error1
+;  186  3658 errorexit
+;  187  3677 errorexit
+;  188  3698 errorexit
+;  189  3713 getarg
+;  190  3720 parse
+;  191  3726 fixJmpCall
+;  192  3737 epilog
+;  193  3744 end1
+;  194  3768 cputs
+;  195  3774 cputs
+;  196  3780 exitR
+;  197  3786 toupper
+;  198  3794 strcpy
+;  199  3801 strcat1
+;  200  3809 strcpy
+;  201  3816 strcat1
+;  202  3824 strcpy
+;  203  3831 strcat1
+;  204  3839 openR
+;  205  3845 cputs
+;  206  3851 cputs
+;  207  3857 exitR
+;  208  3863 creatR
+;  209  3870 cputs
+;  210  3876 cputs
+;  211  3882 exitR
+;  212  3888 creatR
+;  213  3895 cputs
+;  214  3901 cputs
+;  215  3907 exitR
+;  216  3913 prs
+;  217  3917 prs
+;  218  3921 prs
+;  219  3925 prs
+;  220  3929 prs
+;  221  3933 prs
+;  222  3937 prs
+;  223  3941 prs
+;  224  3945 prs
+;  225  3973 prs
+;  226  3977 printIntU
+;  227  3987 strcpy
+;  228  3994 strlen
+;  229  4001 searchLabel
+;  230  4013 error1
+;  231  4033 prs
+;  232  4037 printIntU
+;  233  4047 prs
+;  234  4051 prs
+;  235  4055 prs
+;  236  4059 prs
+;  237  4063 prs
+;  238  4067 prs
+;  239  4071 printIntU
+;  240  4081 prs
+;  241  4085 fputcR
+;  242  4092 prs
+;  243  4096 printIntU
+;  244  4106 prs
+;  245  4117 fcloseR
+;  246  4125 fcloseR
+;  247  4133 fcloseR
+;  248  4141 exitR
+;  249  4163 genCode8
+;  250  4185 genCode8
+;  251  4205 genCode8
+;  252  4225 errorexit
+;  253  4247 genCode8
+;  254  4256 genCode8
+;  255  4277 genCode16
+;  256  4287 genCode16
+;  257  4313 genCode8
+;  258  4322 genCode8
+;  259  4331 genCode16
+;  260  4354 genCode32
+;  261  4364 genCode16
+;  262  4374 genCode8
+;  263  4393 getTokeType
+;  264  4405 getCodeSize
+;  265  4417 getCodes
+;  266  4426 genCode8
+;  267  4435 getOpL
+;  268  4442 checkOpL
+;  269  4451 genCode2
+;  270  4460 getTokeType
+;  271  4472 implerror
+;  272  4482 genCodeW
+;  273  4491 writeEA
+;  274  4499 check2Ops
+;  275  4509 reg16error
+;  276  4520 addrerror
+;  277  4530 genCode8
+;  278  4539 genCode8
+;  279  4548 writeEA
+;  280  4556 check2Ops
+;  281  4566 setsflag
+;  282  4575 genCodeW
+;  283  4584 genImmediate
+;  284  4597 genCodeW
+;  285  4606 writeEA
+;  286  4614 genCode8
+;  287  4623 genImmediate
+;  288  4636 genCodeW
+;  289  4645 writeEA
+;  290  4653 genCodeW
+;  291  4662 writeEA
+;  292  4670 syntaxerror
+;  293  4682 check2Ops
+;  294  4692 genCode2
+;  295  4701 genImmediate
+;  296  4714 genCodeW
+;  297  4723 writeEA
+;  298  4731 genImmediate
+;  299  4744 regmemerror
+;  300  4756 ChangeDirection
+;  301  4772 reg16error
+;  302  4783 genCode2
+;  303  4792 writeEA
+;  304  4800 genCodeW
+;  305  4809 genCode16
+;  306  4819 genCodeW
+;  307  4828 genCode16
+;  308  4838 genCodeW
+;  309  4847 writeEA
+;  310  4855 ChangeDirection
+;  311  4871 genCodeW
+;  312  4880 writeEA
+;  313  4888 syntaxerror
+;  314  4900 searchLabel
+;  315  4912 checkConstSize
+;  316  4927 genCode2
+;  317  4936 genCode8
+;  318  4945 genCode8
+;  319  4954 genCode2
+;  320  4963 genCode16
+;  321  4973 genCode8
+;  322  4982 genCode2
+;  323  4991 genCode16
+;  324  5001 storeJmpCall
+;  325  5014 searchLabel
+;  326  5026 checkConstSize
+;  327  5041 genCode8
+;  328  5050 genCode8
+;  329  5059 genCode8
+;  330  5068 genCode16
+;  331  5078 genCode8
+;  332  5087 genCode16
+;  333  5097 genCode8
+;  334  5106 genCode16
+;  335  5116 storeJmpCall
+;  336  5129 genCode8
+;  337  5138 genCode16
+;  338  5148 genCode8
+;  339  5157 getOpL
+;  340  5164 setsflag
+;  341  5173 genCode2
+;  342  5182 genCode8
+;  343  5191 genCode16
+;  344  5201 error1
+;  345  5208 genCode8
+;  346  5217 genCode8
+;  347  5226 checkOpL
+;  348  5235 reg16error
+;  349  5246 genCode2
+;  350  5255 genCode8
+;  351  5264 writeEA
+;  352  5272 syntaxerror
+;  353  5284 check2Ops
+;  354  5294 genCodeW
+;  355  5303 writeEA
+;  356  5311 genCodeW
+;  357  5320 writeEA
+;  358  5328 genCode8
+;  359  5337 genCodeW
+;  360  5346 writeEA
+;  361  5354 genCode8
+;  362  5363 genCode8
+;  363  5372 genCode8
+;  364  5381 getOp1
+;  365  5388 genCode16
+;  366  5398 numbererror
+;  367  5410 need
+;  368  5415 getOp1
+;  369  5422 genCode8
+;  370  5431 numbererror
+;  371  5443 numbererror
+;  372  5455 numbererror
+;  373  5467 error1
+;  374  5493 putch
+;  375  5561 strcpy
+;  376  5576 DosInt
+;  377  5592 DosInt
+;  378  5615 DosInt
+;  379  5634 DosInt
+;  380  5668 writetty
+;  381  5677 writetty
 ;Input: AS.C, List: AS.S,  Lines:  372
-;Glob. variables:  198 max.:  200
-;Local variables:    5 max.:  100, in 'fixJmpCall'
-;Functions      :   87 max.:  300
-;Calls          :  376 max.: 2000, NameField: 5514 max.:    65535
-;Code until     :25998 max.: 30000, free: 4002
+;Glob. variables:  214 max.:  250
+;Local variables:    5 max.:   50, in 'fixJmpCall'
+;Functions      :   88 max.:  300
+;Calls          :  382 max.: 2000, NameField: 5709 max.:    65535
+;Code until     :24528 max.: 30000, free: 5472
 ;Data (HeapEnd) :58723, resting stacksize:  6812
 ;Max. Const in 'testReg' :  658 max. 3000, free: 2342
