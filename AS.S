@@ -3,7 +3,7 @@
 org  256 
 jmp main
 
-;-1 char Version1[]="AS.C V0.1";//BAS.BAT, AS TE, NAS.BAT
+;-1 char Version1[]="AS.C V0.1";/// BAS.BAT, AS TE, NAS.BAT
 
 Version1 db "AS.C V0.1",0
 
@@ -11,7 +11,7 @@ Version1 db "AS.C V0.1",0
 
 ;Use include file: DECL.C
 
-;-1 char LIST;              //listing on/off     
+;-1 char LIST;              ///< listing on/off     
 
 LIST db 0
 

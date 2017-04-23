@@ -1,4 +1,4 @@
-char LIST;              //listing on/off     
+char LIST;              ///< listing on/off     
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName

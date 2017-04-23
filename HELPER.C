@@ -14,11 +14,13 @@ int getLine() {// make ASCIIZ, skip LF=10 and CR=13
   InputPtr--;
   *InputPtr=0;
 }
-int ifEOL(char c) {
-  if (c == 10) return 1;
-  if (c == 13) {
+int ifEOL(char c) {//unix LF, win CRLF= 13/10, mac CR
+  if (c == 10) return 1;//LF
+  if (c == 13) {//CR
     DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
-    return 1;}
+    if (DOS_ByteRead != 0) errorexit("missing LF(10) after CR(13)");
+    return 1;
+  }
   return 0;
 }
 int skipBlank() {
@@ -102,7 +104,7 @@ int testReg() {
   if (eqstr(SymbolUpper, "DS")) return 3;
   if (eqstr(SymbolUpper, "FS")) return 4;
   if (eqstr(SymbolUpper, "GS")) return 5;
-  R2Type=DWORD;                         
+  R2Type=DWORD;
   if (eqstr(SymbolUpper, "EAX"))return 0;
   if (eqstr(SymbolUpper, "ECX"))return 1;
   if (eqstr(SymbolUpper, "EDX"))return 2;

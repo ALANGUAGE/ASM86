@@ -1,0 +1,40 @@
+FILES.TXT     
+Assembler for 8086
+I use the follwing programs:
+1. Sourcetree for Mac. AS local in /DOS/AS/ASM86, 
+   remote in https://github.com/ALANGUAGE/ASM86
+2. Ultraedit, UltraCompareX because Atom can not print files 
+3. Boxer, Maximum speed and Drives as C:, Filezilla                                                                                           
+                                          
+BAS.BAT     batch: for compiling and assembling:
+            A.COM AS.C   
+            NASM.EXE -o AS.COM -f bin -l AS.LS -O1 -t AS.S 
+AS TE       Assemble the test program
+NAS.BAT     batch: nasm assembles test file TE.S, listing TE.LS 
+            NASM.EXE -o T.COM -f bin -l TE.LS -O1  TE.S 
+
+A.COM       PLA: C Compiler, output is 8086-assembler, 24KB
+AR.C        archive file in PLA-Syntax, very dense
+AS.C        main prg, process every code line
+AS.COM      this assembler out from nasm 
+AS.LS       listing file from nasm
+AS.S        assembly output file from F.com, input for nasm, as.com
+DECL.C      declaration of variables
+F.COM       old PLA compiler, 21KB 
+FILES.TXT   this file
+GENCODE.C   generate code
+HELPER.C    helper routines: getLine, getDigit, getName, testReg
+LICENSE     The MIT License
+MAIN.C      start, getarg, fixJmpCall, epilog, end1 
+MANUAL.MD   should be manual one day. in markdown
+NASM.EXE    reference assembler, AS must be 100% compatible
+OPS.C       check operands 
+OPTABL.C    operands table
+OUTPUT.C    print line, error1
+PARSE.C     parse, getTokeType, searchLabel, getVariable, lookCode
+README.md   main description for github
+T.COM       test file from nasm
+TE.COM      test file from AS TE, must be identical to above
+TE.LS       listing from nasm
+TE.LST      listing from AS TE
+TE.S        input test assembly file 

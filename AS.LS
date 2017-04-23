@@ -3,7 +3,7 @@
      3                                  org  256 
      4 00000000 E9EB1B                  jmp main
      5                                  
-     6                                  ;-1 char Version1[]="AS.C V0.1";//BAS.BAT, AS TE, NAS.BAT
+     6                                  ;-1 char Version1[]="AS.C V0.1";/// BAS.BAT, AS TE, NAS.BAT
      7                                  
      8 00000003 41532E432056302E31-     Version1 db "AS.C V0.1",0
      9 0000000C 00                 
@@ -12,7 +12,7 @@
     12                                  
     13                                  ;Use include file: DECL.C
     14                                  
-    15                                  ;-1 char LIST;              //listing on/off     
+    15                                  ;-1 char LIST;              ///< listing on/off     
     16                                  
     17 0000000D 00                      LIST db 0
     18                                  
