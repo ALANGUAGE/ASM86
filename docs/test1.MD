@@ -9,3 +9,7 @@
 
 new para, normal text after blank line
 - Tasklist1 with -
+**Bold** 2 stars before and after
+```C Code in C with 3 pieces `
+end with 3 pieces `
+```
