@@ -13,8 +13,10 @@ new para, normal text after blank line
 empty line following
 
 ```C 
-Code in C with 3 pieces of `  
-end with 3 pieces of `
+Code in C with 3 pieces of `
+direct following with C
+
+end with 3 pieces of ```  
 if (ax == 0)
 then ;
 ```
