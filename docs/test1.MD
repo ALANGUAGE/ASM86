@@ -12,6 +12,9 @@ new para, normal text after blank line
 **Bold** 2 stars before and after  
 empty line following
 
-```C Code in C with 3 pieces `  
-end with 3 pieces `  
+```C 
+Code in C with 3 pieces of `  
+end with 3 pieces of `
+if (ax == 0)
+then ;
 ```
