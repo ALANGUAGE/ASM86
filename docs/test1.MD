@@ -5,7 +5,7 @@
 * second item
 #### header4
 1. Ordered list
-1. second ordered list, start with 1.   
+1. second, start with 1., end with 2 blanks  
   nested list starts with 2 blanks  
   nested2 list
 
