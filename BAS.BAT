@@ -1,4 +1,4 @@
 A.COM AS.C
 if errorlevel 1 goto err
-NASM.EXE -o AS.COM -f bin -l AS.LS -O1 -t AS.S 
+NASM.EXE -oAS.COM -fbin  -O1 -dENDP -dPROC -lAS.LS AS.S  
 :err

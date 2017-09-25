@@ -1,3 +1,20 @@
+int writetty()     { ah=0x0E; bx=0; __emit__(0xCD,0x10); }
+int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
+int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
+
+int DosInt() {
+    __emit__(0xCD,0x21);//inth 0x21;
+    __emit__(0x73, 04); //ifcarry DOS_ERR++;
+    DOS_ERR++;
+}
+int openR (char *s) { dx=s;       ax=0x3D02; DosInt(); }
+int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
+int fcloseR(int fd) {bx=fd;       ax=0x3E00; DosInt(); }
+int exitR  (char c) {ah=0x4C; al=c;          DosInt(); }
+int readRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x3F00; DosInt();}
+int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
+  cx=1; bx=fd; ax=0x4000; DosInt(); }
+
 int getLine() {// make ASCIIZ, skip LF=10 and CR=13
   unsigned int i;
   InputPtr= &InputBuf;
@@ -18,7 +35,7 @@ int ifEOL(char c) {//unix LF, win CRLF= 13/10, mac CR
   if (c == 10) return 1;//LF
   if (c == 13) {//CR
     DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
-    if (DOS_ByteRead != 0) errorexit("missing LF(10) after CR(13)");
+    if (DOS_ByteRead != 10) errorexit("missing LF(10) after CR(13)");
     return 1;
   }
   return 0;
@@ -43,6 +60,42 @@ int alnumE(char c) {
   if (letterE(c)) return 1;
   return 0;
 }
+int digit(char c){
+    if(c<'0') return 0;
+    if(c>'9') return 0;
+    return 1;
+}
+int strlen(char *s) { int c;
+    c=0;
+    while (*s!=0) {s++; c++;}
+    return c;
+    }
+int strcpy(char *s, char *t) {
+    do { *s=*t; s++; t++; }
+    while (*t!=0);
+    *s=0;
+    return s;
+    }
+int eqstr(char *p, char *q) {
+    while(*p) {
+        if (*p != *q) return 0;
+            p++;
+            q++;
+            }
+    if(*q) return 0;
+    return 1;
+    }
+int strcat1(char *s, char *t) {
+    while (*s != 0) s++;
+    strcpy(s, t);
+    }
+int toupper(char *s) {
+    while(*s) {
+        if (*s >= 'a') if (*s <= 'z') *s=*s-32;
+            s++;
+              }
+    }
+
 int getDigit(unsigned char c) {//ret: SymbolInt
   unsigned int CastInt;
   SymbolInt=0;

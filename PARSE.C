@@ -1,20 +1,22 @@
 int parse() {
-    LabelNamePtr  = &LabelNames;    
+    LabelNamePtr  = &LabelNames;
     JmpCallNamePtr= &JmpCallNames;
-    LabelMaxIx=0;    
-    JmpCallMaxIx=0;  
+    LabelMaxIx=0;
+    JmpCallMaxIx=0;
     BinLen=0;
-    
+    isInProc=0;
+
     do {//process a new line
-        PCStart=PC; 
+        PCStart=PC;
         OpSize=0;
-        OpPrintIndex=0; 
+        OpPrintIndex=0;
         PrintRA=' ';
         getLine();
         InputPtr = &InputBuf;
         getTokeType();//getCode in SymbolUpper,set TokeType,isLabel by getName
         if (TokeType == ALNUME) {
             if (isLabel) {//set in getName
+              if (isInProc == 0)  strcpy(ProcName, Symbol);
                 storeLabel();
                 InputPtr++;//remove :
                 getTokeType();
@@ -32,7 +34,7 @@ int parse() {
     } while (DOS_NoBytes != 0 );
 }
 
-int getTokeType() { 
+int getTokeType() {
     char c;
     skipBlank();
     c = *InputPtr;
@@ -41,7 +43,7 @@ int getTokeType() {
     if (digit(c)) {getDigit(c); TokeType=DIGIT; return;}//ret:1=SymbolInt
     if (letterE (c)) {getName(c); TokeType=ALNUME; return;}//ret:2=Symbol
     TokeType=NOALNUME;
-}                     
+}
 
 int storeJmpCall() {
     unsigned int i;
@@ -49,9 +51,9 @@ int storeJmpCall() {
     if (JmpCallMaxIx >= JMPCALLMAX) errorexit("too many JmpCalls");
     JmpCallNamePtr=strcpy(JmpCallNamePtr, Symbol);
     JmpCallNamePtr++;
-    i = JmpCallNamePtr - &JmpCallNames;    
+    i = JmpCallNamePtr - &JmpCallNames;
     if ( i >= JMPCALLNAMESMAX) errorexit("too many JmpCall names");
-    JmpCallAddr[JmpCallMaxIx] = PC;   
+    JmpCallAddr[JmpCallMaxIx] = PC;
 }
 
 int storeLabel() {
@@ -64,37 +66,37 @@ int storeLabel() {
     i = LabelNamePtr - &LabelNames;
     if (i >= LABELNAMESMAX) errorexit("too many label names");
     LabelAddr[LabelMaxIx] = PC + Origin;
-}   
+}
 
 int searchLabel() {
     int LIx; char *p;
     p = &LabelNames;
     LIx = 1;
     while (LIx <= LabelMaxIx) {
-        if (eqstr(p, Symbol)) return LIx;//pos of label                    
-        p=strlen(p) + p;                  
-        p++; 
+        if (eqstr(p, Symbol)) return LIx;//pos of label
+        p=strlen(p) + p;
+        p++;
         LIx++;
     }
     return 0;
-}   
+}
 
-int getVariable() { 
-    char c; 
+int getVariable() {
+    char c;
     storeLabel();
-    getTokeType(); 
+    getTokeType();
     if(TokeType==ALNUME) {//getName
         lookCode();
         if (CodeType < 200) dataexit();
         if (CodeType > 205) dataexit();
         if (CodeType== 200) {//DB
-            do { 
+            do {
                 getTokeType();
                 if (TokeType == DIGIT) genCode8(SymbolInt);
                 else {
                     skipBlank();
                     if (isToken('"')) {
-                        do { 
+                        do {
                             c= *InputPtr;
                             genCode8(c);
                             InputPtr++;
@@ -105,29 +107,29 @@ int getVariable() {
             } while (isToken(','));
         }
         if (CodeType == 201) {//DW
-            do { 
+            do {
                 getTokeType();
                 if (TokeType ==DIGIT) genCode16(SymbolInt);
             } while (isToken(','));
-        } 
+        }
         if (CodeType == 202) {//DD
-            do { 
+            do {
                 getTokeType();
                 if (TokeType ==DIGIT) { genCode16(SymbolInt);
                                     genCode16(0);}//todo genCode32(SymbolLong);
             } while (isToken(','));
-        } 
+        }
         if (CodeType >= 203) {//resb, resw, resd
             getTokeType();
             if (TokeType == DIGIT) {
-                if (SymbolInt <= 0) syntaxerror();   
+                if (SymbolInt <= 0) syntaxerror();
                 if (AbsoluteLab == 0) error1("Absolute is null");
-                LabelAddr[LabelMaxIx] = AbsoluteLab; 
+                LabelAddr[LabelMaxIx] = AbsoluteLab;
                 if (CodeType == 204) SymbolInt=SymbolInt+SymbolInt;//resw
-                if (CodeType == 205) SymbolInt=SymbolInt * 4;//resd                  
+                if (CodeType == 205) SymbolInt=SymbolInt * 4;//resd
                 AbsoluteLab = AbsoluteLab + SymbolInt;
-            } else numbererror();  
-        }    
+            } else numbererror();
+        }
     }
     else dataexit();
 }
@@ -139,7 +141,7 @@ int lookCode() {//ret: CodeType, *OpCodePtr
     do  {
         if (eqstr(SymbolUpper, OpCodePtr))  {
             while(*OpCodePtr!=0) OpCodePtr++;
-            OpCodePtr++; 
+            OpCodePtr++;
             CodeType =*OpCodePtr;
             return;
         }
@@ -153,15 +155,15 @@ int getCodeSize() {
         if (eqstr(SymbolUpper,"BYTE")) {getTokeType(); return BYTE;}
         if (eqstr(SymbolUpper,"WORD")) {getTokeType(); return WORD;}
         if (eqstr(SymbolUpper,"DWORD")){getTokeType(); return DWORD;}
-    } 
+    }
     return 0;
 }
 int isToken(char c) {
     skipBlank();
     if (*InputPtr == c) {
-        InputPtr++; 
+        InputPtr++;
         return 1;
-        } 
+        }
     return 0;
 }
 int need(char c) {
@@ -174,6 +176,6 @@ int need(char c) {
     prc(c);
 }
 int skipRest() {
-    getTokeType(); 
+    getTokeType();
     if(TokeType)error1("extra char ignored");
 }

@@ -1,8 +1,10 @@
-char LIST;              ///< listing on/off     
+char LIST;              ///< listing on/off
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName
-unsigned int SymbolInt; //integer value set in getDigit   
+char ProcName[SYMBOLMAX];//name of actual proc
+char isInProc=0;        //is inside a procedure
+unsigned int SymbolInt; //integer value set in getDigit
 unsigned long SymbolLong;//integer value set in getDigit
 #define INPUTBUFMAX 255
 char InputBuf[INPUTBUFMAX];//filled in getLine, no overflow test
@@ -19,7 +21,7 @@ int DOS_NoBytes;        //number of bytes read (0 or 1)
 char DOS_ByteRead;      //the byte just read by DOS
 
 unsigned int PC=0;      //program counter
-unsigned int Origin=0;  //ORG nn   
+unsigned int Origin=0;  //ORG nn
 unsigned int AbsoluteLab=0;//uninitialised data
 unsigned int PCStart;   //PC at start of line by PrintLine()
 char isLabel;           //by getName()
@@ -36,20 +38,20 @@ char TokeType;          //0, DIGIT, LETTERE, ALNUME, NOALNUME
 #define REG      2      //       ,BX    mode=11
 #define ADR      3      //DIRECT: VALUE  ,var1  mod=00, r/m=110
 #define MEM      4      //[var1],[BX+SI],[table+BX],[bp-4] disp0,8,16
-char Op;                //1. operand: 0, IMM, REG, ADR, MEM  
+char Op;                //1. operand: 0, IMM, REG, ADR, MEM
 char Op2;               //2. operand
 char CodeType;          //1-207 by searchSymbol(), must be byte size
 char Code1;             //1. Opcode
 char Code2;             //2. Opcode
 char Code3;             //3. Opcode
-char R2No;              //0 - 7 AL, CL, ...  set in testReg()  
+char R2No;              //0 - 7 AL, CL, ...  set in testReg()
 char R1No;              //temp for 1. register
 char R2Type;            //0=no reg, BYTE, WORD, DWORD, SEGREG
-char R1Type;            //temp for 1. register 
+char R1Type;            //temp for 1. register
 char OpSize;            //0, BYTE, WORD, DWORD by getCodeSize()
 char wflag;             //wordflag: 0=byte, 1=word/dword
-char dflag;             //directionflag: 1=to reg MOV,ALU    
-char sflag;             //sign extended, imm8 to word PUSH,ALU,IMUL3 
+char dflag;             //directionflag: 1=to reg MOV,ALU
+char sflag;             //sign extended, imm8 to word PUSH,ALU,IMUL3
 char rm;                //combination of index and base reg
 char isDirect;          //set in process and getMeM, need in WriteEA
 int disp;               //displacement      0-8 bytes
@@ -71,15 +73,14 @@ int LabelIx;            //actual # of just searched label
 
 #define JMPCALLNAMESMAX 1969//next number - SYMBOLMAX
 char JmpCallNames[2000];//space for names of jmp, call
-char *JmpCallNamePtr;   //first free position 
+char *JmpCallNamePtr;   //first free position
 #define JMPCALLMAX 500  //max. jmp and call
 unsigned int JmpCallAddr[JMPCALLMAX];//addr to be fixed
 int JmpCallMaxIx=0;     //actual # of jmp, call. 1 to JMPCALLMAX-1
- 
-#define FILEBINMAX 20000 
+
+#define FILEBINMAX 20000
 char FileBin  [FILEBINMAX];//output binary file
 unsigned int BinLen=0;  //length of binary file
 
 char *arglen=0x80;      // for main only
 char *argv=0x82;        // for main only
- 
