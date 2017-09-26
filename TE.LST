@@ -265,11 +265,9 @@
 ;entering: name1
 0270                name1: proc
 0270 90             nop
-;***** next line ERROR: already in proc, Symbol: proc
-0271                n2:proc 
 ;leaving: name1
 0271                ENDP
 0271 90             nop
 0272                
 ;END open jmp/call: 5
- Errors: 1 ***ERROR*** , Out: TE.LST, TE.COM= 626 bytes. Labels: 17. 
+ Errors: 0, Out: TE.LST, TE.COM= 626 bytes. Labels: 16. 

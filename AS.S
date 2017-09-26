@@ -686,180 +686,164 @@ I_POP db 80,79,80,0,9,88,143,0,7,241
 ;-81 //  11: shift, rotates
 
 
-;-82 char I_ROL[]=  {'R','O','L',0,          11, 0,    0xF1};
+;-82 char I_ROL[]=  {'R','O','L',0, 11, 0,0xF1, 'R','O','R',0, 11, 1,0xF1};
 
-I_ROL db 82,79,76,0,11,0,241
+I_ROL db 82,79,76,0,11,0,241,82,79,82,0,11,1,241
 
-;-83 char I_ROR[]=  {'R','O','R',0,          11, 1,    0xF1};
+;-83 char I_RCL[]=  {'R','C','L',0, 11, 2,0xF1, 'R','C','R',0, 11, 3,0xF1};
 
-I_ROR db 82,79,82,0,11,1,241
+I_RCL db 82,67,76,0,11,2,241,82,67,82,0,11,3,241
 
-;-84 char I_RCL[]=  {'R','C','L',0,          11, 2,    0xF1};
+;-84 char I_SHL[]=  {'S','H','L',0, 11, 4,0xF1, 'S','A','L',0, 11, 4,0xF1};
 
-I_RCL db 82,67,76,0,11,2,241
+I_SHL db 83,72,76,0,11,4,241,83,65,76,0,11,4,241
 
-;-85 char I_RCR[]=  {'R','C','R',0,          11, 3,    0xF1};
+;-85 char I_SHR[]=  {'S','H','R',0, 11, 5,0xF1, 'S','A','R',0, 11, 7,0xF1};
 
-I_RCR db 82,67,82,0,11,3,241
+I_SHR db 83,72,82,0,11,5,241,83,65,82,0,11,7,241
 
-;-86 char I_SHL[]=  {'S','H','L',0,          11, 4,    0xF1};
-
-I_SHL db 83,72,76,0,11,4,241
-
-;-87 char I_SAL[]=  {'S','A','L',0,          11, 4,    0xF1};
-
-I_SAL db 83,65,76,0,11,4,241
-
-;-88 char I_SHR[]=  {'S','H','R',0,          11, 5,    0xF1};
-
-I_SHR db 83,72,82,0,11,5,241
-
-;-89 char I_SAR[]=  {'S','A','R',0,          11, 7,    0xF1};
-
-I_SAR db 83,65,82,0,11,7,241
-
-;-90 //  12: int
+;-86 //  12: int
 
 
-;-91 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
+;-87 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
 
 I_INT db 73,78,84,0,12,205,204,241
 
-;-92 //  14: in/out
+;-88 //  14: in/out
 
 
-;-93 char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
+;-89 char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
 
 I_IN db 73,78,0,14,228,236,241
 
-;-94 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};
+;-90 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};
 
 I_INSB db 73,78,83,66,0,14,108,241
 
-;-95 char I_INSW[]= {'I','N','S','W',0,      14,0x6D,   0xF1};
+;-91 char I_INSW[]= {'I','N','S','W',0,      14,0x6D,   0xF1};
 
 I_INSW db 73,78,83,87,0,14,109,241
 
-;-96 char I_INSD[]= {'I','N','S','D',0,      14,0x6D,   0xF1};
+;-92 char I_INSD[]= {'I','N','S','D',0,      14,0x6D,   0xF1};
 
 I_INSD db 73,78,83,68,0,14,109,241
 
-;-97 char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xEE,0xF1};
+;-93 char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xEE,0xF1};
 
 I_OUT db 79,85,84,0,14,230,238,241
 
-;-98 char I_OUTSB[]={'O','U','T','B',0,      14,0x6E,   0xF1};
+;-94 char I_OUTSB[]={'O','U','T','B',0,      14,0x6E,   0xF1};
 
 I_OUTSB db 79,85,84,66,0,14,110,241
 
-;-99 char I_OUTSW[]={'O','U','T','W',0,      14,0x6F,   0xF1};
+;-95 char I_OUTSW[]={'O','U','T','W',0,      14,0x6F,   0xF1};
 
 I_OUTSW db 79,85,84,87,0,14,111,241
 
-;-100 char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};
+;-96 char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};
 
 I_OUTSD db 79,85,84,68,0,14,111,241
 
-;-101 //  15: xchg
+;-97 //  15: xchg
 
 
-;-102 char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0x90,0xF1};
+;-98 char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0x90,0xF1};
 
 I_XCHG db 88,67,72,71,0,15,134,144,241
 
-;-103 //  16: loop, jcxz
+;-99 //  16: loop, jcxz
 
 
-;-104 char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
+;-100 char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
 
 I_LOOPNZ db 76,79,79,80,78,90,0,16,224,241
 
-;-105 char I_LOOPNE[]={'L','O','O','P','N','E',0, 16,0xE0,0xF1};
+;-101 char I_LOOPNE[]={'L','O','O','P','N','E',0, 16,0xE0,0xF1};
 
 I_LOOPNE db 76,79,79,80,78,69,0,16,224,241
 
-;-106 char I_LOOPZ[]={'L','O','O','P','Z',0,      16,0xE1,0xF1};
+;-102 char I_LOOPZ[]={'L','O','O','P','Z',0,      16,0xE1,0xF1};
 
 I_LOOPZ db 76,79,79,80,90,0,16,225,241
 
-;-107 char I_LOOPE[]={'L','O','O','P','E',0,      16,0xE1,0xF1};
+;-103 char I_LOOPE[]={'L','O','O','P','E',0,      16,0xE1,0xF1};
 
 I_LOOPE db 76,79,79,80,69,0,16,225,241
 
-;-108 char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
+;-104 char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
 
 I_LOOP db 76,79,79,80,0,16,226,241
 
-;-109 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
+;-105 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
 
 I_JCXZ db 74,67,88,90,0,16,227,241
 
-;-110 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
+;-106 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
 
 I_JECXZ db 74,69,67,88,90,0,16,227,241
 
-;-111 //  30: enter
+;-107 //  30: enter
 
 
-;-112 char I_ENTER[]={'E','N','T','E','R',0, 30,        0xF1};
+;-108 char I_ENTER[]={'E','N','T','E','R',0, 30,        0xF1};
 
 I_ENTER db 69,78,84,69,82,0,30,241
 
-;-113 // 100: directives
+;-109 // 100: directives
 
 
-;-114 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
+;-110 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
 
 I_ORG db 79,82,71,0,101,241
 
-;-115 // section, segment .TEXT .DATA .BSS
+;-111 // section, segment .TEXT .DATA .BSS
 
 
-;-116 char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
+;-112 char I_SECTION[]={'S','E','C','T','I','O','N',0,      102, 0xF1};
 
 I_SECTION db 83,69,67,84,73,79,78,0,102,241
 
-;-117 char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
+;-113 char I_SEGMENT[]={'S','E','G','M','E','N','T',0,      102, 0xF1};
 
 I_SEGMENT db 83,69,71,77,69,78,84,0,102,241
 
-;-118 char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};
+;-114 char I_ABSOLUTE[]={'A','B','S','O','L','U','T','E',0, 110, 0xF1};
 
 I_ABSOLUTE db 65,66,83,79,76,85,84,69,0,110,241
 
-;-119 char I_PROC[]= {'P','R','O','C',0,    111,        0xF1};
+;-115 char I_PROC[]= {'P','R','O','C',0,    111,        0xF1};
 
 I_PROC db 80,82,79,67,0,111,241
 
-;-120 char I_ENDP[]= {'E','N','D','P',0,    112,        0xF1};
+;-116 char I_ENDP[]= {'E','N','D','P',0,    112,        0xF1};
 
 I_ENDP db 69,78,68,80,0,112,241
 
-;-121 char I_DB[]=   {'D','B',0,            200,        0xF1};
+;-117 char I_DB[]=   {'D','B',0,            200,        0xF1};
 
 I_DB db 68,66,0,200,241
 
-;-122 char I_DW[]=   {'D','W',0,            201,        0xF1};
+;-118 char I_DW[]=   {'D','W',0,            201,        0xF1};
 
 I_DW db 68,87,0,201,241
 
-;-123 char I_DD[]=   {'D','D',0,            202,        0xF1};
+;-119 char I_DD[]=   {'D','D',0,            202,        0xF1};
 
 I_DD db 68,68,0,202,241
 
-;-124 char I_RESB[]= {'R','E','S','B',0,    203,        0xF1};
+;-120 char I_RESB[]= {'R','E','S','B',0,    203,        0xF1};
 
 I_RESB db 82,69,83,66,0,203,241
 
-;-125 char I_RESW[]= {'R','E','S','W',0,    204,        0xF1};
+;-121 char I_RESW[]= {'R','E','S','W',0,    204,        0xF1};
 
 I_RESW db 82,69,83,87,0,204,241
 
-;-126 char I_RESD[]= {'R','E','S','D',0,    205,        0xF1};
+;-122 char I_RESD[]= {'R','E','S','D',0,    205,        0xF1};
 
 I_RESD db 82,69,83,68,0,205,241
 
-;-127 char I_END=0;// end of table char
+;-123 char I_END=0;// end of table char
 
 I_END db 0
 ;Back to main program: AS.C
@@ -8548,44 +8532,40 @@ ret
 ;  150 arr sign byte    79 NULL I_PUSH[15656]
 ;  151 arr sign byte    80 NULL I_POP[33]
 ;  152 arr sign byte    82 NULL I_ROL[9076]
-;  153 arr sign byte    83 NULL I_ROR[9021]
-;  154 arr sign byte    84 NULL I_RCL[29696]
-;  155 arr sign byte    85 NULL I_RCR[15646]
-;  156 arr sign byte    86 NULL I_SHL[36]
-;  157 arr sign byte    87 NULL I_SAL[6516]
-;  158 arr sign byte    88 NULL I_SHR[9789]
-;  159 arr sign byte    89 NULL I_SAR[29696]
-;  160 arr sign byte    91 NULL I_INT[15636]
-;  161 arr sign byte    93 NULL I_IN[34]
-;  162 arr sign byte    94 NULL I_INSB[3956]
-;  163 arr sign byte    95 NULL I_INSW[10557]
-;  164 arr sign byte    96 NULL I_INSD[29696]
-;  165 arr sign byte    97 NULL I_OUT[15626]
-;  166 arr sign byte    98 NULL I_OUTSB[40]
-;  167 arr sign byte    99 NULL I_OUTSW[1396]
-;  168 arr sign byte   100 NULL I_OUTSD[9533]
-;  169 arr sign byte   102 NULL I_XCHG[29952]
-;  170 arr sign byte   104 NULL I_LOOPNZ[33542]
-;  171 arr sign byte   105 NULL I_LOOPNE[2686]
-;  172 arr sign byte   106 NULL I_LOOPZ[60176]
-;  173 arr sign byte   107 NULL I_LOOPE[33540]
-;  174 arr sign byte   108 NULL I_LOOP[2686]
-;  175 arr sign byte   109 NULL I_JCXZ[29984]
-;  176 arr sign byte   110 NULL I_JECXZ[47255]
-;  177 arr sign byte   112 NULL I_ENTER[1]
-;  178 arr sign byte   114 NULL I_ORG[52169]
-;  179 arr sign byte   116 NULL I_SECTION[21904]
-;  180 arr sign byte   117 NULL I_SEGMENT[60555]
-;  181 arr sign byte   118 NULL I_ABSOLUTE[5816]
-;  182 arr sign byte   119 NULL I_PROC[39424]
-;  183 arr sign byte   120 NULL I_ENDP[674]
-;  184 arr sign byte   121 NULL I_DB[8125]
-;  185 arr sign byte   122 NULL I_DW[51030]
-;  186 arr sign byte   123 NULL I_DD[65094]
-;  187 arr sign byte   124 NULL I_RESB[0]
-;  188 arr sign byte   125 NULL I_RESW[1678]
-;  189 arr sign byte   126 NULL I_RESD[52256]
-;  190 var sign byte   127 NULL I_END
+;  153 arr sign byte    83 NULL I_RCL[9021]
+;  154 arr sign byte    84 NULL I_SHL[29696]
+;  155 arr sign byte    85 NULL I_SHR[15646]
+;  156 arr sign byte    87 NULL I_INT[36]
+;  157 arr sign byte    89 NULL I_IN[6516]
+;  158 arr sign byte    90 NULL I_INSB[9789]
+;  159 arr sign byte    91 NULL I_INSW[29696]
+;  160 arr sign byte    92 NULL I_INSD[15636]
+;  161 arr sign byte    93 NULL I_OUT[34]
+;  162 arr sign byte    94 NULL I_OUTSB[3956]
+;  163 arr sign byte    95 NULL I_OUTSW[10557]
+;  164 arr sign byte    96 NULL I_OUTSD[29696]
+;  165 arr sign byte    98 NULL I_XCHG[15626]
+;  166 arr sign byte   100 NULL I_LOOPNZ[40]
+;  167 arr sign byte   101 NULL I_LOOPNE[1396]
+;  168 arr sign byte   102 NULL I_LOOPZ[9533]
+;  169 arr sign byte   103 NULL I_LOOPE[29952]
+;  170 arr sign byte   104 NULL I_LOOP[33542]
+;  171 arr sign byte   105 NULL I_JCXZ[2686]
+;  172 arr sign byte   106 NULL I_JECXZ[60176]
+;  173 arr sign byte   108 NULL I_ENTER[33540]
+;  174 arr sign byte   110 NULL I_ORG[2686]
+;  175 arr sign byte   112 NULL I_SECTION[29984]
+;  176 arr sign byte   113 NULL I_SEGMENT[47255]
+;  177 arr sign byte   114 NULL I_ABSOLUTE[1]
+;  178 arr sign byte   115 NULL I_PROC[52169]
+;  179 arr sign byte   116 NULL I_ENDP[21904]
+;  180 arr sign byte   117 NULL I_DB[60555]
+;  181 arr sign byte   118 NULL I_DW[5816]
+;  182 arr sign byte   119 NULL I_DD[39424]
+;  183 arr sign byte   120 NULL I_RESB[674]
+;  184 arr sign byte   121 NULL I_RESW[8125]
+;  185 arr sign byte   122 NULL I_RESD[51030]
+;  186 var sign byte   123 NULL I_END
 
 
 ;   # Calls Line Width  Name   list of functions
@@ -9074,7 +9054,7 @@ ret
 ;  390  3226 prs
 ;  391  3230 error1
 ;Input: AS.C, List: AS.S,  Lines:  362
-;Glob. variables:  190 max.:  200
+;Glob. variables:  186 max.:  200
 ;Functions      :   88 max.:  300
 ;Calls          :  392 max.: 2000, NameField: 3237 max.:    65535
 ;Code until     :21667 max.: 30000, free: 8333

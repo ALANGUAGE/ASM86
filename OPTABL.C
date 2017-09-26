@@ -79,14 +79,10 @@ char I_RETF[]= {'R','E','T','F',0,      8,0xCB,0xCA,0xF1};
 char I_PUSH[]= {'P','U','S','H',0,      9,0x50,0xFF,6,6,0xF1};//r16
 char I_POP[]=  {'P','O','P',0,          9,0x58,0x8F,0,7,0xF1};//r16
 //  11: shift, rotates
-char I_ROL[]=  {'R','O','L',0,          11, 0,    0xF1};
-char I_ROR[]=  {'R','O','R',0,          11, 1,    0xF1};
-char I_RCL[]=  {'R','C','L',0,          11, 2,    0xF1};
-char I_RCR[]=  {'R','C','R',0,          11, 3,    0xF1};
-char I_SHL[]=  {'S','H','L',0,          11, 4,    0xF1};
-char I_SAL[]=  {'S','A','L',0,          11, 4,    0xF1};
-char I_SHR[]=  {'S','H','R',0,          11, 5,    0xF1};
-char I_SAR[]=  {'S','A','R',0,          11, 7,    0xF1};
+char I_ROL[]=  {'R','O','L',0, 11, 0,0xF1, 'R','O','R',0, 11, 1,0xF1};
+char I_RCL[]=  {'R','C','L',0, 11, 2,0xF1, 'R','C','R',0, 11, 3,0xF1};
+char I_SHL[]=  {'S','H','L',0, 11, 4,0xF1, 'S','A','L',0, 11, 4,0xF1};
+char I_SHR[]=  {'S','H','R',0, 11, 5,0xF1, 'S','A','R',0, 11, 7,0xF1};
 //  12: int
 char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
 //  14: in/out
