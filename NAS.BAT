@@ -1,1 +1,1 @@
-NASM.EXE -o T.COM -f bin -l TE.LS -O1  TE.S 
+NASM.EXE -oT.COM -fbin -O1 -dENDP -dPROC -lTE.LS TE.S 

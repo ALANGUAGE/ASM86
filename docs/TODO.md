@@ -30,7 +30,7 @@ UltraCompareX for comparing the output with NASM, Boxer
 
 BAS.BAT     for compiling and assembling:
             A.COM AS.C   
-            NASM.EXE -o AS.COM -f bin -l AS.LS -O1 -t AS.S
+            NASM.EXE -oAS.COM -fbin  -O1 -dENDP -dPROC -lAS.LS AS.S
 AS TE       Assemble the test program to TE.LST
 NAS.BAT     nasm assembles test file TE.S, listing TE.LS
-            NASM.EXE -o T.COM -f bin -l TE.LS -O1  TE.S
+            NASM.EXE -oT.COM -fbin -O1 -dENDP -dPROC -lTE.LS TE.S 
