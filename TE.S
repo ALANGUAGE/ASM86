@@ -1,7 +1,7 @@
 ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT
 ;1=IMM, 2=REG, 3=ADR, 4=MEM
 org 256            ;NASM
-not al             ;F6 D0
+jmp main
 VA dw 8            ;08 00
 VB db "AB",6       ;41 42 06
 dec ax             ;48
@@ -177,6 +177,9 @@ push ax             ;50
 push di             ;57
 push word [VA]      ;FF 36 02 00
 push word [VB]      ;FF 36 04 00
+push VA             ;68 02(01 ORG incl.)
+push VB             ;68 04 01
+
 pop ax              ;58
 pop di              ;5F
 pop word [VA]       ;8F 06 02 00
@@ -254,11 +257,20 @@ mov al, [sechs]     ;A0 09 10
 mov ax, [zwei]      ;A1 0F 10
 mov al, [Einsd]     ;A0 14 04
 mov al, [dreiw]     ;A0 18 04
-name: proc
+name: PROC
 nop
 endp
 nop
-name1: proc
-nop
+getarg_1 db "S",0
+main: PROC
+                  ;text1: db "T"
+ENTER  6,0
+jmp L9              ;E9 04 00
+call L9             ;E8 01 00
+nop                 ;90
+L9:
+leave
+ret
+text2 db "E"
 ENDP
-nop
+L9:nop

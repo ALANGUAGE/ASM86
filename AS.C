@@ -67,9 +67,11 @@ char PrintRA;           //print * for forward relocative jmp
 #define LABELNAMESMAX 3969//next number - SYMBOLMAX
 char LabelNames[4000];  //space for names of all labels
 char *LabelNamePtr;     //first free position
+unsigned int locLabelNamePtr;//set after PROC to LabelNamePtr
 #define LABELADRMAX 600
 unsigned int LabelAddr[LABELADRMAX];//addr of each label
 int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
+int localLabelMaxIx;    //set after PROC to LabelMaxIx
 int LabelIx;            //actual # of just searched label
 
 #define JMPCALLNAMESMAX 1969//next number - SYMBOLMAX
@@ -410,9 +412,9 @@ int storeJmpCall() {
 
 int storeLabel() {
     unsigned int i;
+    if(searchLabel()) error1("duplicate label");
     LabelMaxIx++;
     if (LabelMaxIx >= LABELADRMAX) errorexit("too many labels");
-    if(searchLabel()) error1("duplicate label");
     LabelNamePtr=strcpy(LabelNamePtr, Symbol);
     LabelNamePtr++;
     i = LabelNamePtr - &LabelNames;
@@ -1041,6 +1043,7 @@ int genImmediate() {
 //AS.C
 int process() {
     char c;
+    int i;
     Op=Op2=R1Type=R2Type=R1No=R2No=dflag=wflag=rm=0;//char
     disp=imme=0;//int
     isDirect=1; //set in getMeM=0, need in WriteEA
@@ -1220,7 +1223,7 @@ int process() {
                 genCode8(0x0F);
                 genCode2(Code1, 0x80);
                 genCode16(0);
-                PrintRA='*';
+                PrintRA='r';
                 storeJmpCall();
             }
         return;
@@ -1255,7 +1258,7 @@ int process() {
             else {//jump forward, near only
                 genCode8(Code1);
                 genCode16(0);
-                PrintRA='*';
+                PrintRA='R';
                 storeJmpCall();
             }
         return;
@@ -1282,9 +1285,14 @@ int process() {
                 else       genCode16(imme);
                 return;
             }
+            if (Op == ADR) {//push string ABSOLUTE i16
+                genCode8(0x68);
+                genCode16(disp);
+                return;
+            }
         }
         if (R1Type == SEGREG) {
-            if (Code1 == 0x58) {
+            if (Code1 == 0x58) {//pop only
                 if (R1No == 1) error1("pop cs not allowed");
             }
             c = R1No <<3;
@@ -1379,6 +1387,8 @@ int process() {
           prs("\n;entering: ");
           prs(ProcName);
           isInProc=1;
+          locLabelNamePtr = LabelNamePtr;
+          localLabelMaxIx = LabelMaxIx;
         } else error1("already in proc");
         return;
     }
@@ -1386,6 +1396,12 @@ int process() {
       prs("\n;leaving: ");
       prs(ProcName);
       isInProc=0;
+      i = LabelMaxIx - localLabelMaxIx;
+      prs(". # local labels :");
+      printIntU(i);
+// 1. close push string
+// 2. close open call/jmp
+// 3. delete all local labels
       return;
     }
     error1("Command not implemented or syntax error");
