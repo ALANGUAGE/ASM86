@@ -73,6 +73,8 @@ unsigned int LabelAddr[LABELADRMAX];//addr of each label
 int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
 int localLabelMaxIx;    //set after PROC to LabelMaxIx
 int LabelIx;            //actual # of just searched label
+int locStrAdrIx=0;      //push string not known
+unsigned int locStrAdr[100];//list of push of strings not known
 
 #define JMPCALLNAMESMAX 1969//next number - SYMBOLMAX
 char JmpCallNames[2000];//space for names of jmp, call
@@ -214,6 +216,21 @@ char I_RESW[]= {'R','E','S','W',0,    204,        0xF1};
 char I_RESD[]= {'R','E','S','D',0,    205,        0xF1};
 char I_END=0;// end of table char
 
+int lookCode() {//ret: CodeType, *OpCodePtr
+    CodeType=0;
+    OpCodePtr= &I_START;
+    OpCodePtr++;
+    do  {
+        if (eqstr(SymbolUpper, OpCodePtr))  {
+            while(*OpCodePtr!=0) OpCodePtr++;
+            OpCodePtr++;
+            CodeType =*OpCodePtr;
+            return;
+        }
+    while(*OpCodePtr!=0xF1) OpCodePtr++;
+    OpCodePtr++;
+    } while(*OpCodePtr!=0);
+}
 
 //#include "OPS.C"
 int ChangeDirection() {
@@ -276,8 +293,9 @@ int getOp1() {//scan for a single operand
         R2No=testReg();
         if (R2Type)        return REG;
         LabelIx=searchLabel();
-        if (LabelIx)        return ADR;
-        else error1("variable not found");
+        return ADR;
+//        if (LabelIx)        return ADR;
+//        else error1("variable not found");
     }
     return 0;
 }
@@ -295,7 +313,10 @@ int getMEM() {// e.g. [array+bp+si-4]
             if (rm) rm=getIndReg2();
             else getIndReg1();
         }
-        if (c == ADR) disp=disp+LabelAddr[LabelIx];
+        if (c == ADR) {
+            if (LabelIx)    disp=disp+LabelAddr[LabelIx];
+            else notfounderror();
+        }
         if (c == IMM) disp=disp+SymbolInt;
         if (isToken('-')) {
             getTokeType();
@@ -486,22 +507,6 @@ int getVariable() {
         }
     }
     else dataexit();
-}
-
-int lookCode() {//ret: CodeType, *OpCodePtr
-    CodeType=0;
-    OpCodePtr= &I_START;
-    OpCodePtr++;
-    do  {
-        if (eqstr(SymbolUpper, OpCodePtr))  {
-            while(*OpCodePtr!=0) OpCodePtr++;
-            OpCodePtr++;
-            CodeType =*OpCodePtr;
-            return;
-        }
-    while(*OpCodePtr!=0xF1) OpCodePtr++;
-    OpCodePtr++;
-    } while(*OpCodePtr!=0);
 }
 
 int getCodeSize() {
@@ -809,6 +814,7 @@ int errorexit(char *s) {
     epilog();
     end1(1);
 }
+int notfounderror(){error1("label not found"); }
 int allowederror() {error1("not allowed here"); }
 int addrerror()    {error1("address missing");}
 int immeerror()    {error1("immediate not allowed here");}
@@ -1134,7 +1140,8 @@ int process() {
     prs(", R1No:"); printhex8a(R1No);
     prs(", R2No:"); printhex8a(R2No);   */
         if (Op2 == ADR) {
-            imme=disp;
+            if (disp) imme=disp;
+            else notfounderror();
             Op2=IMM;//continue with IMM
         }
         if (Op2 == IMM) {// r,i
@@ -1286,9 +1293,18 @@ int process() {
                 return;
             }
             if (Op == ADR) {//push string ABSOLUTE i16
-                genCode8(0x68);
-                genCode16(disp);
-                return;
+                if (disp) {
+                    genCode8(0x68);
+                    genCode16(disp);
+                    return;
+                }
+                else {
+                    genCode8(0x68);
+                    genCode16(0);
+                    PrintRA='A';
+//todo store Adr of push code, as storeJmpCall
+
+                }
             }
         }
         if (R1Type == SEGREG) {
@@ -1305,7 +1321,7 @@ int process() {
             genCode8(c);
             return;
         }
-        checkOpL();
+        checkOpL();//no ADR, SEGREG
         if (R1Type == BYTE) reg16error();
         if (R1Type == WORD) {
             genCode2(Code1, R1No);
@@ -1389,6 +1405,8 @@ int process() {
           isInProc=1;
           locLabelNamePtr = LabelNamePtr;
           localLabelMaxIx = LabelMaxIx;
+          locStrAdrIx = 0;  //push string is local to proc
+
         } else error1("already in proc");
         return;
     }
@@ -1399,7 +1417,10 @@ int process() {
       i = LabelMaxIx - localLabelMaxIx;
       prs(". # local labels :");
       printIntU(i);
+      prs(". local strings to push :");
+      printIntU(locStrAdrIx);
 // 1. close push string
+
 // 2. close open call/jmp
 // 3. delete all local labels
       return;

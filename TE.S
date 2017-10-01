@@ -177,8 +177,8 @@ push ax             ;50
 push di             ;57
 push word [VA]      ;FF 36 02 00
 push word [VB]      ;FF 36 04 00
-push VA             ;68 02(01 ORG incl.)
-push VB             ;68 04 01
+push VA             ;68 03(01 ORG incl.)
+push VB             ;68 05 01
 
 pop ax              ;58
 pop di              ;5F
@@ -257,20 +257,27 @@ mov al, [sechs]     ;A0 09 10
 mov ax, [zwei]      ;A1 0F 10
 mov al, [Einsd]     ;A0 14 04
 mov al, [dreiw]     ;A0 18 04
+push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 name: PROC
 nop
 endp
+
 nop
 getarg_1 db "S",0
+
 main: PROC
-                  ;text1: db "T"
+text1 db "T"
 ENTER  6,0
 jmp L9              ;E9 04 00
 call L9             ;E8 01 00
 nop                 ;90
 L9:
+push text1
+push text2
 leave
 ret
 text2 db "E"
 ENDP
-L9:nop
+
+L10:nop

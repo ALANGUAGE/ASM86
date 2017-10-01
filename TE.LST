@@ -179,8 +179,8 @@
 01C7 57             push di             ;57
 01C8 FF 36 03 01    push word [VA]      ;FF 36 02 00
 01CC FF 36 05 01    push word [VB]      ;FF 36 04 00
-01D0 68 03 01       push VA             ;68 02(01 ORG incl.)
-01D3 68 05 01       push VB             ;68 04 01
+01D0 68 03 01       push VA             ;68 03(01 ORG incl.)
+01D3 68 05 01       push VB             ;68 05 01
 01D6                
 01D6 58             pop ax              ;58
 01D7 5F             pop di              ;5F
@@ -259,28 +259,36 @@
 026C A1 0F 10       mov ax, [zwei]      ;A1 0F 10
 026F A0 14 04       mov al, [Einsd]     ;A0 14 04
 0272 A0 18 04       mov al, [dreiw]     ;A0 18 04
+0275 68 06 26       push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+0278                
 ;entering: name
-0275                name: PROC
-0275 90             nop
-;leaving: name. # local labels :0
-0276                endp
-0276 90             nop
-0277 53 00          getarg_1 db "S",0
+0278                name: PROC
+0278 90             nop
+;leaving: name. # local labels :0. local strings to push :0
+0279                endp
+0279                
+0279 90             nop
+027A 53 00          getarg_1 db "S",0
+027C                
 ;entering: main
-0279                main: PROC
-0279                                  ;text1: db "T"
-0279 C8 06 00 00    ENTER  6,0
-027D E9 00 00      Rjmp L9              ;E9 04 00
-0280 E8 00 00      Rcall L9             ;E8 01 00
-0283 90             nop                 ;90
-0284                L9:
-0284 C9             leave
-0285 C3             ret
-0286 45             text2 db "E"
-;leaving: main. # local labels :2
-0287                ENDP
-;***** next line ERROR: duplicate label, Symbol: L9
-0287 90             L9:nop
-0288                
+027C                main: PROC
+;***** next line ERROR: Command not implemented or syntax error, Symbol: db
+;***** next line ERROR: extra char ignored, Symbol: db
+027C                text1: db "T"
+027C C8 06 00 00    ENTER  6,0
+0280 E9 00 00      Rjmp L9              ;E9 04 00
+0283 E8 00 00      Rcall L9             ;E8 01 00
+0286 90             nop                 ;90
+0287                L9:
+0287 68 7C 03       push text1
+028A 68 06 26       push text2
+028D C9             leave
+028E C3             ret
+028F 45             text2 db "E"
+;leaving: main. # local labels :3. local strings to push :0
+0290                ENDP
+0290                
+0290 90             L10:nop
+0291                
 ;END open jmp/call: 8
- Errors: 1 ***ERROR*** , Out: TE.LST, TE.COM= 648 bytes. Labels: 20. 
+ Errors: 2 ***ERROR*** , Out: TE.LST, TE.COM= 657 bytes. Labels: 21. 
