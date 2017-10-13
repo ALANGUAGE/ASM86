@@ -64,24 +64,26 @@ int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
 char PrintRA;           //print * for forward relocative jmp
 
-#define LABELNAMESMAX 3969//next number - SYMBOLMAX
-char LabelNames[4000];  //space for names of all labels
+#define LABELNAMESMAX 5969//next number - SYMBOLMAX
+char LabelNames[6000];  //space for names of all labels
 char *LabelNamePtr;     //first free position
-unsigned int locLabelNamePtr;//set after PROC to LabelNamePtr
+char *tmpLabelNamePtr;  //set after PROC to LabelNamePtr
+
 #define LABELADRMAX 600
 unsigned int LabelAddr[LABELADRMAX];//addr of each label
 int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
-int localLabelMaxIx;    //set after PROC to LabelMaxIx
+int tmpLabelMaxIx;      //set after PROC to LabelMaxIx
 int LabelIx;            //actual # of just searched label
-int locStrAdrIx=0;      //push string not known
-unsigned int locStrAdr[100];//list of push of strings not known
 
-#define JMPCALLNAMESMAX 1969//next number - SYMBOLMAX
-char JmpCallNames[2000];//space for names of jmp, call
-char *JmpCallNamePtr;   //first free position
-#define JMPCALLMAX 500  //max. jmp and call
-unsigned int JmpCallAddr[JMPCALLMAX];//addr to be fixed
-int JmpCallMaxIx=0;     //actual # of jmp, call. 1 to JMPCALLMAX-1
+#define JMPNAMESMAX 3969//next number - SYMBOLMAX
+char JmpNames[4000];    //space for names of jmp, call
+char *JmpNamePtr;       //first free position
+char *tmpJmpNamePtr;    //set after PROC to JmpNamePtr
+
+#define JMPMAX 200      //max. jmp and call
+unsigned int JmpAddr[JMPMAX];//addr to be fixed
+int JmpMaxIx=0;         //actual # of jmp, call. 1 to JMPMAX-1
+int tmpJmpMaxIx=0;      //set after PROC to JmpMaxIx
 
 #define FILEBINMAX 20000
 char FileBin  [FILEBINMAX];//output binary file
@@ -375,9 +377,9 @@ int checkConstSize(unsigned int ui) {
 //#include "PARSE.C"
 int parse() {
     LabelNamePtr  = &LabelNames;
-    JmpCallNamePtr= &JmpCallNames;
+    JmpNamePtr= &JmpNames;
     LabelMaxIx=0;
-    JmpCallMaxIx=0;
+    JmpMaxIx=0;
     BinLen=0;
     isInProc=0;
 
@@ -420,15 +422,15 @@ int getTokeType() {
     TokeType=NOALNUME;
 }
 
-int storeJmpCall() {
+int storeJmp() {
     unsigned int i;
-    JmpCallMaxIx++;
-    if (JmpCallMaxIx >= JMPCALLMAX) errorexit("too many JmpCalls");
-    JmpCallNamePtr=strcpy(JmpCallNamePtr, Symbol);
-    JmpCallNamePtr++;
-    i = JmpCallNamePtr - &JmpCallNames;
-    if ( i >= JMPCALLNAMESMAX) errorexit("too many JmpCall names");
-    JmpCallAddr[JmpCallMaxIx] = PC;
+    JmpMaxIx++;
+    if (JmpMaxIx >= JMPMAX) errorexit("too many Jmp Calls");
+    JmpNamePtr=strcpy(JmpNamePtr, Symbol);
+    JmpNamePtr++;
+    i = JmpNamePtr - &JmpNames;
+    if ( i >= JMPNAMESMAX) errorexit("too many Jmp Call names");
+    JmpAddr[JmpMaxIx] = PC;
 }
 
 int storeLabel() {
@@ -878,16 +880,16 @@ int getarg() {
 int fixJmpCall() {
     int i;  unsigned int hex;  char *p; int Ix; char c;
     i=1;
-    prs("\n;END open jmp/call: ");
-    printIntU(JmpCallMaxIx);
-    p = &JmpCallNames;
-    while (i <= JmpCallMaxIx) {
+    prs("\n;END open jmp: ");
+    printIntU(JmpMaxIx);
+    p = &JmpNames;
+    while (i <= JmpMaxIx) {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;
         p++;
 //        prs(Symbol);
 //        prc(' ');
-        hex = JmpCallAddr[i];
+        hex = JmpAddr[i];
 //        printhex16(hex);
 
         Ix=searchLabel();
@@ -1231,7 +1233,7 @@ int process() {
                 genCode2(Code1, 0x80);
                 genCode16(0);
                 PrintRA='r';
-                storeJmpCall();
+                storeJmp();
             }
         return;
         }
@@ -1266,7 +1268,7 @@ int process() {
                 genCode8(Code1);
                 genCode16(0);
                 PrintRA='R';
-                storeJmpCall();
+                storeJmp();
             }
         return;
         }
@@ -1300,9 +1302,10 @@ int process() {
                 }
                 else {
                     genCode8(0x68);
-                    genCode16(0);
+                    genCode8(65);//'A'
+                    genCode8(65);
                     PrintRA='A';
-//todo store Adr of push code, as storeJmpCall
+//todo store Adr of push code, as storeJmp
 
                 }
             }
@@ -1403,10 +1406,10 @@ int process() {
           prs("\n;entering: ");
           prs(ProcName);
           isInProc=1;
-          locLabelNamePtr = LabelNamePtr;
-          localLabelMaxIx = LabelMaxIx;
-          locStrAdrIx = 0;  //push string is local to proc
-
+          tmpLabelNamePtr = LabelNamePtr;
+          tmpLabelMaxIx = LabelMaxIx;
+          tmpJmpNamePtr = JmpNamePtr;
+          tmpJmpMaxIx = JmpMaxIx;
         } else error1("already in proc");
         return;
     }
@@ -1414,15 +1417,10 @@ int process() {
       prs("\n;leaving: ");
       prs(ProcName);
       isInProc=0;
-      i = LabelMaxIx - localLabelMaxIx;
+      i = LabelMaxIx - tmpLabelMaxIx;
       prs(". # local labels :");
       printIntU(i);
-      prs(". local strings to push :");
-      printIntU(locStrAdrIx);
-// 1. close push string
 
-// 2. close open call/jmp
-// 3. delete all local labels
       return;
     }
     error1("Command not implemented or syntax error");
