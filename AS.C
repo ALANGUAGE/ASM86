@@ -877,8 +877,11 @@ int getarg() {
     prs("\n");
 }
 
-int fixJmp() {
-    int i;  unsigned int hex;  char *p; int Ix; char c;
+int fixJmp() {   
+    //todo ENDP: search backwards until tmpJmpMaxIx
+    
+    int i;  unsigned int hex; unsigned int hex1; 
+    char *p; int Ix; char c;
     i=1;
     prs("\n;END open jmp: ");
     printIntU(JmpMaxIx);
@@ -887,19 +890,20 @@ int fixJmp() {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;
         p++;
-//        prs(Symbol);
-//        prc(' ');
-        hex = JmpAddr[i];
-//        printhex16(hex);
-
+        hex = JmpAddr[i];//hex point to PC at low byte of addr 
+        hex1 = hex + 1;
+        
         Ix=searchLabel();
         if (Ix == 0) error1("Label not found");
-        disp = LabelAddr[Ix];
-        disp = disp - hex;
-        disp = disp - Origin;
-//        prs(", ");
+        disp = LabelAddr[Ix];   
+        c = FileBin[hex1];//look for 'A' push Absolute
+        if (c == 'A') disp = hex;
+        else {
+            disp = disp - hex;
+            disp = disp +2;//PC points to next instruction
+            disp = disp - Origin;
+        }
 
-            hex = hex - 2;//fix at start of word
             FileBin[hex] = disp;//fix low byte
             hex++;
             disp = disp >> 8;
@@ -1231,9 +1235,9 @@ int process() {
             else {//jump forward, near only
                 genCode8(0x0F);
                 genCode2(Code1, 0x80);
+                storeJmp();
                 genCode16(0);
                 PrintRA='r';
-                storeJmp();
             }
         return;
         }
@@ -1266,9 +1270,9 @@ int process() {
             }
             else {//jump forward, near only
                 genCode8(Code1);
+                storeJmp();
                 genCode16(0);
                 PrintRA='R';
-                storeJmp();
             }
         return;
         }
@@ -1302,10 +1306,10 @@ int process() {
                 }
                 else {
                     genCode8(0x68);
+                    storeJmp();
                     genCode8(65);//'A'
                     genCode8(65);
                     PrintRA='A';
-                    storeJmp();
                 }
             }
         }
@@ -1402,13 +1406,13 @@ int process() {
     }
     if (CodeType == 111) {//name: PROC
         if (isInProc == 0)  {
-          prs("\n;entering: ");
-          prs(ProcName);
-          isInProc=1;
-          tmpLabelNamePtr = LabelNamePtr;
-          tmpLabelMaxIx   = LabelMaxIx;
-          tmpJmpNamePtr   = JmpNamePtr;
-          tmpJmpMaxIx     = JmpMaxIx;
+            prs("\n;entering: ");
+            prs(ProcName);
+            isInProc=1;
+            tmpLabelNamePtr = LabelNamePtr;
+            tmpLabelMaxIx   = LabelMaxIx;
+            tmpJmpNamePtr   = JmpNamePtr;
+            tmpJmpMaxIx     = JmpMaxIx;
         } else error1("already in PROC");
         return;
     }
@@ -1422,8 +1426,8 @@ int process() {
         printIntU(i);
         prs(", local jmp :");
         i = JmpMaxIx - tmpJmpMaxIx;
+        
         fixJmp();
-      
         LabelNamePtr = tmpLabelNamePtr;//delete local Labels
         LabelMaxIx   = tmpLabelMaxIx;                       
         JmpNamePtr   = tmpJmpNamePtr;//delete local Jmp
@@ -1432,3 +1436,4 @@ int process() {
     }
     error1("Command not implemented or syntax error");
 }
+
