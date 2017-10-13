@@ -425,11 +425,11 @@ int getTokeType() {
 int storeJmp() {
     unsigned int i;
     JmpMaxIx++;
-    if (JmpMaxIx >= JMPMAX) errorexit("too many Jmp Calls");
+    if (JmpMaxIx >= JMPMAX) errorexit("too many Jmp");
     JmpNamePtr=strcpy(JmpNamePtr, Symbol);
     JmpNamePtr++;
     i = JmpNamePtr - &JmpNames;
-    if ( i >= JMPNAMESMAX) errorexit("too many Jmp Call names");
+    if ( i >= JMPNAMESMAX) errorexit("too many Jmp names");
     JmpAddr[JmpMaxIx] = PC;
 }
 
@@ -838,7 +838,7 @@ int internexit()   {errorexit("intern compiler error");}
 int main() {
     getarg();
     parse();
-    fixJmpCall();
+    fixJmp();
     epilog();
     end1();
 }
@@ -877,7 +877,7 @@ int getarg() {
     prs("\n");
 }
 
-int fixJmpCall() {
+int fixJmp() {
     int i;  unsigned int hex;  char *p; int Ix; char c;
     i=1;
     prs("\n;END open jmp: ");
@@ -1305,8 +1305,7 @@ int process() {
                     genCode8(65);//'A'
                     genCode8(65);
                     PrintRA='A';
-//todo store Adr of push code, as storeJmp
-
+                    storeJmp();
                 }
             }
         }
@@ -1407,21 +1406,29 @@ int process() {
           prs(ProcName);
           isInProc=1;
           tmpLabelNamePtr = LabelNamePtr;
-          tmpLabelMaxIx = LabelMaxIx;
-          tmpJmpNamePtr = JmpNamePtr;
-          tmpJmpMaxIx = JmpMaxIx;
-        } else error1("already in proc");
+          tmpLabelMaxIx   = LabelMaxIx;
+          tmpJmpNamePtr   = JmpNamePtr;
+          tmpJmpMaxIx     = JmpMaxIx;
+        } else error1("already in PROC");
         return;
     }
-    if (CodeType == 112) {//ENDP
-      prs("\n;leaving: ");
-      prs(ProcName);
-      isInProc=0;
-      i = LabelMaxIx - tmpLabelMaxIx;
-      prs(". # local labels :");
-      printIntU(i);
-
-      return;
+    if (CodeType == 112) {//ENDP 
+        if (isInProc == 0) error1("not in PROC");
+        prs("\n;leaving: ");
+        prs(ProcName);
+        isInProc=0;
+        prs(". local labels :");
+        i = LabelMaxIx - tmpLabelMaxIx;
+        printIntU(i);
+        prs(", local jmp :");
+        i = JmpMaxIx - tmpJmpMaxIx;
+        fixJmp();
+      
+        LabelNamePtr = tmpLabelNamePtr;//delete local Labels
+        LabelMaxIx   = tmpLabelMaxIx;                       
+        JmpNamePtr   = tmpJmpNamePtr;//delete local Jmp
+        JmpMaxIx     = tmpJmpMaxIx;
+        return;
     }
     error1("Command not implemented or syntax error");
 }
