@@ -257,7 +257,7 @@ mov al, [sechs]     ;A0 09 10
 mov ax, [zwei]      ;A1 0F 10
 mov al, [Einsd]     ;A0 14 04
 mov al, [dreiw]     ;A0 18 04
-push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 name: PROC
 nop

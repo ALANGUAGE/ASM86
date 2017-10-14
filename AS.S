@@ -2188,37 +2188,37 @@ getTokeType: PROC
 ;-424 
 
 
-;-425 int storeJmpCall() {
+;-425 int storeJmp() {
 
  .retngetTokeType: LEAVE
  ret
 ENDP
 
-storeJmpCall: PROC
+storeJmp: PROC
 
 ;-426     unsigned int i;
 
 
 ;-427     JmpMaxIx++;
 
-;Function : storeJmpCall, Number of local variables: 1
+;Function : storeJmp, Number of local variables: 1
 ;   # type sign width addr used name   list of local variables
 ;  200 var unsg word   426 NULL i = bp-2;
  ENTER  2,0
  inc  word[JmpMaxIx]
 
-;-428     if (JmpMaxIx >= JMPMAX) errorexit("too many Jmp Calls");
+;-428     if (JmpMaxIx >= JMPMAX) errorexit("too many Jmp");
 
  mov ax, [JmpMaxIx]
  cmp ax, 200 ;unsigned : 1
- jl  .storeJmpCall86
- push storeJmpCall_0
+ jl  .storeJmp86
+ push storeJmp_0
  call errorexit
  add  sp, 2
 
 ;-429     JmpNamePtr=strcpy(JmpNamePtr, Symbol);
 
-.storeJmpCall86:
+.storeJmp86:
  lea  ax, [Symbol]
  push ax
  push word [JmpNamePtr]
@@ -2236,18 +2236,18 @@ storeJmpCall: PROC
  sub ax, JmpNames
  mov [bp-2], ax
 
-;-432     if ( i >= JMPNAMESMAX) errorexit("too many Jmp Call names");
+;-432     if ( i >= JMPNAMESMAX) errorexit("too many Jmp names");
 
  mov ax, [bp-2]
  cmp ax, 3969 ;unsigned : 0
- jb  .storeJmpCall87
- push storeJmpCall_1
+ jb  .storeJmp87
+ push storeJmp_1
  call errorexit
  add  sp, 2
 
 ;-433     JmpAddr[JmpMaxIx] = PC;
 
-.storeJmpCall87:
+.storeJmp87:
  mov ax, [PC]
  mov bx, [JmpMaxIx]
  shl bx, 1
@@ -2262,8 +2262,8 @@ storeJmpCall: PROC
 ;-436 int storeLabel() {
  LEAVE
  ret
-storeJmpCall_0 db "too many Jmp Calls",0
-storeJmpCall_1 db "too many Jmp Call names",0
+storeJmp_0 db "too many Jmp",0
+storeJmp_1 db "too many Jmp names",0
 ENDP
 
 storeLabel: PROC
@@ -5270,9 +5270,9 @@ main: PROC
 
  call parse
 
-;-841     fixJmpCall();
+;-841     fixJmp();
 
- call fixJmpCall
+ call fixJmp
 
 ;-842     epilog();
 
@@ -5552,7 +5552,7 @@ getarg: PROC
 ;-879 
 
 
-;-880 int fixJmpCall() {
+;-880 int fixJmp() {   
  LEAVE
  ret
 getarg_0 db ", Usage: AS.COM filename [w/o .S] : ",0
@@ -5569,274 +5569,301 @@ getarg_10 db ", ",0
 getarg_11 db "\n",0
 ENDP
 
-fixJmpCall: PROC
+fixJmp: PROC
 
-;-881     int i;  unsigned int hex;  char *p; int Ix; char c;
+;-881     //todo ENDP: search backwards until tmpJmpMaxIx
 
 
-;-882     i=1;
+;-882     
 
-;Function : fixJmpCall, Number of local variables: 5
+
+;-883     int i;  unsigned int hex; unsigned int hex1; 
+
+
+;-884     char *p; int Ix; char c;
+
+
+;-885     i=1;
+
+;Function : fixJmp, Number of local variables: 6
 ;   # type sign width addr used name   list of local variables
-;  200 var sign word   881 NULL i = bp-2
-;  201 var unsg word   881 NULL hex = bp-4
-;  202 ptr sign byte   881 NULL p = bp-6
-;  203 var sign word   881 NULL Ix = bp-8
-;  204 var sign byte   881 NULL c = bp-10;
- ENTER  10,0
+;  200 var sign word   883 NULL i = bp-2
+;  201 var unsg word   883 NULL hex = bp-4
+;  202 var unsg word   883 NULL hex1 = bp-6
+;  203 ptr sign byte   884 NULL p = bp-8
+;  204 var sign word   884 NULL Ix = bp-10
+;  205 var sign byte   884 NULL c = bp-12;
+ ENTER  12,0
  mov ax, 1
  mov [bp-2], ax
 
-;-883     prs("\n;END open jmp: ");
+;-886     prs("\n;END open jmp: ");
 
- push fixJmpCall_0
+ push fixJmp_0
  call prs
  add  sp, 2
 
-;-884     printIntU(JmpMaxIx);
+;-887     printIntU(JmpMaxIx);
 
  push word [JmpMaxIx]
  call printIntU
  add  sp, 2
 
-;-885     p = &JmpNames;
+;-888     p = &JmpNames;
 
  mov ax, JmpNames
- mov [bp-6], ax
+ mov [bp-8], ax
 
-;-886     while (i <= JmpMaxIx) {
+;-889     while (i <= JmpMaxIx) {
 
-.fixJmpCall230:
+.fixJmp230:
  mov ax, [bp-2]
  cmp ax, [JmpMaxIx]
- jg  .fixJmpCall231
+ jg  .fixJmp231
 
-;-887         strcpy(Symbol, p);
+;-890         strcpy(Symbol, p);
 
- push word [bp-6]
+ push word [bp-8]
  lea  ax, [Symbol]
  push ax
  call strcpy
  add  sp, 4
 
-;-888         p = strlen(Symbol) + p;
+;-891         p = strlen(Symbol) + p;
 
  lea  ax, [Symbol]
  push ax
  call strlen
  add  sp, 2
- add ax, [bp-6]
- mov [bp-6], ax
+ add ax, [bp-8]
+ mov [bp-8], ax
 
-;-889         p++;
+;-892         p++;
 
- inc  word[bp-6]
+ inc  word[bp-8]
 
-;-890 //        prs(Symbol);
-
-
-;-891 //        prc(' ');
-
-
-;-892         hex = JmpAddr[i];
+;-893         hex = JmpAddr[i];//hex point to PC at low byte of addr 
 
  mov bx, [bp-2]
  shl bx, 1
  mov ax, [JmpAddr + bx]
  mov [bp-4], ax
 
-;-893 //        printhex16(hex);
+;-894         hex1 = hex + 1;
+
+ mov ax, [bp-4]
+ add ax, 1
+ mov [bp-6], ax
+
+;-895         
 
 
-;-894 
-
-
-;-895         Ix=searchLabel();
+;-896         Ix=searchLabel();
 
  call searchLabel
- mov [bp-8], ax
+ mov [bp-10], ax
 
-;-896         if (Ix == 0) error1("Label not found");
+;-897         if (Ix == 0) error1("Label not found");
 
- mov ax, [bp-8]
+ mov ax, [bp-10]
  cmp ax, 0
- jne .fixJmpCall232
- push fixJmpCall_1
+ jne .fixJmp232
+ push fixJmp_1
  call error1
  add  sp, 2
 
-;-897         disp = LabelAddr[Ix];
+;-898         disp = LabelAddr[Ix];   
 
-.fixJmpCall232:
- mov bx, [bp-8]
+.fixJmp232:
+ mov bx, [bp-10]
  shl bx, 1
  mov ax, [LabelAddr + bx]
  mov word [disp], ax
 
-;-898         disp = disp - hex;
+;-899         c = FileBin[hex1];//look for 'A' push Absolute
+
+ mov bx, [bp-6]
+ mov al, [FileBin + bx]
+ mov [bp-12], al
+
+;-900         if (c == 'A') disp = hex;
+
+ mov al, [bp-12]
+ cmp al, 65
+ jne .fixJmp233
+ mov ax, [bp-4]
+ mov word [disp], ax
+
+;-901         else {
+
+ jmp .fixJmp234
+.fixJmp233:
+
+;-902             disp = disp - hex;
 
  mov ax, [disp]
  sub ax, [bp-4]
  mov word [disp], ax
 
-;-899         disp = disp - Origin;
+;-903             disp = disp +2;//PC points to next instruction
+
+ mov ax, [disp]
+ add ax, 2
+ mov word [disp], ax
+
+;-904             disp = disp - Origin;
 
  mov ax, [disp]
  sub ax, [Origin]
  mov word [disp], ax
 
-;-900 //        prs(", ");
+;-905         }
 
 
-;-901 
+;-906 
 
 
-;-902             hex = hex - 2;//fix at start of word
+;-907             FileBin[hex] = disp;//fix low byte
 
- mov ax, [bp-4]
- sub ax, 2
- mov [bp-4], ax
-
-;-903             FileBin[hex] = disp;//fix low byte
-
+.fixJmp234:
  mov ax, [disp]
  mov bx, [bp-4]
  mov [FileBin+bx], al
 
-;-904             hex++;
+;-908             hex++;
 
  inc  word[bp-4]
 
-;-905             disp = disp >> 8;
+;-909             disp = disp >> 8;
 
  mov ax, [disp]
  shr ax, 8
  mov word [disp], ax
 
-;-906             FileBin[hex] = disp;
+;-910             FileBin[hex] = disp;
 
  mov ax, [disp]
  mov bx, [bp-4]
  mov [FileBin+bx], al
 
-;-907         i++;
+;-911         i++;
 
  inc  word[bp-2]
 
-;-908     }
+;-912     }
 
 
-;-909 }
+;-913 }
 
- jmp .fixJmpCall230
-.fixJmpCall231:
+ jmp .fixJmp230
+.fixJmp231:
 
-;-910 
+;-914 
 
 
-;-911 int epilog() {
+;-915 int epilog() {
  LEAVE
  ret
-fixJmpCall_0 db "\n;END open jmp: ",0
-fixJmpCall_1 db "Label not found",0
+fixJmp_0 db "\n;END open jmp: ",0
+fixJmp_1 db "Label not found",0
 ENDP
 
 epilog: PROC
 
-;-912     unsigned int i; char c;     int j;
+;-916     unsigned int i; char c;     int j;
 
 
-;-913     prs("\n Errors: ");
+;-917     prs("\n Errors: ");
 
 ;Function : epilog, Number of local variables: 3
 ;   # type sign width addr used name   list of local variables
-;  200 var unsg word   912 NULL i = bp-2
-;  201 var sign byte   912 NULL c = bp-4
-;  202 var sign word   912 NULL j = bp-6;
+;  200 var unsg word   916 NULL i = bp-2
+;  201 var sign byte   916 NULL c = bp-4
+;  202 var sign word   916 NULL j = bp-6;
  ENTER  6,0
  push epilog_0
  call prs
  add  sp, 2
 
-;-914     printIntU(ErrorCount);
+;-918     printIntU(ErrorCount);
 
  push word [ErrorCount]
  call printIntU
  add  sp, 2
 
-;-915     if (ErrorCount) prs(" ***ERROR*** ");
+;-919     if (ErrorCount) prs(" ***ERROR*** ");
 
  mov ax, [ErrorCount]
  or  al, al
- je .epilog233
+ je .epilog235
  push epilog_1
  call prs
  add  sp, 2
 
-;-916     prs(", Out: ");
+;-920     prs(", Out: ");
 
-.epilog233:
+.epilog235:
  push epilog_2
  call prs
  add  sp, 2
 
-;-917     prs(namelst);
+;-921     prs(namelst);
 
  lea  ax, [namelst]
  push ax
  call prs
  add  sp, 2
 
-;-918     prs(", ");
+;-922     prs(", ");
 
  push epilog_3
  call prs
  add  sp, 2
 
-;-919     prs(namebin);
+;-923     prs(namebin);
 
  lea  ax, [namebin]
  push ax
  call prs
  add  sp, 2
 
-;-920     prs("= ");
+;-924     prs("= ");
 
  push epilog_4
  call prs
  add  sp, 2
 
-;-921     printIntU(BinLen);
+;-925     printIntU(BinLen);
 
  push word [BinLen]
  call printIntU
  add  sp, 2
 
-;-922     prs(" bytes.");
+;-926     prs(" bytes.");
 
  push epilog_5
  call prs
  add  sp, 2
 
-;-923 
+;-927 
 
 
-;-924     i=0;
+;-928     i=0;
 
  mov ax, 0
  mov [bp-2], ax
 
-;-925     do {
+;-929     do {
 
-.epilog234:
+.epilog236:
 
-;-926         c = FileBin[i];
+;-930         c = FileBin[i];
 
  mov bx, [bp-2]
  mov al, [FileBin + bx]
  mov [bp-4], al
 
-;-927         fputcR(c, bin_fd);
+;-931         fputcR(c, bin_fd);
 
  push word [bin_fd]
  mov al, byte [bp-4]
@@ -5845,115 +5872,115 @@ epilog: PROC
  call fputcR
  add  sp, 4
 
-;-928 //printhex8a(c); prc(' ');
+;-932 //printhex8a(c); prc(' ');
 
 
-;-929         i++;
+;-933         i++;
 
  inc  word[bp-2]
 
-;-930     } while (i < BinLen);
+;-934     } while (i < BinLen);
 
  mov ax, [bp-2]
  cmp ax, [BinLen]
- jge .epilog235
- jmp .epilog234
-.epilog235:
+ jge .epilog237
+ jmp .epilog236
+.epilog237:
 
-;-931 
+;-935 
 
 
-;-932   prs(" Labels: ");
+;-936   prs(" Labels: ");
 
  push epilog_6
  call prs
  add  sp, 2
 
-;-933   printIntU(LabelMaxIx);
+;-937   printIntU(LabelMaxIx);
 
  push word [LabelMaxIx]
  call printIntU
  add  sp, 2
 
-;-934   prs(". ");
+;-938   prs(". ");
 
  push epilog_7
  call prs
  add  sp, 2
 
-;-935 /*
+;-939 /*
 
 
-;-936   prs(" LabelNamePtr:"); printIntU(LabelNamePtr);
+;-940   prs(" LabelNamePtr:"); printIntU(LabelNamePtr);
 
 
-;-937   i= &LabelNames;
+;-941   i= &LabelNames;
 
 
-;-938   prs(" &LabelNames:"); printIntU(i);
+;-942   prs(" &LabelNames:"); printIntU(i);
 
 
-;-939   i=LabelNamePtr-i;
+;-943   i=LabelNamePtr-i;
 
 
-;-940   prs("size: ");
+;-944   prs("size: ");
 
 
-;-941   printIntU(i);
+;-945   printIntU(i);
 
 
-;-942   prs(". >>");
+;-946   prs(". >>");
 
 
-;-943   i= &LabelNames;
+;-947   i= &LabelNames;
 
 
-;-944   do { c=*i; if (c==0) c=' '; prc(c); i++;
+;-948   do { c=*i; if (c==0) c=' '; prc(c); i++;
 
 
-;-945   } while (i < LabelNamePtr); prs("<< \n");
+;-949   } while (i < LabelNamePtr); prs("<< \n");
 
 
-;-946    i = 1;
+;-950    i = 1;
 
 
-;-947     LabelNamePtr= &LabelNames;
+;-951     LabelNamePtr= &LabelNames;
 
 
-;-948     do {
+;-952     do {
 
 
-;-949       prs(LabelNamePtr); prc(' ');
+;-953       prs(LabelNamePtr); prc(' ');
 
 
-;-950       j=LabelAddr[i]; printhex16(j); prs(", ");
+;-954       j=LabelAddr[i]; printhex16(j); prs(", ");
 
 
-;-951       j=strlen(LabelNamePtr);//get end of actual name
+;-955       j=strlen(LabelNamePtr);//get end of actual name
 
 
-;-952       LabelNamePtr=LabelNamePtr+j;
+;-956       LabelNamePtr=LabelNamePtr+j;
 
 
-;-953       LabelNamePtr++;
+;-957       LabelNamePtr++;
 
 
-;-954       i++;
+;-958       i++;
 
 
-;-955     } while (i <= LabelMaxIx);
+;-959     } while (i <= LabelMaxIx);
 
 
-;-956 */
+;-960 */
 
 
-;-957 }
+;-961 }
 
 
-;-958 
+;-962 
 
 
-;-959 int end1(int n) {
+;-963 int end1(int n) {
  LEAVE
  ret
 epilog_0 db "\n Errors: ",0
@@ -5968,57 +5995,57 @@ ENDP
 
 end1: PROC
 
-;-960     fcloseR(asm_fd);
+;-964     fcloseR(asm_fd);
 
 ;Function : end1, Number of local variables: 1
 ;   # type sign width addr used name   list of local variables
-;  200 var sign word   959 NULL n = bp+4;
+;  200 var sign word   963 NULL n = bp+4;
  ENTER  0,0
  push word [asm_fd]
  call fcloseR
  add  sp, 2
 
-;-961     fcloseR(lst_fd);
+;-965     fcloseR(lst_fd);
 
  push word [lst_fd]
  call fcloseR
  add  sp, 2
 
-;-962     fcloseR(bin_fd);
+;-966     fcloseR(bin_fd);
 
  push word [bin_fd]
  call fcloseR
  add  sp, 2
 
-;-963     exitR(n);
+;-967     exitR(n);
 
  push word [bp+4]
  call exitR
  add  sp, 2
 
-;-964 }
+;-968 }
 
 
-;-965 
+;-969 
 
 
-;-966 
+;-970 
 
 
-;-967 //#include "GENCODE.C"
+;-971 //#include "GENCODE.C"
 
 
-;-968 // generate code
+;-972 // generate code
 
 
-;-969 int getCodes() {
+;-973 int getCodes() {
  LEAVE
  ret
 ENDP
 
 getCodes: PROC
 
-;-970     OpCodePtr ++; Code1 = *OpCodePtr;
+;-974     OpCodePtr ++; Code1 = *OpCodePtr;
 
  inc  word[OpCodePtr]
  mov bx, [OpCodePtr]
@@ -6026,7 +6053,7 @@ getCodes: PROC
  mov ah, 0
  mov byte [Code1], al
 
-;-971     OpCodePtr ++; Code2 = *OpCodePtr;
+;-975     OpCodePtr ++; Code2 = *OpCodePtr;
 
  inc  word[OpCodePtr]
  mov bx, [OpCodePtr]
@@ -6034,7 +6061,7 @@ getCodes: PROC
  mov ah, 0
  mov byte [Code2], al
 
-;-972     OpCodePtr ++; Code3 = *OpCodePtr;
+;-976     OpCodePtr ++; Code3 = *OpCodePtr;
 
  inc  word[OpCodePtr]
  mov bx, [OpCodePtr]
@@ -6042,10 +6069,10 @@ getCodes: PROC
  mov ah, 0
  mov byte [Code3], al
 
-;-973 }
+;-977 }
 
 
-;-974 int gen66h() {genCode8(0x66);
+;-978 int gen66h() {genCode8(0x66);
 
  ret
 ENDP
@@ -6055,53 +6082,25 @@ gen66h: PROC
  call genCode8
  add  sp, 2
 
-;-975 }
+;-979 }
 
 
-;-976 int genCode2(char c, char d) {
+;-980 int genCode2(char c, char d) {
 
  ret
 ENDP
 
 genCode2: PROC
 
-;-977     c = c + d;
+;-981     c = c + d;
 
 ;Function : genCode2, Number of local variables: 2
 ;   # type sign width addr used name   list of local variables
-;  200 var sign byte   976 NULL c = bp+4
-;  201 var sign byte   976 NULL d = bp+6;
+;  200 var sign byte   980 NULL c = bp+4
+;  201 var sign byte   980 NULL d = bp+6;
  ENTER  0,0
  mov al, [bp+4]
  add al, [bp+6]
- mov [bp+4], al
-
-;-978     genCode8(c);
-
- mov al, byte [bp+4]
- mov ah, 0
- push ax
- call genCode8
- add  sp, 2
-
-;-979 }
-
-
-;-980 int genCodeW(char c) {
- LEAVE
- ret
-ENDP
-
-genCodeW: PROC
-
-;-981     c = c + wflag;
-
-;Function : genCodeW, Number of local variables: 1
-;   # type sign width addr used name   list of local variables
-;  200 var sign byte   980 NULL c = bp+4;
- ENTER  0,0
- mov al, [bp+4]
- add al, [wflag]
  mov [bp+4], al
 
 ;-982     genCode8(c);
@@ -6115,68 +6114,96 @@ genCodeW: PROC
 ;-983 }
 
 
-;-984 int genCode8(char c) {
+;-984 int genCodeW(char c) {
+ LEAVE
+ ret
+ENDP
+
+genCodeW: PROC
+
+;-985     c = c + wflag;
+
+;Function : genCodeW, Number of local variables: 1
+;   # type sign width addr used name   list of local variables
+;  200 var sign byte   984 NULL c = bp+4;
+ ENTER  0,0
+ mov al, [bp+4]
+ add al, [wflag]
+ mov [bp+4], al
+
+;-986     genCode8(c);
+
+ mov al, byte [bp+4]
+ mov ah, 0
+ push ax
+ call genCode8
+ add  sp, 2
+
+;-987 }
+
+
+;-988 int genCode8(char c) {
  LEAVE
  ret
 ENDP
 
 genCode8: PROC
 
-;-985 //set: BinLen++, OpPrintIndex++
+;-989 //set: BinLen++, OpPrintIndex++
 
 
-;-986     FileBin[BinLen]=c;
+;-990     FileBin[BinLen]=c;
 
 ;Function : genCode8, Number of local variables: 1
 ;   # type sign width addr used name   list of local variables
-;  200 var sign byte   984 NULL c = bp+4;
+;  200 var sign byte   988 NULL c = bp+4;
  ENTER  0,0
  mov al, [bp+4]
  mov bx, [BinLen]
  mov [FileBin+bx], al
 
-;-987     BinLen++;
+;-991     BinLen++;
 
  inc  word[BinLen]
 
-;-988     PC++;
+;-992     PC++;
 
  inc  word[PC]
 
-;-989     if (BinLen >= FILEBINMAX) errorexit("COM file too long");
+;-993     if (BinLen >= FILEBINMAX) errorexit("COM file too long");
 
  mov ax, [BinLen]
  cmp ax, 20000 ;unsigned : 0
- jb  .genCode8236
+ jb  .genCode8238
  push genCode8_0
  call errorexit
  add  sp, 2
 
-;-990     if (OpPrintIndex < OPMAXLEN) {
+;-994     if (OpPrintIndex < OPMAXLEN) {
 
-.genCode8236:
+.genCode8238:
  mov ax, [OpPrintIndex]
  cmp ax, 5
- jge .genCode8237
+ jge .genCode8239
 
-;-991         OpPos[OpPrintIndex]=c;
+;-995         OpPos[OpPrintIndex]=c;
 
  mov al, [bp+4]
  mov bx, [OpPrintIndex]
  mov [OpPos+bx], al
 
-;-992         OpPrintIndex++;
+;-996         OpPrintIndex++;
 
  inc  word[OpPrintIndex]
 
-;-993     }
+;-997     }
 
 
-;-994 }
+;-998 }
 
-.genCode8237:
+.genCode8239:
 
-;-995 int genCode16(unsigned int i) {
+;-999 int genCode16(unsigned int i) {
  LEAVE
  ret
 genCode8_0 db "COM file too long",0
@@ -6184,11 +6211,11 @@ ENDP
 
 genCode16: PROC
 
-;-996     genCode8(i); i=i >> 8;
+;-1000     genCode8(i); i=i >> 8;
 
 ;Function : genCode16, Number of local variables: 1
 ;   # type sign width addr used name   list of local variables
-;  200 var unsg word   995 NULL i = bp+4;
+;  200 var unsg word   999 NULL i = bp+4;
  ENTER  0,0
  push word [bp+4]
  call genCode8
@@ -6197,27 +6224,27 @@ genCode16: PROC
  shr ax, 8
  mov [bp+4], ax
 
-;-997     genCode8(i);
+;-1001     genCode8(i);
 
  push word [bp+4]
  call genCode8
  add  sp, 2
 
-;-998 }
+;-1002 }
 
 
-;-999 int genCode32(unsigned long L) {
+;-1003 int genCode32(unsigned long L) {
  LEAVE
  ret
 ENDP
 
 genCode32: PROC
 
-;-1000     genCode16(L); L=L >>16;
+;-1004     genCode16(L); L=L >>16;
 
 ;Function : genCode32, Number of local variables: 1
 ;   # type sign width addr used name   list of local variables
-;  200 var unsg dwrd   999 NULL L = bp+4;
+;  200 var unsg dwrd  1003 NULL L = bp+4;
  ENTER  0,0
  mov al, byte [bp+4]
  mov ah, 0
@@ -6228,7 +6255,7 @@ genCode32: PROC
  shr eax, 16
  mov [bp+4], eax
 
-;-1001     genCode16(L);
+;-1005     genCode16(L);
 
  mov al, byte [bp+4]
  mov ah, 0
@@ -6236,308 +6263,308 @@ genCode32: PROC
  call genCode16
  add  sp, 2
 
-;-1002 }
+;-1006 }
 
 
-;-1003 int writeEA(char xxx) {//value for reg/operand
+;-1007 int writeEA(char xxx) {//value for reg/operand
  LEAVE
  ret
 ENDP
 
 writeEA: PROC
 
-;-1004 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
+;-1008 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
 
 
-;-1005 //mod-bits: mode76, reg/opcode543, r/m210
+;-1009 //mod-bits: mode76, reg/opcode543, r/m210
 
 
-;-1006 //Op: 0, IMM, REG, ADR, MEM
+;-1010 //Op: 0, IMM, REG, ADR, MEM
 
 
-;-1007     char len;
+;-1011     char len;
 
 
-;-1008     len=0;
+;-1012     len=0;
 
 ;Function : writeEA, Number of local variables: 2
 ;   # type sign width addr used name   list of local variables
-;  200 var sign byte  1003 NULL xxx = bp+4
-;  201 var sign byte  1007 NULL len = bp-2;
+;  200 var sign byte  1007 NULL xxx = bp+4
+;  201 var sign byte  1011 NULL len = bp-2;
  ENTER  2,0
  mov ax, 0
  mov [bp-2], al
 
-;-1009     xxx = xxx << 3;//in reg/opcode field
+;-1013     xxx = xxx << 3;//in reg/opcode field
 
  mov al, [bp+4]
  shl al, 3
  mov [bp+4], al
 
-;-1010     if (Op == REG) {
+;-1014     if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne .writeEA238
+ jne .writeEA240
 
-;-1011         xxx |= 0xC0;
+;-1015         xxx |= 0xC0;
 
  or  byte[bp+4], 192
 
-;-1012         if (Op2 <= IMM) xxx = xxx + R1No;//empty or IMM
+;-1016         if (Op2 <= IMM) xxx = xxx + R1No;//empty or IMM
 
  mov al, [Op2]
  cmp al, 1
- jg  .writeEA239
+ jg  .writeEA241
  mov al, [bp+4]
  add al, [R1No]
  mov [bp+4], al
 
-;-1013             else {
-
- jmp .writeEA240
-.writeEA239:
-
-;-1014                 if (Op2 == REG) xxx = xxx + R1No;
-
- mov al, [Op2]
- cmp al, 2
- jne .writeEA241
- mov al, [bp+4]
- add al, [R1No]
- mov [bp+4], al
-
-;-1015                 else            xxx = xxx + R2No;
+;-1017             else {
 
  jmp .writeEA242
 .writeEA241:
+
+;-1018                 if (Op2 == REG) xxx = xxx + R1No;
+
+ mov al, [Op2]
+ cmp al, 2
+ jne .writeEA243
+ mov al, [bp+4]
+ add al, [R1No]
+ mov [bp+4], al
+
+;-1019                 else            xxx = xxx + R2No;
+
+ jmp .writeEA244
+.writeEA243:
  mov al, [bp+4]
  add al, [R2No]
  mov [bp+4], al
 
-;-1016             }
+;-1020             }
+
+.writeEA244:
+
+;-1021         }
 
 .writeEA242:
 
-;-1017         }
+;-1022     if (Op == MEM) {
 
 .writeEA240:
-
-;-1018     if (Op == MEM) {
-
-.writeEA238:
  mov al, [Op]
  cmp al, 4
- jne .writeEA243
+ jne .writeEA245
 
-;-1019         if (isDirect) {
+;-1023         if (isDirect) {
 
  mov al, [isDirect]
  or  al, al
- je .writeEA244
+ je .writeEA246
 
-;-1020             xxx |= 6;
+;-1024             xxx |= 6;
 
  or  byte[bp+4], 6
 
-;-1021             len = 2;
+;-1025             len = 2;
 
  mov ax, 2
  mov [bp-2], al
 
-;-1022         }
+;-1026         }
 
 
-;-1023         else {
+;-1027         else {
 
- jmp .writeEA245
-.writeEA244:
+ jmp .writeEA247
+.writeEA246:
 
-;-1024             xxx = xxx + rm;
+;-1028             xxx = xxx + rm;
 
  mov al, [bp+4]
  add al, [rm]
  mov [bp+4], al
 
-;-1025             if (rm == 6) {//make [BP+00]
+;-1029             if (rm == 6) {//make [BP+00]
 
  mov al, [rm]
  cmp al, 6
- jne .writeEA246
+ jne .writeEA248
 
-;-1026                 len=1;
+;-1030                 len=1;
 
  mov ax, 1
  mov [bp-2], al
 
-;-1027                 if (disp == 0) xxx |= 0x40;
+;-1031                 if (disp == 0) xxx |= 0x40;
 
  mov ax, [disp]
  cmp ax, 0
- jne .writeEA247
+ jne .writeEA249
  or  byte[bp+4], 64
 
-;-1028             }
+;-1032             }
 
-.writeEA247:
+.writeEA249:
 
-;-1029 
+;-1033 
 
 
-;-1030             if (disp) {
+;-1034             if (disp) {
 
-.writeEA246:
+.writeEA248:
  mov ax, [disp]
  or  al, al
- je .writeEA248
+ je .writeEA250
 
-;-1031                 ax = disp;
+;-1035                 ax = disp;
 
  mov  ax, [disp]
 
-;-1032                 if(ax > 127) len=2;
+;-1036                 if(ax > 127) len=2;
 
  cmp  ax, 127
- jle .writeEA249
+ jle .writeEA251
  mov ax, 2
  mov [bp-2], al
 
-;-1033                 else len=1;
-
- jmp .writeEA250
-.writeEA249:
- mov ax, 1
- mov [bp-2], al
-
-;-1034                 if (len == 1) xxx |= 0x40;
-
-.writeEA250:
- mov al, [bp-2]
- cmp al, 1
- jne .writeEA251
- or  byte[bp+4], 64
-
-;-1035                 else xxx |= 0x80;
+;-1037                 else len=1;
 
  jmp .writeEA252
 .writeEA251:
- or  byte[bp+4], 128
+ mov ax, 1
+ mov [bp-2], al
 
-;-1036             }
+;-1038                 if (len == 1) xxx |= 0x40;
 
 .writeEA252:
+ mov al, [bp-2]
+ cmp al, 1
+ jne .writeEA253
+ or  byte[bp+4], 64
 
-;-1037         }
+;-1039                 else xxx |= 0x80;
 
-.writeEA248:
+ jmp .writeEA254
+.writeEA253:
+ or  byte[bp+4], 128
 
-;-1038     }
+;-1040             }
+
+.writeEA254:
+
+;-1041         }
+
+.writeEA250:
+
+;-1042     }
+
+.writeEA247:
+
+;-1043 
+
+
+;-1044     genCode8(xxx);// gen second byte
 
 .writeEA245:
-
-;-1039 
-
-
-;-1040     genCode8(xxx);// gen second byte
-
-.writeEA243:
  mov al, byte [bp+4]
  mov ah, 0
  push ax
  call genCode8
  add  sp, 2
 
-;-1041     if (len == 1) genCode8 (disp);
+;-1045     if (len == 1) genCode8 (disp);
 
  mov al, [bp-2]
  cmp al, 1
- jne .writeEA253
+ jne .writeEA255
  push word [disp]
  call genCode8
  add  sp, 2
 
-;-1042     if (len == 2) genCode16(disp);
+;-1046     if (len == 2) genCode16(disp);
 
-.writeEA253:
+.writeEA255:
  mov al, [bp-2]
  cmp al, 2
- jne .writeEA254
+ jne .writeEA256
  push word [disp]
  call genCode16
  add  sp, 2
 
-;-1043 }
+;-1047 }
 
-.writeEA254:
+.writeEA256:
 
-;-1044 
+;-1048 
 
 
-;-1045 int genImmediate() {
+;-1049 int genImmediate() {
  LEAVE
  ret
 ENDP
 
 genImmediate: PROC
 
-;-1046     if (wflag) if (OpSize == DWORD) genCode32(imme);//todo imme long
+;-1050     if (wflag) if (OpSize == DWORD) genCode32(imme);//todo imme long
 
  mov al, [wflag]
  or  al, al
- je .genImmediate255
+ je .genImmediate257
  mov al, [OpSize]
  cmp al, 3
- jne .genImmediate256
+ jne .genImmediate258
  push word [imme]
  call genCode32
  add  sp, 2
 
-;-1047         else genCode16(imme);
+;-1051         else genCode16(imme);
 
- jmp .genImmediate257
-.genImmediate256:
+ jmp .genImmediate259
+.genImmediate258:
  push word [imme]
  call genCode16
  add  sp, 2
 
-;-1048     else       genCode8 (imme);
+;-1052     else       genCode8 (imme);
 
+.genImmediate259:
+ jmp .genImmediate260
 .genImmediate257:
- jmp .genImmediate258
-.genImmediate255:
  push word [imme]
  call genCode8
  add  sp, 2
 
-;-1049 }
+;-1053 }
 
-.genImmediate258:
+.genImmediate260:
 
-;-1050 
-
-
-;-1051 //AS.C
+;-1054 
 
 
-;-1052 int process() {
+;-1055 //AS.C
+
+
+;-1056 int process() {
 
  ret
 ENDP
 
 process: PROC
 
-;-1053     char c;
+;-1057     char c;
 
 
-;-1054     int i;
+;-1058     int i;
 
 
-;-1055     Op=Op2=R1Type=R2Type=R1No=R2No=dflag=wflag=rm=0;//char
+;-1059     Op=Op2=R1Type=R2Type=R1No=R2No=dflag=wflag=rm=0;//char
 
 ;Function : process, Number of local variables: 2
 ;   # type sign width addr used name   list of local variables
-;  200 var sign byte  1053 NULL c = bp-2
-;  201 var sign word  1054 NULL i = bp-4;
+;  200 var sign byte  1057 NULL c = bp-2
+;  201 var sign word  1058 NULL i = bp-4;
  ENTER  4,0
  mov ax, 0
  mov byte [rm], al
@@ -6550,40 +6577,40 @@ process: PROC
  mov byte [Op2], al
  mov byte [Op], al
 
-;-1056     disp=imme=0;//int
+;-1060     disp=imme=0;//int
 
  mov ax, 0
  mov word [imme], ax
  mov word [disp], ax
 
-;-1057     isDirect=1; //set in getMeM=0, need in WriteEA
+;-1061     isDirect=1; //set in getMeM=0, need in WriteEA
 
  mov ax, 1
  mov byte [isDirect], al
 
-;-1058     getTokeType();//0, DIGIT, ALNUME, NOALNUME
+;-1062     getTokeType();//0, DIGIT, ALNUME, NOALNUME
 
  call getTokeType
 
-;-1059     OpSize=getCodeSize();//0, BYTE, WORD, DWORD
+;-1063     OpSize=getCodeSize();//0, BYTE, WORD, DWORD
 
  call getCodeSize
  mov byte [OpSize], al
 
-;-1060     getCodes();//set: Code1, Code2, Code3
+;-1064     getCodes();//set: Code1, Code2, Code3
 
  call getCodes
 
-;-1061 
+;-1065 
 
 
-;-1062     if (CodeType ==  1) {//1 byte opcode
+;-1066     if (CodeType ==  1) {//1 byte opcode
 
  mov al, [CodeType]
  cmp al, 1
- jne .process259
+ jne .process261
 
-;-1063         genCode8(Code1);
+;-1067         genCode8(Code1);
 
  mov al, byte [Code1]
  mov ah, 0
@@ -6591,48 +6618,48 @@ process: PROC
  call genCode8
  add  sp, 2
 
-;-1064         return;
+;-1068         return;
 
  jmp .retnprocess
 
-;-1065     }
+;-1069     }
 
 
-;-1066 
+;-1070 
 
 
-;-1067     if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv
+;-1071     if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv
 
-.process259:
+.process261:
  mov al, [CodeType]
- cmp al, 2
- jne .process260
-
-;-1068         getOpL();
-
- call getOpL
-
-;-1069         checkOpL();
-
- call checkOpL
-
-;-1070         if (Code2 <= 1) {//inc,dec
-
- mov al, [Code2]
- cmp al, 1
- jg  .process261
-
-;-1071   	        if (Op == REG) {//short
-
- mov al, [Op]
  cmp al, 2
  jne .process262
 
-;-1072                 if (wflag) {genCode2(Code3, R1No); return; }
+;-1072         getOpL();
+
+ call getOpL
+
+;-1073         checkOpL();
+
+ call checkOpL
+
+;-1074         if (Code2 <= 1) {//inc,dec
+
+ mov al, [Code2]
+ cmp al, 1
+ jg  .process263
+
+;-1075   	        if (Op == REG) {//short
+
+ mov al, [Op]
+ cmp al, 2
+ jne .process264
+
+;-1076                 if (wflag) {genCode2(Code3, R1No); return; }
 
  mov al, [wflag]
  or  al, al
- je .process263
+ je .process265
  mov al, byte [R1No]
  mov ah, 0
  push ax
@@ -6643,46 +6670,46 @@ process: PROC
  add  sp, 4
  jmp .retnprocess
 
-;-1073             }
-
-.process263:
-
-;-1074         }
-
-.process262:
-
-;-1075         if (Code2 == 5) {//imul extension?
-
-.process261:
- mov al, [Code2]
- cmp al, 5
- jne .process264
-
-;-1076             getTokeType();
-
- call getTokeType
-
-;-1077             if (TokeType) implerror();
-
- mov al, [TokeType]
- or  al, al
- je .process265
- call implerror
-
-;-1078         }
+;-1077             }
 
 .process265:
 
-;-1079         genCodeW(Code1);
+;-1078         }
 
 .process264:
+
+;-1079         if (Code2 == 5) {//imul extension?
+
+.process263:
+ mov al, [Code2]
+ cmp al, 5
+ jne .process266
+
+;-1080             getTokeType();
+
+ call getTokeType
+
+;-1081             if (TokeType) implerror();
+
+ mov al, [TokeType]
+ or  al, al
+ je .process267
+ call implerror
+
+;-1082         }
+
+.process267:
+
+;-1083         genCodeW(Code1);
+
+.process266:
  mov al, byte [Code1]
  mov ah, 0
  push ax
  call genCodeW
  add  sp, 2
 
-;-1080         writeEA(Code2);
+;-1084         writeEA(Code2);
 
  mov al, byte [Code2]
  mov ah, 0
@@ -6690,72 +6717,72 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1081         return;
+;-1085         return;
 
  jmp .retnprocess
 
-;-1082     }
+;-1086     }
 
 
-;-1083 
+;-1087 
 
 
-;-1084     if (CodeType == 3) {//les,lds,lea,lss,lfs,lgs
+;-1088     if (CodeType == 3) {//les,lds,lea,lss,lfs,lgs
 
-.process260:
+.process262:
  mov al, [CodeType]
  cmp al, 3
- jne .process266
+ jne .process268
 
-;-1085         check2Ops();    //setwflag not applicable
+;-1089         check2Ops();    //setwflag not applicable
 
  call check2Ops
 
-;-1086         if (R1Type != WORD) reg16error();//only r16
+;-1090         if (R1Type != WORD) reg16error();//only r16
 
  mov al, [R1Type]
  cmp al, 2
- je  .process267
+ je  .process269
  call reg16error
 
-;-1087         if (Op2 != MEM) addrerror();//only m16
+;-1091         if (Op2 != MEM) addrerror();//only m16
 
-.process267:
+.process269:
  mov al, [Op2]
  cmp al, 4
- je  .process268
+ je  .process270
  call addrerror
 
-;-1088 
+;-1092 
 
 
-;-1089         genCode8(Code1);//les,lds,lea
+;-1093         genCode8(Code1);//les,lds,lea
 
-.process268:
+.process270:
  mov al, byte [Code1]
  mov ah, 0
  push ax
  call genCode8
  add  sp, 2
 
-;-1090         if (Code1 == 0x0F) genCode8(Code2);//lss,lfs,lgs
+;-1094         if (Code1 == 0x0F) genCode8(Code2);//lss,lfs,lgs
 
  mov al, [Code1]
  cmp al, 15
- jne .process269
+ jne .process271
  mov al, byte [Code2]
  mov ah, 0
  push ax
  call genCode8
  add  sp, 2
 
-;-1091         Op=Op2;//set MEM for writeEA
+;-1095         Op=Op2;//set MEM for writeEA
 
-.process269:
+.process271:
  mov al, [Op2]
  mov byte [Op], al
 
-;-1092         writeEA(R1No);
+;-1096         writeEA(R1No);
 
  mov al, byte [R1No]
  mov ah, 0
@@ -6763,66 +6790,66 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1093         return;
+;-1097         return;
 
  jmp .retnprocess
 
-;-1094     }
+;-1098     }
 
 
-;-1095 
+;-1099 
 
 
-;-1096     if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
+;-1100     if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
 
-.process266:
+.process268:
  mov al, [CodeType]
  cmp al, 4
- jne .process270
+ jne .process272
 
-;-1097         check2Ops();
+;-1101         check2Ops();
 
  call check2Ops
 
-;-1098         if (Op2 == IMM) {//second operand is imm
+;-1102         if (Op2 == IMM) {//second operand is imm
 
  mov al, [Op2]
  cmp al, 1
- jne .process271
+ jne .process273
 
-;-1099             setsflag();
+;-1103             setsflag();
 
  call setsflag
 
-;-1100             if (Op == REG) {
+;-1104             if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne .process272
+ jne .process274
 
-;-1101                 if (R1No == 0) {// acc,imm
+;-1105                 if (R1No == 0) {// acc,imm
 
  mov al, [R1No]
  cmp al, 0
- jne .process273
+ jne .process275
 
-;-1102                     if (sflag == 0) {
+;-1106                     if (sflag == 0) {
 
  mov al, [sflag]
  cmp al, 0
- jne .process274
+ jne .process276
 
-;-1103                         c = Code1 << 3;
+;-1107                         c = Code1 << 3;
 
  mov al, [Code1]
  shl al, 3
  mov [bp-2], al
 
-;-1104                         c += 4;
+;-1108                         c += 4;
 
  add  byte[bp-2], 4
 
-;-1105                         genCodeW(c);
+;-1109                         genCodeW(c);
 
  mov al, byte [bp-2]
  mov ah, 0
@@ -6830,36 +6857,36 @@ process: PROC
  call genCodeW
  add  sp, 2
 
-;-1106                         genImmediate();
+;-1110                         genImmediate();
 
  call genImmediate
 
-;-1107                         return;
+;-1111                         return;
 
  jmp .retnprocess
 
-;-1108                     }
+;-1112                     }
 
 
-;-1109                 }
+;-1113                 }
+
+.process276:
+
+;-1114             }
+
+.process275:
+
+;-1115             //r/m, imm: 80 sign-extended,TTT,imm
+
+
+;-1116             c = sflag + 0x80;
 
 .process274:
-
-;-1110             }
-
-.process273:
-
-;-1111             //r/m, imm: 80 sign-extended,TTT,imm
-
-
-;-1112             c = sflag + 0x80;
-
-.process272:
  mov al, [sflag]
  add al, 128
  mov [bp-2], al
 
-;-1113             genCodeW(c);
+;-1117             genCodeW(c);
 
  mov al, byte [bp-2]
  mov ah, 0
@@ -6867,7 +6894,7 @@ process: PROC
  call genCodeW
  add  sp, 2
 
-;-1114             writeEA(Code1);
+;-1118             writeEA(Code1);
 
  mov al, byte [Code1]
  mov ah, 0
@@ -6875,53 +6902,53 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1115             if (sflag) genCode8(imme);
+;-1119             if (sflag) genCode8(imme);
 
  mov al, [sflag]
  or  al, al
- je .process275
+ je .process277
  push word [imme]
  call genCode8
  add  sp, 2
 
-;-1116             else genImmediate();
+;-1120             else genImmediate();
 
- jmp .process276
-.process275:
+ jmp .process278
+.process277:
  call genImmediate
 
-;-1117             return;
+;-1121             return;
 
-.process276:
+.process278:
  jmp .retnprocess
 
-;-1118         }
+;-1122         }
 
 
-;-1119         c = Code1 << 3;//r/m, r/r
+;-1123         c = Code1 << 3;//r/m, r/r
 
-.process271:
+.process273:
  mov al, [Code1]
  shl al, 3
  mov [bp-2], al
 
-;-1120         if (Op == REG) {
+;-1124         if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne .process277
+ jne .process279
 
-;-1121             if (Op2 == MEM) {//reg, mem
+;-1125             if (Op2 == MEM) {//reg, mem
 
  mov al, [Op2]
  cmp al, 4
- jne .process278
+ jne .process280
 
-;-1122                 c += 2;//add direction flag
+;-1126                 c += 2;//add direction flag
 
  add  byte[bp-2], 2
 
-;-1123                 genCodeW(c);
+;-1127                 genCodeW(c);
 
  mov al, byte [bp-2]
  mov ah, 0
@@ -6929,12 +6956,12 @@ process: PROC
  call genCodeW
  add  sp, 2
 
-;-1124                 Op=Op2;//set MEM for writeEA
+;-1128                 Op=Op2;//set MEM for writeEA
 
  mov al, [Op2]
  mov byte [Op], al
 
-;-1125                 writeEA(R1No);
+;-1129                 writeEA(R1No);
 
  mov al, byte [R1No]
  mov ah, 0
@@ -6942,25 +6969,25 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1126                 return;
+;-1130                 return;
 
  jmp .retnprocess
 
-;-1127             }
+;-1131             }
 
 
-;-1128         }
+;-1132         }
 
-.process278:
+.process280:
 
-;-1129         if (Op2 == REG) {//mem,reg    reg,reg
+;-1133         if (Op2 == REG) {//mem,reg    reg,reg
 
-.process277:
+.process279:
  mov al, [Op2]
  cmp al, 2
- jne .process279
+ jne .process281
 
-;-1130             genCodeW(c);
+;-1134             genCodeW(c);
 
  mov al, byte [bp-2]
  mov ah, 0
@@ -6968,7 +6995,7 @@ process: PROC
  call genCodeW
  add  sp, 2
 
-;-1131             writeEA(R2No);//2. Op in reg-field
+;-1135             writeEA(R2No);//2. Op in reg-field
 
  mov al, byte [R2No]
  mov ah, 0
@@ -6976,104 +7003,104 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1132             return;
+;-1136             return;
 
  jmp .retnprocess
 
-;-1133         }
+;-1137         }
 
 
-;-1134         syntaxerror();
+;-1138         syntaxerror();
 
-.process279:
+.process281:
  call syntaxerror
 
-;-1135         return;
+;-1139         return;
 
  jmp .retnprocess
 
-;-1136     }
+;-1140     }
 
 
-;-1137 
+;-1141 
 
 
-;-1138     if (CodeType == 5) {//mov (movsx, movzx=51)
+;-1142     if (CodeType == 5) {//mov (movsx, movzx=51)
 
-.process270:
+.process272:
  mov al, [CodeType]
  cmp al, 5
- jne .process280
+ jne .process282
 
-;-1139         check2Ops();
+;-1143         check2Ops();
 
  call check2Ops
 
-;-1140 /*    prs("\n Op:"); printhex8a(Op);
+;-1144 /*    prs("\n Op:"); printhex8a(Op);
 
 
-;-1141     prs(", Op2:"); printhex8a(Op2);
+;-1145     prs(", Op2:"); printhex8a(Op2);
 
 
-;-1142     prs(", R1No:"); printhex8a(R1No);
+;-1146     prs(", R1No:"); printhex8a(R1No);
 
 
-;-1143     prs(", R2No:"); printhex8a(R2No);   */
+;-1147     prs(", R2No:"); printhex8a(R2No);   */
 
 
-;-1144         if (Op2 == ADR) {
+;-1148         if (Op2 == ADR) {
 
  mov al, [Op2]
  cmp al, 3
- jne .process281
+ jne .process283
 
-;-1145             if (disp) imme=disp;
+;-1149             if (disp) imme=disp;
 
  mov ax, [disp]
  or  al, al
- je .process282
+ je .process284
  mov ax, [disp]
  mov word [imme], ax
 
-;-1146             else notfounderror();
+;-1150             else notfounderror();
 
- jmp .process283
-.process282:
+ jmp .process285
+.process284:
  call notfounderror
 
-;-1147             Op2=IMM;//continue with IMM
+;-1151             Op2=IMM;//continue with IMM
 
-.process283:
+.process285:
  mov ax, 1
  mov byte [Op2], al
 
-;-1148         }
+;-1152         }
 
 
-;-1149         if (Op2 == IMM) {// r,i
+;-1153         if (Op2 == IMM) {// r,i
 
-.process281:
+.process283:
  mov al, [Op2]
  cmp al, 1
- jne .process284
+ jne .process286
 
-;-1150             if (Op == REG) {
+;-1154             if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne .process285
+ jne .process287
 
-;-1151                 c = wflag << 3;
+;-1155                 c = wflag << 3;
 
  mov al, [wflag]
  shl al, 3
  mov [bp-2], al
 
-;-1152                 c += 0xB0;
+;-1156                 c += 0xB0;
 
  add  byte[bp-2], 176
 
-;-1153                 genCode2(c, R1No);
+;-1157                 genCode2(c, R1No);
 
  mov al, byte [R1No]
  mov ah, 0
@@ -7084,84 +7111,84 @@ process: PROC
  call genCode2
  add  sp, 4
 
-;-1154                 genImmediate();
+;-1158                 genImmediate();
 
  call genImmediate
 
-;-1155                 return;
+;-1159                 return;
 
  jmp .retnprocess
 
-;-1156             }
+;-1160             }
 
 
-;-1157             if (Op == MEM) {// m,i
+;-1161             if (Op == MEM) {// m,i
 
-.process285:
+.process287:
  mov al, [Op]
  cmp al, 4
- jne .process286
+ jne .process288
 
-;-1158                 genCodeW(0xC6);
+;-1162                 genCodeW(0xC6);
 
  push 198
  call genCodeW
  add  sp, 2
 
-;-1159                 writeEA( 0 );
+;-1163                 writeEA( 0 );
 
  push 0
  call writeEA
  add  sp, 2
 
-;-1160                 genImmediate();
+;-1164                 genImmediate();
 
  call genImmediate
 
-;-1161                 return;
+;-1165                 return;
 
  jmp .retnprocess
 
-;-1162             }
+;-1166             }
 
 
-;-1163             regmemerror();
+;-1167             regmemerror();
 
-.process286:
+.process288:
  call regmemerror
 
-;-1164             return;
+;-1168             return;
 
  jmp .retnprocess
 
-;-1165         }
+;-1169         }
 
 
-;-1166         if (R1Type == SEGREG) ChangeDirection();//sreg,rm
+;-1170         if (R1Type == SEGREG) ChangeDirection();//sreg,rm
 
-.process284:
+.process286:
  mov al, [R1Type]
  cmp al, 4
- jne .process287
+ jne .process289
  call ChangeDirection
 
-;-1167         if (R2Type == SEGREG) {//rm,sreg
+;-1171         if (R2Type == SEGREG) {//rm,sreg
 
-.process287:
+.process289:
  mov al, [R2Type]
  cmp al, 4
- jne .process288
+ jne .process290
 
-;-1168             if (OpSize != WORD) reg16error();
+;-1172             if (OpSize != WORD) reg16error();
 
  mov al, [OpSize]
  cmp al, 2
- je  .process289
+ je  .process291
  call reg16error
 
-;-1169                 genCode2(0x8C, dflag);
+;-1173                 genCode2(0x8C, dflag);
 
-.process289:
+.process291:
  mov al, byte [dflag]
  mov ah, 0
  push ax
@@ -7169,7 +7196,7 @@ process: PROC
  call genCode2
  add  sp, 4
 
-;-1170                 writeEA(R2No);
+;-1174                 writeEA(R2No);
 
  mov al, byte [R2No]
  mov ah, 0
@@ -7177,142 +7204,142 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1171                 return;
+;-1175                 return;
 
  jmp .retnprocess
 
-;-1172         }
+;-1176         }
 
 
-;-1173         if (Op2 == MEM) {//acc, moffs16
+;-1177         if (Op2 == MEM) {//acc, moffs16
 
-.process288:
+.process290:
  mov al, [Op2]
  cmp al, 4
- jne .process290
+ jne .process292
 
-;-1174             if (Op == REG) {
+;-1178             if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne .process291
+ jne .process293
 
-;-1175                 if (R1No == 0) {
+;-1179                 if (R1No == 0) {
 
  mov al, [R1No]
  cmp al, 0
- jne .process292
+ jne .process294
 
-;-1176                     if (isDirect) {
+;-1180                     if (isDirect) {
 
  mov al, [isDirect]
  or  al, al
- je .process293
+ je .process295
 
-;-1177                         genCodeW(0xA0);
+;-1181                         genCodeW(0xA0);
 
  push 160
  call genCodeW
  add  sp, 2
 
-;-1178                         genCode16(disp);
+;-1182                         genCode16(disp);
 
  push word [disp]
  call genCode16
  add  sp, 2
 
-;-1179                         return;
+;-1183                         return;
 
  jmp .retnprocess
 
-;-1180                     }
+;-1184                     }
 
 
-;-1181                 }
+;-1185                 }
+
+.process295:
+
+;-1186             }
+
+.process294:
+
+;-1187         }
 
 .process293:
 
-;-1182             }
+;-1188         if (Op == MEM) {//moffs16, acc
 
 .process292:
-
-;-1183         }
-
-.process291:
-
-;-1184         if (Op == MEM) {//moffs16, acc
-
-.process290:
  mov al, [Op]
  cmp al, 4
- jne .process294
+ jne .process296
 
-;-1185             if (Op2 == REG) {
+;-1189             if (Op2 == REG) {
 
  mov al, [Op2]
  cmp al, 2
- jne .process295
+ jne .process297
 
-;-1186                 if (R2No == 0) {
+;-1190                 if (R2No == 0) {
 
  mov al, [R2No]
  cmp al, 0
- jne .process296
+ jne .process298
 
-;-1187                     if (isDirect) {
+;-1191                     if (isDirect) {
 
  mov al, [isDirect]
  or  al, al
- je .process297
+ je .process299
 
-;-1188                         genCodeW(0xA2);
+;-1192                         genCodeW(0xA2);
 
  push 162
  call genCodeW
  add  sp, 2
 
-;-1189                         genCode16(disp);
+;-1193                         genCode16(disp);
 
  push word [disp]
  call genCode16
  add  sp, 2
 
-;-1190                         return;
+;-1194                         return;
 
  jmp .retnprocess
 
-;-1191                     }
+;-1195                     }
 
 
-;-1192                 }
+;-1196                 }
+
+.process299:
+
+;-1197             }
+
+.process298:
+
+;-1198 
+
+
+;-1199         }
 
 .process297:
 
-;-1193             }
+;-1200         if (Op2 == REG) {//rm, r
 
 .process296:
-
-;-1194 
-
-
-;-1195         }
-
-.process295:
-
-;-1196         if (Op2 == REG) {//rm, r
-
-.process294:
  mov al, [Op2]
  cmp al, 2
- jne .process298
+ jne .process300
 
-;-1197             genCodeW(0x88);
+;-1201             genCodeW(0x88);
 
  push 136
  call genCodeW
  add  sp, 2
 
-;-1198             writeEA(R2No);
+;-1202             writeEA(R2No);
 
  mov al, byte [R2No]
  mov ah, 0
@@ -7320,37 +7347,37 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1199             return;
+;-1203             return;
 
  jmp .retnprocess
 
-;-1200         }
+;-1204         }
 
 
-;-1201         if (Op2 == MEM) {//r, m
+;-1205         if (Op2 == MEM) {//r, m
 
-.process298:
+.process300:
  mov al, [Op2]
  cmp al, 4
- jne .process299
+ jne .process301
 
-;-1202             if (Op == REG) {
+;-1206             if (Op == REG) {
 
  mov al, [Op]
  cmp al, 2
- jne .process300
+ jne .process302
 
-;-1203                 ChangeDirection();
+;-1207                 ChangeDirection();
 
  call ChangeDirection
 
-;-1204                 genCodeW(0x8A);
+;-1208                 genCodeW(0x8A);
 
  push 138
  call genCodeW
  add  sp, 2
 
-;-1205                 writeEA(R2No);
+;-1209                 writeEA(R2No);
 
  mov al, byte [R2No]
  mov ah, 0
@@ -7358,84 +7385,84 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1206                 return;
+;-1210                 return;
 
  jmp .retnprocess
 
-;-1207             }
+;-1211             }
 
 
-;-1208         }
+;-1212         }
 
-.process300:
+.process302:
 
-;-1209         syntaxerror();
+;-1213         syntaxerror();
 
-.process299:
+.process301:
  call syntaxerror
 
-;-1210         return;
+;-1214         return;
 
  jmp .retnprocess
 
-;-1211     }
+;-1215     }
 
 
-;-1212 
+;-1216 
 
 
-;-1213     if (CodeType == 6) {//Jcc
+;-1217     if (CodeType == 6) {//Jcc
 
-.process280:
+.process282:
  mov al, [CodeType]
  cmp al, 6
- jne .process301
+ jne .process303
 
-;-1214         if (TokeType == ALNUME) {
+;-1218         if (TokeType == ALNUME) {
 
  mov al, [TokeType]
  cmp al, 3
- jne .process302
+ jne .process304
 
-;-1215             LabelIx=searchLabel();
+;-1219             LabelIx=searchLabel();
 
  call searchLabel
  mov word [LabelIx], ax
 
-;-1216             if (LabelIx > 0) {
+;-1220             if (LabelIx > 0) {
 
  mov ax, [LabelIx]
  cmp ax, 0
- jle .process303
+ jle .process305
 
-;-1217                 disp=LabelAddr[LabelIx];
+;-1221                 disp=LabelAddr[LabelIx];
 
  mov bx, [LabelIx]
  shl bx, 1
  mov ax, [LabelAddr + bx]
  mov word [disp], ax
 
-;-1218                 disp = disp - PC;
+;-1222                 disp = disp - PC;
 
  mov ax, [disp]
  sub ax, [PC]
  mov word [disp], ax
 
-;-1219                 disp = disp - Origin;
+;-1223                 disp = disp - Origin;
 
  mov ax, [disp]
  sub ax, [Origin]
  mov word [disp], ax
 
-;-1220                 if (checkConstSize(disp) ) {
+;-1224                 if (checkConstSize(disp) ) {
 
  push word [disp]
  call checkConstSize
  add  sp, 2
  or  al, al
- je .process304
+ je .process306
 
-;-1221                     genCode2(Code1, 0x70);//short
+;-1225                     genCode2(Code1, 0x70);//short
 
  push 112
  mov al, byte [Code1]
@@ -7444,28 +7471,28 @@ process: PROC
  call genCode2
  add  sp, 4
 
-;-1222                     disp -= 2;
+;-1226                     disp -= 2;
 
  sub  word[disp], 2
 
-;-1223                     genCode8(disp);
+;-1227                     genCode8(disp);
 
  push word [disp]
  call genCode8
  add  sp, 2
 
-;-1224                 } else {
+;-1228                 } else {
 
- jmp .process305
-.process304:
+ jmp .process307
+.process306:
 
-;-1225                     genCode8(0x0F);
+;-1229                     genCode8(0x0F);
 
  push 15
  call genCode8
  add  sp, 2
 
-;-1226                     genCode2(Code1, 0x80);//near
+;-1230                     genCode2(Code1, 0x80);//near
 
  push 128
  mov al, byte [Code1]
@@ -7474,35 +7501,35 @@ process: PROC
  call genCode2
  add  sp, 4
 
-;-1227                     disp -= 4;
+;-1231                     disp -= 4;
 
  sub  word[disp], 4
 
-;-1228                     genCode16(disp);
+;-1232                     genCode16(disp);
 
  push word [disp]
  call genCode16
  add  sp, 2
 
-;-1229                 }
+;-1233                 }
 
 
-;-1230             }
+;-1234             }
 
+.process307:
+
+;-1235             else {//jump forward, near only
+
+ jmp .process308
 .process305:
 
-;-1231             else {//jump forward, near only
-
- jmp .process306
-.process303:
-
-;-1232                 genCode8(0x0F);
+;-1236                 genCode8(0x0F);
 
  push 15
  call genCode8
  add  sp, 2
 
-;-1233                 genCode2(Code1, 0x80);
+;-1237                 genCode2(Code1, 0x80);
 
  push 128
  mov al, byte [Code1]
@@ -7511,181 +7538,121 @@ process: PROC
  call genCode2
  add  sp, 4
 
-;-1234                 genCode16(0);
+;-1238                 storeJmp();
+
+ call storeJmp
+
+;-1239                 genCode16(0);
 
  push 0
  call genCode16
  add  sp, 2
 
-;-1235                 PrintRA='r';
+;-1240                 PrintRA='r';
 
  mov ax, 114
  mov byte [PrintRA], al
 
-;-1236                 storeJmpCall();
-
- call storeJmpCall
-
-;-1237             }
+;-1241             }
 
 
-;-1238         return;
+;-1242         return;
 
-.process306:
+.process308:
  jmp .retnprocess
 
-;-1239         }
+;-1243         }
 
 
-;-1240     }
+;-1244     }
 
-.process302:
+.process304:
 
-;-1241 
+;-1245 
 
 
-;-1242     if (CodeType == 7) {//jmp, call
+;-1246     if (CodeType == 7) {//jmp, call
 
-.process301:
+.process303:
  mov al, [CodeType]
  cmp al, 7
- jne .process307
+ jne .process309
 
-;-1243         if (TokeType == ALNUME) {
+;-1247         if (TokeType == ALNUME) {
 
  mov al, [TokeType]
  cmp al, 3
- jne .process308
+ jne .process310
 
-;-1244             LabelIx=searchLabel();
+;-1248             LabelIx=searchLabel();
 
  call searchLabel
  mov word [LabelIx], ax
 
-;-1245             if (LabelIx > 0) {
+;-1249             if (LabelIx > 0) {
 
  mov ax, [LabelIx]
  cmp ax, 0
- jle .process309
+ jle .process311
 
-;-1246                 disp=LabelAddr[LabelIx];
+;-1250                 disp=LabelAddr[LabelIx];
 
  mov bx, [LabelIx]
  shl bx, 1
  mov ax, [LabelAddr + bx]
  mov word [disp], ax
 
-;-1247                 disp = disp - PC;
+;-1251                 disp = disp - PC;
 
  mov ax, [disp]
  sub ax, [PC]
  mov word [disp], ax
 
-;-1248                 disp = disp - Origin;
+;-1252                 disp = disp - Origin;
 
  mov ax, [disp]
  sub ax, [Origin]
  mov word [disp], ax
 
-;-1249                 if (checkConstSize(disp) ) {
+;-1253                 if (checkConstSize(disp) ) {
 
  push word [disp]
  call checkConstSize
  add  sp, 2
  or  al, al
- je .process310
+ je .process312
 
-;-1250                     if (Code1 == 0xE9) {//jmp only
+;-1254                     if (Code1 == 0xE9) {//jmp only
 
  mov al, [Code1]
  cmp al, 233
- jne .process311
+ jne .process313
 
-;-1251                         genCode8(0xEB);//short
+;-1255                         genCode8(0xEB);//short
 
  push 235
  call genCode8
  add  sp, 2
 
-;-1252                         disp -= 2;
+;-1256                         disp -= 2;
 
  sub  word[disp], 2
 
-;-1253                         genCode8(disp);
+;-1257                         genCode8(disp);
 
  push word [disp]
  call genCode8
  add  sp, 2
 
-;-1254                     }
+;-1258                     }
 
 
-;-1255                     else {
-
- jmp .process312
-.process311:
-
-;-1256                         genCode8(Code1);//near
-
- mov al, byte [Code1]
- mov ah, 0
- push ax
- call genCode8
- add  sp, 2
-
-;-1257                         disp -= 3;
-
- sub  word[disp], 3
-
-;-1258                         genCode16(disp);
-
- push word [disp]
- call genCode16
- add  sp, 2
-
-;-1259                     }
-
-
-;-1260                 }
-
-.process312:
-
-;-1261                 else {
-
- jmp .process313
-.process310:
-
-;-1262                     genCode8(Code1);//near
-
- mov al, byte [Code1]
- mov ah, 0
- push ax
- call genCode8
- add  sp, 2
-
-;-1263                     disp -= 3;
-
- sub  word[disp], 3
-
-;-1264                     genCode16(disp);
-
- push word [disp]
- call genCode16
- add  sp, 2
-
-;-1265                 }
-
-
-;-1266             }
-
-.process313:
-
-;-1267             else {//jump forward, near only
+;-1259                     else {
 
  jmp .process314
-.process309:
+.process313:
 
-;-1268                 genCode8(Code1);
+;-1260                         genCode8(Code1);//near
 
  mov al, byte [Code1]
  mov ah, 0
@@ -7693,53 +7660,113 @@ process: PROC
  call genCode8
  add  sp, 2
 
-;-1269                 genCode16(0);
+;-1261                         disp -= 3;
+
+ sub  word[disp], 3
+
+;-1262                         genCode16(disp);
+
+ push word [disp]
+ call genCode16
+ add  sp, 2
+
+;-1263                     }
+
+
+;-1264                 }
+
+.process314:
+
+;-1265                 else {
+
+ jmp .process315
+.process312:
+
+;-1266                     genCode8(Code1);//near
+
+ mov al, byte [Code1]
+ mov ah, 0
+ push ax
+ call genCode8
+ add  sp, 2
+
+;-1267                     disp -= 3;
+
+ sub  word[disp], 3
+
+;-1268                     genCode16(disp);
+
+ push word [disp]
+ call genCode16
+ add  sp, 2
+
+;-1269                 }
+
+
+;-1270             }
+
+.process315:
+
+;-1271             else {//jump forward, near only
+
+ jmp .process316
+.process311:
+
+;-1272                 genCode8(Code1);
+
+ mov al, byte [Code1]
+ mov ah, 0
+ push ax
+ call genCode8
+ add  sp, 2
+
+;-1273                 storeJmp();
+
+ call storeJmp
+
+;-1274                 genCode16(0);
 
  push 0
  call genCode16
  add  sp, 2
 
-;-1270                 PrintRA='R';
+;-1275                 PrintRA='R';
 
  mov ax, 82
  mov byte [PrintRA], al
 
-;-1271                 storeJmpCall();
-
- call storeJmpCall
-
-;-1272             }
+;-1276             }
 
 
-;-1273         return;
+;-1277         return;
 
-.process314:
+.process316:
  jmp .retnprocess
 
-;-1274         }
+;-1278         }
 
 
-;-1275     }
+;-1279     }
 
-.process308:
+.process310:
 
-;-1276 
+;-1280 
 
 
-;-1277     if (CodeType ==  8) {//ret,retf
+;-1281     if (CodeType ==  8) {//ret,retf
 
-.process307:
+.process309:
  mov al, [CodeType]
  cmp al, 8
- jne .process315
+ jne .process317
 
-;-1278         if (TokeType == DIGIT) {
+;-1282         if (TokeType == DIGIT) {
 
  mov al, [TokeType]
  cmp al, 1
- jne .process316
+ jne .process318
 
-;-1279             genCode8(Code2);
+;-1283             genCode8(Code2);
 
  mov al, byte [Code2]
  mov ah, 0
@@ -7747,66 +7774,66 @@ process: PROC
  call genCode8
  add  sp, 2
 
-;-1280             genCode16(SymbolInt);
+;-1284             genCode16(SymbolInt);
 
  push word [SymbolInt]
  call genCode16
  add  sp, 2
 
-;-1281             return;
+;-1285             return;
 
  jmp .retnprocess
 
-;-1282         }
+;-1286         }
 
 
-;-1283         genCode8(Code1);
+;-1287         genCode8(Code1);
 
-.process316:
+.process318:
  mov al, byte [Code1]
  mov ah, 0
  push ax
  call genCode8
  add  sp, 2
 
-;-1284         return;
+;-1288         return;
 
  jmp .retnprocess
 
-;-1285     }
+;-1289     }
 
 
-;-1286 
+;-1290 
 
 
-;-1287     if (CodeType == 9) {//push, pop
+;-1291     if (CodeType == 9) {//push, pop
 
-.process315:
+.process317:
  mov al, [CodeType]
  cmp al, 9
- jne .process317
+ jne .process319
 
-;-1288         getOpL();
+;-1292         getOpL();
 
  call getOpL
 
-;-1289         if (Code1 == 0x50) {//push only
+;-1293         if (Code1 == 0x50) {//push only
 
  mov al, [Code1]
  cmp al, 80
- jne .process318
+ jne .process320
 
-;-1290             if (Op == IMM) {//push imm8,16
+;-1294             if (Op == IMM) {//push imm8,16
 
  mov al, [Op]
  cmp al, 1
- jne .process319
+ jne .process321
 
-;-1291                 setsflag();
+;-1295                 setsflag();
 
  call setsflag
 
-;-1292                 genCode2(0x68, sflag);
+;-1296                 genCode2(0x68, sflag);
 
  mov al, byte [sflag]
  mov ah, 0
@@ -7815,166 +7842,164 @@ process: PROC
  call genCode2
  add  sp, 4
 
-;-1293                 if (sflag) genCode8 (imme);
+;-1297                 if (sflag) genCode8 (imme);
 
  mov al, [sflag]
  or  al, al
- je .process320
+ je .process322
  push word [imme]
  call genCode8
  add  sp, 2
 
-;-1294                 else       genCode16(imme);
+;-1298                 else       genCode16(imme);
 
- jmp .process321
-.process320:
+ jmp .process323
+.process322:
  push word [imme]
  call genCode16
  add  sp, 2
 
-;-1295                 return;
+;-1299                 return;
 
-.process321:
+.process323:
  jmp .retnprocess
 
-;-1296             }
+;-1300             }
 
 
-;-1297             if (Op == ADR) {//push string ABSOLUTE i16
+;-1301             if (Op == ADR) {//push string ABSOLUTE i16
 
-.process319:
+.process321:
  mov al, [Op]
  cmp al, 3
- jne .process322
+ jne .process324
 
-;-1298                 if (disp) {
+;-1302                 if (disp) {
 
  mov ax, [disp]
  or  al, al
- je .process323
+ je .process325
 
-;-1299                     genCode8(0x68);
+;-1303                     genCode8(0x68);
 
  push 104
  call genCode8
  add  sp, 2
 
-;-1300                     genCode16(disp);
+;-1304                     genCode16(disp);
 
  push word [disp]
  call genCode16
  add  sp, 2
 
-;-1301                     return;
+;-1305                     return;
 
  jmp .retnprocess
 
-;-1302                 }
+;-1306                 }
 
 
-;-1303                 else {
+;-1307                 else {
 
- jmp .process324
-.process323:
+ jmp .process326
+.process325:
 
-;-1304                     genCode8(0x68);
+;-1308                     genCode8(0x68);
 
  push 104
  call genCode8
  add  sp, 2
 
-;-1305                     genCode8(65);//'A'
+;-1309                     storeJmp();
+
+ call storeJmp
+
+;-1310                     genCode8(65);//'A'
 
  push 65
  call genCode8
  add  sp, 2
 
-;-1306                     genCode8(65);
+;-1311                     genCode8(65);
 
  push 65
  call genCode8
  add  sp, 2
 
-;-1307                     PrintRA='A';
+;-1312                     PrintRA='A';
 
  mov ax, 65
  mov byte [PrintRA], al
 
-;-1308 //todo store Adr of push code, as storeJmpCall
+;-1313                 }
 
 
-;-1309 
+;-1314             }
 
+.process326:
 
-;-1310                 }
-
-
-;-1311             }
+;-1315         }
 
 .process324:
 
-;-1312         }
+;-1316         if (R1Type == SEGREG) {
 
-.process322:
-
-;-1313         if (R1Type == SEGREG) {
-
-.process318:
+.process320:
  mov al, [R1Type]
  cmp al, 4
- jne .process325
+ jne .process327
 
-;-1314             if (Code1 == 0x58) {//pop only
+;-1317             if (Code1 == 0x58) {//pop only
 
  mov al, [Code1]
  cmp al, 88
- jne .process326
+ jne .process328
 
-;-1315                 if (R1No == 1) error1("pop cs not allowed");
+;-1318                 if (R1No == 1) error1("pop cs not allowed");
 
  mov al, [R1No]
  cmp al, 1
- jne .process327
+ jne .process329
  push process_0
  call error1
  add  sp, 2
 
-;-1316             }
+;-1319             }
 
-.process327:
+.process329:
 
-;-1317             c = R1No <<3;
+;-1320             c = R1No <<3;
 
-.process326:
+.process328:
  mov al, [R1No]
  shl al, 3
  mov [bp-2], al
 
-;-1318             if (R1No > 3) {//FS, GS
+;-1321             if (R1No > 3) {//FS, GS
 
  mov al, [R1No]
  cmp al, 3
- jle .process328
+ jle .process330
 
-;-1319                 c += 122;
+;-1322                 c += 122;
 
  add  byte[bp-2], 122
 
-;-1320                 genCode8(0x0F);
+;-1323                 genCode8(0x0F);
 
  push 15
  call genCode8
  add  sp, 2
 
-;-1321             }
+;-1324             }
 
 
-;-1322             OpCodePtr++;
+;-1325             OpCodePtr++;
 
-.process328:
+.process330:
  inc  word[OpCodePtr]
 
-;-1323             c = c + *OpCodePtr;//is Code4
+;-1326             c = c + *OpCodePtr;//is Code4
 
  mov al, [bp-2]
  mov bx, [OpCodePtr]
@@ -7982,7 +8007,7 @@ process: PROC
  mov ah, 0
  mov [bp-2], al
 
-;-1324             genCode8(c);
+;-1327             genCode8(c);
 
  mov al, byte [bp-2]
  mov ah, 0
@@ -7990,33 +8015,33 @@ process: PROC
  call genCode8
  add  sp, 2
 
-;-1325             return;
+;-1328             return;
 
  jmp .retnprocess
 
-;-1326         }
+;-1329         }
 
 
-;-1327         checkOpL();//no ADR, SEGREG
+;-1330         checkOpL();//no ADR, SEGREG
 
-.process325:
+.process327:
  call checkOpL
 
-;-1328         if (R1Type == BYTE) reg16error();
+;-1331         if (R1Type == BYTE) reg16error();
 
  mov al, [R1Type]
  cmp al, 1
- jne .process329
+ jne .process331
  call reg16error
 
-;-1329         if (R1Type == WORD) {
+;-1332         if (R1Type == WORD) {
 
-.process329:
+.process331:
  mov al, [R1Type]
  cmp al, 2
- jne .process330
+ jne .process332
 
-;-1330             genCode2(Code1, R1No);
+;-1333             genCode2(Code1, R1No);
 
  mov al, byte [R1No]
  mov ah, 0
@@ -8027,21 +8052,21 @@ process: PROC
  call genCode2
  add  sp, 4
 
-;-1331             return;
+;-1334             return;
 
  jmp .retnprocess
 
-;-1332         }
+;-1335         }
 
 
-;-1333         if (Op == MEM) {
+;-1336         if (Op == MEM) {
 
-.process330:
+.process332:
  mov al, [Op]
  cmp al, 4
- jne .process331
+ jne .process333
 
-;-1334             genCode8(Code2);
+;-1337             genCode8(Code2);
 
  mov al, byte [Code2]
  mov ah, 0
@@ -8049,7 +8074,7 @@ process: PROC
  call genCode8
  add  sp, 2
 
-;-1335             writeEA(Code3);
+;-1338             writeEA(Code3);
 
  mov al, byte [Code3]
  mov ah, 0
@@ -8057,58 +8082,58 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1336             return;
+;-1339             return;
 
  jmp .retnprocess
 
-;-1337         }
+;-1340         }
 
 
-;-1338         syntaxerror();
+;-1341         syntaxerror();
 
-.process331:
+.process333:
  call syntaxerror
 
-;-1339         return;
+;-1342         return;
 
  jmp .retnprocess
 
-;-1340     }
+;-1343     }
 
 
-;-1341 
+;-1344 
 
 
-;-1342     if (CodeType == 11) {//shift, rotate
+;-1345     if (CodeType == 11) {//shift, rotate
 
-.process317:
+.process319:
  mov al, [CodeType]
  cmp al, 11
- jne .process332
+ jne .process334
 
-;-1343         check2Ops();
+;-1346         check2Ops();
 
  call check2Ops
 
-;-1344         if (Op2 == IMM) {
+;-1347         if (Op2 == IMM) {
 
  mov al, [Op2]
  cmp al, 1
- jne .process333
+ jne .process335
 
-;-1345             if (imme == 1) {
+;-1348             if (imme == 1) {
 
  mov ax, [imme]
  cmp ax, 1
- jne .process334
+ jne .process336
 
-;-1346                 genCodeW(0xD0);
+;-1349                 genCodeW(0xD0);
 
  push 208
  call genCodeW
  add  sp, 2
 
-;-1347                 writeEA(Code1);
+;-1350                 writeEA(Code1);
 
  mov al, byte [Code1]
  mov ah, 0
@@ -8116,21 +8141,21 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1348                 return;
+;-1351                 return;
 
  jmp .retnprocess
 
-;-1349             }
+;-1352             }
 
 
-;-1350             genCodeW(0xC0);//80186
+;-1353             genCodeW(0xC0);//80186
 
-.process334:
+.process336:
  push 192
  call genCodeW
  add  sp, 2
 
-;-1351             writeEA(Code1);
+;-1354             writeEA(Code1);
 
  mov al, byte [Code1]
  mov ah, 0
@@ -8138,54 +8163,54 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1352             genCode8(imme);
+;-1355             genCode8(imme);
 
  push word [imme]
  call genCode8
  add  sp, 2
 
-;-1353             return;
+;-1356             return;
 
  jmp .retnprocess
 
-;-1354         }
+;-1357         }
 
 
-;-1355         if (Op2 == REG) {
+;-1358         if (Op2 == REG) {
 
-.process333:
+.process335:
  mov al, [Op2]
  cmp al, 2
- jne .process335
+ jne .process337
 
-;-1356             if (R2Type == BYTE) {
+;-1359             if (R2Type == BYTE) {
 
  mov al, [R2Type]
  cmp al, 1
- jne .process336
+ jne .process338
 
-;-1357                 if (R2No == 1) {//CL-REG
+;-1360                 if (R2No == 1) {//CL-REG
 
  mov al, [R2No]
  cmp al, 1
- jne .process337
+ jne .process339
 
-;-1358                     if (R1Type == WORD) wflag=1;//hack
+;-1361                     if (R1Type == WORD) wflag=1;//hack
 
  mov al, [R1Type]
  cmp al, 2
- jne .process338
+ jne .process340
  mov ax, 1
  mov byte [wflag], al
 
-;-1359                     genCodeW(0xD2);
+;-1362                     genCodeW(0xD2);
 
-.process338:
+.process340:
  push 210
  call genCodeW
  add  sp, 2
 
-;-1360                     writeEA(Code1);
+;-1363                     writeEA(Code1);
 
  mov al, byte [Code1]
  mov ah, 0
@@ -8193,42 +8218,42 @@ process: PROC
  call writeEA
  add  sp, 2
 
-;-1361                     return;
+;-1364                     return;
 
  jmp .retnprocess
 
-;-1362                 }
+;-1365                 }
 
 
-;-1363             }
+;-1366             }
+
+.process339:
+
+;-1367         }
+
+.process338:
+
+;-1368     }
 
 .process337:
 
-;-1364         }
-
-.process336:
-
-;-1365     }
-
-.process335:
-
-;-1366 
+;-1369 
 
 
-;-1367     if (CodeType == 12) {//int
+;-1370     if (CodeType == 12) {//int
 
-.process332:
+.process334:
  mov al, [CodeType]
  cmp al, 12
- jne .process339
+ jne .process341
 
-;-1368         if (TokeType == DIGIT) {
+;-1371         if (TokeType == DIGIT) {
 
  mov al, [TokeType]
  cmp al, 1
- jne .process340
+ jne .process342
 
-;-1369             genCode8(Code1);
+;-1372             genCode8(Code1);
 
  mov al, byte [Code1]
  mov ah, 0
@@ -8236,316 +8261,367 @@ process: PROC
  call genCode8
  add  sp, 2
 
-;-1370             genCode8(SymbolInt);
+;-1373             genCode8(SymbolInt);
 
  push word [SymbolInt]
  call genCode8
  add  sp, 2
 
-;-1371             return;
+;-1374             return;
 
  jmp .retnprocess
 
-;-1372         }
+;-1375         }
 
 
-;-1373     }
+;-1376     }
 
-.process340:
+.process342:
 
-;-1374 
+;-1377 
 
 
-;-1375     if (CodeType == 30) {//enter i18,i8
+;-1378     if (CodeType == 30) {//enter i18,i8
 
-.process339:
+.process341:
  mov al, [CodeType]
  cmp al, 30
- jne .process341
+ jne .process343
 
-;-1376         genCode8(0xC8);
+;-1379         genCode8(0xC8);
 
  push 200
  call genCode8
  add  sp, 2
 
-;-1377         Op=getOp1();
+;-1380         Op=getOp1();
 
  call getOp1
  mov byte [Op], al
 
-;-1378         if (Op == IMM) genCode16(SymbolInt);
-
- mov al, [Op]
- cmp al, 1
- jne .process342
- push word [SymbolInt]
- call genCode16
- add  sp, 2
-
-;-1379         else numbererror();
-
- jmp .process343
-.process342:
- call numbererror
-
-;-1380         need(',');
-
-.process343:
- push 44
- call need
- add  sp, 2
-
-;-1381         Op=getOp1();
-
- call getOp1
- mov byte [Op], al
-
-;-1382         if (Op == IMM) genCode8 (SymbolInt);
+;-1381         if (Op == IMM) genCode16(SymbolInt);
 
  mov al, [Op]
  cmp al, 1
  jne .process344
  push word [SymbolInt]
- call genCode8
+ call genCode16
  add  sp, 2
 
-;-1383         else numbererror();
+;-1382         else numbererror();
 
  jmp .process345
 .process344:
  call numbererror
 
-;-1384         return;
+;-1383         need(',');
 
 .process345:
+ push 44
+ call need
+ add  sp, 2
+
+;-1384         Op=getOp1();
+
+ call getOp1
+ mov byte [Op], al
+
+;-1385         if (Op == IMM) genCode8 (SymbolInt);
+
+ mov al, [Op]
+ cmp al, 1
+ jne .process346
+ push word [SymbolInt]
+ call genCode8
+ add  sp, 2
+
+;-1386         else numbererror();
+
+ jmp .process347
+.process346:
+ call numbererror
+
+;-1387         return;
+
+.process347:
  jmp .retnprocess
 
-;-1385     }
+;-1388     }
 
 
-;-1386 
+;-1389 
 
 
-;-1387     if (CodeType==101) {//ORG nn
+;-1390     if (CodeType==101) {//ORG nn
 
-.process341:
+.process343:
  mov al, [CodeType]
  cmp al, 101
- jne .process346
+ jne .process348
 
-;-1388         if (TokeType != DIGIT) numbererror();
+;-1391         if (TokeType != DIGIT) numbererror();
 
  mov al, [TokeType]
  cmp al, 1
- je  .process347
+ je  .process349
  call numbererror
 
-;-1389         Origin=SymbolInt;
+;-1392         Origin=SymbolInt;
 
-.process347:
+.process349:
  mov ax, [SymbolInt]
  mov word [Origin], ax
 
-;-1390         return;
+;-1393         return;
 
  jmp .retnprocess
 
-;-1391     }
+;-1394     }
 
 
-;-1392 
+;-1395 
 
 
-;-1393     if (CodeType == 102) {//section, segment
+;-1396     if (CodeType == 102) {//section, segment
 
-.process346:
+.process348:
  mov al, [CodeType]
  cmp al, 102
- jne .process348
+ jne .process350
 
-;-1394         //getTokeType();//ignore .bss .text .data
+;-1397         //getTokeType();//ignore .bss .text .data
 
 
-;-1395         AbsoluteLab=0;//nasm resets erevy time
+;-1398         AbsoluteLab=0;//nasm resets erevy time
 
  mov ax, 0
  mov word [AbsoluteLab], ax
 
-;-1396         return;
+;-1399         return;
 
  jmp .retnprocess
 
-;-1397     }
+;-1400     }
 
 
-;-1398 
+;-1401 
 
 
-;-1399     if (CodeType == 110) {//absolute
+;-1402     if (CodeType == 110) {//absolute
 
-.process348:
+.process350:
  mov al, [CodeType]
  cmp al, 110
- jne .process349
+ jne .process351
 
-;-1400         if (TokeType != DIGIT) numbererror();
+;-1403         if (TokeType != DIGIT) numbererror();
 
  mov al, [TokeType]
  cmp al, 1
- je  .process350
+ je  .process352
  call numbererror
 
-;-1401         AbsoluteLab=SymbolInt;
+;-1404         AbsoluteLab=SymbolInt;
 
-.process350:
+.process352:
  mov ax, [SymbolInt]
  mov word [AbsoluteLab], ax
 
-;-1402         return;
+;-1405         return;
 
  jmp .retnprocess
 
-;-1403     }
+;-1406     }
 
 
-;-1404     if (CodeType == 111) {//name: PROC
+;-1407     if (CodeType == 111) {//name: PROC
 
-.process349:
+.process351:
  mov al, [CodeType]
  cmp al, 111
- jne .process351
+ jne .process353
 
-;-1405         if (isInProc == 0)  {
+;-1408         if (isInProc == 0)  {
 
  mov al, [isInProc]
  cmp al, 0
- jne .process352
+ jne .process354
 
-;-1406           prs("\n;entering: ");
+;-1409             prs("\n;entering: ");
 
  push process_1
  call prs
  add  sp, 2
 
-;-1407           prs(ProcName);
+;-1410             prs(ProcName);
 
  lea  ax, [ProcName]
  push ax
  call prs
  add  sp, 2
 
-;-1408           isInProc=1;
+;-1411             isInProc=1;
 
  mov ax, 1
  mov byte [isInProc], al
 
-;-1409           tmpLabelNamePtr = LabelNamePtr;
+;-1412             tmpLabelNamePtr = LabelNamePtr;
 
  mov ax, [LabelNamePtr]
  mov word [tmpLabelNamePtr], ax
 
-;-1410           tmpLabelMaxIx = LabelMaxIx;
+;-1413             tmpLabelMaxIx   = LabelMaxIx;
 
  mov ax, [LabelMaxIx]
  mov word [tmpLabelMaxIx], ax
 
-;-1411           tmpJmpNamePtr = JmpNamePtr;
+;-1414             tmpJmpNamePtr   = JmpNamePtr;
 
  mov ax, [JmpNamePtr]
  mov word [tmpJmpNamePtr], ax
 
-;-1412           tmpJmpMaxIx = JmpMaxIx;
+;-1415             tmpJmpMaxIx     = JmpMaxIx;
 
  mov ax, [JmpMaxIx]
  mov word [tmpJmpMaxIx], ax
 
-;-1413         } else error1("already in proc");
+;-1416         } else error1("already in PROC");
 
- jmp .process353
-.process352:
+ jmp .process355
+.process354:
  push process_2
  call error1
  add  sp, 2
 
-;-1414         return;
+;-1417         return;
 
-.process353:
+.process355:
  jmp .retnprocess
 
-;-1415     }
+;-1418     }
 
 
-;-1416     if (CodeType == 112) {//ENDP
+;-1419     if (CodeType == 112) {//ENDP 
 
-.process351:
+.process353:
  mov al, [CodeType]
  cmp al, 112
- jne .process354
+ jne .process356
 
-;-1417       prs("\n;leaving: ");
+;-1420         if (isInProc == 0) error1("not in PROC");
 
+ mov al, [isInProc]
+ cmp al, 0
+ jne .process357
  push process_3
+ call error1
+ add  sp, 2
+
+;-1421         prs("\n;leaving: ");
+
+.process357:
+ push process_4
  call prs
  add  sp, 2
 
-;-1418       prs(ProcName);
+;-1422         prs(ProcName);
 
  lea  ax, [ProcName]
  push ax
  call prs
  add  sp, 2
 
-;-1419       isInProc=0;
+;-1423         isInProc=0;
 
  mov ax, 0
  mov byte [isInProc], al
 
-;-1420       i = LabelMaxIx - tmpLabelMaxIx;
+;-1424         prs(". local labels :");
+
+ push process_5
+ call prs
+ add  sp, 2
+
+;-1425         i = LabelMaxIx - tmpLabelMaxIx;
 
  mov ax, [LabelMaxIx]
  sub ax, [tmpLabelMaxIx]
  mov [bp-4], ax
 
-;-1421       prs(". # local labels :");
-
- push process_4
- call prs
- add  sp, 2
-
-;-1422       printIntU(i);
+;-1426         printIntU(i);
 
  push word [bp-4]
  call printIntU
  add  sp, 2
 
-;-1423 
+;-1427         prs(", local jmp :");
+
+ push process_6
+ call prs
+ add  sp, 2
+
+;-1428         i = JmpMaxIx - tmpJmpMaxIx;
+
+ mov ax, [JmpMaxIx]
+ sub ax, [tmpJmpMaxIx]
+ mov [bp-4], ax
+
+;-1429         
 
 
-;-1424       return;
+;-1430         fixJmp();
+
+ call fixJmp
+
+;-1431         LabelNamePtr = tmpLabelNamePtr;//delete local Labels
+
+ mov ax, [tmpLabelNamePtr]
+ mov word [LabelNamePtr], ax
+
+;-1432         LabelMaxIx   = tmpLabelMaxIx;                       
+
+ mov ax, [tmpLabelMaxIx]
+ mov word [LabelMaxIx], ax
+
+;-1433         JmpNamePtr   = tmpJmpNamePtr;//delete local Jmp
+
+ mov ax, [tmpJmpNamePtr]
+ mov word [JmpNamePtr], ax
+
+;-1434         JmpMaxIx     = tmpJmpMaxIx;
+
+ mov ax, [tmpJmpMaxIx]
+ mov word [JmpMaxIx], ax
+
+;-1435         return;
 
  jmp .retnprocess
 
-;-1425     }
+;-1436     }
 
 
-;-1426     error1("Command not implemented or syntax error");
+;-1437     error1("Command not implemented or syntax error");
 
-.process354:
- push process_5
+.process356:
+ push process_7
  call error1
  add  sp, 2
 
-;-1427 }
+;-1438 }
+
+
+;-1439 
 
  .retnprocess: LEAVE
  ret
 process_0 db "pop cs not allowed",0
 process_1 db "\n;entering: ",0
-process_2 db "already in proc",0
-process_3 db "\n;leaving: ",0
-process_4 db ". # local labels :",0
-process_5 db "Command not implemented or syntax error",0
+process_2 db "already in PROC",0
+process_3 db "not in PROC",0
+process_4 db "\n;leaving: ",0
+process_5 db ". local labels :",0
+process_6 db ", local jmp :",0
+process_7 db "Command not implemented or syntax error",0
 ENDP
  
 ; missing functions: 
@@ -8561,7 +8637,7 @@ ret
 ;    3 arr sign byte     4   12 Symbol[31]
 ;    4 arr sign byte     5   36 SymbolUpper[31]
 ;    5 arr sign byte     6    3 ProcName[31]
-;    6 var sign byte     7    5 isInProc
+;    6 var sign byte     7    6 isInProc
 ;    7 var unsg word     8   24 SymbolInt
 ;    8 var unsg dwrd     9 NULL SymbolLong
 ;    9 def unsg byte    10    - INPUTBUFMAX=255
@@ -8611,7 +8687,7 @@ ret
 ;   53 var sign byte    55    8 sflag
 ;   54 var sign byte    56   15 rm
 ;   55 var sign byte    57    5 isDirect
-;   56 var sign word    58   51 disp
+;   56 var sign word    58   54 disp
 ;   57 var unsg word    59   13 imme
 ;   58 def unsg byte    61    - OPMAXLEN=5
 ;   59 arr sign byte    62    2 OpPos[5]
@@ -8620,23 +8696,23 @@ ret
 ;   62 var sign byte    65    5 PrintRA
 ;   63 def unsg byte    67    - LABELNAMESMAX=5969
 ;   64 arr sign byte    68    3 LabelNames[6000]
-;   65 ptr sign byte    69    6 LabelNamePtr
-;   66 ptr sign byte    70    1 tmpLabelNamePtr
+;   65 ptr sign byte    69    7 LabelNamePtr
+;   66 ptr sign byte    70    2 tmpLabelNamePtr
 ;   67 def unsg byte    72    - LABELADRMAX=600
 ;   68 arr unsg word    73    7 LabelAddr[600]
-;   69 var sign word    74    9 LabelMaxIx
-;   70 var sign word    75    2 tmpLabelMaxIx
+;   69 var sign word    74   10 LabelMaxIx
+;   70 var sign word    75    3 tmpLabelMaxIx
 ;   71 var sign word    76   10 LabelIx
 ;   72 def unsg byte    78    - JMPNAMESMAX=3969
 ;   73 arr sign byte    79    3 JmpNames[4000]
-;   74 ptr sign byte    80    6 JmpNamePtr
-;   75 ptr sign byte    81    1 tmpJmpNamePtr
+;   74 ptr sign byte    80    7 JmpNamePtr
+;   75 ptr sign byte    81    2 tmpJmpNamePtr
 ;   76 def unsg byte    83    - JMPMAX=200
 ;   77 arr unsg word    84    2 JmpAddr[200]
-;   78 var sign word    85    7 JmpMaxIx
-;   79 var sign word    86    1 tmpJmpMaxIx
+;   78 var sign word    85    9 JmpMaxIx
+;   79 var sign word    86    3 tmpJmpMaxIx
 ;   80 def unsg byte    88    - FILEBINMAX=20000
-;   81 arr sign byte    89    4 FileBin[20000]
+;   81 arr sign byte    89    5 FileBin[20000]
 ;   82 var unsg word    90    6 BinLen
 ;   83 ptr sign byte    92    1 arglen
 ;   84 ptr sign byte    93    4 argv
@@ -8765,7 +8841,7 @@ ret
 ;   13    2  370   checkConstSize
 ;   14    1  378   parse
 ;   15   16  414   getTokeType
-;   16    2  425   storeJmpCall
+;   16    3  425   storeJmp
 ;   17    2  436   storeLabel
 ;   18    5  448   searchLabel
 ;   19    1  461   getVariable
@@ -8800,12 +8876,12 @@ ret
 ;   48    1  719   printLine
 ;   49    7  741   prc
 ;   50    1  751   prscomment
-;   51   33  759   prs
+;   51   34  759   prs
 ;   52    3  781   printhex8a
 ;   53    2  786   printhex4
 ;   54    1  791   printhex16
 ;   55    6  796   printIntU
-;   56   27  807   error1
+;   56   28  807   error1
 ;   57   13  814   errorexit
 ;   58    2  819   notfounderror
 ;   59 NULL  820   allowederror
@@ -8824,20 +8900,20 @@ ret
 ;   72 NULL  834   internexit
 ;   73 NULL  838   main
 ;   74    1  846   getarg
-;   75    1  880   fixJmpCall
-;   76    2  911   epilog
-;   77    2  959   end1
-;   78    1  969   getCodes
-;   79    1  974   gen66h
-;   80    8  976   genCode2
-;   81   13  980   genCodeW
-;   82   37  984   genCode8
-;   83   18  995   genCode16
-;   84    1  999   genCode32
-;   85   13 1003   writeEA
-;   86    4 1045   genImmediate
-;   87    1 1052   process
-;   88 NULL 1427   LastFunctionByt
+;   75    2  880   fixJmp
+;   76    2  915   epilog
+;   77    2  963   end1
+;   78    1  973   getCodes
+;   79    1  978   gen66h
+;   80    8  980   genCode2
+;   81   13  984   genCodeW
+;   82   37  988   genCode8
+;   83   18  999   genCode16
+;   84    1 1003   genCode32
+;   85   13 1007   writeEA
+;   86    4 1049   genImmediate
+;   87    1 1056   process
+;   88 NULL 1439   LastFunctionByt
 
 ;    #  addr name   list of CALLs
 
@@ -9046,206 +9122,210 @@ ret
 ;  202  1634 errorexit
 ;  203  1644 getarg
 ;  204  1651 parse
-;  205  1657 fixJmpCall
-;  206  1668 epilog
-;  207  1675 end1
-;  208  1680 cputs
-;  209  1686 cputs
-;  210  1692 exitR
-;  211  1698 toupper
-;  212  1706 strcpy
-;  213  1713 strcat1
-;  214  1721 strcpy
-;  215  1728 strcat1
-;  216  1736 strcpy
-;  217  1743 strcat1
-;  218  1751 openR
-;  219  1757 cputs
-;  220  1763 cputs
-;  221  1769 exitR
-;  222  1775 creatR
-;  223  1782 cputs
-;  224  1788 cputs
-;  225  1794 exitR
-;  226  1800 creatR
-;  227  1807 cputs
-;  228  1813 cputs
-;  229  1819 exitR
-;  230  1825 prs
-;  231  1829 prs
-;  232  1833 prs
-;  233  1837 prs
-;  234  1841 prs
-;  235  1845 prs
-;  236  1849 prs
-;  237  1853 prs
-;  238  1857 prs
-;  239  1861 prs
-;  240  1865 printIntU
-;  241  1875 strcpy
-;  242  1882 strlen
-;  243  1889 searchLabel
-;  244  1901 error1
-;  245  1908 prs
-;  246  1912 printIntU
-;  247  1922 prs
-;  248  1926 prs
-;  249  1930 prs
-;  250  1934 prs
-;  251  1938 prs
-;  252  1942 prs
-;  253  1946 printIntU
-;  254  1956 prs
-;  255  1960 fputcR
-;  256  1967 prs
-;  257  1971 printIntU
-;  258  1981 prs
-;  259  1985 fcloseR
-;  260  1993 fcloseR
-;  261  2001 fcloseR
-;  262  2009 exitR
-;  263  2015 genCode8
-;  264  2024 genCode8
-;  265  2033 genCode8
-;  266  2042 errorexit
-;  267  2052 genCode8
-;  268  2061 genCode8
-;  269  2070 genCode16
-;  270  2080 genCode16
-;  271  2090 genCode8
-;  272  2099 genCode8
-;  273  2108 genCode16
-;  274  2118 genCode32
-;  275  2128 genCode16
-;  276  2138 genCode8
-;  277  2147 getTokeType
-;  278  2159 getCodeSize
-;  279  2171 getCodes
-;  280  2180 genCode8
-;  281  2189 getOpL
-;  282  2196 checkOpL
-;  283  2205 genCode2
-;  284  2214 getTokeType
-;  285  2226 implerror
-;  286  2236 genCodeW
-;  287  2245 writeEA
-;  288  2253 check2Ops
-;  289  2263 reg16error
-;  290  2274 addrerror
-;  291  2284 genCode8
-;  292  2293 genCode8
-;  293  2302 writeEA
-;  294  2310 check2Ops
-;  295  2320 setsflag
-;  296  2329 genCodeW
-;  297  2338 genImmediate
-;  298  2351 genCodeW
-;  299  2360 writeEA
-;  300  2368 genCode8
-;  301  2377 genImmediate
-;  302  2390 genCodeW
-;  303  2399 writeEA
-;  304  2407 genCodeW
-;  305  2416 writeEA
-;  306  2424 syntaxerror
-;  307  2436 check2Ops
-;  308  2446 notfounderror
-;  309  2460 genCode2
-;  310  2469 genImmediate
-;  311  2482 genCodeW
-;  312  2491 writeEA
-;  313  2499 genImmediate
-;  314  2512 regmemerror
-;  315  2524 ChangeDirection
-;  316  2540 reg16error
-;  317  2551 genCode2
-;  318  2560 writeEA
-;  319  2568 genCodeW
-;  320  2577 genCode16
-;  321  2587 genCodeW
-;  322  2596 genCode16
-;  323  2606 genCodeW
-;  324  2615 writeEA
-;  325  2623 ChangeDirection
-;  326  2639 genCodeW
-;  327  2648 writeEA
-;  328  2656 syntaxerror
-;  329  2668 searchLabel
-;  330  2680 checkConstSize
-;  331  2695 genCode2
-;  332  2704 genCode8
-;  333  2713 genCode8
-;  334  2722 genCode2
-;  335  2731 genCode16
-;  336  2741 genCode8
-;  337  2750 genCode2
-;  338  2759 genCode16
-;  339  2769 storeJmpCall
-;  340  2782 searchLabel
-;  341  2794 checkConstSize
-;  342  2809 genCode8
-;  343  2818 genCode8
-;  344  2827 genCode8
-;  345  2836 genCode16
-;  346  2846 genCode8
-;  347  2855 genCode16
-;  348  2865 genCode8
-;  349  2874 genCode16
-;  350  2884 storeJmpCall
-;  351  2897 genCode8
-;  352  2906 genCode16
-;  353  2916 genCode8
-;  354  2925 getOpL
-;  355  2932 setsflag
-;  356  2941 genCode2
-;  357  2950 genCode8
-;  358  2959 genCode16
-;  359  2969 genCode8
-;  360  2978 genCode16
-;  361  2988 genCode8
-;  362  2997 genCode8
-;  363  3006 genCode8
-;  364  3015 error1
-;  365  3022 genCode8
-;  366  3031 genCode8
-;  367  3040 checkOpL
-;  368  3049 reg16error
-;  369  3060 genCode2
-;  370  3069 genCode8
-;  371  3078 writeEA
-;  372  3086 syntaxerror
-;  373  3098 check2Ops
-;  374  3108 genCodeW
-;  375  3117 writeEA
-;  376  3125 genCodeW
-;  377  3134 writeEA
-;  378  3142 genCode8
-;  379  3151 genCodeW
-;  380  3160 writeEA
-;  381  3168 genCode8
-;  382  3177 genCode8
-;  383  3186 genCode8
-;  384  3195 getOp1
-;  385  3202 genCode16
-;  386  3212 numbererror
-;  387  3224 need
-;  388  3229 getOp1
-;  389  3236 genCode8
-;  390  3245 numbererror
-;  391  3257 numbererror
-;  392  3269 numbererror
-;  393  3281 prs
-;  394  3285 prs
-;  395  3289 error1
-;  396  3296 prs
-;  397  3300 prs
-;  398  3304 prs
-;  399  3308 printIntU
-;  400  3318 error1
-;Input: AS.C, List: AS.S,  Lines: 1428
+;  205  1657 fixJmp
+;  206  1664 epilog
+;  207  1671 end1
+;  208  1676 cputs
+;  209  1682 cputs
+;  210  1688 exitR
+;  211  1694 toupper
+;  212  1702 strcpy
+;  213  1709 strcat1
+;  214  1717 strcpy
+;  215  1724 strcat1
+;  216  1732 strcpy
+;  217  1739 strcat1
+;  218  1747 openR
+;  219  1753 cputs
+;  220  1759 cputs
+;  221  1765 exitR
+;  222  1771 creatR
+;  223  1778 cputs
+;  224  1784 cputs
+;  225  1790 exitR
+;  226  1796 creatR
+;  227  1803 cputs
+;  228  1809 cputs
+;  229  1815 exitR
+;  230  1821 prs
+;  231  1825 prs
+;  232  1829 prs
+;  233  1833 prs
+;  234  1837 prs
+;  235  1841 prs
+;  236  1845 prs
+;  237  1849 prs
+;  238  1853 prs
+;  239  1857 prs
+;  240  1861 printIntU
+;  241  1871 strcpy
+;  242  1878 strlen
+;  243  1885 searchLabel
+;  244  1897 error1
+;  245  1904 prs
+;  246  1908 printIntU
+;  247  1918 prs
+;  248  1922 prs
+;  249  1926 prs
+;  250  1930 prs
+;  251  1934 prs
+;  252  1938 prs
+;  253  1942 printIntU
+;  254  1952 prs
+;  255  1956 fputcR
+;  256  1963 prs
+;  257  1967 printIntU
+;  258  1977 prs
+;  259  1981 fcloseR
+;  260  1989 fcloseR
+;  261  1997 fcloseR
+;  262  2005 exitR
+;  263  2011 genCode8
+;  264  2020 genCode8
+;  265  2029 genCode8
+;  266  2038 errorexit
+;  267  2048 genCode8
+;  268  2057 genCode8
+;  269  2066 genCode16
+;  270  2076 genCode16
+;  271  2086 genCode8
+;  272  2095 genCode8
+;  273  2104 genCode16
+;  274  2114 genCode32
+;  275  2124 genCode16
+;  276  2134 genCode8
+;  277  2143 getTokeType
+;  278  2155 getCodeSize
+;  279  2167 getCodes
+;  280  2176 genCode8
+;  281  2185 getOpL
+;  282  2192 checkOpL
+;  283  2201 genCode2
+;  284  2210 getTokeType
+;  285  2222 implerror
+;  286  2232 genCodeW
+;  287  2241 writeEA
+;  288  2249 check2Ops
+;  289  2259 reg16error
+;  290  2270 addrerror
+;  291  2280 genCode8
+;  292  2289 genCode8
+;  293  2298 writeEA
+;  294  2306 check2Ops
+;  295  2316 setsflag
+;  296  2325 genCodeW
+;  297  2334 genImmediate
+;  298  2347 genCodeW
+;  299  2356 writeEA
+;  300  2364 genCode8
+;  301  2373 genImmediate
+;  302  2386 genCodeW
+;  303  2395 writeEA
+;  304  2403 genCodeW
+;  305  2412 writeEA
+;  306  2420 syntaxerror
+;  307  2432 check2Ops
+;  308  2442 notfounderror
+;  309  2456 genCode2
+;  310  2465 genImmediate
+;  311  2478 genCodeW
+;  312  2487 writeEA
+;  313  2495 genImmediate
+;  314  2508 regmemerror
+;  315  2520 ChangeDirection
+;  316  2536 reg16error
+;  317  2547 genCode2
+;  318  2556 writeEA
+;  319  2564 genCodeW
+;  320  2573 genCode16
+;  321  2583 genCodeW
+;  322  2592 genCode16
+;  323  2602 genCodeW
+;  324  2611 writeEA
+;  325  2619 ChangeDirection
+;  326  2635 genCodeW
+;  327  2644 writeEA
+;  328  2652 syntaxerror
+;  329  2664 searchLabel
+;  330  2676 checkConstSize
+;  331  2691 genCode2
+;  332  2700 genCode8
+;  333  2709 genCode8
+;  334  2718 genCode2
+;  335  2727 genCode16
+;  336  2737 genCode8
+;  337  2746 genCode2
+;  338  2755 storeJmp
+;  339  2764 genCode16
+;  340  2774 searchLabel
+;  341  2786 checkConstSize
+;  342  2801 genCode8
+;  343  2810 genCode8
+;  344  2819 genCode8
+;  345  2828 genCode16
+;  346  2838 genCode8
+;  347  2847 genCode16
+;  348  2857 genCode8
+;  349  2866 storeJmp
+;  350  2875 genCode16
+;  351  2885 genCode8
+;  352  2894 genCode16
+;  353  2904 genCode8
+;  354  2913 getOpL
+;  355  2920 setsflag
+;  356  2929 genCode2
+;  357  2938 genCode8
+;  358  2947 genCode16
+;  359  2957 genCode8
+;  360  2966 genCode16
+;  361  2976 genCode8
+;  362  2985 storeJmp
+;  363  2994 genCode8
+;  364  3003 genCode8
+;  365  3012 error1
+;  366  3019 genCode8
+;  367  3028 genCode8
+;  368  3037 checkOpL
+;  369  3046 reg16error
+;  370  3057 genCode2
+;  371  3066 genCode8
+;  372  3075 writeEA
+;  373  3083 syntaxerror
+;  374  3095 check2Ops
+;  375  3105 genCodeW
+;  376  3114 writeEA
+;  377  3122 genCodeW
+;  378  3131 writeEA
+;  379  3139 genCode8
+;  380  3148 genCodeW
+;  381  3157 writeEA
+;  382  3165 genCode8
+;  383  3174 genCode8
+;  384  3183 genCode8
+;  385  3192 getOp1
+;  386  3199 genCode16
+;  387  3209 numbererror
+;  388  3221 need
+;  389  3226 getOp1
+;  390  3233 genCode8
+;  391  3242 numbererror
+;  392  3254 numbererror
+;  393  3266 numbererror
+;  394  3278 prs
+;  395  3282 prs
+;  396  3286 error1
+;  397  3293 error1
+;  398  3300 prs
+;  399  3304 prs
+;  400  3308 prs
+;  401  3312 printIntU
+;  402  3322 prs
+;  403  3326 fixJmp
+;  404  3333 error1
+;Input: AS.C, List: AS.S,  Lines: 1440
 ;Glob. variables:  189 max.:  200
 ;Functions      :   89 max.:  300
-;Calls          :  401 max.: 2000, NameField: 3325 max.:    65535
+;Calls          :  405 max.: 2000, NameField: 3340 max.:    65535
 ;Code until     :21667 max.: 30000, free: 8333
 ;Data (HeapEnd) :62154, resting stacksize:  3381 *** Warning *** Stack too small
 ;Max. Const in 'testReg' :  658 max. 3000, free: 2342

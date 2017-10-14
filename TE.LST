@@ -259,12 +259,14 @@
 026C A1 0F 10       mov ax, [zwei]      ;A1 0F 10
 026F A0 14 04       mov al, [Einsd]     ;A0 14 04
 0272 A0 18 04       mov al, [dreiw]     ;A0 18 04
-0275 68 06 26       push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+0275 68 47 04       push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 0278                
 ;entering: name
 0278                name: PROC
 0278 90             nop
-;leaving: name. # local labels :0. local strings to push :0
+;leaving: name. local labels :0, local jmp :
+;END open jmp: 6
+;***** next line ERROR: Label not found, Symbol: main
 0279                endp
 0279                
 0279 90             nop
@@ -272,23 +274,22 @@
 027C                
 ;entering: main
 027C                main: PROC
-;***** next line ERROR: Command not implemented or syntax error, Symbol: db
-;***** next line ERROR: extra char ignored, Symbol: db
-027C                text1: db "T"
-027C C8 06 00 00    ENTER  6,0
-0280 E9 00 00      Rjmp L9              ;E9 04 00
-0283 E8 00 00      Rcall L9             ;E8 01 00
-0286 90             nop                 ;90
-0287                L9:
-0287 68 7C 03       push text1
-028A 68 06 26       push text2
-028D C9             leave
-028E C3             ret
-028F 45             text2 db "E"
-;leaving: main. # local labels :3. local strings to push :0
-0290                ENDP
-0290                
-0290 90             L10:nop
+027C 54             text1 db "T"
+027D C8 06 00 00    ENTER  6,0
+0281 E9 00 00      Rjmp L9              ;E9 04 00
+0284 E8 00 00      Rcall L9             ;E8 01 00
+0287 90             nop                 ;90
+0288                L9:
+0288 68 7C 03       push text1
+028B 68 47 04       push text2
+028E C9             leave
+028F C3             ret
+0290 45             text2 db "E"
+;leaving: main. local labels :3, local jmp :
+;END open jmp: 8
+0291                ENDP
 0291                
-;END open jmp/call: 8
- Errors: 2 ***ERROR*** , Out: TE.LST, TE.COM= 657 bytes. Labels: 21. 
+0291 90             L10:nop
+0292                
+;END open jmp: 6
+ Errors: 1 ***ERROR*** , Out: TE.LST, TE.COM= 658 bytes. Labels: 18. 
