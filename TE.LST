@@ -1,33 +1,295 @@
 ;AS.C V0.2, Source: TE.S, Output: TE.LST, TE.COM
 
-0000                ;BAS.BAT, AS TE, NAS.BAT
-0000                org 256     
-0000 E9 00 00      Rjmp main            ;E9 01 00
-0003 08             VA db 8       
-0004                
+0000                ;inc 0  dec 1  //BAS.BAT, AS TE, NAS.BAT
+0000                ;1=IMM, 2=REG, 3=ADR, 4=MEM
+0000                org 256            ;NASM
+0000 E9 00 00      Rjmp main
+0003 08 00          VA dw 8            ;08 00
+0005 41 42 06       VB db "AB",6       ;41 42 06
+0008 48             dec ax             ;48
+0009 49             dec word cx        ;49
+000A 40             inc ax             ;40
+000B 47             inc di             ;47
+000C FE 07          inc byte [bx]      ;FE 07
+000E FE 0F          dec byte [bx]      ;FE 0F
+0010 FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0013 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0016 F6 D1          not cl             ;F6 D1
+0018 FE C9          dec cl             ;FE C9
+001A 66 49          dec ecx            ;66 49
+001C FE 0F          dec byte [bx]      ;FE 0F
+001E FE 4F 03       dec byte [bx+3]    ;FE 4F 03
+0021 FE 8F 02 01    dec byte [bx+258]  ;FE 8F 02 01
+0025 FE 4F FC       dec byte [bx-4]    ;FE 4F FC
+0028                ;dec word [cx];inv effective adr
+0028                ;inc word  VA ;inv comb opcode+operands
+0028 FE 06 03 01    inc byte [VA]      ;FE 06 04 00
+002C FF 06 05 01    inc word [VB]      ;FF 06 06 00
+0030 FF 06 09 01    inc word [VB+4]    ;FF 06 0A 00
+0034 FE 46 00       inc byte [bp]      ;FE 46 00  special case
+0037 FE 46 04       inc byte [bp+4]    ;FE 46 04
+003A FE 86 02 01    inc byte [bp+258]  ;FE 86 02 01
+003E FE 81 02 01    inc byte [bx+di+258];FE81 02 01
+0042 FE 46 FC       inc byte [bp-4]    ;FE 46 FC
+0045 FE 01          inc byte [bx+di]   ;FE 01
+0047 FE 41 FC       inc byte [bx+di-4] ;FE 41 FC
+004A F7 D1          not cx              ;F7 D1
+004C F7 D2          not DX              ;F7 D2
+004E F6 97 02 01    not byte [bx+258]   ;F6 97 02 01
+0052 F6 11          not byte [bx+di]    ;F6 11
+0054 F6 51 FC       not byte [bx+di-4]  ;F6 51 FC
+0057 F6 16 03 01    not byte [VA]       ;F6 16 01 00
+005B F7 16 03 01    not word [VA]       ;F7 16 01 00
+005F F7 D9          neg cx              ;F7 D9
+0061 F6 9F 02 01    neg byte [bx+258]   ;F6 9F 02 01
+0065 F6 19          neg byte [bx+di]    ;F6 19
+0067 F6 59 FC       neg byte [bx+di-4]  ;F6 59 FC
+006A F6 1E 03 01    neg byte [VA]       ;F6 1E 02 00
+006E F7 1E 03 01    neg word [VA]       ;F7 1E 02 00
+0072 F6 E0          mul al              ;F6 E0
+0074 F7 E0          mul ax              ;F7 E0
+0076 F7 E1          mul cx              ;F7 E1
+0078 F6 A7 02 01    mul byte [bx+258]   ;F6 A7 02 01
+007C F6 21          mul byte [bx+di]    ;F6 21
+007E F6 61 FC       mul byte [bx+di-4]  ;F6 61 FC
+0081 F6 26 03 01    mul byte [VA]       ;F6 26 02 00
+0085 F7 26 03 01    mul word [VA]       ;F7 26 02 00
+0089 F6 F0          div al              ;F6 F0
+008B F7 F0          div ax              ;F7 F0
+008D F7 F1          div cx              ;F7 F1
+008F F6 B7 02 01    div byte [bx+258]   ;F6 B7 02 01
+0093 F6 31          div byte [bx+di]    ;F6 31
+0095 F6 71 FC       div byte [bx+di-4]  ;F6 71 FC
+0098 F6 36 03 01    div byte [VA]       ;F6 36 02 00
+009C F7 36 03 01    div word [VA]       ;F7 36 02 00
+00A0 F6 F8          idiv al             ;F6 F8
+00A2 F7 F8          idiv ax             ;F7 F8
+00A4 F7 F9          idiv cx             ;F7 F9
+00A6 F6 BF 02 01    idiv byte [bx+258]  ;F6 BF 02 01
+00AA F6 39          idiv byte [bx+di]   ;F6 39
+00AC F6 79 FC       idiv byte [bx+di-4] ;F6 79 FC
+00AF F6 3E 03 01    idiv byte [VA]      ;F6 3E 02 00
+00B3 F7 3E 03 01    idiv word [VA]      ;F7 3E 02 00
+00B7                ;acc, rm
+00B7 F6 E8          imul al             ;F6 E8
+00B9 F7 E8          imul ax             ;F7 E8
+00BB F7 E9          imul cx             ;F7 E9
+00BD F6 AF 02 01    imul byte [bx+258]  ;F6 AF 02 01
+00C1 F6 29          imul byte [bx+di]   ;F6 29
+00C3 F6 69 FC       imul byte [bx+di-4] ;F6 69 FC
+00C6 F6 2E 03 01    imul byte [VA]      ;F6 2E 01 00
+00CA F7 2E 03 01    imul word [VA]      ;F7 2E 01 00
+00CE                
+00CE C4 01          les ax,  [bx+di]    ;C4 01
+00D0 0F B2 0E 03 01 lss cx, [VA]        ;0F B2 0E [0400]
+00D5 C4 49 FC       les cx, [bx+di-4]   ;C4 49 FC
+00D8 0F B5 01       lgs ax, [bx+di]     ;0F B5 01
+00DB 0F B5 81 03 01 lgs ax, [VA+bx+di]  ;0F B5 81 01 00
+00E0                ;mov al, [bp-4]     ;8A 46 FC
+00E0                ;mov al, [VB+bx]    ;8A 87 06 00
+00E0                
+00E0 04 04          add al, 4           ;04 04
+00E2                ;add al, 259      ;;;04 03 bounds
+00E2 83 C0 04       add ax, 4           ;83 C0 04
+00E5 05 03 01       add ax, 259         ;05 03 01
+00E8 0C 04          or  al, 4           ;0C 04
+00EA 15 03 01       adc ax, 259         ;15 03 01
+00ED 80 C1 04       add cl, 4           ;80 C1 04
+00F0 83 C1 04       add cx, 4           ;83 C1 04
+00F3 81 C1 03 01    add cx, 259         ;81 C1 03 01
+00F7 80 C9 04       or  cl, 4           ;80 C9 04
+00FA 80 C9 FF       or  cl, 255         ;80 C9 FF
+00FD 83 C9 04       or  cx, 4           ;83 C9 04
+0100 83 C9 7F       or  cx, 127         ;83 C9 7F
+0103 81 C9 80 00    or  cx, 128         ;81 C9 80 00
+0107 81 C9 FF 00    or  cx, 255         ;81 C9 FF 00
+010B 81 C9 03 01    or  cx, 259         ;81 C9 03 01
+010F 83 C4 02       add  sp, 2          ;83 C4 02
+0112 80 06 03 01 04 add byte [VA], 4    ;80 06 02 01 04
+0117 83 06 03 01 04 add word [VA], 4    ;83 06 02 01 04
+011C 83 06 06 01 04 add word [VA+3],4   ;83 06 05 01 04
+0121                ;add word [VA+di]
+0121 02 41 FC       add al, [bx+di-4]   ;02 41 FC
+0124 01 C3          add bx, ax          ;01 C3
+0126 01 D8          add ax, bx          ;01 D8
+0128 02 07          add al, [bx]        ;02 07
+012A 03 07          add ax, [bx]        ;03 07
+012C 03 0F          add cx, [bx]        ;03 0F
+012E 01 0F          add [bx], cx        ;01 0F
+0130 00 00          add [bx+si], al     ;00 00
+0132 00 01          add [bx+di], al     ;00 01
+0134 01 01          add [bx+di], ax     ;01 01
+0136 02 01          add al, [bx+di]     ;02 01
+0138 03 01          add ax, [bx+di]     ;03 01
+013A                
+013A B0 00          mov al, 0           ;B0 00
+013C B0 03          mov al, 3           ;B0 03
+013E B0 7F          mov al, 127         ;B0 7F
+0140 B0 FF          mov al, 255         ;B0 FF
+0142 B8 00 00       mov ax, 0           ;B8 00 00
+0145 B8 03 01       mov ax, 259         ;B8 03 01
+0148 B8 FF FF       mov ax, 65535       ;B8 FF FF
+014B B3 03          mov bl, 3           ;B3 03
+014D BB 03 00       mov bx, 3           ;BB 03 00
+0150 BB 03 01       mov bx, 259         ;BB 03 01
+0153 C6 06 03 01 03 mov byte [VA], 3    ;C6 06 02 00 03
+0158 C7 06 03 01 03 mov word [VA], 3    ;C7 06 02 00 03 00
+015E C7 06 03 01 03 mov word [VA], 259  ;C7 06 02 00 03 01
+0164                
+0164 8C C0          mov ax, es          ;8C C0
+0166 8C C8          mov ax, cs          ;8C C8
+0168 8C D0          mov ax, ss          ;8C D0
+016A 8C D8          mov ax, ds          ;8C D8
+016C 8C E0          mov ax, fs          ;8C E0
+016E 8C E8          mov ax, gs          ;8C E8
+0170 8C C1          mov cx, es          ;8C C1
+0172 8C C2          mov dx, es          ;8C C2
+0174 8C D3          mov bx, ss          ;8C D3
+0176 8C D4          mov sp, ss          ;8C D4
+0178 8C E5          mov bp, fs          ;8C E5
+017A 8C E6          mov si, fs          ;8C E6
+017C 8C E7          mov di, fs          ;8C E7
+017E 8C 41 FC       mov [bx+di-4], es   ;8C 41 FC
+0181 8C 06 03 01    mov [VA], es        ;8C 06 02 00
+0185 8C 56 FC       mov [bp-4], ss      ;8C 56 FC
+0188 8C 08          mov word [bx+si],cs ;8C 08
+018A 8E C0          mov es, ax          ;8E C0
+018C 8E D0          mov ss, ax          ;8E D0
+018E 8E 41 FC       mov es, [bx+di-4]   ;8E 41 FC
+0191 8E 06 03 01    mov es, [VA]        ;8E 06 02 00
+0195 A0 03 01       mov al, [VA]        ;A0 02 00
+0198 A0 06 01       mov al, [VA+3]      ;A0 05 00
+019B A1 03 01       mov ax, [VA]        ;A1 02 00
+019E A2 03 01       mov [VA], al        ;A2 02 00
+01A1 A3 03 01       mov [VA], ax        ;A3 02 00
+01A4 B0 03          mov al, VA          ;B0 02 00
+01A6 B8 03 01       mov ax, VA          ;B8 02 00
+01A9 C7 06 03 01 03 mov word[VA], VA    ;C7 06 02 00 02 00
+01AF 88 00          mov [bx+si], al     ;88 00
+01B1 88 08          mov [bx+si], cl     ;88 08
+01B3 88 C8          mov al, cl          ;88 C8
+01B5 88 C1          mov cl, al          ;88 C1
+01B7 8A 00          mov al, [bx+si]     ;8A 00
+01B9 8A 41 FC       mov al, [bx+di-4]   ;8A 41 FC
+01BC 8A 08          mov cl, [bx+si]     ;8A 08
+01BE 8A 80 03 01    mov al, [VA+bx+si]  ;8A 80 02 00
+01C2 8A 80 FF 00    mov al, [VA+bx+si-4];8A 80 FE FF
+01C6                
+01C6 50             push ax             ;50
+01C7 57             push di             ;57
+01C8 FF 36 03 01    push word [VA]      ;FF 36 02 00
+01CC FF 36 05 01    push word [VB]      ;FF 36 04 00
+01D0 68 03 01       push VA             ;68 03(01 ORG incl.)
+01D3 68 05 01       push VB             ;68 05 01
+01D6                
+01D6 58             pop ax              ;58
+01D7 5F             pop di              ;5F
+01D8 8F 06 03 01    pop word [VA]       ;8F 06 02 00
+01DC 06             push es             ;06
+01DD 0E             push cs             ;0E
+01DE 16             push ss             ;16
+01DF 1E             push ds             ;1E
+01E0 0F A0          push fs             ;0F A0
+01E2 0F A8          push gs             ;0F A8
+01E4 07             pop es              ;07
+01E5 17             pop ss              ;17
+01E6 1F             pop ds              ;1F
+01E7 0F A1          pop fs              ;0F A1
+01E9 0F A9          pop gs              ;0F A9
+01EB 6A 00          push 0              ;6A 00
+01ED 6A 7F          push 127            ;6A 7F
+01EF 68 80 00       push 128            ;68 80 00
+01F2 68 FF 00       push 255            ;68 FF 00
+01F5 68 00 01       push 256            ;68 00 01
+01F8 68 FF 7F       push 32767          ;68 FF 7F
+01FB 68 00 80       push 32768          ;68 00 80
+01FE 68 FF FF       push 65535          ;68 FF FF
+0201 CD 21          L2: int 33          ;CD 21
+0203 CD 03          int 3               ;CD 03
+0205 CC             int3                ;CC
+0206 CE             into                ;CE
+0207 C8 00 00 00    enter 0,0           ;C8 0000 00
+020B C8 00 01 00    enter 256,0         ;C8 0001 00
+020F C8 00 80 FF    enter 32768,255     ;C8 0080 FF
+0213 C8 D2 04 10    ENTER 1234,16       ;C8 D204 10
+0217                L1:
+0217 70 FE          jo L1               ;70 FE
+0219 7F FC          JG L1               ;7F FC
+021B 72 E4          jc L2               ;72 E4
+021D 0F 82 E4 FD    jc VB               ;0F 82 EA FD
+0221 0F 81 DE FD    jno VA              ;0F 81 E4 FD
+0225 0F 82 00 00   rjc L5               ;0F 82 04 00
+0229 0F 80 00 00   rjo L6               ;0F 80 01 00
+022D 90             L5:  nop            ;90
+022E 0F 82 00 00   rL6:  jc L7          ;0F 82 02 00
+0232 31 C0          xor ax, ax          ;31 C0
+0234                L7:
+0234 EB E1          jmp L1              ;EB E1
+0236 E9 CA FD       jmp VA              ;E9 D0 FD
+0239 E8 DB FF       call L1             ;E8 DB FF
+023C E8 C4 FD       call VA             ;E8 CA FD
+023F E9 00 00      Rjmp L8              ;E9 04 00
+0242 E8 00 00      Rcall L8             ;E8 01 00
+0245 90             nop                 ;90
+0246                L8:
+0246 90             nop                 ;90
+0247 D0 CB          ror bl, 1           ;D0 CB
+0249 D1 CB          ror bx, 1           ;D1 CB
+024B D1 E3          shl bx, 1           ;D1 E3
+024D D1 C0          rol ax, 1           ;D1 C0
+024F D2 E0          shl al, cl          ;D2 E0
+0251 D3 E0          shl ax, cl          ;D3 E0
+0253 C0 E0 03       sal al, 3           ;C0 E0 03
+0256 C1 E3 03       sal bx, 3           ;C1 E3 03
+0259 C0 2E 03 01 03 shr byte [VA], 3    ;C0 2E 02 00 03
+025E C1 2E 03 01 03 shr word [VA], 3    ;C1 2E 02 00 03
+0263                section .bss
+0263                absolute 4096
+0263                eins resb 1
+0263                acht resd 2
+0263                sechs resw 3
+0263                zwei resb 2
+0263                absolute 1044
+0263                Einsd resd 1
+0263                dreiw resw 3
+0263                section .text
+0263 A0 00 10       mov al, [eins]      ;A0 00 10
+0266 A0 01 10       mov al, [acht]      ;A0 01 10
+0269 A0 09 10       mov al, [sechs]     ;A0 09 10
+026C A1 0F 10       mov ax, [zwei]      ;A1 0F 10
+026F A0 14 04       mov al, [Einsd]     ;A0 14 04
+0272 A0 18 04       mov al, [dreiw]     ;A0 18 04
+0275                ;push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+0275                
+;entering: name
+0275                name: PROC
+0275 90             nop
+;leaving: name. loc labels:0,loc jmp forward:0
+;jmp to fix:6
+;***** next line ERROR: Label not found, Symbol: main
+0276                endp
+0276                
+0276 90             nop
+0277 53 00          getarg_1 db "S",0
+0279                
 ;entering: main
-0004                main: PROC
-0004 54             text1 db "T"
-0005 E9 00 00      Rjmp L9              ;E9 04 00
-0008 E8 00 00      Rcall L9             ;E8 01 00
-000B 90             nop
-000C                L9:  push disp: 260
-000C 68 04 01       push text1          ;68 04 00 push disp: 1095
-000F 68 47 04       push text2          ;68 14 00     
-0012 C9             leave
-0013 C3             ret
-0014                
-0014 45             text2 db "E"
-;leaving: main. local labels :3, local jmp :
-;END open jmp: 3 Symbol: main 0001, c: 00,  Symbol: L9 0006, c: 00,  Symbol: L9 0009, c: 00, 
-0015                ENDP
-0015                L10:
-0015 90             nop
-0016                
-;END open jmp: 1 Symbol: main 0001, c: 00, 
- Errors: 0, Out: TE.LST, TE.COM= 22 bytes. Labels: 3, code:
- E9 05 00 08 54 E9 08 00 E8 05 00 90 68 04 01 68 47 04 C9 C3 45 90  
- 
- 
- LabelNamePtr:30566 &LabelNames:30554size: 12. >>VA main L10 << 
-VA 0103, main 0104, L10 0115, 
+0279                main: PROC
+0279 54             text1 db "T"
+027A C8 06 00 00    ENTER  6,0
+027E E9 00 00      Rjmp L9              ;E9 04 00
+0281 E8 00 00      Rcall L9             ;E8 01 00
+0284 90             nop                 ;90
+0285                L9:
+0285 68 AA AA      Apush text2
+0288 68 AA AA      Apush eins 
+028B C9             leave
+028C C3             ret
+028D 45             text2 db "E"
+;leaving: main. loc labels:3,loc jmp forward:4
+;jmp to fix:10
+028E                ENDP
+028E 90             L10:nop
+028F                
+;jmp to fix:6
+ Errors: 1 ***ERROR*** , Out: TE.LST, TE.COM= 655 bytes. Labels: 18, code:
+ E9 76 02 08 00 41 42 06 48 49 40 47 FE 07 FE 0F FE 4F 03 FE 4F FC F6 D1 FE C9 66 49 FE 0F FE 4F 03 FE 8F 02 01 FE 4F FC FE 06 03 01 FF 06 05 01 FF 06 09 01 FE 46 00 FE 46 04 FE 86 02 01 FE 81 02 01 FE 46 FC FE 01 FE 41 FC F7 D1 F7 D2 F6 97 02 01 F6 11 F6 51 FC F6 16 03 01 F7 16 03 01 F7 D9 F6 9F 02 01 F6 19 F6 59 FC F6 1E 03 01 F7 1E 03 01 F6 E0 F7 E0 F7 E1 F6 A7 02 01 F6 21 F6 61 FC F6 26 03 01 F7 26 03 01 F6 F0 F7 F0 F7 F1 F6 B7 02 01 F6 31 F6 71 FC F6 36 03 01 F7 36 03 01 F6 F8 F7 F8 F7 F9 F6 BF 02 01 F6 39 F6 79 FC F6 3E 03 01 F7 3E 03 01 F6 E8 F7 E8 F7 E9 F6 AF 02 01 F6 29 F6 69 FC F6 2E 03 01 F7 2E 03 01 C4 01 0F B2 0E 03 01 C4 49 FC 0F B5 01 0F B5 81 03 01 04 04 83 C0 04 05 03 01 0C 04 15 03 01 80 C1 04 83 C1 04 81 C1 03 01 80 C9 04 80 C9 FF 83 C9 04 83 C9 7F 81 C9 80 00 81 C9 FF 00 81 C9 03 01 83 C4 02 80 06 03 01 04 83 06 03 01 04 83 06 06 01 04 02 41 FC 01 C3 01 D8 02 07 03 07 03 0F 01 0F 00 00 00 01 01 01 02 01 03 01 B0 00 B0 03 B0 7F B0 FF B8 00 00 B8 03 01 B8 FF FF B3 03 BB 03 00 BB 03 01 C6 06 03 01 03 C7 06 03 01 03 00 C7 06 03 01 03 01 8C C0 8C C8 8C D0 8C D8 8C E0 8C E8 8C C1 8C C2 8C D3 8C D4 8C E5 8C E6 8C E7 8C 41 FC 8C 06 03 01 8C 56 FC 8C 08 8E C0 8E D0 8E 41 FC 8E 06 03 01 A0 03 01 A0 06 01 A1 03 01 A2 03 01 A3 03 01 B0 03 B8 03 01 C7 06 03 01 03 01 88 00 88 08 88 C8 88 C1 8A 00 8A 41 FC 8A 08 8A 80 03 01 8A 80 FF 00 50 57 FF 36 03 01 FF 36 05 01 68 03 01 68 05 01 58 5F 8F 06 03 01 06 0E 16 1E 0F A0 0F A8 07 17 1F 0F A1 0F A9 6A 00 6A 7F 68 80 00 68 FF 00 68 00 01 68 FF 7F 68 00 80 68 FF FF CD 21 CD 03 CC CE C8 00 00 00 C8 00 01 00 C8 00 80 FF C8 D2 04 10 70 FE 7F FC 72 E4 0F 82 E4 FD 0F 81 DE FD 0F 82 04 00 0F 80 01 00 90 0F 82 02 00 31 C0 EB E1 E9 CA FD E8 DB FF E8 C4 FD E9 04 00 E8 01 00 90 90 D0 CB D1 CB D1 E3 D1 C0 D2 E0 D3 E0 C0 E0 03 C1 E3 03 C0 2E 03 01 03 C1 2E 03 01 03 A0 00 10 A0 01 10 A0 09 10 A1 0F 10 A0 14 04 A0 18 04 90 90 53 00 54 C8 06 00 00 E9 04 00 E8 01 00 90 68 8D 03 68 00 10 C9 C3 45 90 

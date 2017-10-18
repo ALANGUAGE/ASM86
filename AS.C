@@ -281,7 +281,10 @@ int getOpR() {
     if (Op2 == 0)     {invaloperror();         return;}
     if (Op2 == IMM)   {imme=SymbolInt;         return;}
     if (Op2 == REG)                            return;
-    if (Op2 == ADR)   {disp=LabelAddr[LabelIx];return;}
+    if (Op2 == ADR)   {
+        if (LabelIx == 0) disp=0;
+        else disp=LabelAddr[LabelIx];
+        return;}
     error1("Name of operand expected");
 }
 
@@ -878,39 +881,36 @@ int getarg() {
 }
 
 int fixJmp() {   
-    //todo ENDP: search backwards until tmpJmpMaxIx
-    
-    int i;  unsigned int hex; unsigned int hex1; 
+    //todo ENDP: search backwards until tmpJmpMaxIx    
+    int i;  unsigned int hex; 
     char *p; int Ix; char c;
     i=1;
-    prs("\n;END open jmp: ");
+    prs("\n;jmp to fix:");
     printIntU(JmpMaxIx);
     p = &JmpNames;
     while (i <= JmpMaxIx) {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;
         p++;
-        hex = JmpAddr[i];//hex point to PC at low byte of addr 
-        hex1 = hex + 1;
-prs("\n Symbol: "); prs(Symbol); prs(", JmpAddr: "); printhex16(hex);//debug
+        hex = JmpAddr[i];
+//prs("\nSymbol:"); prs(Symbol); prs(",from:");                                       
+//printhex16(hex);//debug
         
         Ix=searchLabel();
         if (Ix == 0) error1("Label not found");
         disp = LabelAddr[Ix];   
-        c = FileBin[hex1];//look for 'A' push Absolute 
-prs(", FileBin[hex1] 00 or 42 'A': "); printhex8a(c);
-        if (c == 'A') disp = hex;
-        else {
+        c = FileBin[hex];//look for 'A' push Absolute 
+//prs(",=00/AA:["); printhex8a(c);
+//prs("],Lab:"); printhex16(disp);
+        if (c != 0xAA) {
             disp = disp - hex;
             disp = disp -2;//PC points to next instruction
             disp = disp - Origin;
         }
-
             FileBin[hex] = disp;//fix low byte
             hex++;
             disp = disp >> 8;
             FileBin[hex] = disp; 
-prs(", ");
         i++;
     }
 }
@@ -929,18 +929,18 @@ int epilog() {
     prs(" bytes.");
     prs(" Labels: ");
     printIntU(LabelMaxIx);
-prs(", code:\n ");//debug
+// prs(", code:\n ");//debug
 
     i=0;
     do {
         c = FileBin[i];
         fputcR(c, bin_fd);
-printhex8a(c); prc(' ');//debug
+// printhex8a(c); prc(' ');//debug
         i++;
     } while (i < BinLen);
 
-/* */
-  prs(" LabelNamePtr:"); printIntU(LabelNamePtr);
+/* 
+  prs("\n\n LabelNamePtr:"); printIntU(LabelNamePtr);
   i= &LabelNames;
   prs(" &LabelNames:"); printIntU(i);
   i=LabelNamePtr-i;
@@ -960,7 +960,7 @@ printhex8a(c); prc(' ');//debug
       LabelNamePtr++;
       i++;
     } while (i <= LabelMaxIx);
-/**/
+*/
 }
 
 int end1(int n) {
@@ -1302,7 +1302,7 @@ int process() {
                 return;
             }
             if (Op == ADR) {//push string ABSOLUTE i16 
-prs(" push disp: "); printhex16 (disp);
+//prscomment("\n push disp: "); printhex16 (disp);
                 if (disp) {
                     genCode8(0x68);
                     genCode16(disp);
@@ -1311,9 +1311,9 @@ prs(" push disp: "); printhex16 (disp);
                 else {
                     genCode8(0x68);
                     storeJmp();
-                    genCode8(65);//'A'
-                    genCode8(65);
+                    genCode16(0xAAAA);//magic for abs ADR
                     PrintRA='A';
+                    return;
                 }
             }
         }
@@ -1425,10 +1425,10 @@ prs(" push disp: "); printhex16 (disp);
         prs("\n;leaving: ");
         prs(ProcName);
         isInProc=0;
-        prs(". local labels :");
+        prs(". loc labels:");
         i = LabelMaxIx - tmpLabelMaxIx;
         printIntU(i);
-        prs(", local jmp :");
+        prs(",loc jmp forward:");
         i = JmpMaxIx - tmpJmpMaxIx;
         printIntU(i);        
         fixJmp();
