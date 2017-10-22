@@ -85,12 +85,309 @@ unsigned int JmpAddr[JMPMAX];//addr to be fixed
 int JmpMaxIx=0;         //actual # of jmp, call. 1 to JMPMAX-1
 int tmpJmpMaxIx=0;      //set after PROC to JmpMaxIx
 
-#define FILEBINMAX 20000
+#define FILEBINMAX 17000
 char FileBin  [FILEBINMAX];//output binary file
 unsigned int BinLen=0;  //length of binary file
 
 char *arglen=0x80;      // for main only
 char *argv=0x82;        // for main only
+
+
+//#include "HELPER.C"
+int writetty()     { ah=0x0E; bx=0; __emit__(0xCD,0x10); }
+int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
+int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
+
+int DosInt() {
+    __emit__(0xCD,0x21);//inth 0x21;
+    __emit__(0x73, 04); //ifcarry DOS_ERR++;
+    DOS_ERR++;
+}
+int openR (char *s) { dx=s;       ax=0x3D02; DosInt(); }
+int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
+int fcloseR(int fd) {bx=fd;       ax=0x3E00; DosInt(); }
+int exitR  (char c) {ah=0x4C; al=c;          DosInt(); }
+int readRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x3F00; DosInt();}
+int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
+  cx=1; bx=fd; ax=0x4000; DosInt(); }
+
+int getLine() {// make ASCIIZ, skip LF=10 and CR=13
+  unsigned int i;
+  InputPtr= &InputBuf;
+  *InputPtr=0;//if last line is empty
+  do {
+    DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
+    if (DOS_ERR) errorexit("Reading Source");
+    if (DOS_NoBytes == 0) return;
+    *InputPtr = DOS_ByteRead;
+    InputPtr++;
+    i = InputPtr - &InputBuf;
+    if (i >= INPUTBUFMAX) errorexit("input line too long");
+  } while (ifEOL(DOS_ByteRead) == 0);
+  InputPtr--;
+  *InputPtr=0;
+}
+int ifEOL(char c) {//unix LF, win CRLF= 13/10, mac CR
+  if (c == 10) return 1;//LF
+  if (c == 13) {//CR
+    DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
+    if (DOS_ByteRead != 10) errorexit("missing LF(10) after CR(13)");
+    return 1;
+  }
+  return 0;
+}
+int skipBlank() {
+  skipblank1:
+    if (*InputPtr == ' ') { InputPtr++; goto skipblank1; }
+    if (*InputPtr == 9  ) { InputPtr++; goto skipblank1; }
+}
+int letterE(char c) {
+  if (c=='_') return 1;
+  if (c=='.') return 1;
+  if (c=='?') return 1;
+  if (c=='$') return 1;
+  if (c> 'z') return 0;
+  if (c< '@') return 0; // at included
+  if (c> 'Z') { if (c< 'a') return 0; }
+  return 1;
+}
+int alnumE(char c) {
+  if (digit(c)) return 1;
+  if (letterE(c)) return 1;
+  return 0;
+}
+int digit(char c){
+    if(c<'0') return 0;
+    if(c>'9') return 0;
+    return 1;
+}
+int strlen(char *s) { int c;
+    c=0;
+    while (*s!=0) {s++; c++;}
+    return c;
+    }
+int strcpy(char *s, char *t) {
+    do { *s=*t; s++; t++; }
+    while (*t!=0);
+    *s=0;
+    return s;
+    }
+int eqstr(char *p, char *q) {
+    while(*p) {
+        if (*p != *q) return 0;
+            p++;
+            q++;
+            }
+    if(*q) return 0;
+    return 1;
+    }
+int strcat1(char *s, char *t) {
+    while (*s != 0) s++;
+    strcpy(s, t);
+    }
+int toupper(char *s) {
+    while(*s) {
+        if (*s >= 'a') if (*s <= 'z') *s=*s-32;
+            s++;
+              }
+    }
+
+int getDigit(unsigned char c) {//ret: SymbolInt
+  unsigned int CastInt;
+  SymbolInt=0;
+  do {
+    c-='0';
+    SymbolInt=SymbolInt*10;
+    ax=0; CastInt=c; //cast b2w
+    SymbolInt=SymbolInt+CastInt;
+    InputPtr++;
+    c = *InputPtr;
+  } while(digit(c));
+}
+int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
+  char *p; unsigned int i;
+  p = &Symbol;
+  *p = c;
+  p++;
+  while (alnumE(c)) {
+    InputPtr++;
+    c = *InputPtr;
+    *p = c;
+    p++;
+    i = p - &Symbol;
+    if (i >= SYMBOLMAX) errorexit("symbol too long");
+  }
+  if (c == ':') isLabel=1; else isLabel=0;
+  p--;
+  *p = 0;
+  strcpy(SymbolUpper, Symbol);
+  toupper(SymbolUpper);
+}
+int testReg() {
+//ret:RegNo: 0 - 7 AL, CL  set:R2Type: 0=no reg,BYTE,WORD,SEGREG,DWORD
+  R2Type=0;
+  if (strlen(Symbol) < 2) return 0;
+  if (strlen(Symbol) > 3) return 0;
+  R2Type=BYTE;
+  if (eqstr(SymbolUpper, "AL")) return 0;
+  if (eqstr(SymbolUpper, "CL")) return 1;
+  if (eqstr(SymbolUpper, "DL")) return 2;
+  if (eqstr(SymbolUpper, "BL")) return 3;
+  if (eqstr(SymbolUpper, "AH")) return 4;
+  if (eqstr(SymbolUpper, "CH")) return 5;
+  if (eqstr(SymbolUpper, "DH")) return 6;
+  if (eqstr(SymbolUpper, "BH")) return 7;
+  R2Type=WORD;
+  if (eqstr(SymbolUpper, "AX")) return 0;
+  if (eqstr(SymbolUpper, "CX")) return 1;
+  if (eqstr(SymbolUpper, "DX")) return 2;
+  if (eqstr(SymbolUpper, "BX")) return 3;
+  if (eqstr(SymbolUpper, "SP")) return 4;
+  if (eqstr(SymbolUpper, "BP")) return 5;
+  if (eqstr(SymbolUpper, "SI")) return 6;
+  if (eqstr(SymbolUpper, "DI")) return 7;
+  R2Type=SEGREG;
+  if (eqstr(SymbolUpper, "ES")) return 0;
+  if (eqstr(SymbolUpper, "CS")) return 1;
+  if (eqstr(SymbolUpper, "SS")) return 2;
+  if (eqstr(SymbolUpper, "DS")) return 3;
+  if (eqstr(SymbolUpper, "FS")) return 4;
+  if (eqstr(SymbolUpper, "GS")) return 5;
+  R2Type=DWORD;
+  if (eqstr(SymbolUpper, "EAX"))return 0;
+  if (eqstr(SymbolUpper, "ECX"))return 1;
+  if (eqstr(SymbolUpper, "EDX"))return 2;
+  if (eqstr(SymbolUpper, "EBX"))return 3;
+  if (eqstr(SymbolUpper, "ESP"))return 4;
+  if (eqstr(SymbolUpper, "EBP"))return 5;
+  if (eqstr(SymbolUpper, "ESI"))return 6;
+  if (eqstr(SymbolUpper, "EDI"))return 7;
+  R2Type=0; return 0;
+}
+
+
+//#include "OUTPUT.C"
+int printLine() {
+    int i; char c;
+    prs("\n");
+    printhex16(PCStart);
+    if (OpPrintIndex == 0) prs("               ");
+    else {
+//        prc(' ');
+        i=0;
+        do {
+            c=OpPos[i];
+            prc(' ');
+            printhex8a(c);
+            i++;
+        } while (i < OpPrintIndex);
+        while (i < OPMAXLEN) {// fill rest with blank
+            prs("   ");
+            i++;
+        }
+    }
+    prc(PrintRA);
+    prscomment(InputBuf);
+}
+int prc(unsigned char c) {//print char
+        if ( _ c==10) {
+            ax=13;
+            writetty();
+            }
+        al=c;
+        writetty();
+    fputcR(c,lst_fd);
+}
+
+int prscomment(unsigned char *s) {
+    unsigned char c;
+    while (*s){
+        c=*s;
+        prc(c);
+        s++;
+    }
+}
+int prs(unsigned char *s) {
+    unsigned char c;
+    int com;
+    com=0;
+    while (*s) {
+        c=*s;
+        if (c==34) {
+            if (com) com=0;
+                else com=1;
+        }
+        if (c==92) {
+            if (com==0) {
+                s++;
+                c=*s;
+                if (c=='n') c=10;
+                if (c=='t') c= 9;
+            }
+        }
+        prc(c);
+        s++;
+    }
+}
+int printhex8a(unsigned char c) {
+    unsigned char nib;
+    nib = c >> 4; printhex4(nib);
+    nib = c & 15; printhex4(nib);
+}
+int printhex4(unsigned char c) {
+    c += 48;
+    if (c > 57) c += 7;
+    prc(c);
+}
+int printhex16(unsigned int i) {
+    unsigned int half;
+    half = i >>  8; printhex8a(half);
+    half = i & 255; printhex8a(half);
+}
+int printIntU(unsigned int n) {
+    unsigned int e;
+    if ( _ n >= 10) {
+        e=n/10; //DIV
+        printIntU(e);
+    }
+    n = n % 10; //unsigned mod
+    n += '0';
+    prc(n);
+}
+
+int error1(char *s) {
+    ErrorCount++;
+    prs("\n;***** next line ERROR: ");
+    prs(s);
+    prs(", Symbol: ");
+    prs(Symbol);
+}
+int errorexit(char *s) {
+    error1(s);
+    epilog();
+    end1(1);
+}
+int notfounderror(){
+    ErrorCount++;
+    prs("\n;***** ERROR: label not found: ");
+    prs(Symbol);
+    prs(" ");
+}
+int allowederror() {error1("not allowed here"); }
+int addrerror()    {error1("address missing");}
+int immeerror()    {error1("immediate not allowed here");}
+int implerror()    {error1("not implemented");}
+int indexerror()   {error1("invalid index register");}
+int invaloperror() {error1("invalid or no operands");}
+int numbererror()  {error1("number expected");}
+int regmemerror()  {error1("only register or memory allowed");}
+int reg16error()   {error1("only reg16, no segreg allowed");}
+int segregerror()  {error1("segment register not allowed");}
+int syntaxerror()  {error1("syntax");}
+
+int addrexit()     {errorexit("illegal address");}
+int dataexit()     {errorexit("DB,DW,DD or RESB,W,D expected");}
+int internexit()   {errorexit("intern compiler error");}
 
 
 //#include "OPTABL.C"
@@ -545,306 +842,6 @@ int skipRest() {
 }
 
 
-//#include "HELPER.C"
-int writetty()     { ah=0x0E; bx=0; __emit__(0xCD,0x10); }
-int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
-int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
-
-int DosInt() {
-    __emit__(0xCD,0x21);//inth 0x21;
-    __emit__(0x73, 04); //ifcarry DOS_ERR++;
-    DOS_ERR++;
-}
-int openR (char *s) { dx=s;       ax=0x3D02; DosInt(); }
-int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
-int fcloseR(int fd) {bx=fd;       ax=0x3E00; DosInt(); }
-int exitR  (char c) {ah=0x4C; al=c;          DosInt(); }
-int readRL(char *s, int fd, int len){dx=s; cx=len; bx=fd; ax=0x3F00; DosInt();}
-int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
-  cx=1; bx=fd; ax=0x4000; DosInt(); }
-
-int getLine() {// make ASCIIZ, skip LF=10 and CR=13
-  unsigned int i;
-  InputPtr= &InputBuf;
-  *InputPtr=0;//if last line is empty
-  do {
-    DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
-    if (DOS_ERR) errorexit("Reading Source");
-    if (DOS_NoBytes == 0) return;
-    *InputPtr = DOS_ByteRead;
-    InputPtr++;
-    i = InputPtr - &InputBuf;
-    if (i >= INPUTBUFMAX) errorexit("input line too long");
-  } while (ifEOL(DOS_ByteRead) == 0);
-  InputPtr--;
-  *InputPtr=0;
-}
-int ifEOL(char c) {//unix LF, win CRLF= 13/10, mac CR
-  if (c == 10) return 1;//LF
-  if (c == 13) {//CR
-    DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
-    if (DOS_ByteRead != 10) errorexit("missing LF(10) after CR(13)");
-    return 1;
-  }
-  return 0;
-}
-int skipBlank() {
-  skipblank1:
-    if (*InputPtr == ' ') { InputPtr++; goto skipblank1; }
-    if (*InputPtr == 9  ) { InputPtr++; goto skipblank1; }
-}
-int letterE(char c) {
-  if (c=='_') return 1;
-  if (c=='.') return 1;
-  if (c=='?') return 1;
-  if (c=='$') return 1;
-  if (c> 'z') return 0;
-  if (c< '@') return 0; // at included
-  if (c> 'Z') { if (c< 'a') return 0; }
-  return 1;
-}
-int alnumE(char c) {
-  if (digit(c)) return 1;
-  if (letterE(c)) return 1;
-  return 0;
-}
-int digit(char c){
-    if(c<'0') return 0;
-    if(c>'9') return 0;
-    return 1;
-}
-int strlen(char *s) { int c;
-    c=0;
-    while (*s!=0) {s++; c++;}
-    return c;
-    }
-int strcpy(char *s, char *t) {
-    do { *s=*t; s++; t++; }
-    while (*t!=0);
-    *s=0;
-    return s;
-    }
-int eqstr(char *p, char *q) {
-    while(*p) {
-        if (*p != *q) return 0;
-            p++;
-            q++;
-            }
-    if(*q) return 0;
-    return 1;
-    }
-int strcat1(char *s, char *t) {
-    while (*s != 0) s++;
-    strcpy(s, t);
-    }
-int toupper(char *s) {
-    while(*s) {
-        if (*s >= 'a') if (*s <= 'z') *s=*s-32;
-            s++;
-              }
-    }
-
-int getDigit(unsigned char c) {//ret: SymbolInt
-  unsigned int CastInt;
-  SymbolInt=0;
-  do {
-    c-='0';
-    SymbolInt=SymbolInt*10;
-    ax=0; CastInt=c; //cast b2w
-    SymbolInt=SymbolInt+CastInt;
-    InputPtr++;
-    c = *InputPtr;
-  } while(digit(c));
-}
-int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
-  char *p; unsigned int i;
-  p = &Symbol;
-  *p = c;
-  p++;
-  while (alnumE(c)) {
-    InputPtr++;
-    c = *InputPtr;
-    *p = c;
-    p++;
-    i = p - &Symbol;
-    if (i >= SYMBOLMAX) errorexit("symbol too long");
-  }
-  if (c == ':') isLabel=1; else isLabel=0;
-  p--;
-  *p = 0;
-  strcpy(SymbolUpper, Symbol);
-  toupper(SymbolUpper);
-}
-int testReg() {
-//ret:RegNo: 0 - 7 AL, CL  set:R2Type: 0=no reg,BYTE,WORD,SEGREG,DWORD
-  R2Type=0;
-  if (strlen(Symbol) < 2) return 0;
-  if (strlen(Symbol) > 3) return 0;
-  R2Type=BYTE;
-  if (eqstr(SymbolUpper, "AL")) return 0;
-  if (eqstr(SymbolUpper, "CL")) return 1;
-  if (eqstr(SymbolUpper, "DL")) return 2;
-  if (eqstr(SymbolUpper, "BL")) return 3;
-  if (eqstr(SymbolUpper, "AH")) return 4;
-  if (eqstr(SymbolUpper, "CH")) return 5;
-  if (eqstr(SymbolUpper, "DH")) return 6;
-  if (eqstr(SymbolUpper, "BH")) return 7;
-  R2Type=WORD;
-  if (eqstr(SymbolUpper, "AX")) return 0;
-  if (eqstr(SymbolUpper, "CX")) return 1;
-  if (eqstr(SymbolUpper, "DX")) return 2;
-  if (eqstr(SymbolUpper, "BX")) return 3;
-  if (eqstr(SymbolUpper, "SP")) return 4;
-  if (eqstr(SymbolUpper, "BP")) return 5;
-  if (eqstr(SymbolUpper, "SI")) return 6;
-  if (eqstr(SymbolUpper, "DI")) return 7;
-  R2Type=SEGREG;
-  if (eqstr(SymbolUpper, "ES")) return 0;
-  if (eqstr(SymbolUpper, "CS")) return 1;
-  if (eqstr(SymbolUpper, "SS")) return 2;
-  if (eqstr(SymbolUpper, "DS")) return 3;
-  if (eqstr(SymbolUpper, "FS")) return 4;
-  if (eqstr(SymbolUpper, "GS")) return 5;
-  R2Type=DWORD;
-  if (eqstr(SymbolUpper, "EAX"))return 0;
-  if (eqstr(SymbolUpper, "ECX"))return 1;
-  if (eqstr(SymbolUpper, "EDX"))return 2;
-  if (eqstr(SymbolUpper, "EBX"))return 3;
-  if (eqstr(SymbolUpper, "ESP"))return 4;
-  if (eqstr(SymbolUpper, "EBP"))return 5;
-  if (eqstr(SymbolUpper, "ESI"))return 6;
-  if (eqstr(SymbolUpper, "EDI"))return 7;
-  R2Type=0; return 0;
-}
-
-
-//#include "OUTPUT.C"
-int printLine() {
-    int i; char c;
-    prs("\n");
-    printhex16(PCStart);
-    if (OpPrintIndex == 0) prs("               ");
-    else {
-//        prc(' ');
-        i=0;
-        do {
-            c=OpPos[i];
-            prc(' ');
-            printhex8a(c);
-            i++;
-        } while (i < OpPrintIndex);
-        while (i < OPMAXLEN) {// fill rest with blank
-            prs("   ");
-            i++;
-        }
-    }
-    prc(PrintRA);
-    prscomment(InputBuf);
-}
-int prc(unsigned char c) {//print char
-        if ( _ c==10) {
-            ax=13;
-            writetty();
-            }
-        al=c;
-        writetty();
-    fputcR(c,lst_fd);
-}
-
-int prscomment(unsigned char *s) {
-    unsigned char c;
-    while (*s){
-        c=*s;
-        prc(c);
-        s++;
-    }
-}
-int prs(unsigned char *s) {
-    unsigned char c;
-    int com;
-    com=0;
-    while (*s) {
-        c=*s;
-        if (c==34) {
-            if (com) com=0;
-                else com=1;
-        }
-        if (c==92) {
-            if (com==0) {
-                s++;
-                c=*s;
-                if (c=='n') c=10;
-                if (c=='t') c= 9;
-            }
-        }
-        prc(c);
-        s++;
-    }
-}
-int printhex8a(unsigned char c) {
-    unsigned char nib;
-    nib = c >> 4; printhex4(nib);
-    nib = c & 15; printhex4(nib);
-}
-int printhex4(unsigned char c) {
-    c += 48;
-    if (c > 57) c += 7;
-    prc(c);
-}
-int printhex16(unsigned int i) {
-    unsigned int half;
-    half = i >>  8; printhex8a(half);
-    half = i & 255; printhex8a(half);
-}
-int printIntU(unsigned int n) {
-    unsigned int e;
-    if ( _ n >= 10) {
-        e=n/10; //DIV
-        printIntU(e);
-    }
-    n = n % 10; //unsigned mod
-    n += '0';
-    prc(n);
-}
-
-int error1(char *s) {
-    ErrorCount++;
-    prs("\n;***** next line ERROR: ");
-    prs(s);
-    prs(", Symbol: ");
-    prs(Symbol);
-}
-int errorexit(char *s) {
-    error1(s);
-    epilog();
-    end1(1);
-}
-int notfounderror(){error1("label not found"); }
-int allowederror() {error1("not allowed here"); }
-int addrerror()    {error1("address missing");}
-int immeerror()    {error1("immediate not allowed here");}
-int implerror()    {error1("not implemented");}
-int indexerror()   {error1("invalid index register");}
-int invaloperror() {error1("invalid or no operands");}
-int numbererror()  {error1("number expected");}
-int regmemerror()  {error1("only register or memory allowed");}
-int reg16error()   {error1("only reg16, no segreg allowed");}
-int segregerror()  {error1("segment register not allowed");}
-int syntaxerror()  {error1("syntax");}
-
-int addrexit()     {errorexit("illegal address");}
-int dataexit()     {errorexit("DB,DW,DD or RESB,W,D expected");}
-int internexit()   {errorexit("intern compiler error");}
-
-
-//#include "MAIN.C"
-int main() {
-    getarg();
-    parse();
-    fixJmp();
-    epilog();
-    end1();
-}
 
 int getarg() {
     int arglen1; int i; char *c;
@@ -881,45 +878,73 @@ int getarg() {
 }
 
 int fixJmp() {   
-    //todo ENDP: search backwards until tmpJmpMaxIx    
-    int i;  unsigned int hex; 
+    unsigned int hex; int i;
     char *p; int Ix; char c;
-    i=1;
-    prs("\n;jmp to fix:");
+    prs("\, jmp to fix:");
     printIntU(JmpMaxIx);
     p = &JmpNames;
+    i = 1;
     while (i <= JmpMaxIx) {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;
         p++;
         hex = JmpAddr[i];
-//prs("\nSymbol:"); prs(Symbol); prs(",from:");                                       
-//printhex16(hex);//debug
+        prs("\n"); printIntU(i);
+        prs(". "); prs(Symbol); prs(",from:");
+        printhex16(hex);
         
         Ix=searchLabel();
-        if (Ix == 0) error1("Label not found");
+        if (Ix == 0) notfounderror();
         disp = LabelAddr[Ix];   
         c = FileBin[hex];//look for 'A' push Absolute 
-//prs(",=00/AA:["); printhex8a(c);
-//prs("],Lab:"); printhex16(disp);
+        prs(",Label+ORG:"); printhex16(disp);
         if (c != 0xAA) {
             disp = disp - hex;
             disp = disp -2;//PC points to next instruction
-            disp = disp - Origin;
+            disp = disp - Origin; 
+            prs(",rel:"); printhex16(disp);
         }
             FileBin[hex] = disp;//fix low byte
             hex++;
             disp = disp >> 8;
             FileBin[hex] = disp; 
-        i++;
+        i++;  
     }
+}
+int fixJmpMain() {   
+    unsigned int hex; 
+    int Ix; char c;
+    prs("\n;fix jmp to main. resting global jmp:");
+    printIntU(JmpMaxIx);  
+    if (JmpMaxIx ) error1("resting global jmp");
+        strcpy(Symbol, "main");
+        hex = 1;//first instruction, PC=1
+        prs("\nonly one global variable: "); 
+        prs(Symbol); prs(",from:");
+        printhex16(hex);
+        
+        Ix=searchLabel();
+        if (Ix == 0) notfounderror();
+        disp = LabelAddr[Ix];   
+        c = FileBin[hex];//look for 'A' push Absolute 
+        prs(",Label+ORG:"); printhex16(disp);
+        if (c != 0xAA) {
+            disp = disp - hex;
+            disp = disp -2;//PC points to next instruction
+            disp = disp - Origin; 
+            prs(",rel:"); printhex16(disp);
+        }
+            FileBin[hex] = disp;//fix low byte
+            hex++;
+            disp = disp >> 8;
+            FileBin[hex] = disp; 
 }
 
 int epilog() {
     unsigned int i; char c;     int j;
     prs("\n Errors: ");
     printIntU(ErrorCount);
-    if (ErrorCount) prs(" ***ERROR*** ");
+    if (ErrorCount) prs(" *** ERRORS *** ");
     prs(", Out: ");
     prs(namelst);
     prs(", ");
@@ -978,16 +1003,6 @@ int getCodes() {
     OpCodePtr ++; Code2 = *OpCodePtr;
     OpCodePtr ++; Code3 = *OpCodePtr;
 }
-int gen66h() {genCode8(0x66);
-}
-int genCode2(char c, char d) {
-    c = c + d;
-    genCode8(c);
-}
-int genCodeW(char c) {
-    c = c + wflag;
-    genCode8(c);
-}
 int genCode8(char c) {
 //set: BinLen++, OpPrintIndex++
     FileBin[BinLen]=c;
@@ -998,6 +1013,16 @@ int genCode8(char c) {
         OpPos[OpPrintIndex]=c;
         OpPrintIndex++;
     }
+}
+int gen66h() {genCode8(0x66);
+}
+int genCode2(char c, char d) {
+    c = c + d;
+    genCode8(c);
+}
+int genCodeW(char c) {
+    c = c + wflag;
+    genCode8(c);
 }
 int genCode16(unsigned int i) {
     genCode8(i); i=i >> 8;
@@ -1272,8 +1297,8 @@ int process() {
                 }
             }
             else {//jump forward, near only
-                genCode8(Code1);
-                storeJmp();
+                genCode8(Code1);  
+                if (PC != 1) storeJmp();//omit jmp main
                 genCode16(0);
                 PrintRA='R';
             }
@@ -1424,7 +1449,6 @@ int process() {
         if (isInProc == 0) error1("not in PROC");
         prs("\n;leaving: ");
         prs(ProcName);
-        isInProc=0;
         prs(". loc labels:");
         i = LabelMaxIx - tmpLabelMaxIx;
         printIntU(i);
@@ -1432,6 +1456,7 @@ int process() {
         i = JmpMaxIx - tmpJmpMaxIx;
         printIntU(i);        
         fixJmp();
+        isInProc=0;
         LabelNamePtr = tmpLabelNamePtr;//delete local Labels
         LabelMaxIx   = tmpLabelMaxIx;                       
         JmpNamePtr   = tmpJmpNamePtr;//delete local Jmp
@@ -1441,3 +1466,10 @@ int process() {
     error1("Command not implemented or syntax error");
 }
 
+int main() {
+    getarg();
+    parse();
+    fixJmpMain();
+    epilog();
+    end1();
+}
