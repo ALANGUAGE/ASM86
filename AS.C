@@ -836,7 +836,7 @@ int getOpL() {//set: op=0,IMM,REG,ADR,MEM
     getOpR();
     Op=Op2;         Op2=0;
     R1No=R2No;      R2No=0;
-    R1Type=R2Type; R2Type=0;
+    R1Type=R2Type;  R2Type=0;
 }
 
 int get2Ops() {
@@ -850,7 +850,7 @@ int check2Ops() {
     if (Op == ADR) invaloperror();
     if (Op == IMM) immeerror();
     if (Op2==   0) addrerror();
-    if (CodeType != 5) if (Op2==ADR) invaloperror();//only mov
+//if (CodeType != 5) if (Op2==ADR) invaloperror();//only mov,add
     setwflag();
 }
 
@@ -1106,7 +1106,12 @@ int process() {
     }
 
     if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
-        check2Ops();
+        check2Ops();  
+        if (Op2 == ADR) {  
+            if (LabelIx == 0) notfounderror();
+            imme=LabelAddr[LabelIx];
+            Op2=IMM;//got the addr and fall through
+        }
         if (Op2 == IMM) {//second operand is imm
             setsflag();
             if (Op == REG) {
@@ -1149,10 +1154,6 @@ int process() {
 
     if (CodeType == 5) {//mov (movsx, movzx=51)
         check2Ops();
-/*    prs("\n Op:"); printhex8a(Op);
-    prs(", Op2:"); printhex8a(Op2);
-    prs(", R1No:"); printhex8a(R1No);
-    prs(", R2No:"); printhex8a(R2No);   */
         if (Op2 == ADR) {
             if (disp) imme=disp;
             else notfounderror();
