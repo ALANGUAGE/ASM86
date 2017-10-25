@@ -188,7 +188,10 @@ push cs             ;0E
 push ss             ;16
 push ds             ;1E
 push fs             ;0F A0
-push gs             ;0F A8
+push gs             ;0F A8  
+push word [bp+6]    ;FF 76 06
+push word [bp-2]    ;FF 76 FE
+
 pop es              ;07
 pop ss              ;17
 pop ds              ;1F
@@ -259,7 +262,13 @@ mov al, [Einsd]     ;A0 14 04
 mov al, [dreiw]     ;A0 18 04
 ;push fehler         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-name: PROC
+section .bss
+absolute 42154      ;A4 AA
+FileBin resb 17000
+section .text
+
+name: PROC  
+ mov al, [FileBin + bx]
 nop
 endp
 

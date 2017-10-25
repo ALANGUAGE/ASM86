@@ -526,8 +526,8 @@ char I_CALL[]= {'C','A','L','L',0,      7,0xE8, 2,0xF1};
 char I_RET[]=  {'R','E','T',0,          8,0xC3,0xC2,0xF1};
 char I_RETF[]= {'R','E','T','F',0,      8,0xCB,0xCA,0xF1};
 //  9: seg, r/m
-char I_PUSH[]= {'P','U','S','H',0,      9,0x50,0xFF,6,6,0xF1};//r16
-char I_POP[]=  {'P','O','P',0,          9,0x58,0x8F,0,7,0xF1};//r16
+char I_PUSH[]= {'P','U','S','H',0,      9,0x50,0xF1};
+char I_POP[]=  {'P','O','P',0,          9,0x58,0xF1};
 //  11: shift, rotates
 char I_ROL[]=  {'R','O','L',0, 11, 0,0xF1, 'R','O','R',0, 11, 1,0xF1};
 char I_RCL[]=  {'R','C','L',0, 11, 2,0xF1, 'R','C','R',0, 11, 3,0xF1};
@@ -616,7 +616,14 @@ int genCode16(unsigned int i) {
 int genCode32(unsigned long L) {
     genCode16(L); L=L >>16;
     genCode16(L);
+} 
+/*
+int getLen(unsigned int i) {
+    if (i >  127) return 2;
+    if (i < 0x80) return 2;//-128
+    return 1;
 }
+*/        
 int writeEA(char xxx) {//value for reg/operand
 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
 //mod-bits: mode76, reg/opcode543, r/m210
@@ -644,9 +651,10 @@ int writeEA(char xxx) {//value for reg/operand
                 if (disp == 0) xxx |= 0x40;
             }
 
-            if (disp) {
+            if (disp) {  
                 ax = disp;
-                if(ax > 127) len=2;
+                if (ax < 0) __asm{ neg ax }
+                if (ax > 127) len=2;
                 else len=1;
                 if (len == 1) xxx |= 0x40;
                 else xxx |= 0x80;
@@ -1308,7 +1316,6 @@ int process() {
                 return;
             }
             if (Op == ADR) {//push string ABSOLUTE i16 
-//prscomment("\n push disp: "); printhex16 (disp);
                 if (disp) {
                     genCode8(0x68);
                     genCode16(disp);
@@ -1329,25 +1336,35 @@ int process() {
             }
             c = R1No <<3;
             if (R1No > 3) {//FS, GS
-                c += 122;
+                c += 122;  //0x7A
                 genCode8(0x0F);
             }
-            OpCodePtr++;
-            c = c + *OpCodePtr;////////////////is Code4
+            if (Code1 == 0x50) c +=6;//push
+                else c += 7;//pop
             genCode8(c);
             return;
+        } 
+        
+        checkOpL();//sorts out:ADR,SEGREG  resting: REG, MEM    
+//prs("\nOp: "); printIntU(Op); prs(", R1Type: "); printIntU(R1Type);
+
+        if (Op == MEM) {
+            if (Code1 == 0x50) {//push word [bp+6]
+                genCode8(0xFF);
+                writeEA(6);
+            }else {
+                genCode8(0x8F);
+                writeEA(0);
+            }
+            return;
         }
-        checkOpL();//no ADR, SEGREG
+        
         if (R1Type == BYTE) reg16error();
-        if (R1Type == WORD) {
+        if (R1Type == WORD) {//is REG, w/o SEGREG
             genCode2(Code1, R1No);
             return;
-        }
-        if (Op == MEM) {
-            genCode8(Code2);
-            writeEA(Code3);//////////////////Code3
-            return;
-        }
+        }  
+        
         syntaxerror();
         return;
     }
@@ -1395,6 +1412,11 @@ int process() {
         if (Op == IMM) genCode8 (SymbolInt);
         else numbererror();
         return;
+    }
+
+    if (CodeType == 51) {//movsx, movzx=51
+        implerror();
+        return;   
     }
 
     if (CodeType==101) {//ORG nn
