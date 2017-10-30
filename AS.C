@@ -43,8 +43,6 @@ char Op;                //1. operand: 0, IMM, REG, ADR, MEM
 char Op2;               //2. operand
 char CodeType;          //1-207 by searchSymbol(), must be byte size
 char Code1;             //1. Opcode
-char Code2;             //2. Opcode
-char Code3;             //3. Opcode
 char R2No;              //0 - 7 AL, CL, ...  set in testReg()
 char R1No;              //temp for 1. register
 char R2Type;            //0=no reg, BYTE, WORD, DWORD, SEGREG
@@ -308,38 +306,12 @@ int epilog() {
     prs(" bytes.");
     prs(" Labels: ");
     printIntU(LabelMaxIx);
-// prs(", code:\n ");//debug
-
     i=0;
     do {
         c = FileBin[i];
         fputcR(c, bin_fd);
-// printhex8a(c); prc(' ');//debug
         i++;
     } while (i < BinLen);
-
-/* 
-  prs("\n\n LabelNamePtr:"); printIntU(LabelNamePtr);
-  i= &LabelNames;
-  prs(" &LabelNames:"); printIntU(i);
-  i=LabelNamePtr-i;
-  prs(", size: ");
-  printIntU(i);
-  prs(".\n >>");
-  i= &LabelNames;
-  do { c=*i; if (c==0) c=' '; prc(c); i++;
-  } while (i < LabelNamePtr); prs("<< \n");
-   i = 1;
-    LabelNamePtr= &LabelNames;
-    do {
-      prs(LabelNamePtr); prc(' ');
-      j=LabelAddr[i]; printhex16(j); prs(", ");
-      j=strlen(LabelNamePtr);//get end of actual name
-      LabelNamePtr=LabelNamePtr+j;
-      LabelNamePtr++;
-      i++;
-    } while (i <= LabelMaxIx);
-*/
 }
 
 int end1(int n) {
@@ -447,7 +419,6 @@ int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
   toupper(SymbolUpper);
 }
 
-//#include "OPTABL.C"
 char I_START=0xF1;
 //OpName, 0, CodeType, OpCode1-n, F1h
 //  1:   1 byte opcode
@@ -496,11 +467,8 @@ char I_AND[]=  {'A','N','D',0,          4, 4,     0xF1};
 char I_SUB[]=  {'S','U','B',0,          4, 5,     0xF1};
 char I_XOR[]=  {'X','O','R',0,          4, 6,     0xF1};
 char I_CMP[]=  {'C','M','P',0,          4, 7,     0xF1};
-char I_TEST[]= {'T','E','S','T',0,     41,0xA8,0x84,0xF6,0,0xF1};
 //  5: mov
 char I_MOV[]=  {'M','O','V',0,          5,        0xF1};
-char I_MOVSX[]={'M','O','V','S','X',0, 51,0xBE,   0xF1};
-char I_MOVZX[]={'M','O','V','Z','X',0, 51,0xB6,   0xF1};
 //  6: single byte relative jump
 char I_JO []=  {'J','O',0,     6, 0,0xF1};
 char I_JNO[]=  {'J','N','O',0, 6, 1,0xF1};
@@ -520,11 +488,11 @@ char I_JNL[]=  {'J','N','L',0, 6,13,0xF1, 'J','G','E',0, 6,13,0xF1};
 char I_JLE[]=  {'J','L','E',0, 6,14,0xF1, 'J','N','G',0, 6,14,0xF1};
 char I_JG []=  {'J','G',0,     6,15,0xF1};
 //  7: jmp, call
-char I_JMP[]=  {'J','M','P',0,          7,0xE9, 4,0xF1};
-char I_CALL[]= {'C','A','L','L',0,      7,0xE8, 2,0xF1};
+char I_JMP[]=  {'J','M','P',0,          7,0xE9, 0xF1};
+char I_CALL[]= {'C','A','L','L',0,      7,0xE8, 0xF1};
 //  8: ret
-char I_RET[]=  {'R','E','T',0,          8,0xC3,0xC2,0xF1};
-char I_RETF[]= {'R','E','T','F',0,      8,0xCB,0xCA,0xF1};
+char I_RET[]=  {'R','E','T',0,          8,0xC3,0xF1};
+char I_RETF[]= {'R','E','T','F',0,      8,0xCB,0xF1};
 //  9: seg, r/m
 char I_PUSH[]= {'P','U','S','H',0,      9,0x50,0xF1};
 char I_POP[]=  {'P','O','P',0,          9,0x58,0xF1};
@@ -534,18 +502,18 @@ char I_RCL[]=  {'R','C','L',0, 11, 2,0xF1, 'R','C','R',0, 11, 3,0xF1};
 char I_SHL[]=  {'S','H','L',0, 11, 4,0xF1, 'S','A','L',0, 11, 4,0xF1};
 char I_SHR[]=  {'S','H','R',0, 11, 5,0xF1, 'S','A','R',0, 11, 7,0xF1};
 //  12: int
-char I_INT[]=  {'I','N','T',0,          12,0xCD,0xCC,0xF1};
+char I_INT[]=  {'I','N','T',0,          12,0xCD,0xF1};
 //  14: in/out
-char I_IN[]=   {'I','N',0,              14,0xE4,0xEC,0xF1};
+char I_IN[]=   {'I','N',0,              14,0xE4,0xF1};
 char I_INSB[]= {'I','N','S','B',0,      14,0x6C,   0xF1};
 char I_INSW[]= {'I','N','S','W',0,      14,0x6D,   0xF1};
 char I_INSD[]= {'I','N','S','D',0,      14,0x6D,   0xF1};
-char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xEE,0xF1};
+char I_OUT[]=  {'O','U','T',0,          14,0xE6,0xF1};
 char I_OUTSB[]={'O','U','T','B',0,      14,0x6E,   0xF1};
 char I_OUTSW[]={'O','U','T','W',0,      14,0x6F,   0xF1};
 char I_OUTSD[]={'O','U','T','D',0,      14,0x6F,   0xF1};
 //  15: xchg
-char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0x90,0xF1};
+char I_XCHG[]= {'X','C','H','G',0,      15,0x86,0xF1};
 //  16: loop, jcxz
 char I_LOOPNZ[]={'L','O','O','P','N','Z',0, 16,0xE0,0xF1};
 char I_LOOPNE[]={'L','O','O','P','N','E',0, 16,0xE0,0xF1};
@@ -554,8 +522,11 @@ char I_LOOPE[]={'L','O','O','P','E',0,      16,0xE1,0xF1};
 char I_LOOP[]= {'L','O','O','P',0,          16,0xE2,0xF1};
 char I_JCXZ[]= {'J','C','X','Z',0,          16,0xE3,0xF1};
 char I_JECXZ[]= {'J','E','C','X','Z',0,     16,0xE3,0xF1};
-//  30: enter
-char I_ENTER[]={'E','N','T','E','R',0, 30,        0xF1};
+//  30: other
+char I_ENTER[]={'E','N','T','E','R',0, 30,     0xF1};
+char I_TEST[]= {'T','E','S','T',0,     41,0xF6,0xF1};
+char I_MOVSX[]={'M','O','V','S','X',0, 51,0xBE,   0xF1};
+char I_MOVZX[]={'M','O','V','Z','X',0, 51,0xB6,   0xF1};
 // 100: directives
 char I_ORG[]=  {'O','R','G',0,        101,        0xF1};
 // section, segment .TEXT .DATA .BSS
@@ -617,13 +588,6 @@ int genCode32(unsigned long L) {
     genCode16(L); L=L >>16;
     genCode16(L);
 } 
-/*
-int getLen(unsigned int i) {
-    if (i >  127) return 2;
-    if (i < 0x80) return 2;//-128
-    return 1;
-}
-*/        
 int writeEA(char xxx) {//value for reg/operand
 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
 //mod-bits: mode76, reg/opcode543, r/m210
@@ -858,7 +822,6 @@ int check2Ops() {
     if (Op == ADR) invaloperror();
     if (Op == IMM) immeerror();
     if (Op2==   0) addrerror();
-//if (CodeType != 5) if (Op2==ADR) invaloperror();//only mov,add
     setwflag();
 }
 
@@ -1055,8 +1018,6 @@ int process() {
     getTokeType();//0, DIGIT, ALNUME, NOALNUME
     OpSize=getCodeSize();//0, BYTE, WORD, DWORD
     OpCodePtr ++; Code1 = *OpCodePtr;
-    OpCodePtr ++; Code2 = *OpCodePtr;
-    OpCodePtr ++; Code3 = *OpCodePtr;
 
     if (CodeType ==  1) {//1 byte opcode
         genCode8(Code1);
@@ -1283,7 +1244,8 @@ int process() {
 
     if (CodeType ==  8) {//ret,retf
         if (TokeType == DIGIT) {
-            genCode8(Code2);
+            if (Code1 == 0xC3) genCode8(0xC2);//ret n
+                else genCode8(0xCA);//retf n
             genCode16(SymbolInt);
             return;
         }
@@ -1329,10 +1291,8 @@ int process() {
                 else c += 7;//pop
             genCode8(c);
             return;
-        } 
-        
+        }        
         checkOpL();//sorts out:ADR,SEGREG  resting: REG, MEM    
-//prs("\nOp: "); printIntU(Op); prs(", R1Type: "); printIntU(R1Type);
 
         if (Op == MEM) {
             if (Code1 == 0x50) {//push word [bp+6]
@@ -1343,14 +1303,12 @@ int process() {
                 writeEA(0);
             }
             return;
-        }
-        
+        }        
         if (R1Type == BYTE) reg16error();
         if (R1Type == WORD) {//is REG, w/o SEGREG
             genCode2(Code1, R1No);
             return;
-        }  
-        
+        }          
         syntaxerror();
         return;
     }
@@ -1504,7 +1462,7 @@ int parse() {
             }
         }
         if (TokeType == ALNUME) {
-            lookCode();// and OpCodePtr
+            lookCode();
             if(CodeType) process();
             else getVariable();
             skipRest();
