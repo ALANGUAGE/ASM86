@@ -481,12 +481,12 @@ char I_IMUL[]= {'I','M','U','L',0,      2, 5,     0xF1};//only acc
 char I_DIV[]=  {'D','I','V',0,          2, 6,     0xF1};
 char I_IDIV[]= {'I','D','I','V',0,      2, 7,     0xF1};
 //  3: les, lda, lea, lss, lfs, lgs
-char I_LES[]=  {'L','E','S',0,          3,0xC4,     0xF1};
-char I_LDS[]=  {'L','D','S',0,          3,0xC5,     0xF1};
-char I_LEA[]=  {'L','E','A',0,          3,0x8D,     0xF1};//r, m16
-char I_LSS[]=  {'L','S','S',0,          3,0x0F,0xB2,0xF1};
-char I_LFS[]=  {'L','F','S',0,          3,0x0F,0xB4,0xF1};
-char I_LGS[]=  {'L','G','S',0,          3,0x0F,0xB5,0xF1};
+char I_LES[]=  {'L','E','S',0,          3,0xC4,0xF1};
+char I_LDS[]=  {'L','D','S',0,          3,0xC5,0xF1};
+char I_LEA[]=  {'L','E','A',0,          3,0x8D,0xF1};//r, m16
+char I_LSS[]=  {'L','S','S',0,          3,0xB2,0xF1};
+char I_LFS[]=  {'L','F','S',0,          3,0xB4,0xF1};
+char I_LGS[]=  {'L','G','S',0,          3,0xB5,0xF1};
 //  4: acc,imm  reg,imm  index,reg
 char I_ADD[]=  {'A','D','D',0,          4, 0,     0xF1};
 char I_OR []=  {'O','R',0,              4, 1,     0xF1};
@@ -1070,7 +1070,7 @@ int process() {
   	        if (Op == REG) {//short
                 if (wflag) {
                     if (Code1) genCode2(0x48, R1No);//DEC
-                        else genCode2(0x40, R1No);//INC 
+                        else   genCode2(0x40, R1No);//INC 
                     return; 
                     }
             }
@@ -1090,8 +1090,10 @@ int process() {
         if (R1Type != WORD) reg16error();//only r16
         if (Op2 != MEM) addrerror();//only m16
 
-        genCode8(Code1);//les,lds,lea
-        if (Code1 == 0x0F) genCode8(Code2);//lss,lfs,lgs
+        if (Code1 >= 0xB2) {   
+            if (Code1 <= 0xB5) genCode8(0x0F);//lss,lfs,lgs
+        }
+        genCode8(Code1);
         Op=Op2;//set MEM for writeEA
         writeEA(R1No);
         return;
