@@ -9046,9 +9046,6 @@ ENDP
  
 ; missing functions: 
 ; Number of unresolved CALLs :    0 All FUNCTIONs in place
-LastFunctionByt:db 0E8h, 0, 0
-pop ax
-ret
  
 ;   # type sign width  adr used name   list of global variables
 
@@ -9335,7 +9332,6 @@ ret
 ;   87    1 1072   process
 ;   88    1 1477   parse
 ;   89 NULL 1514   main
-;   90 NULL 1520   LastFunctionByt
 
 ;    #  addr name   list of CALLs
 
@@ -9765,8 +9761,7 @@ ret
 ;  423  3509 end1
 ;Input: AS.C, List: AS.S,  Lines: 1521
 ;Glob. variables:  189 max.:  200
-;Functions      :   91 max.:  300
+;Functions      :   90 max.:  300
 ;Calls          :  424 max.: 2000, NameField: 3514 max.:    65535
-;Code until     :21667 max.: 30000, free: 8333
 ;Data (HeapEnd) :59154, resting stacksize:  6381
 ;Max. Const in 'testReg' :  658 max. 3000, free: 2342
