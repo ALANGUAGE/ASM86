@@ -472,14 +472,14 @@ char I_STC[]=  {'S','T','C',0,        1,0xF9,0xF1, 'C','L','I',0,        1,0xFA,
 char I_STI[]=  {'S','T','I',0,        1,0xFB,0xF1, 'C','L','D',0,        1,0xFC,0xF1};
 char I_STD[]=  {'S','T','D',0,        1,0xFD,0xF1};
 // 2: mem reg 16 bit
-char I_INC[]=  {'I','N','C',0,          2,0xFE, 0,0x40,0xF1};
-char I_DEC[]=  {'D','E','C',0,          2,0xFE, 1,0x48,0xF1};
-char I_NOT[]=  {'N','O','T',0,          2,0xF6, 2,     0xF1};
-char I_NEG[]=  {'N','E','G',0,          2,0xF6, 3,     0xF1};
-char I_MUL[]=  {'M','U','L',0,          2,0xF6, 4,     0xF1};
-char I_IMUL[]= {'I','M','U','L',0,      2,0xF6, 5,     0xF1};//only acc
-char I_DIV[]=  {'D','I','V',0,          2,0xF6, 6,     0xF1};
-char I_IDIV[]= {'I','D','I','V',0,      2,0xF6, 7,     0xF1};
+char I_INC[]=  {'I','N','C',0,          2, 0,0xF1};
+char I_DEC[]=  {'D','E','C',0,          2, 1,0xF1};
+char I_NOT[]=  {'N','O','T',0,          2, 2,     0xF1};
+char I_NEG[]=  {'N','E','G',0,          2, 3,     0xF1};
+char I_MUL[]=  {'M','U','L',0,          2, 4,     0xF1};
+char I_IMUL[]= {'I','M','U','L',0,      2, 5,     0xF1};//only acc
+char I_DIV[]=  {'D','I','V',0,          2, 6,     0xF1};
+char I_IDIV[]= {'I','D','I','V',0,      2, 7,     0xF1};
 //  3: les, lda, lea, lss, lfs, lgs
 char I_LES[]=  {'L','E','S',0,          3,0xC4,     0xF1};
 char I_LDS[]=  {'L','D','S',0,          3,0xC5,     0xF1};
@@ -1004,9 +1004,26 @@ int getarg() {
     prs("\n");
 }
 
+int FixOneJmp(unsigned int hex) {
+    int Ix; char c;
+    Ix=searchLabel();
+    if (Ix == 0) notfounderror();
+    disp = LabelAddr[Ix];   
+    c = FileBin[hex];//look for 'A' push Absolute 
+    if (c != 0xAA) {
+        disp = disp - hex;
+        disp = disp -2;//PC points to next instruction
+        disp = disp - Origin; 
+        prs(",rel:"); printhex16(disp);
+    }
+    FileBin[hex] = disp;//fix low byte
+    hex++;
+    disp = disp >> 8;
+    FileBin[hex] = disp;     
+}
 int fixJmp() {   
     unsigned int hex; int i;
-    char *p; int Ix; char c;
+    char *p; 
 //    prs("\, jmp to fix:"); printIntU(JmpMaxIx);
     p = &JmpNames;
     i = 1;
@@ -1014,60 +1031,20 @@ int fixJmp() {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;
         p++;
-        hex = JmpAddr[i];
-//        prs("\n"); printIntU(i);
-//        prs("  "); prs(Symbol); prs(", from:");
-//        printhex16(hex);
-        
-        Ix=searchLabel();
-        if (Ix == 0) notfounderror();
-        disp = LabelAddr[Ix];   
-        c = FileBin[hex];//look for 'A' push Absolute 
-//        prs(", Label+ORG:"); printhex16(disp);
-        if (c != 0xAA) {
-            disp = disp - hex;
-            disp = disp -2;//PC points to next instruction
-            disp = disp - Origin; 
-//            prs(", rel:"); printhex16(disp);
-        }
-            FileBin[hex] = disp;//fix low byte
-            hex++;
-            disp = disp >> 8;
-            FileBin[hex] = disp; 
+        hex = JmpAddr[i];  
+        FixOneJmp(hex);
         i++;  
     }
 }
 int fixJmpMain() {   
-    unsigned int hex; 
-    int Ix; char c;
     prs("\nfix jmp to main. resting global jmp: ");
     printIntU(JmpMaxIx);  
     if (JmpMaxIx ) error1("resting global jmp");
-        strcpy(Symbol, "main");
-        hex = 1;//first instruction, PC=1
-        Ix=searchLabel();
-        if (Ix == 0) notfounderror();
-        disp = LabelAddr[Ix];   
-        c = FileBin[hex];//look for 'A' push Absolute 
-        prs("\nmain ,Label+ORG:"); printhex16(disp);
-        if (c != 0xAA) {
-            disp = disp - hex;
-            disp = disp -2;//PC points to next instruction
-            disp = disp - Origin; 
-            prs(",rel:"); printhex16(disp);
-        }
-            FileBin[hex] = disp;//fix low byte
-            hex++;
-            disp = disp >> 8;
-            FileBin[hex] = disp; 
+    strcpy(Symbol, "main");
+    FixOneJmp(1);//first instruction, PC=1 
+    prs("\nmain ,Label+ORG:"); printhex16(disp);
 }
 
-
-int getCodes() {
-    OpCodePtr ++; Code1 = *OpCodePtr;
-    OpCodePtr ++; Code2 = *OpCodePtr;
-    OpCodePtr ++; Code3 = *OpCodePtr;
-}
 
 int process() {
     char c;
@@ -1077,7 +1054,9 @@ int process() {
     isDirect=1; //set in getMeM=0, need in WriteEA
     getTokeType();//0, DIGIT, ALNUME, NOALNUME
     OpSize=getCodeSize();//0, BYTE, WORD, DWORD
-    getCodes();//set: Code1, Code2, Code3
+    OpCodePtr ++; Code1 = *OpCodePtr;
+    OpCodePtr ++; Code2 = *OpCodePtr;
+    OpCodePtr ++; Code3 = *OpCodePtr;
 
     if (CodeType ==  1) {//1 byte opcode
         genCode8(Code1);
@@ -1087,17 +1066,22 @@ int process() {
     if (CodeType ==  2) {//inc,dec,not,neg,mul,imul,div,idiv
         getOpL();
         checkOpL();
-        if (Code2 <= 1) {//inc,dec
+        if (Code1 < 2) {//inc,dec
   	        if (Op == REG) {//short
-                if (wflag) {genCode2(Code3, R1No); return; }
+                if (wflag) {
+                    if (Code1) genCode2(0x48, R1No);//DEC
+                        else genCode2(0x40, R1No);//INC 
+                    return; 
+                    }
             }
         }
-        if (Code2 == 5) {//imul extension?
+        if (Code1 == 5) {//imul extension?
             getTokeType();
             if (TokeType) implerror();
         }
-        genCodeW(Code1);
-        writeEA(Code2);
+        if (Code1 < 2) genCodeW(0xFE);
+            else genCodeW(0xF6);
+        writeEA(Code1);
         return;
     }
 
@@ -1402,6 +1386,19 @@ int process() {
         }
     }
 
+    if (CodeType == 14) {//in, out
+        implerror();
+        return;   
+    }
+    if (CodeType == 15) {//xchg
+        implerror();
+        return;   
+    }
+    if (CodeType == 16) {//loop
+        implerror();
+        return;   
+    }
+
     if (CodeType == 30) {//enter i18,i8
         genCode8(0xC8);
         Op=getOp1();
@@ -1412,6 +1409,11 @@ int process() {
         if (Op == IMM) genCode8 (SymbolInt);
         else numbererror();
         return;
+    }
+
+    if (CodeType == 41) {//test
+        implerror();
+        return;   
     }
 
     if (CodeType == 51) {//movsx, movzx=51
