@@ -1,4 +1,4 @@
-char Version1[]="AS.C V0.2";//BAS.BAT, AS TE, NAS.BAT
+char Version1[]="AS.C V1.0";//BAS.BAT, AS TE, NAS.BAT
 //#include "DECL.C"
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
@@ -6,7 +6,6 @@ char SymbolUpper[SYMBOLMAX];//set toupper in getName
 char ProcName[SYMBOLMAX];//name of actual proc
 char isInProc=0;        //is inside a procedure
 unsigned int SymbolInt; //integer value set in getDigit
-unsigned long SymbolLong;//integer value set in getDigit
 #define INPUTBUFMAX 255
 char InputBuf[INPUTBUFMAX];//filled in getLine, no overflow test
 unsigned char *InputPtr;//position in InputBuf
@@ -83,7 +82,7 @@ unsigned int JmpAddr[JMPMAX];//addr to be fixed
 int JmpMaxIx=0;         //actual # of jmp, call. 1 to JMPMAX-1
 int tmpJmpMaxIx=0;      //set after PROC to JmpMaxIx
 
-#define FILEBINMAX 17000
+#define FILEBINMAX 22000
 char FileBin  [FILEBINMAX];//output binary file
 unsigned int BinLen=0;  //length of binary file
 
@@ -334,13 +333,14 @@ int errorexit(char *s) {
     epilog();
     end1(1);
 }
+int dataexit(){errorexit("DB,DW,DD or RESB,W,D expected");}
+
 int notfounderror(){
     ErrorCount++;
     prs("\n******* ERROR: label not found: ");
     prs(Symbol);
     prs(" ");
 }
-int allowederror() {error1("not allowed here"); }
 int addrerror()    {error1("address missing");}
 int immeerror()    {error1("immediate not allowed here");}
 int implerror()    {error1("not implemented");}
@@ -351,10 +351,6 @@ int regmemerror()  {error1("only register or memory allowed");}
 int reg16error()   {error1("only reg16, no segreg allowed");}
 int segregerror()  {error1("segment register not allowed");}
 int syntaxerror()  {error1("syntax");}
-
-int addrexit()     {errorexit("illegal address");}
-int dataexit()     {errorexit("DB,DW,DD or RESB,W,D expected");}
-int internexit()   {errorexit("intern compiler error");}
 
 int ifEOL(char c) {//unix LF, win CRLF= 13/10, mac CR
   if (c == 10) return 1;//LF
@@ -932,41 +928,6 @@ int getCodeSize() {
     return 0;
 }
 
-
-int getarg() {
-    int arglen1; int i; char *c;
-    arglen1=*arglen;
-    if (arglen1==0) {
-        cputs(Version1);
-        cputs(", Usage: AS.COM filename [w/o .S] : ");
-        exitR(3);
-    }
-    i=arglen1+129;
-    *i=0;
-    arglen1--;
-    toupper(argv);
-
-    strcpy(namein, argv); strcat1(namein, ".S");
-    strcpy(namelst,argv); strcat1(namelst,".LST");
-    strcpy(namebin,argv); strcat1(namebin,".COM");
-
-  DOS_ERR=0; PC=0; ErrorCount=0;
-
-    asm_fd=openR (namein);
-    if(DOS_ERR){cputs("Source file missing: ") ;cputs(namein );exitR(1);}
-    lst_fd=creatR(namelst);
-    if(DOS_ERR){cputs("List file not create: ");cputs(namelst);exitR(2);}
-    bin_fd=creatR(namebin);
-    if(DOS_ERR){cputs("COM file not create: ") ;cputs(namebin);exitR(2);}
-
-    prs(";");
-    prs(Version1);
-    prs(", Source: "); prs(namein);
-    prs(", Output: "); prs(namelst);
-    prs(", "); prs(namebin);
-    prs("\n");
-}
-
 int FixOneJmp(unsigned int hex) {
     int Ix; char c;
     Ix=searchLabel();
@@ -977,7 +938,6 @@ int FixOneJmp(unsigned int hex) {
         disp = disp - hex;
         disp = disp -2;//PC points to next instruction
         disp = disp - Origin; 
-        prs(",rel:"); printhex16(disp);
     }
     FileBin[hex] = disp;//fix low byte
     hex++;
@@ -987,7 +947,6 @@ int FixOneJmp(unsigned int hex) {
 int fixJmp() {   
     unsigned int hex; int i;
     char *p; 
-//    prs("\, jmp to fix:"); printIntU(JmpMaxIx);
     p = &JmpNames;
     i = 1;
     while (i <= JmpMaxIx) {
@@ -1000,12 +959,11 @@ int fixJmp() {
     }
 }
 int fixJmpMain() {   
-    prs("\nfix jmp to main. resting global jmp: ");
+    prs("\n Resting global jmp: ");
     printIntU(JmpMaxIx);  
     if (JmpMaxIx ) error1("resting global jmp");
     strcpy(Symbol, "main");
     FixOneJmp(1);//first instruction, PC=1 
-    prs("\nmain ,Label+ORG:"); printhex16(disp);
 }
 
 
@@ -1471,6 +1429,40 @@ int parse() {
         else if (TokeType==DIGIT ) error1("No digit allowed at start of line");
         printLine();
     } while (DOS_NoBytes != 0 );
+}
+
+int getarg() {
+    int arglen1; int i; char *c;
+    arglen1=*arglen;
+    if (arglen1==0) {
+        cputs(Version1);
+        cputs(", Usage: AS.COM filename [w/o .S] : ");
+        exitR(3);
+    }
+    i=arglen1+129;
+    *i=0;
+    arglen1--;
+    toupper(argv);
+
+    strcpy(namein, argv); strcat1(namein, ".S");
+    strcpy(namelst,argv); strcat1(namelst,".LST");
+    strcpy(namebin,argv); strcat1(namebin,".COM");
+
+  DOS_ERR=0; PC=0; ErrorCount=0;
+
+    asm_fd=openR (namein);
+    if(DOS_ERR){cputs("Source file missing: ") ;cputs(namein );exitR(1);}
+    lst_fd=creatR(namelst);
+    if(DOS_ERR){cputs("List file not create: ");cputs(namelst);exitR(2);}
+    bin_fd=creatR(namebin);
+    if(DOS_ERR){cputs("COM file not create: ") ;cputs(namebin);exitR(2);}
+
+    prs(";");
+    prs(Version1);
+    prs(", Source: "); prs(namein);
+    prs(", Output: "); prs(namelst);
+    prs(", "); prs(namebin);
+    prs("\n");
 }
 
 int main() {

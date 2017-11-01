@@ -1,1 +1,0 @@
-NASM.EXE -oT.COM -fbin -O1 -dENDP -dPROC -lTE.LS TE.S 
