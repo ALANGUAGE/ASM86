@@ -1,9 +1,9 @@
-char Version1[]="AS.C V1.0";//BAS.BAT, AS TE, NAS.BAT
-//#include "DECL.C"
+char Version1[]="AS.C V1.0";//Assembler like NASM
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName
 char ProcName[SYMBOLMAX];//name of actual proc
+char isPrint=1;         //print to screen on
 char isInProc=0;        //is inside a procedure
 unsigned int SymbolInt; //integer value set in getDigit
 #define INPUTBUFMAX 255
@@ -90,9 +90,8 @@ char *arglen=0x80;      // for main only
 char *argv=0x82;        // for main only
 
 
-//#include "HELPER.C"
 int writetty()     { ah=0x0E; bx=0; __emit__(0xCD,0x10); }
-int putch(char c)  {if (_ c==10) {al=13; writetty();} al=c; writetty(); }
+int putch(char c)  {if (c==10) {al=13; writetty();} al=c; writetty(); }
 int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
 
 int DosInt() {
@@ -204,12 +203,14 @@ int testReg() {
 
 
 int prc(unsigned char c) {//print char
-        if ( _ c==10) {
+    if (isPrint) {
+        if (c==10) {
             ax=13;
             writetty();
             }
         al=c;
-        writetty();
+        writetty(); 
+    }
     fputcR(c,lst_fd);
 }
 
@@ -260,7 +261,7 @@ int printhex16(unsigned int i) {
 }
 int printIntU(unsigned int n) {
     unsigned int e;
-    if ( _ n >= 10) {
+    if (n >= 10) {
         e=n/10; //DIV
         printIntU(e);
     }
@@ -322,6 +323,7 @@ int end1(int n) {
 
 
 int error1(char *s) {
+    isPrint=1;
     ErrorCount++;
     prs("\n******* next line ERROR: ");
     prs(s);
@@ -336,6 +338,7 @@ int errorexit(char *s) {
 int dataexit(){errorexit("DB,DW,DD or RESB,W,D expected");}
 
 int notfounderror(){
+    isPrint=1;
     ErrorCount++;
     prs("\n******* ERROR: label not found: ");
     prs(Symbol);
@@ -583,7 +586,7 @@ int genCode16(unsigned int i) {
 int genCode32(unsigned long L) {
     genCode16(L); L=L >>16;
     genCode16(L);
-} 
+}
 int writeEA(char xxx) {//value for reg/operand
 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
 //mod-bits: mode76, reg/opcode543, r/m210
@@ -611,7 +614,7 @@ int writeEA(char xxx) {//value for reg/operand
                 if (disp == 0) xxx |= 0x40;
             }
 
-            if (disp) {  
+            if (disp) {
                 ax = disp;
                 if (ax < 0) __asm{ neg ax }
                 if (ax > 127) len=2;
@@ -849,7 +852,7 @@ int genDB() {
     char c;  char isloop;
         isloop = 0;
             do {
-                if (isloop) getTokeType();//omit ,  
+                if (isloop) getTokeType();//omit ,
                 if (TokeType == DIGIT) genCode8(SymbolInt);
                 else {
                     skipBlank();
@@ -861,7 +864,7 @@ int genDB() {
                         } while (*InputPtr != '"' );
                         InputPtr++;
                     }
-                } 
+                }
                 isloop = 1;
             } while (isToken(','));
 }
@@ -932,38 +935,38 @@ int FixOneJmp(unsigned int hex) {
     int Ix; char c;
     Ix=searchLabel();
     if (Ix == 0) notfounderror();
-    disp = LabelAddr[Ix];   
-    c = FileBin[hex];//look for 'A' push Absolute 
+    disp = LabelAddr[Ix];
+    c = FileBin[hex];//look for 'A' push Absolute
     if (c != 0xAA) {
         disp = disp - hex;
         disp = disp -2;//PC points to next instruction
-        disp = disp - Origin; 
+        disp = disp - Origin;
     }
     FileBin[hex] = disp;//fix low byte
     hex++;
     disp = disp >> 8;
-    FileBin[hex] = disp;     
+    FileBin[hex] = disp;
 }
-int fixJmp() {   
+int fixJmp() {
     unsigned int hex; int i;
-    char *p; 
+    char *p;
     p = &JmpNames;
     i = 1;
     while (i <= JmpMaxIx) {
         strcpy(Symbol, p);
         p = strlen(Symbol) + p;
         p++;
-        hex = JmpAddr[i];  
+        hex = JmpAddr[i];
         FixOneJmp(hex);
-        i++;  
+        i++;
     }
 }
-int fixJmpMain() {   
+int fixJmpMain() {
     prs("\n Resting global jmp: ");
-    printIntU(JmpMaxIx);  
+    printIntU(JmpMaxIx);
     if (JmpMaxIx ) error1("resting global jmp");
     strcpy(Symbol, "main");
-    FixOneJmp(1);//first instruction, PC=1 
+    FixOneJmp(1);//first instruction, PC=1
 }
 
 
@@ -989,8 +992,8 @@ int process() {
   	        if (Op == REG) {//short
                 if (wflag) {
                     if (Code1) genCode2(0x48, R1No);//DEC
-                        else   genCode2(0x40, R1No);//INC 
-                    return; 
+                        else   genCode2(0x40, R1No);//INC
+                    return;
                     }
             }
         }
@@ -1009,7 +1012,7 @@ int process() {
         if (R1Type != WORD) reg16error();//only r16
         if (Op2 != MEM) addrerror();//only m16
 
-        if (Code1 >= 0xB2) {   
+        if (Code1 >= 0xB2) {
             if (Code1 <= 0xB5) genCode8(0x0F);//lss,lfs,lgs
         }
         genCode8(Code1);
@@ -1019,8 +1022,8 @@ int process() {
     }
 
     if (CodeType == 4) {//add,or,adc,sbb,and,sub,xor,cmp,->test
-        check2Ops();  
-        if (Op2 == ADR) {  
+        check2Ops();
+        if (Op2 == ADR) {
             if (LabelIx == 0) notfounderror();
             imme=LabelAddr[LabelIx];
             Op2=IMM;//got the addr and fall through
@@ -1191,7 +1194,7 @@ int process() {
                 }
             }
             else {//jump forward, near only
-                genCode8(Code1);  
+                genCode8(Code1);
                 if (PC != 1) storeJmp();//omit jmp main
                 genCode16(0);
                 PrintRA='R';
@@ -1221,7 +1224,7 @@ int process() {
                 else       genCode16(imme);
                 return;
             }
-            if (Op == ADR) {//push string ABSOLUTE i16 
+            if (Op == ADR) {//push string ABSOLUTE i16
                 if (disp) {
                     genCode8(0x68);
                     genCode16(disp);
@@ -1249,8 +1252,8 @@ int process() {
                 else c += 7;//pop
             genCode8(c);
             return;
-        }        
-        checkOpL();//sorts out:ADR,SEGREG  resting: REG, MEM    
+        }
+        checkOpL();//sorts out:ADR,SEGREG  resting: REG, MEM
 
         if (Op == MEM) {
             if (Code1 == 0x50) {//push word [bp+6]
@@ -1261,12 +1264,12 @@ int process() {
                 writeEA(0);
             }
             return;
-        }        
+        }
         if (R1Type == BYTE) reg16error();
         if (R1Type == WORD) {//is REG, w/o SEGREG
             genCode2(Code1, R1No);
             return;
-        }          
+        }
         syntaxerror();
         return;
     }
@@ -1306,15 +1309,15 @@ int process() {
 
     if (CodeType == 14) {//in, out
         implerror();
-        return;   
+        return;
     }
     if (CodeType == 15) {//xchg
         implerror();
-        return;   
+        return;
     }
     if (CodeType == 16) {//loop
         implerror();
-        return;   
+        return;
     }
 
     if (CodeType == 30) {//enter i18,i8
@@ -1331,12 +1334,12 @@ int process() {
 
     if (CodeType == 41) {//test
         implerror();
-        return;   
+        return;
     }
 
     if (CodeType == 51) {//movsx, movzx=51
         implerror();
-        return;   
+        return;
     }
 
     if (CodeType==101) {//ORG nn
@@ -1368,7 +1371,7 @@ int process() {
         } else error1("already in PROC");
         return;
     }
-    if (CodeType == 112) {//ENDP 
+    if (CodeType == 112) {//ENDP
         if (isInProc == 0) error1("not in PROC");
         prs("\nleaving: ");
         prs(ProcName);
@@ -1377,20 +1380,20 @@ int process() {
         printIntU(i);
         prs(", loc jmp forward: ");
         i = JmpMaxIx - tmpJmpMaxIx;
-        printIntU(i);        
+        printIntU(i);
         fixJmp();
         isInProc=0;
         LabelNamePtr = tmpLabelNamePtr;//delete local Labels
-        LabelMaxIx   = tmpLabelMaxIx;                       
+        LabelMaxIx   = tmpLabelMaxIx;
         JmpNamePtr   = tmpJmpNamePtr;//delete local Jmp
         JmpMaxIx     = tmpJmpMaxIx;
         return;
-    } 
-    if (CodeType == 200) {//db  
+    }
+    if (CodeType == 200) {//db
         genDB();
         return;
     }
-    
+
     error1("Command not implemented or syntax error");
 }
 
@@ -1401,6 +1404,7 @@ int parse() {
     JmpMaxIx=0;
     BinLen=0;
     isInProc=0;
+    isPrint=0;
 
     do {//process a new line
         PCStart=PC;
@@ -1429,6 +1433,7 @@ int parse() {
         else if (TokeType==DIGIT ) error1("No digit allowed at start of line");
         printLine();
     } while (DOS_NoBytes != 0 );
+    isPrint=1;
 }
 
 int getarg() {
