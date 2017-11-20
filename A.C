@@ -1,0 +1,1461 @@
+char Version1[]="A.COM V0.9.5";//todo: 2. op=reg not recognized
+#define IDLENMAX       15//max length of names
+#define COLUMNMAX     128//output, input is 100
+#define T_NAME        256//the following defines for better clearity
+#define T_CONST       257
+#define T_STRING      258
+#define T_DEFINE      511
+#define T_RETURN      512
+#define T_IF          513
+#define T_ELSE        514
+#define T_WHILE       515
+#define T_DO          516
+#define T_INT         517
+#define T_ASM         518
+#define T_ASMBLOCK    519
+#define T_EMIT        520
+#define T_GOTO        521
+#define T_VOID        529
+#define T_CHAR        530
+#define T_SIGNED      531
+#define T_UNSIGNED    532
+#define T_LONG        533
+#define T_EQ          806
+#define T_NE          807
+#define T_GE          811
+#define T_LE          824
+#define T_PLUSPLUS   1219
+#define T_MINUSMINUS 1225
+#define T_PLUSASS    1230
+#define T_MINUSASS   1231
+#define T_MULASS     1232
+#define T_DIVASS     1233
+#define T_ANDASS     1234
+#define T_ORASS      1235
+#define T_LESSLESS   1240
+#define T_GREATGREAT 1241
+
+char isPrint=1;//set screen listing
+unsigned int ORGDATAORIG=25000;//start of arrays, end of text
+unsigned int orgData;//actual max of array, must be less than stack
+#define COMAX        3000
+char co[COMAX];//constant storage
+int maxco=0;
+int maxco1=0;
+#define CMDLENMAX      67
+char symbol[COLUMNMAX];
+char fname[CMDLENMAX];
+char namein[CMDLENMAX];
+char namelst[CMDLENMAX];
+char *cloc=0;
+int fdin=0;
+int fdout=0;
+int token=0;
+int column=0;
+char thechar=0;   //reads one char forward
+int iscmp=0;
+int nconst=0;
+int nreturn=0;
+int nlabel=0;
+unsigned int lexval=0;
+int typei;       char istype;
+int signi;       char issign;
+int widthi;      char iswidth;
+int wi=0;
+#define VARMAX        400//max global and local var
+#define LSTART        200//max global var
+#define GNAMEMAX     6400// 16*VARMAX
+char GType [VARMAX]; // 0=V, 1=*, 2=&,#
+char GSign [VARMAX]; // 0=U, 1=S
+char GWidth[VARMAX]; // 0, 1, 2, 4
+int GData [VARMAX];
+char GNameField[GNAMEMAX];
+int GTop=1;
+int LTop=LSTART;
+#define FUNCMAX       300//max functions
+#define FNAMEMAX     4800// 16*FUNCMAX
+char FNameField[FNAMEMAX];
+int  FTop=0;
+char fgetsdest[COLUMNMAX];
+unsigned char *fgetsp=0;
+unsigned int lineno=1;
+unsigned char *pt=0;
+unsigned char *p1=0;
+int DOS_ERR=0;
+int DOS_NoBytes=0;
+char DOS_ByteRead=0;
+int ireg1;
+int mod2;
+int ireg2;
+
+int writetty()     {ah=0x0E; bx=0; __emit__(0xCD,0x10); }
+int putch(char c)  {if (c==10)  {al=13; writetty();} al=c; writetty(); }
+int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
+int mkneg(int n)   { n; __asm {neg ax} }
+
+int DosInt() {
+    __emit__(0xCD,0x21);//inth 0x21;
+    __emit__(0x73, 04); //ifcarry DOS_ERR++;
+    DOS_ERR++;
+}
+int openR (char *s) { dx=s;       ax=0x3D02; DosInt(); }
+int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
+int fcloseR(int fd) {bx=fd;       ax=0x3E00; DosInt(); }
+int exitR  (char c) {ah=0x4C; al=c;          DosInt(); }
+int readRL(char *s, int fd, int len){
+    dx=s; cx=len; bx=fd; ax=0x3F00; DosInt();}
+int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
+    cx=1; bx=fd; ax=0x4000; DosInt(); }
+
+int letter(char c) {
+      if (c=='_') return 1;
+      if (c=='.') return 1;
+      if (c=='?') return 1;
+      if (c=='$') return 1;
+      if (c> 'z') return 0;
+      if (c< '@') return 0;// at included
+      if (c> 'Z') { if (c< 'a') return 0; }
+      return 1;
+}
+int digit(char c){
+      if(c<'0') return 0;
+      if(c>'9') return 0;
+      return 1;
+}
+int alnum(char c) {
+    if (digit (c)) return 1;
+    if (letter(c)) return 1;
+    return 0;
+}
+
+int strlen(char *s) { int c;
+    c=0;
+    while (*s!=0) {s++; c++;}
+    return c;
+}
+int strcpy(char *s, char *t) {
+    do { *s=*t; s++; t++; }
+    while (*t!=0);
+    *s=0;
+    return s;
+}
+int eqstr(char *p, char *q) {
+    while(*p) {
+        if (*p != *q) return 0;
+        p++;
+        q++;
+    }
+    if(*q) return 0;
+    return 1; }
+int strcat1(char *s, char *t) {
+    while (*s != 0) s++;
+    strcpy(s, t);
+}
+int toupper(char *s) {
+    while(*s) {
+        if (*s >= 'a') if (*s <= 'z') *s=*s-32;
+        s++;
+    }
+}
+int instr1(char *s, char c) {
+    while(*s) {
+        if (*s==c) return 1;
+        s++;
+    }
+    return 0;
+}
+
+int eprc(char c)  {
+    *cloc=c;
+    cloc++;
+}
+int eprs(char *s) {
+    char c;
+    while(*s) {
+        c=*s;
+        eprc(c);
+        s++;
+    }
+}
+
+int prc(unsigned char c) {
+    if (isPrint) {
+        if (c==10) {
+            ax=13;
+            writetty();
+        }
+        al=c;
+        writetty();
+    }
+    fputcR(c, fdout);
+}
+
+int prscomment(unsigned char *s) {
+    unsigned char c;
+    while(*s){
+        c=*s;
+        prc(c);
+        s++;
+    }
+}
+
+int prs(unsigned char *s) {
+    unsigned char c; int com;
+    com=0;
+    while(*s) {
+        c=*s;
+        if (c==34) if (com) com=0;
+                   else com=1;
+        if (c==92) {
+            if (com==0) {
+                s++;
+                c=*s;
+                if (c=='n') c=10;
+                if (c=='t') c= 9;
+            }
+        }
+        prc(c);
+        s++;
+    }
+}
+
+int eprnum(int n){//for docall1 procedure
+    int e;
+    if(n<0) {
+        eprc('-');
+        n=mkneg(n);
+    }
+    if (n >= 10) {
+        e=n/10;
+        eprnum(e);
+    }
+    n=n%10;
+    n=n+'0';
+    eprc(n);
+}
+
+int pint1 (int n){
+    int e;
+    if(n<0) {  prc('-');  n=mkneg(n); }
+    if (n >= 10) {
+        e=n/10;
+        pint1(e);
+    }
+    n=n%10;
+    n += '0';
+    prc(n);
+}
+
+int prunsign1(unsigned int n) {
+    unsigned int e;
+    if (n >= 10) {
+        e=n/10;
+        prunsign1(e);
+    }
+    n = n % 10; /*unsigned mod*/
+    n += '0';
+    prc(n);
+}
+
+int end1(int n) {
+    fcloseR(fdin);
+    fcloseR(fdout);
+    exitR(n);
+}
+
+int error1(char *s) {
+    isPrint=1;
+    lineno--;
+    prs("\n ");
+    prscomment(&fgetsdest);
+    prs(";Line: ");
+    prunsign1(lineno);
+    prs(" ************** ERROR: ");
+    prs(s);
+    prs("  in column: ");
+    prunsign1(column);
+    prs("\nToken: ");
+    prunsign1(token);
+    prs(", symbol: ");
+    prs(symbol);
+    end1(1);
+}
+
+int printinputline() {
+    int col;
+    col=0;
+    fgetsp=&fgetsdest;
+    do {
+        DOS_NoBytes=readRL(&DOS_ByteRead, fdin, 1);
+        if (DOS_NoBytes == 0) return;
+        *fgetsp=DOS_ByteRead;
+        fgetsp++;
+        col++;
+        if (col >100) error1("input line longer than 100 char");
+        }
+        while (DOS_ByteRead != 10);
+    *fgetsp=0;
+    if (fdout) {
+        prs("\n\n;-");
+        prunsign1(lineno);
+        prc(' ');
+        lineno++;
+        prscomment(&fgetsdest);
+        }
+}
+
+int fgets1() {
+    char c;
+    c=*fgetsp;
+    if (c==0) {
+        printinputline();
+        if (DOS_NoBytes == 0) return 0;
+        fgetsp=&fgetsdest;
+        c=*fgetsp;
+        column=0;
+    }
+    fgetsp++;
+    column++;
+    return c;
+}
+
+int next() {
+    char r;
+    r = thechar;
+    thechar = fgets1();
+    return r;
+}
+
+int adrF(char *s, unsigned int i) {
+    i << 4;//*16; IDLENMAX=15!
+    __asm{ add ax, [bp+4]  ; offset s }
+}
+
+int printName(unsigned int i) {
+    int j;
+    if (i < LSTART) {
+        i=adrF(GNameField, i);
+        prs(i);
+    }
+    else {
+        prs("[bp");
+        j = GData[i];
+        if (j>0) prc('+');
+        pint1(j);
+        prc(']');
+    }
+}
+
+int ifEOL(char c) {//unix LF, win CRLF= 13/10, mac CR
+    if (c == 10) return 1;//LF
+    if (c == 13) {//CR
+        if (thechar == 10) c=next();
+        return 1;
+    }
+    return 0;
+}
+
+char symboltemp[80];
+
+int getlex() {
+    char c; char *p;
+    int i; int j;
+g1: c=next();
+    if (c == 0) return 0;
+    if (c <= ' ') goto g1;
+  if (c=='=') {if(thechar=='=') {next(); return T_EQ; }}
+  if (c=='!') {if(thechar=='=') {next(); return T_NE; }}
+  if (c=='<') {if(thechar=='=') {next(); return T_LE; }}
+  if (c=='>') {if(thechar=='=') {next(); return T_GE; }}
+  if (c=='<') {if(thechar=='<') {next(); return T_LESSLESS;  }}
+  if (c=='>') {if(thechar=='>') {next(); return T_GREATGREAT;}}
+  if (c=='+') {if(thechar=='+') {next(); return T_PLUSPLUS;  }}
+  if (c=='-') {if(thechar=='-') {next(); return T_MINUSMINUS;}}
+  if (c=='+') {if(thechar=='=') {next(); return T_PLUSASS;   }}
+  if (c=='-') {if(thechar=='=') {next(); return T_MINUSASS;  }}
+  if (c=='&') {if(thechar=='=') {next(); return T_ANDASS;    }}
+  if (c=='|') {if(thechar=='=') {next(); return T_ORASS;     }}
+  if (c=='*') {if(thechar=='=') {next(); return T_MULASS;    }}
+  if (c=='/') {if(thechar=='=') {next(); return T_DIVASS;    }}
+  if (instr1("()[]{},;*:%-><=+!&|#?", c)) return c ;
+  if (c == '/') {
+      if (thechar == '/') {
+          do c=next();
+          while(ifEOL(c)==0) return getlex();
+      }
+  }
+  if (c == '/') {
+      if (thechar == '*') {
+          g2: c=next();
+          if (c != '*') goto g2;
+          if (thechar != '/') goto g2;
+          c=next();
+          return getlex();
+      } else  return '/';
+  }
+  if (c == '"') {
+      p=&symbol;
+      c=next();
+      while (c != '"') {
+          *p=c;
+          p++;
+          c=next();
+          }
+          *p=0;
+      return T_STRING;
+  }
+  if (digit(c)) {
+      lexval=0;
+      lexval=c-'0'; // lexval=int hi=0, c=char
+      if (thechar=='x') thechar='X';
+      if (thechar=='X') {
+          next();
+          while(alnum(thechar)) {
+              c=next();
+              if(c>96) c=c-39;
+      	       if (c>64) c=c-7;
+               c=c-48;
+               lexval=lexval << 4; // * 16
+               i=0;
+               i=c;
+               lexval=lexval+i;
+           }
+       }else {
+           while(digit(thechar)) {
+               c=next();
+               c=c-48;
+               lexval=lexval*10;
+               i=0;
+               i=c;
+               lexval=lexval+i;
+           }
+       }
+      return T_CONST;
+  }
+  if (c==39) {
+      lexval=next();
+      if (lexval==92) {
+          lexval=next();
+          if (lexval=='n') lexval=10;
+          if (lexval=='t') lexval= 9;
+          if (lexval=='0') lexval= 0;
+      }
+      next();
+      return T_CONST;
+  }
+  if (alnum(c)) {
+    strcpy(symboltemp, symbol);
+    p=&symbol;
+    *p=c;
+    p++;
+    while(alnum(thechar)) {
+        c=next();
+        *p=c;
+        p++;
+    }
+    *p=0;
+    if (eqstr(symbol,"signed"  )) return T_SIGNED;
+    if (eqstr(symbol,"unsigned")) return T_UNSIGNED;
+    if (eqstr(symbol,"void"    )) return T_VOID;
+    if (eqstr(symbol,"int"     )) return T_INT;
+    if (eqstr(symbol,"long"    )) return T_LONG;
+    if (eqstr(symbol,"char"    )) return T_CHAR;
+    if (eqstr(symbol,"asm"     )) return T_ASM;
+    if (eqstr(symbol,"__asm"   )) return T_ASMBLOCK;
+    if (eqstr(symbol,"__emit__")) return T_EMIT;
+    if (eqstr(symbol,"return"  )) return T_RETURN;
+    if (eqstr(symbol,"if"      )) return T_IF;
+    if (eqstr(symbol,"else"    )) return T_ELSE;
+    if (eqstr(symbol,"while"   )) return T_WHILE;
+    if (eqstr(symbol,"do"      )) return T_DO;
+    if (eqstr(symbol,"goto"    )) return T_GOTO;
+    if (eqstr(symbol,"define"  )) return T_DEFINE;
+
+    i=0;//convert define to value
+    while (i < GTop) {
+        j=adrF(GNameField, i);
+        if (eqstr(symbol,j)) {
+            if (GType[i]=='#') {
+                lexval=GData[i];
+                strcpy(symbol, symboltemp);
+                return T_CONST;
+            }
+        }
+        i++;
+    }
+    return T_NAME; } error1("Input item not recognized");
+}
+
+int istoken(int t) {
+    if (token == t) {
+        token=getlex();
+        return 1;
+    }
+    return 0;
+}
+
+int expect(int t) {
+    if (istoken(t)==0) {
+        *cloc=0;
+        prs(co);
+        prs("\nExpected ASCII(dez): ");
+        pint1(t);
+        error1(" not found");
+    }
+}
+
+int v(unsigned int i) {//value
+    if (i < LSTART) prc('[');
+    printName(i);
+    if (i < LSTART) prc(']');
+}
+int checknamelen() {
+    int i;
+    i=strlen(symbol);
+    if (i > IDLENMAX) error1("Item name is too long in characters)");
+}
+
+int checkName() { 
+    unsigned int i; unsigned int j;
+    i=LSTART;
+    while(i<LTop) {
+        j=adrF(GNameField, i);
+        if(eqstr(symbol,j))return i;
+        i++;
+    }
+    i=1;
+    while(i<GTop) {
+        j=adrF(GNameField, i);
+        if(eqstr(symbol,j))return i;
+        i++;
+    }
+    return 0;
+}
+
+int searchname() { 
+    unsigned int i;
+    i=checkName(); 
+    if (i == 0) error1("Variable unknown");
+    return i;
+}
+
+int name1() {
+    if (token!=T_NAME) error1("Name expected");
+    token=getlex();
+}
+
+int typeName() { 
+    int m; //0=V,1=*,2=&
+    issign='S';
+    if(istoken(T_SIGNED))   issign='S';
+    if(istoken(T_UNSIGNED)) issign='U';
+    iswidth=2;
+    if(istoken(T_VOID))     iswidth=0;
+    if(istoken(T_CHAR))     iswidth=1;
+    if(istoken(T_INT))      iswidth=2;
+    if(istoken(T_LONG))     iswidth=4;
+    istype='V';
+    m=0;
+    if(istoken('*'))  {istype='*'; m=1;}
+    if(istoken('&'))  {istype='&'; m=2;}
+    name1();
+    return m;
+}
+
+int gettypes(int i) {
+    int j; char c;
+    c=GSign [i]; 
+    if (c=='S') signi =1;  else signi =0;
+    c=GWidth[i]; 
+    widthi=0;
+    wi=0;
+    if (c==1) {widthi=1;wi=1;}
+    if (c==2) {widthi=2;wi=2;}
+    if (c==4) {widthi=4;wi=4;}
+    c=GType [i]; 
+    typei=0; 
+    if (c=='*') {typei=1;wi=2;}
+    if (c=='&')  typei=2;
+    return i; 
+}
+
+int addlocal() { 
+    if(LTop >= VARMAX) error1("Local variable table full");
+    if (checkName() != 0) error1("Variable already defined");
+    GSign[LTop]=issign; 
+    GWidth[LTop]=iswidth; 
+    GType[LTop]=istype;
+    pt=adrF(GNameField, LTop); 
+    strcpy(pt, symbol);
+}
+
+
+int cmpneg(int ids) {
+       if(iscmp==T_EQ) prs("\n jne .");         //ZF=0
+  else if(iscmp==T_NE) prs("\n je  .");         //ZF=1
+  else if(iscmp==T_LE) if (ids) prs("\n jg  .");//ZF=0      SF =OF
+                           else prs("\n ja  .");//ZF=0 CF=0
+  else if(iscmp==T_GE) if (ids){prs(" ;unsigned : "); prunsign1(ids);
+                               prs("\n jl  .");}//          SF!=OF
+                           else{prs(" ;unsigned : "); prunsign1(ids);
+                               prs("\n jb  .");}//jb=jc=CF=1
+  else if(iscmp=='<' ) prs("\n jge .");         //          SF =OF
+  else if(iscmp=='>' ) prs("\n jle .");         //ZF=1 oder SF!=OF
+  else error1("internal error compare unknown in CMPNEG()");  
+}
+
+int isrelational() {
+    if (token==T_EQ) goto w; 
+    if (token==T_NE) goto w;
+    if (token==T_LE) goto w; 
+    if (token==T_GE) goto w;
+    if (token=='<' ) goto w; 
+    if (token=='>' ) goto w;
+    return 0;  
+w:  iscmp=token; 
+    token=getlex(); 
+    return 1;
+}
+
+int checkreg() { // >=17 = 16bit, >=47 = 32bit
+  if (strlen(symbol) <  2) return 0;
+  if (eqstr(symbol,"al")) return 1;   if (eqstr(symbol,"cl")) return 3;
+  if (eqstr(symbol,"dl")) return 5;   if (eqstr(symbol,"bl")) return 7;
+  if (eqstr(symbol,"ah")) return 9;   if (eqstr(symbol,"ch")) return 11;
+  if (eqstr(symbol,"dh")) return 13;  if (eqstr(symbol,"bh")) return 15;
+  if (eqstr(symbol,"ax")) return 17;  if (eqstr(symbol,"cx")) return 19;
+  if (eqstr(symbol,"dx")) return 21;  if (eqstr(symbol,"bx")) return 23;
+  if (eqstr(symbol,"sp")) return 25;  if (eqstr(symbol,"bp")) return 27;
+  if (eqstr(symbol,"si")) return 29;  if (eqstr(symbol,"di")) return 31;
+  if (eqstr(symbol,"es")) return 33;  if (eqstr(symbol,"cs")) return 35;
+  if (eqstr(symbol,"ss")) return 37;  if (eqstr(symbol,"ds")) return 39;
+  if (eqstr(symbol,"fs")) return 41;  if (eqstr(symbol,"gs")) return 43;
+  // (eqstr(symbol,"ip")) return 45;
+  if (strlen(symbol) >   3) return 0;
+  if (eqstr(symbol,"eax")) return 47; if (eqstr(symbol,"ecx")) return 50;
+  if (eqstr(symbol,"edx")) return 53; if (eqstr(symbol,"ebx")) return 56;
+  if (eqstr(symbol,"esp")) return 59; if (eqstr(symbol,"ebp")) return 62;
+  if (eqstr(symbol,"esi")) return 65; if (eqstr(symbol,"edi")) return 68;
+//  if (eqstr(symbol,"cr0")) return 71;
+  return 0;   
+}
+
+char printregstr[]
+="*alcldlblahchdhbhaxcxdxbxspbpsidiescsssdsfsgsipeaxecxedxebxespebpesiedi";
+
+int printreg(int i) {  
+    unsigned int k; unsigned char c;
+    k = &printregstr + i; 
+    c=*k; 
+    prc(c);
+    i++;
+    k = &printregstr + i; 
+    c=*k; 
+    prc(c);
+    if (i > 47) { 
+        i++; 
+        k = &printregstr + i; 
+        c=*k; 
+        prc(c); 
+        }
+}
+
+char ops[5];
+int doreg1(int iscmp1) { 
+    int i;
+    if (istoken('='))          strcpy(ops, "mov");
+    if (istoken(T_PLUSASS))    strcpy(ops, "add");
+    if (istoken(T_MINUSASS))   strcpy(ops, "sub");
+    if (istoken(T_ANDASS))     strcpy(ops, "and");
+    if (istoken(T_ORASS))      strcpy(ops, "or" );
+    if (istoken(T_LESSLESS))   strcpy(ops, "shl");
+    if (istoken(T_GREATGREAT)) strcpy(ops, "shr");
+    if (iscmp1 == 1) { 
+            token=getlex();
+            if (isrelational() ==0) error1("Relational expected");
+            strcpy(ops, "cmp"); 
+        }
+    prs("\n "); 
+    prs(ops); 
+    prs("  "); 
+    printreg(ireg1); 
+    prs(", ");
+
+    if (istoken(T_CONST)) {
+        prunsign1(lexval); 
+        goto reg1;
+        }
+    mod2=typeName(); 
+    ireg2=checkreg();
+    if (ireg2) {
+        printreg(ireg2); 
+        goto reg1;
+        }
+    i=searchname();  
+    if (mod2 == 2) printName(i); 
+        else v(i);
+reg1: if (iscmp1 == 1) {
+    cmpneg(0); 
+    prs(fname); 
+    expect(')'); 
+    }
+}
+
+int compoundass(char *op, int mode, int id1) {
+    if(mode) error1("only scalar variable allowed");
+    prs("\n "); 
+    prs(op); 
+    prs("  ");
+    gettypes(id1); 
+    if (wi==2) prs("word"); 
+        else prs("byte");
+    v(id1); 
+    prs(", ");
+    expect(T_CONST); 
+    prunsign1(lexval);
+}
+
+int dovar1(int mode, int op, int ixarr, int id1) {
+    gettypes(id1);
+    if (mode==1) {
+        prs("\n mov bx, "); 
+        v(id1); prs("\n "); 
+        prs(op);
+        if(widthi == 1) prs(" al, [bx]\n mov ah, 0");
+        if(widthi == 2) prs(" ax, [bx]");
+        return; 
+        }
+    if (mode==2){
+        prs("\n ");
+        prs(op);
+        prs(" ax, "); 
+        printName(id1); 
+        return; 
+        }
+    if (ixarr) {
+        prs("\n mov bx, "); 
+        v(ixarr);
+        if (wi==2) prs("\n shl bx, 1");
+        prs("\n "); 
+        prs(op);
+        if (wi==2) prs(" ax, "); 
+            else prs(" al, ");
+        prc('['); 
+        printName(id1); 
+        prs(" + bx]");
+        return; 
+        }
+    prs("\n ");
+    prs(op);
+    if(wi==1) prs(" al, ");
+    if(wi==2) prs(" ax, ");
+    if(wi==4) prs(" eax, ");
+    v(id1);
+}
+
+int rterm(char *op) {
+    int mode; int opint; int ixarr; int id1;
+    if (istoken(T_CONST)) { 
+        prs("\n "); 
+        prs(op);
+        if (wi==1) prs(" al, ");
+        if (wi==2) prs(" ax, ");
+        if (wi==4) prs(" eax, ");
+        prunsign1(lexval); 
+        return;
+        }
+    mode=typeName(); 
+    id1=searchname(); 
+    ixarr=0;
+    if (istoken('[')) { 
+        ixarr=searchname(); 
+        expect(T_NAME); 
+        expect(']');
+        gettypes(ixarr);
+        if (widthi != 2) error1("Array index must be int"); 
+        }
+    if (eqstr(symbol,"ax")) return;
+    opint=op; 
+    dovar1(mode, opint, ixarr, id1);
+}
+
+int doassign(int mode, int i, int ixarr, int ixconst) {
+    gettypes(i);
+    if (mode==1) {
+        prs("\n mov  bx, ");
+        v(i);
+        if (widthi == 2) prs("\n mov  [bx], ax");
+            else  prs("\n mov  [bx], al"); 
+        return;
+        }
+    if (mode==2) {
+        prs("\n mov  ");
+        printName(i); 
+        prs(", ax"); 
+        return;
+        }
+    if (ixarr) {  
+        prs("\n mov bx, ");
+        if(ixconst) prunsign1(ixarr); 
+            else v(ixarr);
+        if (wi==2) prs("\n shl bx, 1");
+        prs("\n mov [");
+        printName(i);
+        if (wi==2) prs("+bx], ax"); 
+            else prs("+bx], al"); 
+        return;
+        }
+    if (wi==1){
+        prs("\n mov ");
+        if(i<LSTART) prs("byte ");
+        v(i); 
+        prs(", al"); 
+        return; 
+        }
+    if (wi==2){
+        prs("\n mov ");
+        if(i<LSTART) prs("word ");
+        v(i); 
+        prs(", ax"); 
+        return; 
+        }
+    if (wi==4){
+        prs("\n mov ");
+        if(i<LSTART) prs("dword ");
+        v(i); 
+        prs(", eax"); 
+        return; 
+        }
+}
+
+int domul(int ids) {
+    if (ids) rterm("imul"); 
+        else {
+        if (istoken(T_CONST)) {
+            prs("\n mov bx, "); 
+            prunsign1(lexval); 
+            prs("\n mul bx");
+            }
+        else error1("with MUL only const number as multiplicator allowed"); 
+        } 
+}
+
+int doidiv(int ids) { 
+    int mode; int id1;
+    if (istoken(T_CONST)) {
+        prs("\n mov bx, "); 
+        prunsign1(lexval);
+        if (ids) prs("\n cwd\n idiv bx"); 
+            else prs("\n mov dx, 0\n div bx"); 
+        }
+    else {
+        mode=typeName(); 
+        id1=searchname();
+        if (mode) error1("only const number or int as divisor allowed");
+        gettypes(id1);
+        if (typei) error1("only int as simple var divisor allowed");
+        if (wi!=2) error1("only int, no byte as divisor allowed");
+        prs("\n mov bx, "); 
+        v(id1);
+        if (ids) prs("\n cwd\n idiv bx"); 
+            else prs("\n mov dx, 0\n div bx"); 
+    }
+}
+
+int domod(int ids) { 
+    doidiv(ids); 
+    prs("\n mov ax, dx"); 
+}
+
+
+int docalltype[10]; int docallvalue[10];
+char procname[17]; // 1=CONST, 2=String, 3=&, 4=Name 5=register
+
+int docall1() {
+    int i; int narg; int t0; int n0;  int sz32;
+    narg=0;  
+    sz32=0;
+    checknamelen();
+    strcpy(&procname, symbol);
+    expect('(');
+	if (istoken(')') ==0 ) {
+	    do { 
+	        narg++;
+	        if (narg >9 ) error1("Max. 9 parameters");  
+	        t0=0;
+            if(istoken(T_CONST)) {
+                t0=1; 
+                n0=lexval; 
+                }
+            if(istoken(T_STRING)){
+                t0=2; 
+                n0=nconst;
+                eprs("\n"); 
+                eprs(fname); 
+                eprc(95);
+                eprnum(nconst);
+                eprs(" db ");
+                eprc(34);
+                eprs(symbol);
+                eprc(34);
+                eprs(",0"); 
+                nconst++; 
+                }
+            if(istoken('&'))     {
+                t0=3; 
+                name1(); 
+                n0=searchname();
+                }
+            if(istoken(T_NAME))  { 
+                n0=checkreg();
+                if (n0) t0=5;
+                else {
+                    t0=4; 
+                    n0=searchname();
+                    p1=&GType; 
+                    p1=p1+n0; 
+                    if (*p1=='&') t0=3; 
+                    }
+                }
+            if (t0==0) error1("parameter not recognized (no * allowed)");
+            docalltype [narg] = t0;
+            docallvalue[narg] = n0;
+        } while (istoken(','));
+
+  	expect(')');  
+  	i=narg;
+    do {
+        t0 = docalltype [i];
+        n0 = docallvalue[i];
+        if(t0==1){ 
+            prs("\n push "); 
+            prunsign1(n0);
+            }
+        if(t0==2){ 
+            prs("\n push ");
+            prs(fname);
+            prc(95);
+            prunsign1(n0);
+            }
+        if(t0==3){ 
+            prs("\n lea  ax, ");   
+            v(n0);
+            prs("\n push ax");
+            }
+        if(t0==4){ 
+            gettypes(n0);
+            if(wi==2) { 
+                prs("\n push word "); 
+                v(n0);
+                }
+            else { 
+                prs("\n mov al, byte ");   
+                v(n0);
+                prs("\n mov ah, 0\n push ax"); 
+                } 
+            }
+        if(t0==5){ 
+            prs("\n push "); 
+            printreg(n0); 
+            if (n0 >= 47) sz32+2;  
+            }
+        i--; 
+        } while (i > 0);  
+    }
+	prs("\n call ");
+	prs(&procname);
+	if (narg>0) {
+	    prs("\n add  sp, ");
+        narg=narg+narg; 
+        narg=narg+sz32; 
+        prunsign1(narg); 
+        }
+}
+
+
+int expr() { 
+    int mode;   int id1;     
+    int ixarr;  int ixconst;
+    int ids;    int isCONST; 
+    int i;      unsigned char *p;
+    
+    if (istoken(T_CONST)) {
+        prs("\n mov ax, "); 
+        prunsign1(lexval); 
+        return 4; 
+        }
+    mode=typeName(); /*0=V,1=*,2=&*/
+    ireg1=checkreg();
+    if (ireg1) { 
+        doreg1(0); 
+        return; 
+        }
+    if (token=='(')  {
+        docall1(); 
+        goto e1; 
+        }
+
+    id1=searchname(); 
+    gettypes(id1); 
+    ids=signi;
+    ixarr=0;  
+    ixconst=0;
+    if (istoken('[')) { 
+        if (istoken(T_CONST)) {
+            ixconst=1; 
+            ixarr=lexval; 
+            expect(']');  
+            }
+        else {
+            ixarr=searchname(); 
+            expect(T_NAME); 
+            expect(']');
+            gettypes(ixarr);
+            if (widthi != 2) error1("Array index must be number or int"); 
+            } 
+        }
+    if (istoken(T_PLUSPLUS  )) {
+        if(mode)error1("Only var allowed");
+        prs("\n inc  "); 
+        if (wi==2) prs("word"); else prs("byte");
+        v(id1); 
+        goto e1;
+        }
+    if (istoken(T_MINUSMINUS)) {
+        if(mode)error1("Only var allowed");
+        prs("\n dec  "); 
+        if (wi==2) prs("word"); else prs("byte");
+        v(id1); 
+        goto e1;
+        }
+
+    if (istoken(T_PLUSASS )) {compoundass("add", mode, id1); goto e1; }
+    if (istoken(T_MINUSASS)) {compoundass("sub", mode, id1); goto e1; }
+    if (istoken(T_ANDASS  )) {compoundass("and", mode, id1); goto e1; }
+    if (istoken(T_ORASS   )) {compoundass("or" , mode, id1); goto e1; }
+    if (istoken(T_MULASS  )) error1("not implemented");
+    if (istoken(T_DIVASS  )) error1("not implemented");
+
+    if (istoken('=')) {
+        expr();
+        doassign(mode, id1, ixarr, ixconst);
+        goto e1;
+        }
+    dovar1(mode, "mov", ixarr, id1);
+
+e1:      if (istoken('+')) rterm("add");
+    else if (istoken('-')) rterm("sub");
+    else if (istoken('&')) rterm("and");
+    else if (istoken('|')) rterm("or" );
+    else if (istoken(T_LESSLESS)) rterm("shl");
+    else if (istoken(T_GREATGREAT)) rterm("shr");
+    else if (istoken('*')) domul (ids);
+    else if (istoken('/')) doidiv(ids);
+    else if (istoken('%')) domod (ids);
+    if (isrelational()) { 
+        rterm("cmp"); 
+        cmpneg(ids);
+        }
+    return 0;
+}
+
+int pexpr() {
+    expect('('); 
+    iscmp=0;
+    if (token==T_NAME) {
+        ireg1=checkreg();
+        if (ireg1) { 
+            doreg1(1); 
+            return; 
+            }  
+        }
+    expr();
+    if (iscmp==0) prs("\n or  al, al\n je .");  
+    prs(fname);
+    expect(')');
+}
+
+
+int prlabel(int n) {
+    prs("\n.");
+    prs(fname);
+    prunsign1(n);
+    prc(':');
+}
+int prjump (int n) {
+    prs("\n jmp .");
+    prs(fname);
+    prunsign1(n);
+}
+
+int stmt() {
+    int c; char cha;
+    int jdest; int tst; int jtemp;
+    if(istoken('{')) {
+        while(istoken('}')==0) stmt();
+        }
+    else if(istoken(T_IF)) {
+        pexpr(); 
+        nlabel++; 
+        jdest=nlabel;
+        pint1(jdest); 
+        stmt();
+        if (istoken(T_ELSE)) { 
+            nlabel++; 
+            tst=nlabel;
+            prjump(tst); 
+            prlabel(jdest); 
+            stmt(); 
+            prlabel(tst);
+        }
+        else prlabel(jdest);
+    }
+    else if(istoken(T_DO)) {
+        nlabel++; 
+        jdest=nlabel; 
+        prlabel(jdest); 
+        stmt();
+        expect(T_WHILE); 
+        pexpr(); 
+        nlabel++; 
+        jtemp=nlabel; 
+        pint1(jtemp);
+        prjump(jdest);
+         prlabel(jtemp);
+    }
+    else if(istoken(T_WHILE)) {
+        nlabel++; 
+        jdest=nlabel;
+        prlabel(jdest); 
+        pexpr(); 
+        nlabel++; 
+        tst=nlabel; 
+        pint1(tst);
+        stmt(); 
+        prjump(jdest); 
+        prlabel(tst);
+    }
+    else if(istoken(T_GOTO))  {
+        prs("\n jmp .");
+        name1();
+        prs(symbol);
+        expect(';');
+    }
+    else if(token==T_ASM)     {
+      prs("\n"); 
+      c=next();
+      while(c != '\n') { 
+        prc(c);	
+        c=next(); 
+        };
+        token=getlex();
+    }
+    else if(istoken(T_ASMBLOCK)) {
+        if (token== '{' )  {
+            prs("\n"); cha=next();
+            while(cha!= '}') {
+                prc(cha);
+                cha=next();
+            }
+            token=getlex();
+        } else error1("Curly open expected");
+    }
+    else if(istoken(T_EMIT)) {
+      prs("\n db ");
+    L1: token=getlex();
+      prunsign1(lexval);
+      token=getlex();
+      if (token== ',') {
+          prc(',');
+          goto L1;
+      }
+      expect(')');
+    }
+    else if(istoken(';'))      { }
+    else if(istoken(T_RETURN)) {
+        if (token!=';') expr();
+        prs("\n jmp .retn");
+        prs(fname);
+        nreturn++;
+        expect(';');
+    }
+    else if(thechar==':')      {
+        prs("\n."); // Label
+        prs(symbol); prc(':');
+        expect(T_NAME);
+        expect(':');
+    }
+    else  {expr();; expect(';'); }
+}
+
+int isvariable() {
+    if(token==T_SIGNED)   goto v1;
+    if(token==T_UNSIGNED) goto v1;
+    if(token==T_CHAR)     goto v1;
+    if(token==T_INT)      goto v1;
+    if(token==T_LONG)     goto v1;
+    return 0;
+v1: return 1;
+}
+
+int dofunc() { 
+    int nloc; int i; unsigned int j;int narg;
+    cloc=&co;
+    checknamelen();
+    strcpy(fname, symbol);
+    i=0;
+    while (i < FTop) {
+        j=adrF(FNameField, i);
+        if(eqstr(symbol, j)) error1("Function already defined");
+        i++;
+    }
+    if (FTop >= FUNCMAX) error1("Function table full");
+    pt=adrF(FNameField, FTop);
+    strcpy(pt, symbol);
+    FTop++;
+    prs("\n\n"); 
+    prs(symbol); 
+    prs(": PROC");
+    expect('('); 
+    LTop=LSTART;
+    if (istoken(')')==0) { 
+        narg=2;
+        do { 
+            typeName();  
+            addlocal(); 
+            narg+=2;
+            GData[LTop]=narg; 
+            if (iswidth == 4) narg+=2; 
+                LTop++; 
+                }
+        while (istoken(','));  
+        expect(')'); 
+        }
+
+    expect('{'); /*body*/
+    nloc=0; 
+    nreturn=0; 
+    nconst=0;
+    while(isvariable()) {
+        do {
+            typeName();
+            checknamelen();
+            addlocal(); 
+            nloc-=2;
+            if (iswidth == 4) nloc-=2;
+            GData[LTop]=nloc;
+            if (istoken('[')){
+                istype='&';
+                GType[LTop]='&';
+                expect(T_CONST);
+                expect(']');
+                nloc=nloc-lexval; 
+                nloc+=2; 
+                GData[LTop]=nloc;
+            }
+            LTop++;
+        } while (istoken(',')); 
+        expect(';'); 
+    }
+    if (LTop>LSTART){
+        prs(";\n ENTER  ");
+        nloc=mkneg(nloc); 
+        prunsign1 (nloc); 
+        prs(",0"); 
+        }
+    
+    while(istoken('}')==0)  stmt();
+  
+    if (nreturn) {
+            prs("\n .retn");
+            prs(fname);
+            prc(':');
+        }
+    if (LTop > LSTART) prs(" LEAVE");
+    prs("\n ret");
+    *cloc=0; 
+    prs(co);
+    maxco1=strlen(co);
+    if (maxco1 > maxco) maxco=maxco1;
+    prs("\nENDP");
+}
+
+char doglobName[IDLENMAX];
+int doglob() {
+    int i; int j; int isstrarr; 
+    isstrarr=0;
+    if (GTop >= LSTART) error1("Global table full");
+    if (iswidth == 0) error1("no VOID as var type");
+    checknamelen();
+    if (checkName() != 0) error1("Variable already defined");
+    if (istoken('[')) { 
+        istype='&';
+        if (istoken(T_CONST)) {
+            prs("\nsection .bss\nabsolute ");
+            prunsign1(orgData);
+            prs("\n"); prs(symbol);
+            if (iswidth==1) prs(" resb ");
+            if (iswidth==2) prs(" resw ");
+            if (iswidth==4) prs(" resd ");
+            prunsign1(lexval);
+            prs("\nsection .text");
+            orgData=orgData+lexval;
+            if (iswidth==2) orgData=orgData+lexval;
+            if (iswidth==4) {i= lexval * 3; orgData=orgData + i;}
+            GData[GTop]=lexval; 
+            expect(']');
+        }else { 
+            expect(']');
+            if (iswidth != 1) error1("Only ByteArray allowed");
+            prs("\n"); 
+            prs(symbol); 
+            prs(" db ");
+            isstrarr=1; 
+            strcpy(doglobName, symbol);
+            expect('=');
+            if (istoken(T_STRING)) {
+                prc(34); 
+                prscomment(symbol); 
+                prc(34); 
+                prs(",0");
+                i=strlen(symbol); 
+                GData[GTop]=i; 
+                }
+            else if (istoken('{' )) { 
+                i=0;
+                do { 
+                    if(i) prc(',');
+                    expect(T_CONST); 
+                    prunsign1(lexval); 
+                    i=1; 
+                    }
+                    while (istoken(',')); 
+                expect('}');
+            }
+        else error1("String or number array expected");
+        };
+    }else { //expect('=');
+        prs("\n"); 
+        prs(symbol); 
+        if (istype=='*') prs(" dw ");
+        else {
+            if      (iswidth==1) prs(" db ");
+            else if (iswidth==2) prs(" dw ");
+            else                 prs(" dd ");
+        }
+    if(istoken('-')) prc('-');
+    if (istoken('=')) {
+        expect(T_CONST); 
+        prunsign1(lexval); 
+        }else prunsign1(0); 
+    }
+    GSign[GTop]=issign; 
+    GWidth[GTop]=iswidth; 
+    GType[GTop]=istype;
+    pt=adrF(GNameField, GTop);
+    if (isstrarr) strcpy(pt, doglobName); 
+        else strcpy(pt, symbol);
+    GTop++; 
+    expect(';'); 
+}
+
+int dodefine() {
+    int i; int j; int fdtemp;
+    if (eqstr(symbol, "ORGDATA")) {
+        token=getlex();
+        ORGDATAORIG=lexval;
+        orgData=lexval;
+        return;
+    }
+    expect(T_NAME);
+    if (token==T_CONST) {
+        if (GTop >= LSTART) error1("global table (define) full");
+        i=strlen(symbol);
+        if (i>15) error1("Define name longer 15 char");
+        GSign [GTop]='U';
+        GWidth[GTop]=1;
+        GType [GTop]='#';
+        pt=adrF(GNameField, GTop);
+        strcpy(pt, symbol);
+        GData[GTop]=lexval;
+        expect(T_CONST);
+        GTop++;
+    }
+}
+
+int parse() {
+    token=getlex();
+    do {
+        if (token <= 0) return 1;
+        if (istoken('#')) {
+             if (istoken(T_DEFINE))  dodefine();
+             else error1("define expected");
+        }
+    else{
+        typeName();
+        if (token=='(') dofunc();
+        else doglob(); }
+    } while(1);
+}
+
+char *arglen=0x80; char *argv=0x82;
+int main() {
+    int arglen1; unsigned int i; char *c;
+    isPrint=1;
+    arglen1=*arglen;
+    if (arglen1 == 0) {
+        cputs(Version1);
+        cputs(" Usage: A.COM in_file[.C]: ");
+        exitR(3);
+        }
+    i=arglen1+129;
+    *i=0;
+    arglen1--;
+    toupper(argv);
+    strcpy(namein, argv);
+    if (instr1(namein, '.') == 0) strcat1(namein, ".C");
+    strcpy(namelst, namein);
+    i=strlen(namelst);
+    i--;
+    c=&namelst+i;
+    *c='S';
+
+    fdin=openR (namein);
+    if(DOS_ERR){
+        cputs("Source file missing (.C): ");
+        cputs(namein);
+        exitR(1);
+        }
+    fdout=creatR(namelst);
+    if(DOS_ERR){
+        cputs("list file not creatable: ");
+        cputs(namelst);
+        exitR(2);
+        }
+    prs("\n;");
+    prs(Version1);
+    prs(", Input: "); prs(namein);
+    prs(", Output: "); prs(namelst);
+    isPrint=0;
+    prs("\norg  256 \njmp main");
+    orgData=ORGDATAORIG;
+    fgetsp=&fgetsdest;
+    *fgetsp=0;
+    thechar=fgets1();
+    parse(); 
+    isPrint=1;
+    prs("\n;Glob. variables:"); GTop--; prunsign1(GTop);
+    prs(" ("); prunsign1(LSTART);
+    prs("), Functions:"); prunsign1(FTop);
+    prs(" ("); prunsign1(FUNCMAX);
+    prs("), Lines:"); prunsign1(lineno);
+    prs("\n;Constant: ");   prunsign1(maxco);
+    prs(" ("); prunsign1(COMAX);
+    i=COMAX; i=i-maxco;
+    if (i <= 1000)prs("\n *** Warning *** constant area too small");
+    prs("), stacksize: ");
+    i=65636; i=i-orgData;
+    prunsign1(i);
+    if (i <= 1000) prs("\n *** Warning *** Stack too small");
+    end1(0);
+}

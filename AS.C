@@ -1,4 +1,4 @@
-char Version1[]="AS.C V1.0";//Assembler like NASM
+char Version1[]="NASM like AS.C V1.0";//Assembler like NASM
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName
@@ -294,10 +294,11 @@ int printLine() {
 
 int epilog() {
     unsigned int i; char c;     int j;
+    isPrint=1;
     prs("Errors:");
     printIntU(ErrorCount);
-    if (ErrorCount) prs(" *** ERRORS *** ");
-    prs(", Out: ");
+    if (ErrorCount) prs("\n****** ERRORS *** ");
+    prs("\nOut: ");
     prs(namelst);
     prs(", ");
     prs(namebin);
@@ -323,7 +324,7 @@ int end1(int n) {
 int error1(char *s) {
     isPrint=1;
     ErrorCount++;
-    prs("\n******* next line ERROR: ");
+    prs("\n\n******* next line ERROR: ");
     prs(s);
     prs(", Symbol: ");
     prs(Symbol);
@@ -338,7 +339,7 @@ int dataexit(){errorexit("DB,DW,DD or RESB,W,D expected");}
 int notfounderror(){
     isPrint=1;
     ErrorCount++;
-    prs("\n******* ERROR: label not found: ");
+    prs("\n\n******* ERROR: label not found: ");
     prs(Symbol);
     prs(" ");
 }
@@ -1463,8 +1464,6 @@ int getarg() {
     prs(";");
     prs(Version1);
     prs(", Source: "); prs(namein);
-    prs(", Output: "); prs(namelst);
-    prs(", "); prs(namebin);
     prs("\n");
 }
 
