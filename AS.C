@@ -89,24 +89,72 @@ unsigned int BinLen=0;  //length of binary file
 char *arglen=0x80;      // for main only
 char *argv=0x82;        // for main only
 
-
-int writetty()     { ah=0x0E; bx=0; __emit__(0xCD,0x10); }
-int putch(char c)  {if (c==10) {al=13; writetty();} al=c; writetty(); }
-int cputs(char *s) {char c;  while(*s) { c=*s; putch(c); s++; } }
+int writetty()     {//ah=0x0E; bx=0; __emit__(0xCD,0x10);
+asm mov ah, 14
+asm mov bx, 0
+asm int 16
+}
+int putch(char c)  {
+    if (c==10)  {
+        asm mov al, 13
+        writetty();
+    }
+    asm mov al, [bp+4]; parameter c
+    writetty();
+}
+int cputs(char *s) {
+    char c;
+    while(*s) {
+        c=*s;
+        putch(c);
+        s++;
+    }
+}
+int mkneg(int n)   {
+    asm mov ax, [bp+4]; parameter n
+    asm neg ax
+}
 
 int DosInt() {
-    __emit__(0xCD,0x21);//inth 0x21;
-    __emit__(0x73, 04); //ifcarry DOS_ERR++;
+    asm int 33; 21h
+    __emit__(0x73, 04); //jnc over DOS_ERR++
     DOS_ERR++;
 }
-int openR (char *s) { dx=s;       ax=0x3D02; DosInt(); }
-int creatR(char *s) { dx=s; cx=0; ax=0x3C00; DosInt(); }
-int fcloseR(int fd) {bx=fd;       ax=0x3E00; DosInt(); }
-int exitR  (char c) {ah=0x4C; al=c;          DosInt(); }
+int openR (char *s) {
+    asm mov dx, [bp+4]; dx=s;
+    asm mov ax, 15618; ax=0x3D02;
+    DosInt();
+}
+int creatR(char *s) {
+    asm mov dx, [bp+4]; dx=s;
+    asm mov cx, 0
+    asm mov ax, 15360; ax=0x3C00;
+    DosInt();
+}
+int fcloseR(int fd) {
+    asm mov bx, [bp+4]; bx=fd;
+    asm mov ax, 15872; ax=0x3E00;
+    DosInt();
+}
+int exitR  (char c) {
+    asm mov ah, 76; ah=0x4C;
+    asm mov al, [bp+4]; al=c;
+    DosInt();
+}
 int readRL(char *s, int fd, int len){
-    dx=s; cx=len; bx=fd; ax=0x3F00; DosInt();}
-int fputcR(char *n, int fd) { __asm{lea dx, [bp+4]}; /* = *n */
-  cx=1; bx=fd; ax=0x4000; DosInt(); }
+    asm mov dx, [bp+4]; dx=s;
+    asm mov cx, [bp+8]; cx=len;
+    asm mov bx, [bp+6]; bx=fd;
+    asm mov ax, 16128;  ax=0x3F00;
+    DosInt();
+}
+int fputcR(char *n, int fd) {
+    asm lea dx, [bp+4]; *n  todo: why not mov ?????
+    asm mov cx, 1;      cx=1;
+    asm mov bx, [bp+6]; bx=fd;
+    asm mov ax, 16384;  ax=0x4000;
+    DosInt();
+}
 
 int letterE(char c) {
   if (c=='_') return 1;
@@ -205,11 +253,11 @@ int testReg() {
 int prc(unsigned char c) {//print char
     if (isPrint) {
         if (c==10) {
-            ax=13;
+            asm mov ax, 13
             writetty();
             }
-        al=c;
-        writetty(); 
+        asm mov al, [bp+4]; al=c;
+        writetty();
     }
     fputcR(c,lst_fd);
 }
@@ -391,7 +439,8 @@ int getDigit(unsigned char c) {//ret: SymbolInt
   do {
     c-='0';
     SymbolInt=SymbolInt*10;
-    ax=0; CastInt=c; //cast b2w
+    asm mov ax, 0
+    CastInt=c; //cast b2w
     SymbolInt=SymbolInt+CastInt;
     InputPtr++;
     c = *InputPtr;
@@ -417,8 +466,8 @@ int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
   toupper(SymbolUpper);
 }
 
-//OpName, 0, CodeType, Code1 
-//  1:   1 byte opcod   
+//OpName, 0, CodeType, Code1
+//  1:   1 byte opcod
 char T00[]={'P','U','S','H','A',0,1,0x60, 'P','O','P','A',0,    1,0x61};
 char T01[]={'N','O','P',0,        1,0x90, 'C','B','W',0,        1,0x98};
 char T02[]={'C','W','D','E',0,    1,0x98, 'C','W','D',0,        1,0x99};
@@ -519,16 +568,16 @@ int lookCode1() {//ret: CodeType, Code1
         if (eqstr(SymbolUpper, OpCodePtr))  {
             while(*OpCodePtr!=0) OpCodePtr++;
             OpCodePtr++;
-            CodeType = *OpCodePtr;  
+            CodeType = *OpCodePtr;
             OpCodePtr++;
             Code1    = *OpCodePtr;
             return;
         }
         while(*OpCodePtr!=0) OpCodePtr++;
-        OpCodePtr += 3; 
-    
+        OpCodePtr += 3;
+
         } while(*OpCodePtr!=0);
-    CodeType=0;  
+    CodeType=0;
 }
 
 
@@ -565,6 +614,7 @@ int writeEA(char xxx) {//value for reg/operand
 //need: Op, Op2, disp, R1No, R2No, rm, isDirect
 //mod-bits: mode76, reg/opcode543, r/m210
 //Op: 0, IMM, REG, ADR, MEM
+    int disploc;
     char len;
     len=0;
     xxx = xxx << 3;//in reg/opcode field
@@ -589,9 +639,9 @@ int writeEA(char xxx) {//value for reg/operand
             }
 
             if (disp) {
-                ax = disp;
-                if (ax < 0) __asm{ neg ax }
-                if (ax > 127) len=2;
+                disploc=disp;
+                if (disploc  < 0) disploc=mkneg(disploc);
+                if (disploc > 127) len=2;
                 else len=1;
                 if (len == 1) xxx |= 0x40;
                 else xxx |= 0x80;
@@ -848,7 +898,7 @@ int getVariable() {
     storeLabel();
     getTokeType();
     if(TokeType==ALNUME) {//getName
-        lookCode1();   
+        lookCode1();
         if (CodeType < 200) dataexit();
         if (CodeType > 205) dataexit();
         if (CodeType== 200) {//DB
@@ -1396,14 +1446,14 @@ int parse() {
                 }
             }
             if (TokeType == ALNUME) {
-                lookCode1();  
+                lookCode1();
                 if(CodeType) process();
                 else getVariable();
                 skipRest();
             }
             else if(TokeType >ALNUME)error1("Label or instruction expected");
             else if(TokeType==DIGIT )error1("No digit allowed at start");
-            printLine();  
+            printLine();
         }
     } while (DOS_NoBytes != 0 );
     isPrint=1;
