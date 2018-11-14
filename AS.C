@@ -354,11 +354,13 @@ int epilog() {
     printIntU(BinLen);
     prs(" bytes.");
     i=0;
-    do {
-        c = FileBin[i];
-        fputcR(c, bin_fd);
-        i++;
-    } while (i < BinLen);
+    if (ErrorCount == 0) {
+        do {
+            c = FileBin[i];
+            fputcR(c, bin_fd);
+            i++;
+        } while (i < BinLen);
+    }
 }
 
 int end1(int n) {
@@ -390,6 +392,7 @@ int notfounderror(){
     prs("\n\n******* ERROR: label not found: ");
     prs(Symbol);
     prs(" ");
+    end1(1);
 }
 int addrerror()    {error1("address missing");}
 int immeerror()    {error1("immediate not allowed here");}
