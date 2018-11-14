@@ -391,8 +391,10 @@ int notfounderror(){
     ErrorCount++;
     prs("\n\n******* ERROR: label not found: ");
     prs(Symbol);
-    prs(" ");
+    prs(" in proc ");
+    prs(ProcName);
     end1(1);
+
 }
 int addrerror()    {error1("address missing");}
 int immeerror()    {error1("immediate not allowed here");}
