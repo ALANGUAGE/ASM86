@@ -348,13 +348,13 @@ int epilog() {
     if (ErrorCount) prs("\n****** ERRORS *** ");
     prs("\nOutput: ");
     prs(namelst);
-    prs(", ");
-    prs(namebin);
-    prs("= ");
-    printIntU(BinLen);
-    prs(" bytes.");
-    i=0;
     if (ErrorCount == 0) {
+        prs(", ");
+        prs(namebin);
+        prs("= ");
+        printIntU(BinLen);
+        prs(" bytes.");
+        i=0;
         do {
             c = FileBin[i];
             fputcR(c, bin_fd);

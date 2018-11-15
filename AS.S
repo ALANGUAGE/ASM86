@@ -1816,41 +1816,41 @@ epilog: PROC
  push ax
  call prs
  add  sp, 2
-;-351     prs(", ");
+;-351     if (ErrorCount == 0) {
+
+ mov ax, [ErrorCount]
+ cmp ax, 0
+ jne .epilog84
+;-352         prs(", ");
 
  push epilog_3
  call prs
  add  sp, 2
-;-352     prs(namebin);
+;-353         prs(namebin);
 
  lea  ax, [namebin]
  push ax
  call prs
  add  sp, 2
-;-353     prs("= ");
+;-354         prs("= ");
 
  push epilog_4
  call prs
  add  sp, 2
-;-354     printIntU(BinLen);
+;-355         printIntU(BinLen);
 
  push word [BinLen]
  call printIntU
  add  sp, 2
-;-355     prs(" bytes.");
+;-356         prs(" bytes.");
 
  push epilog_5
  call prs
  add  sp, 2
-;-356     i=0;
+;-357         i=0;
 
  mov ax, 0
  mov [bp-2], ax
-;-357     if (ErrorCount == 0) {
-
- mov ax, [ErrorCount]
- cmp ax, 0
- jne .epilog84
 ;-358         do {
 
 .epilog85:
