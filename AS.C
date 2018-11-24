@@ -1,4 +1,5 @@
-char Version1[]="NASM like AS.C V1.0";//Assembler like NASM
+char Version1[]="AS.C V1.0";//Assembler like NASM 11774 bytes
+//todo: CS:with adr, not implemented: 14,15,16,41,51
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
 char SymbolUpper[SYMBOLMAX];//set toupper in getName
@@ -82,7 +83,7 @@ unsigned int JmpAddr[JMPMAX];//addr to be fixed
 int JmpMaxIx=0;         //actual # of jmp, call. 1 to JMPMAX-1
 int tmpJmpMaxIx=0;      //set after PROC to JmpMaxIx
 
-#define FILEBINMAX 22000
+#define FILEBINMAX 25000
 char FileBin  [FILEBINMAX];//output binary file
 unsigned int BinLen=0;  //length of binary file
 
@@ -297,15 +298,15 @@ int printhex4(unsigned char c) {
     if (c > 57) c += 7;
     prc(c);
 }
-int printhex8a(unsigned char c) {
+int printhex8(unsigned char c) {
     unsigned char nib;
     nib = c >> 4; printhex4(nib);
     nib = c & 15; printhex4(nib);
 }
 int printhex16(unsigned int i) {
     unsigned int half;
-    half = i >>  8; printhex8a(half);
-    half = i & 255; printhex8a(half);
+    half = i >>  8; printhex8(half);
+    half = i & 255; printhex8(half);
 }
 int printIntU(unsigned int n) {
     unsigned int e;
@@ -328,7 +329,7 @@ int printLine() {
         do {
             c=OpPos[i];
             prc(' ');
-            printhex8a(c);
+            printhex8(c);
             i++;
         } while (i < OpPrintIndex);
         while (i < OPMAXLEN) {// fill rest with blank
@@ -384,8 +385,9 @@ int errorexit(char *s) {
     epilog();
     end1(1);
 }
-int dataexit(){errorexit("DB,DW,DD or RESB,W,D expected");}
-
+int dataexit(){
+    errorexit("DB,DW,DD or RESB,W,D expected");
+}
 int notfounderror(){
     isPrint=1;
     ErrorCount++;
@@ -496,7 +498,8 @@ char T19[]={'S','T','D',0,        1,0xFD};
 // 2: mem reg 16 bit
 char T20[]={'I','N','C',0,        2, 0,   'D','E','C',0,        2, 1};
 char T21[]={'N','O','T',0,        2, 2,   'N','E','G',0,        2, 3};
-char T22[]={'M','U','L',0,        2, 4,   'I','M','U','L',0,    2, 5};//acc
+char T22[]={'M','U','L',0,        2, 4,   'I','M','U','L',0,    2, 5};
+//IMUL acc only
 char T23[]={'D','I','V',0,        2, 6,   'I','D','I','V',0,    2, 7};
 //  3: les, lda, lea, lss, lfs, lgs
 char T24[]={'L','E','S',0,        3,0xC4, 'L','D','S',0,        3,0xC5};
@@ -546,7 +549,8 @@ char T58[]={'O','U','T','W',0,   14,0x6F,  'O','U','T','D',0,  14,0x6F};
 //  15: xch                      not implemented
 char T59[]={'X','C','H','G',0,   15,0x86};
 //  16: loop, jcxz               not implemented
-char T60[]={'L','O','O','P','N','Z',0,16,0xE0,'L','O','O','P','N','E',0,16,0xE0};
+char T60 []={'L','O','O','P','N','Z',0,16,0xE0};
+char T60a[]={'L','O','O','P','N','E',0,16,0xE0};
 char T61[]={'L','O','O','P','Z',0,16,0xE1,'L','O','O','P','E',0,16,0xE1};
 char T62[]={'L','O','O','P',0,    16,0xE2};
 char T63[]={'J','C','X','Z',0,    16,0xE3,'J','E','C','X','Z',0,16,0xE3};
@@ -1456,7 +1460,8 @@ int parse() {
                 else getVariable();
                 skipRest();
             }
-            else if(TokeType >ALNUME)error1("Label or instruction expected");
+            else if(TokeType >ALNUME)error1(
+                "Label or instruction expected");
             else if(TokeType==DIGIT )error1("No digit allowed at start");
             printLine();
         }
