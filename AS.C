@@ -319,9 +319,10 @@ int printIntU(unsigned int n) {
     prc(n);
 }
 int printLine() {
-    int i; char c;
+    unsigned int i; char c;
     prs("\n");
-    printhex16(PCStart);
+    i=PCStart + Origin;
+    printhex16(i);
     if (OpPrintIndex == 0) prs("               ");
     else {
 //        prc(' ');
