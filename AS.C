@@ -1,4 +1,4 @@
-char Version1[]="AS.C V1.0";//Assembler like NASM 11774 bytes
+char Version1[]="ASM.C V1.0.1";//Assembler like NASM
 //todo: CS:with adr, not implemented: 14,15,16,41,51
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
@@ -90,17 +90,19 @@ unsigned int BinLen=0;  //length of binary file
 char *arglen=0x80;      // for main only
 char *argv=0x82;        // for main only
 
-int writetty()     {//ah=0x0E; bx=0; __emit__(0xCD,0x10);
-asm mov ah, 14
-asm mov bx, 0
-asm int 16
+int writetty()     {//char in AL
+    ah=0x0E;
+    asm push bx
+    bx=0;     //page in BH
+    inth 0x10;
+    asm pop bx
 }
 int putch(char c)  {
-    if (c==10)  {
-        asm mov al, 13
+    if (c==10)  {// LF
+        al=13;   // CR, write CR first and then LF
         writetty();
     }
-    asm mov al, [bp+4]; parameter c
+    al=c;
     writetty();
 }
 int cputs(char *s) {
@@ -112,48 +114,48 @@ int cputs(char *s) {
     }
 }
 int mkneg(int n)   {
-    asm mov ax, [bp+4]; parameter n
+    n; // ax=n;
     asm neg ax
 }
 
 int DosInt() {
-    asm int 33; 21h
+    inth 0x21;
     __emit__(0x73, 04); //jnc over DOS_ERR++
     DOS_ERR++;
 }
 int openR (char *s) {
-    asm mov dx, [bp+4]; dx=s;
-    asm mov ax, 15618; ax=0x3D02;
+    dx=s;
+    ax=0x3D02;
     DosInt();
 }
 int creatR(char *s) {
-    asm mov dx, [bp+4]; dx=s;
-    asm mov cx, 0
-    asm mov ax, 15360; ax=0x3C00;
+    dx=s;
+    cx=0;
+    ax=0x3C00;
     DosInt();
 }
 int fcloseR(int fd) {
-    asm mov bx, [bp+4]; bx=fd;
-    asm mov ax, 15872; ax=0x3E00;
+    bx=fd;
+    ax=0x3E00;
     DosInt();
 }
 int exitR  (char c) {
-    asm mov ah, 76; ah=0x4C;
-    asm mov al, [bp+4]; al=c;
+    ah=0x4C;
+    al=c;
     DosInt();
 }
 int readRL(char *s, int fd, int len){
-    asm mov dx, [bp+4]; dx=s;
-    asm mov cx, [bp+8]; cx=len;
-    asm mov bx, [bp+6]; bx=fd;
-    asm mov ax, 16128;  ax=0x3F00;
+    dx=s;
+    cx=len;
+    bx=fd;
+    ax=0x3F00;
     DosInt();
 }
 int fputcR(char *n, int fd) {
-    asm lea dx, [bp+4]; *n  todo: why not mov ?????
-    asm mov cx, 1;      cx=1;
-    asm mov bx, [bp+6]; bx=fd;
-    asm mov ax, 16384;  ax=0x4000;
+    __asm{lea dx, [bp+4]}; /* = *n */
+    cx=1;
+    bx=fd;
+    ax=0x4000;
     DosInt();
 }
 
@@ -250,17 +252,16 @@ int testReg() {
   R2Type=0; return 0;
 }
 
-
-int prc(unsigned char c) {//print char
+int prc(unsigned char c) {
     if (isPrint) {
         if (c==10) {
-            asm mov ax, 13
+            ax=13;
             writetty();
-            }
-        asm mov al, [bp+4]; al=c;
+        }
+        al=c;
         writetty();
     }
-    fputcR(c,lst_fd);
+    fputcR(c, lst_fd);
 }
 
 int prscomment(unsigned char *s) {
@@ -271,7 +272,7 @@ int prscomment(unsigned char *s) {
         s++;
     }
 }
-int prs(unsigned char *s) {
+int printstring(unsigned char *s) {
     unsigned char c;
     int com;
     com=0;
@@ -308,11 +309,11 @@ int printhex16(unsigned int i) {
     half = i >>  8; printhex8(half);
     half = i & 255; printhex8(half);
 }
-int printIntU(unsigned int n) {
+int printunsigned(unsigned int n) {
     unsigned int e;
     if (n >= 10) {
         e=n/10; //DIV
-        printIntU(e);
+        printunsigned(e);
     }
     n = n % 10; //unsigned mod
     n += '0';
@@ -320,10 +321,10 @@ int printIntU(unsigned int n) {
 }
 int printLine() {
     unsigned int i; char c;
-    prs("\n");
+    printstring("\n");
     i=PCStart + Origin;
     printhex16(i);
-    if (OpPrintIndex == 0) prs("               ");
+    if (OpPrintIndex == 0) printstring("               ");
     else {
 //        prc(' ');
         i=0;
@@ -334,7 +335,7 @@ int printLine() {
             i++;
         } while (i < OpPrintIndex);
         while (i < OPMAXLEN) {// fill rest with blank
-            prs("   ");
+            printstring("   ");
             i++;
         }
     }
@@ -343,32 +344,38 @@ int printLine() {
 }
 
 int epilog() {
-    unsigned int i; char c;     int j;
+    unsigned int i; int j; char c;
     isPrint=1;
-    prs("Errors:");
-    printIntU(ErrorCount);
-    if (ErrorCount) prs("\n****** ERRORS *** ");
-    prs("\nOutput: ");
-    prs(namelst);
+    printstring("Errors:");
+    printunsigned(ErrorCount);
+    if (ErrorCount) printstring("\n****** ERRORS *** ");
+    printstring("\nOutput: ");
+    printstring(namelst);
     if (ErrorCount == 0) {
-        prs(", ");
-        prs(namebin);
-        prs("= ");
-        printIntU(BinLen);
-        prs(" bytes.");
+        printstring(", ");
+        printstring(namebin);
+        printstring("= ");
+        printunsigned(BinLen);
+        printstring(" bytes.");
+        bin_fd=creatR(namebin);
+        if(DOS_ERR){
+            cputs("can not create COM file: ");
+            cputs(namebin);
+            exitR(2);
+        }
         i=0;
         do {
             c = FileBin[i];
             fputcR(c, bin_fd);
             i++;
         } while (i < BinLen);
+    fcloseR(bin_fd);
     }
 }
 
 int end1(int n) {
     fcloseR(asm_fd);
     fcloseR(lst_fd);
-    fcloseR(bin_fd);
     exitR(n);
 }
 
@@ -376,10 +383,10 @@ int end1(int n) {
 int error1(char *s) {
     isPrint=1;
     ErrorCount++;
-    prs("\n\n******* next line ERROR: ");
-    prs(s);
-    prs(", Symbol: ");
-    prs(Symbol);
+    printstring("\n\n******* next line ERROR: ");
+    printstring(s);
+    printstring(", Symbol: ");
+    printstring(Symbol);
 }
 int errorexit(char *s) {
     error1(s);
@@ -392,10 +399,10 @@ int dataexit(){
 int notfounderror(){
     isPrint=1;
     ErrorCount++;
-    prs("\n\n******* ERROR: label not found: ");
-    prs(Symbol);
-    prs(" in proc ");
-    prs(ProcName);
+    printstring("\n\n******* ERROR: label not found: ");
+    printstring(Symbol);
+    printstring(" in proc ");
+    printstring(ProcName);
     end1(1);
 
 }
@@ -734,7 +741,7 @@ int need(char c) {
         return;
         }
     error1();
-    prs(". need: ");
+    printstring(". need: ");
     prc(c);
 }
 int skipRest() {
@@ -1392,8 +1399,8 @@ int process() {
     }
     if (CodeType == 111) {//name: PROC
         if (isInProc == 0)  {
-            prs("\nentering: ");
-            prs(ProcName);
+            printstring("\nentering: ");
+            printstring(ProcName);
             isInProc=1;
             tmpLabelNamePtr = LabelNamePtr;
             tmpLabelMaxIx   = LabelMaxIx;
@@ -1404,14 +1411,14 @@ int process() {
     }
     if (CodeType == 112) {//ENDP
         if (isInProc == 0) error1("not in PROC");
-        prs("\nleaving: ");
-        prs(ProcName);
-        prs(", loc labels: ");
+        printstring("\nleaving: ");
+        printstring(ProcName);
+        printstring(", loc labels: ");
         i = LabelMaxIx - tmpLabelMaxIx;
-        printIntU(i);
-        prs(", loc jmp forward: ");
+        printunsigned(i);
+        printstring(", loc jmp forward: ");
         i = JmpMaxIx - tmpJmpMaxIx;
-        printIntU(i);
+        printunsigned(i);
         fixJmp();
         isInProc=0;
         LabelNamePtr = tmpLabelNamePtr;//delete local Labels
@@ -1490,16 +1497,21 @@ int getarg() {
   DOS_ERR=0; PC=0; ErrorCount=0;
 
     asm_fd=openR (namein);
-    if(DOS_ERR){cputs("Source file missing: ") ;cputs(namein );exitR(1);}
+    if(DOS_ERR){
+        cputs("Source file missing: ");
+        cputs(namein);
+        exitR(1);
+    }
     lst_fd=creatR(namelst);
-    if(DOS_ERR){cputs("List file not create: ");cputs(namelst);exitR(2);}
-    bin_fd=creatR(namebin);
-    if(DOS_ERR){cputs("COM file not create: ") ;cputs(namebin);exitR(2);}
-
-    prs(";");
-    prs(Version1);
-    prs(", Input: "); prs(namein);
-    prs(", ");
+    if(DOS_ERR){
+        cputs("can not create list file: ");
+        cputs(namelst);
+        exitR(2);
+    }
+    printstring(";");
+    printstring(Version1);
+    printstring(", Input: "); printstring(namein);
+    printstring(", ");
 }
 
 int main() {
