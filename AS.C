@@ -346,13 +346,10 @@ int printLine() {
 int epilog() {
     unsigned int i; int j; char c;
     isPrint=1;
-    printstring("Errors:");
-    printunsigned(ErrorCount);
-    if (ErrorCount) printstring("\n****** ERRORS *** ");
-    printstring("\nOutput: ");
+    printstring(", Output: ");
     printstring(namelst);
     if (ErrorCount == 0) {
-        printstring(", ");
+        printstring(", no errors, ");
         printstring(namebin);
         printstring("= ");
         printunsigned(BinLen);
@@ -371,41 +368,24 @@ int epilog() {
         } while (i < BinLen);
     fcloseR(bin_fd);
     }
-}
-
-int end1(int n) {
     fcloseR(asm_fd);
     fcloseR(lst_fd);
-    exitR(n);
+    exitR(ErrorCount);
 }
-
 
 int error1(char *s) {
     isPrint=1;
     ErrorCount++;
-    printstring("\n\n******* next line ERROR: ");
+    printstring("\n******* next line ERROR: ");
     printstring(s);
-    printstring(", Symbol: ");
+    printstring(", Symbol >>");
     printstring(Symbol);
-}
-int errorexit(char *s) {
-    error1(s);
-    epilog();
-    end1(1);
-}
-int dataexit(){
-    errorexit("DB,DW,DD or RESB,W,D expected");
-}
-int notfounderror(){
-    isPrint=1;
-    ErrorCount++;
-    printstring("\n\n******* ERROR: label not found: ");
-    printstring(Symbol);
-    printstring(" in proc ");
+    printstring("<< in proc ");
     printstring(ProcName);
-    end1(1);
-
+    epilog();
 }
+int notfounderror(){error1("label not found: ");}
+int dataexit()     {error1("DB,DW,DD or RESB,W,D expected");}
 int addrerror()    {error1("address missing");}
 int immeerror()    {error1("immediate not allowed here");}
 int implerror()    {error1("not implemented");}
@@ -421,7 +401,7 @@ int ifEOL(char c) {//unix LF, win CRLF= 13/10, mac CR
   if (c == 10) return 1;//LF
   if (c == 13) {//CR
     DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
-    if (DOS_ByteRead != 10) errorexit("missing LF(10) after CR(13)");
+    if (DOS_ByteRead != 10) error1("missing LF(10) after CR(13)");
     return 1;
   }
   return 0;
@@ -432,12 +412,12 @@ int getLine() {// make ASCIIZ, skip LF=10 and CR=13
   *InputPtr=0;//if last line is empty
   do {
     DOS_NoBytes=readRL(&DOS_ByteRead, asm_fd, 1);
-    if (DOS_ERR) errorexit("Reading Source");
+    if (DOS_ERR) error1("Reading Source");
     if (DOS_NoBytes == 0) return;
     *InputPtr = DOS_ByteRead;
     InputPtr++;
     i = InputPtr - &InputBuf;
-    if (i >= INPUTBUFMAX) errorexit("input line too long");
+    if (i >= INPUTBUFMAX) error1("input line too long");
   } while (ifEOL(DOS_ByteRead) == 0);
   InputPtr--;
   *InputPtr=0;
@@ -472,7 +452,7 @@ int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
     *p = c;
     p++;
     i = p - &Symbol;
-    if (i >= SYMBOLMAX) errorexit("symbol too long");
+    if (i >= SYMBOLMAX) error1("symbol too long");
   }
   if (c == ':') isLabel=1; else isLabel=0;
   p--;
@@ -603,7 +583,7 @@ int genCode8(char c) {
     FileBin[BinLen]=c;
     BinLen++;
     PC++;
-    if (BinLen >= FILEBINMAX) errorexit("COM file too long");
+    if (BinLen >= FILEBINMAX) error1("COM file too long");
     if (OpPrintIndex < OPMAXLEN) {
         OpPos[OpPrintIndex]=c;
         OpPrintIndex++;
@@ -828,7 +808,7 @@ int getMEM() {// e.g. [array+bp+si-4]
             disp = disp - SymbolInt;
         }
     } while (isToken('+'));
-    if (isToken(']') == 0) errorexit("] expected");
+    if (isToken(']') == 0) error1("] expected");
 }
 
 int getOpR() {
@@ -868,11 +848,11 @@ int check2Ops() {
 int storeJmp() {
     unsigned int i;
     JmpMaxIx++;
-    if (JmpMaxIx >= JMPMAX) errorexit("too many Jmp");
+    if (JmpMaxIx >= JMPMAX) error1("too many Jmp");
     JmpNamePtr=strcpy(JmpNamePtr, Symbol);
     JmpNamePtr++;
     i = JmpNamePtr - &JmpNames;
-    if ( i >= JMPNAMESMAX) errorexit("too many Jmp names");
+    if ( i >= JMPNAMESMAX) error1("too many Jmp names");
     JmpAddr[JmpMaxIx] = PC;
 }
 
@@ -880,11 +860,11 @@ int storeLabel() {
     unsigned int i;
     if(searchLabel()) error1("duplicate label");
     LabelMaxIx++;
-    if (LabelMaxIx >= LABELADRMAX) errorexit("too many labels");
+    if (LabelMaxIx >= LABELADRMAX) error1("too many labels");
     LabelNamePtr=strcpy(LabelNamePtr, Symbol);
     LabelNamePtr++;
     i = LabelNamePtr - &LabelNames;
-    if (i >= LABELNAMESMAX) errorexit("too many label names");
+    if (i >= LABELNAMESMAX) error1("too many label names");
     LabelAddr[LabelMaxIx] = PC + Origin;
 }
 
@@ -1511,7 +1491,6 @@ int getarg() {
     printstring(";");
     printstring(Version1);
     printstring(", Input: "); printstring(namein);
-    printstring(", ");
 }
 
 int main() {
@@ -1519,5 +1498,4 @@ int main() {
     parse();
     fixJmpMain();
     epilog();
-    end1();
 }
