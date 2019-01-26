@@ -434,7 +434,7 @@ int getDigit(unsigned char c) {//ret: SymbolInt
   do {
     c-='0';
     SymbolInt=SymbolInt*10;
-    asm mov ax, 0
+    ax=0;
     CastInt=c; //cast b2w
     SymbolInt=SymbolInt+CastInt;
     InputPtr++;
@@ -720,9 +720,9 @@ int need(char c) {
         getTokeType();
         return;
         }
-    error1();
-    printstring(". need: ");
+    printstring(" need: ");
     prc(c);
+    error1("character misssing");
 }
 int skipRest() {
     getTokeType();
@@ -791,6 +791,16 @@ int getMEM() {// e.g. [array+bp+si-4]
     do {
         getTokeType();
         c=getOp1();
+        if (R2Type == SEGREG) {//put segment prefix
+            if (R2No == 0) genCode8(0x26);//ES:
+            if (R2No == 1) genCode8(0x2E);//CS:
+            if (R2No == 2) genCode8(0x36);//SS:
+            if (R2No == 3) genCode8(0x3E);//DS:
+            if (R2No == 4) genCode8(0x64);//FS:
+            if (R2No == 5) genCode8(0x65);//GS:
+            need(':');
+            c=getOp1();
+        }
         if (c ==   0) syntaxerror();
         if (c == REG) {
             isDirect=0;
@@ -1450,7 +1460,8 @@ int parse() {
             }
             else if(TokeType >ALNUME)error1(
                 "Label or instruction expected");
-            else if(TokeType==DIGIT )error1("No digit allowed at start");
+            else if(TokeType==DIGIT )error1(
+                "No digit allowed at start");
             printLine();
         }
     } while (DOS_NoBytes != 0 );
