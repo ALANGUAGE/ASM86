@@ -3715,27 +3715,31 @@ need: PROC
  jmp .retnneed
 ;-723         }
 
-;-724     printstring(" need: ");
+;-724         isPrint=1;
 
 .need152:
+ mov ax, 1
+ mov byte [isPrint], al
+;-725     printstring(" need: ");
+
  push need_0
  call printstring
  add  sp, 2
-;-725     prc(c);
+;-726     prc(c);
 
  mov al, byte [bp+4]
  mov ah, 0
  push ax
  call prc
  add  sp, 2
-;-726     error1("character misssing");
+;-727     error1("character misssing");
 
  push need_1
  call error1
  add  sp, 2
-;-727 }
+;-728 }
 
-;-728 int skipRest() {
+;-729 int skipRest() {
 
  .retnneed:
  LEAVE
@@ -3745,10 +3749,10 @@ need_1 db "character misssing",0
 ENDP
 
 skipRest: PROC
-;-729     getTokeType();
+;-730     getTokeType();
 
  call getTokeType
-;-730     if(TokeType)error1("extra char ignored");
+;-731     if(TokeType)error1("extra char ignored");
 
  mov al, [TokeType]
  or  al, al
@@ -3756,27 +3760,27 @@ skipRest: PROC
  push skipRest_0
  call error1
  add  sp, 2
-;-731 }
+;-732 }
 
 .skipRest153:
-;-732 
-
 ;-733 
 
-;-734 int checkOpL() {
+;-734 
+
+;-735 int checkOpL() {
 
  ret
 skipRest_0 db "extra char ignored",0
 ENDP
 
 checkOpL: PROC
-;-735     if (Op == ADR) implerror();
+;-736     if (Op == ADR) implerror();
 
  mov al, [Op]
  cmp al, 3
  jne .checkOpL154
  call implerror
-;-736     if (R1Type==SEGREG) {segregerror();return;}//only move,push,pop
+;-737     if (R1Type==SEGREG) {segregerror();return;}//only move,push,pop
 
 .checkOpL154:
  mov al, [R1Type]
@@ -3784,11 +3788,11 @@ checkOpL: PROC
  jne .checkOpL155
  call segregerror
  jmp .retncheckOpL
-;-737     setwflag();
+;-738     setwflag();
 
 .checkOpL155:
  call setwflag
-;-738     if (OpSize == 0) error1("no op size declared");
+;-739     if (OpSize == 0) error1("no op size declared");
 
  mov al, [OpSize]
  cmp al, 0
@@ -3796,14 +3800,14 @@ checkOpL: PROC
  push checkOpL_0
  call error1
  add  sp, 2
-;-739     if (OpSize == R1Type) return;
+;-740     if (OpSize == R1Type) return;
 
 .checkOpL156:
  mov al, [OpSize]
  cmp al, [R1Type]
  jne .checkOpL157
  jmp .retncheckOpL
-;-740     if (Op == REG) if (R1Type==0) error1("no register defined");
+;-741     if (Op == REG) if (R1Type==0) error1("no register defined");
 
 .checkOpL157:
  mov al, [Op]
@@ -3815,13 +3819,13 @@ checkOpL: PROC
  push checkOpL_1
  call error1
  add  sp, 2
-;-741 }
+;-742 }
 
 .checkOpL159:
 .checkOpL158:
-;-742 
+;-743 
 
-;-743 int searchLabel() {
+;-744 int searchLabel() {
 
  .retncheckOpL:
  ret
@@ -3830,9 +3834,9 @@ checkOpL_1 db "no register defined",0
 ENDP
 
 searchLabel: PROC
-;-744     int LIx; char *p;
+;-745     int LIx; char *p;
 
-;-745     p = &LabelNames;
+;-746     p = &LabelNames;
 
 ;Function : searchLabel, Number local Var: 2
 ; # type sign width local variables
@@ -3841,17 +3845,17 @@ searchLabel: PROC
  ENTER  4,0
  mov ax, LabelNames
  mov [bp-4], ax
-;-746     LIx = 1;
+;-747     LIx = 1;
 
  mov ax, 1
  mov [bp-2], ax
-;-747     while (LIx <= LabelMaxIx) {
+;-748     while (LIx <= LabelMaxIx) {
 
 .searchLabel160:
  mov ax, [bp-2]
  cmp ax, [LabelMaxIx]
  jg  .searchLabel161
-;-748         if (eqstr(p, Symbol)) return LIx;//pos of label
+;-749         if (eqstr(p, Symbol)) return LIx;//pos of label
 
  lea  ax, [Symbol]
  push ax
@@ -3862,7 +3866,7 @@ searchLabel: PROC
  je .searchLabel162
  mov ax, [bp-2]
  jmp .retnsearchLabel
-;-749         p=strlen(p) + p;
+;-750         p=strlen(p) + p;
 
 .searchLabel162:
  push word [bp-4]
@@ -3870,25 +3874,25 @@ searchLabel: PROC
  add  sp, 2
  add ax, [bp-4]
  mov [bp-4], ax
-;-750         p++;
+;-751         p++;
 
  inc  word[bp-4]
-;-751         LIx++;
+;-752         LIx++;
 
  inc  word[bp-2]
-;-752     }
+;-753     }
 
-;-753     return 0;
+;-754     return 0;
 
  jmp .searchLabel160
 .searchLabel161:
  mov ax, 0
  jmp .retnsearchLabel
-;-754 }
+;-755 }
 
-;-755 
+;-756 
 
-;-756 int getOp1() {//scan for a single operand
+;-757 int getOp1() {//scan for a single operand
 
  .retnsearchLabel:
  LEAVE
@@ -3896,20 +3900,20 @@ searchLabel: PROC
 ENDP
 
 getOp1: PROC
-;-757 //return:0, IMM, REG, ADR (not MEM)
+;-758 //return:0, IMM, REG, ADR (not MEM)
 
-;-758 //set   :R2Type, R2No by testReg
+;-759 //set   :R2Type, R2No by testReg
 
-;-759 //set   :LabelIx by searchLabel
+;-760 //set   :LabelIx by searchLabel
 
-;-760     if (TokeType == 0)      return 0;
+;-761     if (TokeType == 0)      return 0;
 
  mov al, [TokeType]
  cmp al, 0
  jne .getOp1163
  mov ax, 0
  jmp .retngetOp1
-;-761     if (TokeType == DIGIT)  return IMM;
+;-762     if (TokeType == DIGIT)  return IMM;
 
 .getOp1163:
  mov al, [TokeType]
@@ -3917,57 +3921,57 @@ getOp1: PROC
  jne .getOp1164
  mov ax, 1
  jmp .retngetOp1
-;-762     if (TokeType == ALNUME) {
+;-763     if (TokeType == ALNUME) {
 
 .getOp1164:
  mov al, [TokeType]
  cmp al, 3
  jne .getOp1165
-;-763         R2No=testReg();
+;-764         R2No=testReg();
 
  call testReg
  mov byte [R2No], al
-;-764         if (R2Type)        return REG;
+;-765         if (R2Type)        return REG;
 
  mov al, [R2Type]
  or  al, al
  je .getOp1166
  mov ax, 2
  jmp .retngetOp1
-;-765         LabelIx=searchLabel();
+;-766         LabelIx=searchLabel();
 
 .getOp1166:
  call searchLabel
  mov word [LabelIx], ax
-;-766         return ADR;
+;-767         return ADR;
 
  mov ax, 3
  jmp .retngetOp1
-;-767     }
+;-768     }
 
-;-768     return 0;
+;-769     return 0;
 
 .getOp1165:
  mov ax, 0
  jmp .retngetOp1
-;-769 }
+;-770 }
 
-;-770 
+;-771 
 
-;-771 int getIndReg1() {
+;-772 int getIndReg1() {
 
  .retngetOp1:
  ret
 ENDP
 
 getIndReg1: PROC
-;-772     if (R2Type !=WORD) indexerror();
+;-773     if (R2Type !=WORD) indexerror();
 
  mov al, [R2Type]
  cmp al, 2
  je  .getIndReg1167
  call indexerror
-;-773     if (R2No==3) rm=7;//BX
+;-774     if (R2No==3) rm=7;//BX
 
 .getIndReg1167:
  mov al, [R2No]
@@ -3975,7 +3979,7 @@ getIndReg1: PROC
  jne .getIndReg1168
  mov ax, 7
  mov byte [rm], al
-;-774     if (R2No==5) rm=6;//BP, change to BP+0
+;-775     if (R2No==5) rm=6;//BP, change to BP+0
 
 .getIndReg1168:
  mov al, [R2No]
@@ -3983,7 +3987,7 @@ getIndReg1: PROC
  jne .getIndReg1169
  mov ax, 6
  mov byte [rm], al
-;-775     if (R2No==7) rm=5;//DI
+;-776     if (R2No==7) rm=5;//DI
 
 .getIndReg1169:
  mov al, [R2No]
@@ -3991,7 +3995,7 @@ getIndReg1: PROC
  jne .getIndReg1170
  mov ax, 5
  mov byte [rm], al
-;-776     if (R2No==6) rm=4;//SI
+;-777     if (R2No==6) rm=4;//SI
 
 .getIndReg1170:
  mov al, [R2No]
@@ -3999,17 +4003,17 @@ getIndReg1: PROC
  jne .getIndReg1171
  mov ax, 4
  mov byte [rm], al
-;-777     if (rm==0) indexerror();
+;-778     if (rm==0) indexerror();
 
 .getIndReg1171:
  mov al, [rm]
  cmp al, 0
  jne .getIndReg1172
  call indexerror
-;-778 }
+;-779 }
 
 .getIndReg1172:
-;-779 int getIndReg2() {char m; m=4;//because m=0 is BX+DI
+;-780 int getIndReg2() {char m; m=4;//because m=0 is BX+DI
 
  ret
 ENDP
@@ -4021,13 +4025,13 @@ getIndReg2: PROC
  ENTER  2,0
  mov ax, 4
  mov [bp-2], al
-;-780     if (R2Type !=WORD) indexerror();
+;-781     if (R2Type !=WORD) indexerror();
 
  mov al, [R2Type]
  cmp al, 2
  je  .getIndReg2173
  call indexerror
-;-781     if (R2No==7) if (rm==6) m=3;//BP+DI
+;-782     if (R2No==7) if (rm==6) m=3;//BP+DI
 
 .getIndReg2173:
  mov al, [R2No]
@@ -4038,7 +4042,7 @@ getIndReg2: PROC
  jne .getIndReg2175
  mov ax, 3
  mov [bp-2], al
-;-782              else if (rm==7) m=1;//BX+DI
+;-783              else if (rm==7) m=1;//BX+DI
 
  jmp .getIndReg2176
 .getIndReg2175:
@@ -4047,7 +4051,7 @@ getIndReg2: PROC
  jne .getIndReg2177
  mov ax, 1
  mov [bp-2], al
-;-783     if (R2No==6) if (rm==6) m=2;//BP+SI
+;-784     if (R2No==6) if (rm==6) m=2;//BP+SI
 
 .getIndReg2177:
 .getIndReg2176:
@@ -4060,7 +4064,7 @@ getIndReg2: PROC
  jne .getIndReg2179
  mov ax, 2
  mov [bp-2], al
-;-784              else if (rm==7) m=0;//BX+SI
+;-785              else if (rm==7) m=0;//BX+SI
 
  jmp .getIndReg2180
 .getIndReg2179:
@@ -4069,7 +4073,7 @@ getIndReg2: PROC
  jne .getIndReg2181
  mov ax, 0
  mov [bp-2], al
-;-785     if (m > 3) indexerror();
+;-786     if (m > 3) indexerror();
 
 .getIndReg2181:
 .getIndReg2180:
@@ -4078,14 +4082,14 @@ getIndReg2: PROC
  cmp al, 3
  jle .getIndReg2182
  call indexerror
-;-786     return m;
+;-787     return m;
 
 .getIndReg2182:
  mov al, [bp-2]
  jmp .retngetIndReg2
-;-787 }
+;-788 }
 
-;-788 int getMEM() {// e.g. [CS: array + bp+si -4]
+;-789 int getMEM() {// e.g. [CS: array + bp+si -4]
 
  .retngetIndReg2:
  LEAVE
@@ -4093,11 +4097,11 @@ getIndReg2: PROC
 ENDP
 
 getMEM: PROC
-;-789 //set: disp, rm, R2Type
+;-790 //set: disp, rm, R2Type
 
-;-790     char c;
+;-791     char c;
 
-;-791     disp=0; rm=0;
+;-792     disp=0; rm=0;
 
 ;Function : getMEM, Number local Var: 1
 ; # type sign width local variables
@@ -4107,22 +4111,22 @@ getMEM: PROC
  mov word [disp], ax
  mov ax, 0
  mov byte [rm], al
-;-792     do {
+;-793     do {
 
 .getMEM183:
-;-793         getTokeType();
+;-794         getTokeType();
 
  call getTokeType
-;-794         c=getOp1();
+;-795         c=getOp1();
 
  call getOp1
  mov [bp-2], al
-;-795         if (R2Type == SEGREG) {//put segment prefix
+;-796         if (R2Type == SEGREG) {//put segment prefix
 
  mov al, [R2Type]
  cmp al, 4
  jne .getMEM184
-;-796             if (R2No == 0) genCode8(0x26);//ES:
+;-797             if (R2No == 0) genCode8(0x26);//ES:
 
  mov al, [R2No]
  cmp al, 0
@@ -4130,7 +4134,7 @@ getMEM: PROC
  push 38
  call genCode8
  add  sp, 2
-;-797             if (R2No == 1) genCode8(0x2E);//CS:
+;-798             if (R2No == 1) genCode8(0x2E);//CS:
 
 .getMEM185:
  mov al, [R2No]
@@ -4139,7 +4143,7 @@ getMEM: PROC
  push 46
  call genCode8
  add  sp, 2
-;-798             if (R2No == 2) genCode8(0x36);//SS:
+;-799             if (R2No == 2) genCode8(0x36);//SS:
 
 .getMEM186:
  mov al, [R2No]
@@ -4148,7 +4152,7 @@ getMEM: PROC
  push 54
  call genCode8
  add  sp, 2
-;-799             if (R2No == 3) genCode8(0x3E);//DS:
+;-800             if (R2No == 3) genCode8(0x3E);//DS:
 
 .getMEM187:
  mov al, [R2No]
@@ -4157,7 +4161,7 @@ getMEM: PROC
  push 62
  call genCode8
  add  sp, 2
-;-800             if (R2No == 4) genCode8(0x64);//FS:
+;-801             if (R2No == 4) genCode8(0x64);//FS:
 
 .getMEM188:
  mov al, [R2No]
@@ -4166,7 +4170,7 @@ getMEM: PROC
  push 100
  call genCode8
  add  sp, 2
-;-801             if (R2No == 5) genCode8(0x65);//GS:
+;-802             if (R2No == 5) genCode8(0x65);//GS:
 
 .getMEM189:
  mov al, [R2No]
@@ -4175,15 +4179,12 @@ getMEM: PROC
  push 101
  call genCode8
  add  sp, 2
-;-802             need(':');
+;-803             need(':');// includes getTokeType();
 
 .getMEM190:
  push 58
  call need
  add  sp, 2
-;-803             getTokeType();
-
- call getTokeType
 ;-804             c=getOp1();
 
  call getOp1

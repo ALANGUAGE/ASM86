@@ -721,6 +721,7 @@ int need(char c) {
         getTokeType();
         return;
         }
+        isPrint=1;
     printstring(" need: ");
     prc(c);
     error1("character misssing");
@@ -799,8 +800,7 @@ int getMEM() {// e.g. [CS: array + bp+si -4]
             if (R2No == 3) genCode8(0x3E);//DS:
             if (R2No == 4) genCode8(0x64);//FS:
             if (R2No == 5) genCode8(0x65);//GS:
-            need(':');
-            getTokeType();
+            need(':');// includes getTokeType();
             c=getOp1();
         }
         if (c ==   0) syntaxerror();
