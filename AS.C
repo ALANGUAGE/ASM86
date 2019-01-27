@@ -1,4 +1,4 @@
-char Version1[]="ASM.C V1.0.1";//Assembler like NASM
+char Version1[]="ASM.C V1.0.2";//Assembler like NASM
 //todo: CS:with adr, not implemented: 14,15,16,41,51
 #define SYMBOLMAX    31
 char Symbol[SYMBOLMAX]; //next symbol to decode
@@ -376,7 +376,8 @@ int epilog() {
 int error1(char *s) {
     isPrint=1;
     ErrorCount++;
-    printstring("\n******* next line ERROR: ");
+    printLine();
+    printstring("\n*** ERROR: ");
     printstring(s);
     printstring(", Symbol >>");
     printstring(Symbol);
@@ -784,7 +785,7 @@ int getIndReg2() {char m; m=4;//because m=0 is BX+DI
     if (m > 3) indexerror();
     return m;
 }
-int getMEM() {// e.g. [array+bp+si-4]
+int getMEM() {// e.g. [CS: array + bp+si -4]
 //set: disp, rm, R2Type
     char c;
     disp=0; rm=0;
@@ -799,6 +800,7 @@ int getMEM() {// e.g. [array+bp+si-4]
             if (R2No == 4) genCode8(0x64);//FS:
             if (R2No == 5) genCode8(0x65);//GS:
             need(':');
+            getTokeType();
             c=getOp1();
         }
         if (c ==   0) syntaxerror();
