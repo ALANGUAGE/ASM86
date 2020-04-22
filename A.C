@@ -1,4 +1,4 @@
-char Version1[]="PLA compiler A.COM V0.9.6";//todo: 2. op=reg not recognized
+char Version1[]="PLA compiler A.COM V1.0";//todo:op=reg not recognized
 #define IDLENMAX       31//max length of names
 #define COLUMNMAX     128//output, input is 100
 #define T_NAME        256//the following defines for better clearity
@@ -37,14 +37,15 @@ char Version1[]="PLA compiler A.COM V0.9.6";//todo: 2. op=reg not recognized
 #define T_GREATGREAT 1241
 
 char isPrint=1;//set screen listing
-unsigned int ORGDATAORIG=25000;//start of arrays, end of text
-unsigned int orgData;//actual max of array, must be less than stack
+#define ORGDATA     20000//set it to end of text
+unsigned int orgDataOriginal=20000;//must be ORGDATA
+unsigned int orgDatai;//actual max of array, must be less than stack
 #define COMAX        3000
 char co[COMAX];//constant storage
 int maxco=0;
 int maxco1=0;
 #define CMDLENMAX      67
-char symbol[COLUMNMAX];
+char Symbol[COLUMNMAX];
 char fname[CMDLENMAX];
 char namein[CMDLENMAX];
 char namelst[CMDLENMAX];
@@ -64,19 +65,23 @@ int signi;       char issign;
 int widthi;      char iswidth;
 int wi=0;
 #define VARMAX        400//max global and local var
-#define LSTART        300//max global var
-#define GNAMEMAX    12800// 32*VARMAX
 char GType [VARMAX]; // 0=V, 1=*, 2=&,#
 char GSign [VARMAX]; // 0=U, 1=S
 char GWidth[VARMAX]; // 0, 1, 2, 4
-int GData [VARMAX];
-char GNameField[GNAMEMAX];
-int GTop=1;
-int LTop=LSTART;
+int  GData [VARMAX];
+#define VARNAMESMAX 4000//VARMAX * 10 - IDLENMAX
+char VarNames[VARNAMESMAX];//Space for global and local var names
+char *VarNamePtr;   //first free position
+int GTop=1;         //0 = empty
+// int LStart=1  ;     //max global var
+int LTop=1;
+
 #define FUNCMAX       300//max functions
-#define FNAMEMAX     9600// 32*FUNCMAX
-char FNameField[FNAMEMAX];
-int  FTop=0;
+#define FUNCTIONNAMESMAX 3000//Space for preceeding functon names
+char FunctionNames[FUNCTIONNAMESMAX];
+char *FunctionNamePtr;  //first free position in FunctionNames
+int  FunctionMaxIx=0;   //number of functions
+
 char fgetsdest[COLUMNMAX];
 unsigned char *fgetsp=0;
 unsigned int lineno=1;
@@ -123,7 +128,7 @@ int DosInt() {
     DOS_ERR++;
 }
 int openR (char *s) {
-    dx=s;
+	dx=s;
     ax=0x3D02;
     DosInt();
 }
@@ -151,10 +156,10 @@ int readRL(char *s, int fd, int len){
     DosInt();
 }
 int fputcR(char *n, int fd) {
-    __asm{lea dx, [bp+4]}; /* = *n */
-    cx=1;
-    bx=fd;
-    ax=0x4000;
+    asm lea dx, [bp+4]; *n  todo: why not mov
+    asm mov cx, 1;      cx=1;
+    asm mov bx, [bp+6]; bx=fd;
+    asm mov ax, 16384;  ax=0x4000;
     DosInt();
 }
 
@@ -197,8 +202,9 @@ int eqstr(char *p, char *q) {
         q++;
     }
     if(*q) return 0;
-    return 1; }
-int strcat1(char *s, char *t) {
+    return 1;
+}
+int strcat(char *s, char *t) {
     while (*s != 0) s++;
     strcpy(s, t);
 }
@@ -232,10 +238,10 @@ int eprs(char *s) {
 int prc(unsigned char c) {
     if (isPrint) {
         if (c==10) {
-            ax=13;
+            asm mov ax, 13
             writetty();
         }
-        al=c;
+        asm mov al, [bp+4]; al=c;
         writetty();
     }
     fputcR(c, fdout);
@@ -270,7 +276,7 @@ int printstring(unsigned char *s) {
     }
 }
 
-int eprnum(int n){//for docall1 procedure
+int eprnum(int n){//for docall procedure
     int e;
     if(n<0) {
         eprc('-');
@@ -327,8 +333,8 @@ int error1(char *s) {
     printunsigned(column);
     printstring("\nToken: ");
     printunsigned(token);
-    printstring(", symbol: ");
-    printstring(symbol);
+    printstring(", Symbol: ");
+    printstring(Symbol);
     end1(1);
 }
 
@@ -375,22 +381,53 @@ int next() {
     return r;
 }
 
-int adrF(char *s, unsigned int i) {
-    i << 5;//ax=i*32; IDLENMAX=31!
-    __asm{ add ax, [bp+4]  ; offset s }
+int storeVarName() {
+    unsigned int i;
+    VarNamePtr=strcpy(VarNamePtr, Symbol);
+    VarNamePtr++;
+    i = VarNamePtr - &VarNames;
+    i += IDLENMAX;
+    if (i > VARNAMESMAX) error1("too many variable names");
 }
 
+int searchVarName() {
+	char *p; int i;
+	p = &VarNames;
+	i=1;//start with 1
+	while (i < VARMAX) {
+		if (eqstr(p, Symbol)) return i;
+		p=strlen(p) + p;
+		p++;
+		i++;
+	}
+	return 0;	
+	
+}
+	
+int getVarName(unsigned int i) {
+	int j; char *p;
+	j = 1;
+	p = &VarNames;
+	while (j < i) {
+		while (*p) p++;
+		p++;
+		j++;	 		
+	}
+	return p;	
+		
+}
+		
+
 int printName(unsigned int i) {
-    int j;
-    if (i < LSTART) {
-        i=adrF(GNameField, i);
+    if (i < GTop) {
+	    i=getVarName(i);	    
         printstring(i);
     }
     else {
         printstring("[bp");
-        j = GData[i];
-        if (j>0) prc('+');
-        printinteger(j);
+        i = GData[i];
+        if (i>0) prc('+');
+        printinteger(i);
         prc(']');
     }
 }
@@ -443,7 +480,7 @@ g1: c=next();
       } else  return '/';
   }
   if (c == '"') {
-      p=&symbol;
+      p=&Symbol;
       c=next();
       while (c != '"') {
           *p=c;
@@ -493,8 +530,8 @@ g1: c=next();
       return T_CONST;
   }
   if (alnum(c)) {
-    strcpy(symboltemp, symbol);
-    p=&symbol;
+    strcpy(symboltemp, Symbol);
+    p=&Symbol;
     *p=c;
     p++;
     while(alnum(thechar)) {
@@ -503,37 +540,38 @@ g1: c=next();
         p++;
     }
     *p=0;
-    if (eqstr(symbol,"signed"  )) return T_SIGNED;
-    if (eqstr(symbol,"unsigned")) return T_UNSIGNED;
-    if (eqstr(symbol,"void"    )) return T_VOID;
-    if (eqstr(symbol,"int"     )) return T_INT;
-    if (eqstr(symbol,"long"    )) return T_LONG;
-    if (eqstr(symbol,"inth"    )) return T_INTH;
-    if (eqstr(symbol,"char"    )) return T_CHAR;
-    if (eqstr(symbol,"asm"     )) return T_ASM;
-    if (eqstr(symbol,"__asm"   )) return T_ASMBLOCK;
-    if (eqstr(symbol,"__emit__")) return T_EMIT;
-    if (eqstr(symbol,"return"  )) return T_RETURN;
-    if (eqstr(symbol,"if"      )) return T_IF;
-    if (eqstr(symbol,"else"    )) return T_ELSE;
-    if (eqstr(symbol,"while"   )) return T_WHILE;
-    if (eqstr(symbol,"do"      )) return T_DO;
-    if (eqstr(symbol,"goto"    )) return T_GOTO;
-    if (eqstr(symbol,"define"  )) return T_DEFINE;
+    if (eqstr(Symbol,"signed"  )) return T_SIGNED;
+    if (eqstr(Symbol,"unsigned")) return T_UNSIGNED;
+    if (eqstr(Symbol,"void"    )) return T_VOID;
+    if (eqstr(Symbol,"int"     )) return T_INT;
+    if (eqstr(Symbol,"long"    )) return T_LONG;
+    if (eqstr(Symbol,"inth"    )) return T_INTH;
+    if (eqstr(Symbol,"char"    )) return T_CHAR;
+    if (eqstr(Symbol,"asm"     )) return T_ASM;
+    if (eqstr(Symbol,"__asm"   )) return T_ASMBLOCK;
+    if (eqstr(Symbol,"__emit__")) return T_EMIT;
+    if (eqstr(Symbol,"return"  )) return T_RETURN;
+    if (eqstr(Symbol,"if"      )) return T_IF;
+    if (eqstr(Symbol,"else"    )) return T_ELSE;
+    if (eqstr(Symbol,"while"   )) return T_WHILE;
+    if (eqstr(Symbol,"do"      )) return T_DO;
+    if (eqstr(Symbol,"goto"    )) return T_GOTO;
+    if (eqstr(Symbol,"define"  )) return T_DEFINE;
 
     i=0;//convert define to value
     while (i < GTop) {
-        j=adrF(GNameField, i);
-        if (eqstr(symbol,j)) {
+        j=getVarName(i);
+        if (eqstr(Symbol,j)) {
             if (GType[i]=='#') {
                 lexval=GData[i];
-                strcpy(symbol, symboltemp);
+                strcpy(Symbol, symboltemp);
                 return T_CONST;
             }
         }
         i++;
     }
-    return T_NAME; } error1("Input item not recognized");
+    return T_NAME; } 
+    error1("Input item not recognized");
 }
 
 int istoken(int t) {
@@ -555,28 +593,28 @@ int expect(int t) {
 }
 
 int v(unsigned int i) {//value
-    if (i < LSTART) prc('[');
+    if (i < GTop) prc('[');
     printName(i);
-    if (i < LSTART) prc(']');
+    if (i < GTop) prc(']');
 }
 int checknamelen() {
     int i;
-    i=strlen(symbol);
+    i=strlen(Symbol);
     if (i > IDLENMAX) error1("Item name is too long)");
 }
 
 int checkName() {
     unsigned int i; unsigned int j;
-    i=LSTART;
-    while(i<LTop) {
-        j=adrF(GNameField, i);
-        if(eqstr(symbol,j))return i;
+    i=GTop;
+    while(i<LTop) {//todo look for local var first
+        j=getVarName(i);
+        if(eqstr(Symbol,j))return i;
         i++;
     }
     i=1;
     while(i<GTop) {
-        j=adrF(GNameField, i);
-        if(eqstr(symbol,j))return i;
+        j=getVarName(i);
+        if(eqstr(Symbol,j))return i;
         i++;
     }
     return 0;
@@ -635,22 +673,25 @@ int addlocal() {
     GSign[LTop]=issign;
     GWidth[LTop]=iswidth;
     GType[LTop]=istype;
-    pt=adrF(GNameField, LTop);
-    strcpy(pt, symbol);
+    pt=getVarName(LTop);
+    strcpy(pt, Symbol);
+    storeVarName();
 }
 
 
 int cmpneg(int ids) {
        if(iscmp==T_EQ) printstring("\n jne .");         //ZF=0
   else if(iscmp==T_NE) printstring("\n je  .");         //ZF=1
-  else if(iscmp==T_LE) if (ids) printstring("\n jg  .");//ZF=0      SF =OF
-                           else printstring("\n ja  .");//ZF=0 CF=0
-  else if(iscmp==T_GE) if (ids){printstring(" ;unsigned : "); printunsigned(ids);
-                               printstring("\n jl  .");}//          SF!=OF
-                           else{printstring(" ;unsigned : "); printunsigned(ids);
-                               printstring("\n jb  .");}//jb=jc=CF=1
-  else if(iscmp=='<' ) printstring("\n jge .");         //          SF =OF
-  else if(iscmp=='>' ) printstring("\n jle .");         //ZF=1 oder SF!=OF
+  else if(iscmp==T_LE) if (ids) printstring("\n jg  .");//ZF=0 SF=O
+                       else     printstring("\n ja  .");//ZF=0 CF=0
+  else if(iscmp==T_GE) if (ids){printstring(" ;unsigned : ");
+                                printunsigned(ids);
+                                printstring("\n jl  .");}//SF!=O
+                       else    {printstring(" ;unsigned : ");
+                                printunsigned(ids);
+                                printstring("\n jb  .");}//jb=jc=CF=1
+  else if(iscmp=='<' ) printstring("\n jge .");          //SF=O
+  else if(iscmp=='>' ) printstring("\n jle .");          //ZF=1 | SF!=O
   else error1("internal error compare unknown in CMPNEG()");
 }
 
@@ -668,25 +709,25 @@ w:  iscmp=token;
 }
 
 int checkreg() { // >=17 = 16bit, >=47 = 32bit
-  if (strlen(symbol) <  2) return 0;
-  if (eqstr(symbol,"al")) return 1;   if (eqstr(symbol,"cl")) return 3;
-  if (eqstr(symbol,"dl")) return 5;   if (eqstr(symbol,"bl")) return 7;
-  if (eqstr(symbol,"ah")) return 9;   if (eqstr(symbol,"ch")) return 11;
-  if (eqstr(symbol,"dh")) return 13;  if (eqstr(symbol,"bh")) return 15;
-  if (eqstr(symbol,"ax")) return 17;  if (eqstr(symbol,"cx")) return 19;
-  if (eqstr(symbol,"dx")) return 21;  if (eqstr(symbol,"bx")) return 23;
-  if (eqstr(symbol,"sp")) return 25;  if (eqstr(symbol,"bp")) return 27;
-  if (eqstr(symbol,"si")) return 29;  if (eqstr(symbol,"di")) return 31;
-  if (eqstr(symbol,"es")) return 33;  if (eqstr(symbol,"cs")) return 35;
-  if (eqstr(symbol,"ss")) return 37;  if (eqstr(symbol,"ds")) return 39;
-  if (eqstr(symbol,"fs")) return 41;  if (eqstr(symbol,"gs")) return 43;
-  // (eqstr(symbol,"ip")) return 45;
-  if (strlen(symbol) >   3) return 0;
-  if (eqstr(symbol,"eax")) return 47; if (eqstr(symbol,"ecx")) return 50;
-  if (eqstr(symbol,"edx")) return 53; if (eqstr(symbol,"ebx")) return 56;
-  if (eqstr(symbol,"esp")) return 59; if (eqstr(symbol,"ebp")) return 62;
-  if (eqstr(symbol,"esi")) return 65; if (eqstr(symbol,"edi")) return 68;
-//  if (eqstr(symbol,"cr0")) return 71;
+  if (strlen(Symbol) <  2) return 0;
+  if (eqstr(Symbol,"al")) return 1;   if (eqstr(Symbol,"cl")) return 3;
+  if (eqstr(Symbol,"dl")) return 5;   if (eqstr(Symbol,"bl")) return 7;
+  if (eqstr(Symbol,"ah")) return 9;   if (eqstr(Symbol,"ch")) return 11;
+  if (eqstr(Symbol,"dh")) return 13;  if (eqstr(Symbol,"bh")) return 15;
+  if (eqstr(Symbol,"ax")) return 17;  if (eqstr(Symbol,"cx")) return 19;
+  if (eqstr(Symbol,"dx")) return 21;  if (eqstr(Symbol,"bx")) return 23;
+  if (eqstr(Symbol,"sp")) return 25;  if (eqstr(Symbol,"bp")) return 27;
+  if (eqstr(Symbol,"si")) return 29;  if (eqstr(Symbol,"di")) return 31;
+  if (eqstr(Symbol,"es")) return 33;  if (eqstr(Symbol,"cs")) return 35;
+  if (eqstr(Symbol,"ss")) return 37;  if (eqstr(Symbol,"ds")) return 39;
+  if (eqstr(Symbol,"fs")) return 41;  if (eqstr(Symbol,"gs")) return 43;
+  // (eqstr(Symbol,"ip")) return 45;
+  if (strlen(Symbol) >   3) return 0;
+  if (eqstr(Symbol,"eax")) return 47; if (eqstr(Symbol,"ecx")) return 50;
+  if (eqstr(Symbol,"edx")) return 53; if (eqstr(Symbol,"ebx")) return 56;
+  if (eqstr(Symbol,"esp")) return 59; if (eqstr(Symbol,"ebp")) return 62;
+  if (eqstr(Symbol,"esi")) return 65; if (eqstr(Symbol,"edi")) return 68;
+//  if (eqstr(Symbol,"cr0")) return 71;
   return 0;
 }
 
@@ -728,7 +769,7 @@ int doreg1(int iscmp1) {
     printstring("\n ");
     printstring(ops);
     printstring("  ");
-    printreg(ireg1);
+    printreg(ireg1);   //todo
     printstring(", ");
 
     if (istoken(T_CONST)) {
@@ -824,7 +865,7 @@ int rterm(char *op) {
         gettypes(ixarr);
         if (widthi != 2) error1("Array index must be int");
         }
-    if (eqstr(symbol,"ax")) return;
+    if (eqstr(Symbol,"ax")) return;
     opint=op;
     dovar1(mode, opint, ixarr, id1);
 }
@@ -857,21 +898,21 @@ int doassign(int mode, int i, int ixarr, int ixconst) {
         }
     if (wi==1){
         printstring("\n mov ");
-        if(i<LSTART) printstring("byte ");
+        if(i<GTop) printstring("byte ");
         v(i);
         printstring(", al");
         return;
         }
     if (wi==2){
         printstring("\n mov ");
-        if(i<LSTART) printstring("word ");
+        if(i<GTop) printstring("word ");
         v(i);
         printstring(", ax");
         return;
         }
     if (wi==4){
         printstring("\n mov ");
-        if(i<LSTART) printstring("dword ");
+        if(i<GTop) printstring("dword ");
         v(i);
         printstring(", eax");
         return;
@@ -886,7 +927,7 @@ int domul(int ids) {
             printunsigned(lexval);
             printstring("\n mul bx");
             }
-        else error1("with MUL only const number as multiplicator allowed");
+        else error1("with MUL only const number as multipl. allowed");
         }
 }
 
@@ -919,14 +960,14 @@ int domod(int ids) {
 
 
 int docalltype[10]; int docallvalue[10];
-char procname[17]; // 1=CONST, 2=String, 3=&, 4=Name 5=register
+char procname[17]; // 1=CONST, 2=String, 3=&, 4=Name
 
-int docall1() {
+int docall() {
     int i; int narg; int t0; int n0;  int sz32;
     narg=0;
     sz32=0;
     checknamelen();
-    strcpy(&procname, symbol);
+    strcpy(&procname, Symbol);
     expect('(');
 	if (istoken(')') ==0 ) {
 	    do {
@@ -946,7 +987,7 @@ int docall1() {
                 eprnum(nconst);
                 eprs(" db ");
                 eprc(34);
-                eprs(symbol);
+                eprs(Symbol);
                 eprc(34);
                 eprs(",0");
                 nconst++;
@@ -957,15 +998,15 @@ int docall1() {
                 n0=searchname();
                 }
             if(istoken(T_NAME))  {
-                n0=checkreg();
-                if (n0) t0=5;
-                else {
+
+
+
                     t0=4;
                     n0=searchname();
                     p1=&GType;
                     p1=p1+n0;
                     if (*p1=='&') t0=3;
-                    }
+
                 }
             if (t0==0) error1("parameter not recognized (no * allowed)");
             docalltype [narg] = t0;
@@ -1035,13 +1076,14 @@ int expr() {
         return 4;
         }
     mode=typeName(); /*0=variable, 1=* ptr, 2=& adr*/
-    ireg1=checkreg();
+    ireg1=checkreg();//todo
     if (ireg1) {
         doreg1(0);
         return;
         }
+
     if (token=='(')  {
-        docall1();
+        docall();
         goto e1;
         }
 
@@ -1119,6 +1161,7 @@ int pexpr() {//called from if, do, while
             return;
             }
         }
+
     expr();
     if (iscmp==0) printstring("\n or  al, al\n je .");
     printstring(fname);
@@ -1188,7 +1231,7 @@ int stmt() {
     else if(istoken(T_GOTO))  {
         printstring("\n jmp .");
         name1();
-        printstring(symbol);
+        printstring(Symbol);
         expect(';');
     }
     else if(token==T_ASM)     {
@@ -1237,7 +1280,7 @@ int stmt() {
     }
     else if(thechar==':')      {
         printstring("\n."); // Label
-        printstring(symbol); prc(':');
+        printstring(Symbol); prc(':');
         expect(T_NAME);
         expect(':');
     }
@@ -1274,8 +1317,9 @@ int listvar(unsigned int i) {
     if(c== 1)printstring("byte " );
     if(c== 2)printstring("word " );
     if(c== 4)printstring("long " );
-    j=i*32;
-    pt=&GNameField + j;
+    pt=getVarName(i);
+//    j=i*32;
+//    pt=&GNameField + j;
     printstring(pt);
     if(GType[i]=='#') {
         prc('=');
@@ -1288,7 +1332,7 @@ int listvar(unsigned int i) {
         printunsigned(j);
         prc(']');
     }
-    if (i >= LSTART) {
+    if (i >= GTop) {
         printstring(" = bp");
         j=GData[i];
         if (j > 0) prc('+');
@@ -1298,14 +1342,14 @@ int listvar(unsigned int i) {
 
 int listproc() {
     int i;
-    if (LTop > LSTART) {
+    if (LTop > GTop) {
         printstring("\n;Function : ");
         printstring(fname);
         printstring(", Number local Var: ");
-        i=LTop - LSTART;
+        i=LTop - GTop;
         printunsigned(i);
         printstring("\n; # type sign width local variables");
-        i=LSTART;
+        i=GTop;
         while (i < LTop) {
             listvar(i);
             i++;
@@ -1313,26 +1357,48 @@ int listproc() {
     }
 }
 
+int searchFunction() {
+    int FunctionIndex; char *p;
+    p= &FunctionNames;
+    FunctionIndex=1;          //0=function name not found
+    while (FunctionIndex <= FunctionMaxIx ) {
+        if (eqstr(p, Symbol)) return FunctionIndex;
+        p = strlen(p) + p;
+        p++;
+        FunctionIndex++;
+    }
+    return 0;               //no function found
+}
+
+int storeFunction() {
+    unsigned int i;
+    FunctionMaxIx++;        //leave 0 empty for function not notfound
+    if (FunctionMaxIx >= FUNCMAX) error1("Function table full");
+    FunctionNamePtr=strcpy(FunctionNamePtr, Symbol);
+    FunctionNamePtr++;      //function name is saved
+    i = FunctionNamePtr - &FunctionNames;
+    i += IDLENMAX;
+    if (i >= FUNCTIONNAMESMAX) error1("too many function names");
+
+}
+
 int dofunc() {
-    int nloc; int i; unsigned int j;int narg;
+    int nloc; unsigned int j;int narg;
+    int VarNamePtrLocalStart;
     cloc=&co;
     checknamelen();
-    strcpy(fname, symbol);
-    i=0;
-    while (i < FTop) {
-        j=adrF(FNameField, i);
-        if(eqstr(symbol, j)) error1("Function already defined");
-        i++;
-    }
-    if (FTop >= FUNCMAX) error1("Function table full");
-    pt=adrF(FNameField, FTop);
-    strcpy(pt, symbol);
-    FTop++;
+    strcpy(fname, Symbol);
+    if(searchFunction()) error1("Function already defined");
+    storeFunction();
+
     printstring("\n\n");
-    printstring(symbol);
+    printstring(Symbol);
     printstring(": PROC");
     expect('(');
-    LTop=LSTART;
+//    LStart=GTop;
+    LTop=GTop;
+    VarNamePtrLocalStart=VarNamePtr;
+
     if (istoken(')')==0) {
         narg=2;
         do {
@@ -1341,8 +1407,8 @@ int dofunc() {
             narg+=2;
             GData[LTop]=narg;
             if (iswidth == 4) narg+=2;
-                LTop++;
-                }
+            LTop++;
+            }
         while (istoken(','));
         expect(')');
         }
@@ -1373,7 +1439,7 @@ int dofunc() {
         expect(';');
     }
     listproc();
-    if (LTop>LSTART){
+    if (LTop>GTop){
         printstring(";\n ENTER  ");
         nloc=mkneg(nloc);
         printunsigned (nloc);
@@ -1387,20 +1453,21 @@ int dofunc() {
             printstring(fname);
             prc(':');
         }
-    if (LTop > LSTART) printstring("\n LEAVE");
+    if (LTop > GTop) printstring("\n LEAVE");
     printstring("\n ret");
     *cloc=0;
     printstring(co);
     maxco1=strlen(co);
     if (maxco1 > maxco) maxco=maxco1;
     printstring("\nENDP");
+    VarNamePtr=VarNamePtrLocalStart;//delete local names
 }
 
 char doglobName[IDLENMAX];
 int doglob() {
     int i; int j; int isstrarr;
     isstrarr=0;
-    if (GTop >= LSTART) error1("Global table full");
+    if (GTop >= VARMAX) error1("Global table full");
     if (iswidth == 0) error1("no VOID as var type");
     checknamelen();
     if (checkName() != 0) error1("Variable already defined");
@@ -1408,33 +1475,33 @@ int doglob() {
         istype='&';
         if (istoken(T_CONST)) {
             printstring("\nsection .bss\nabsolute ");
-            printunsigned(orgData);
-            printstring("\n"); printstring(symbol);
+            printunsigned(orgDatai);
+            printstring("\n"); printstring(Symbol);
             if (iswidth==1) printstring(" resb ");
             if (iswidth==2) printstring(" resw ");
             if (iswidth==4) printstring(" resd ");
             printunsigned(lexval);
             printstring("\nsection .text");
-            orgData=orgData+lexval;
-            if (iswidth==2) orgData=orgData+lexval;
-            if (iswidth==4) {i= lexval * 3; orgData=orgData + i;}
+            orgDatai=orgDatai+lexval;
+            if (iswidth==2) orgDatai=orgDatai+lexval;
+            if (iswidth==4) {i= lexval * 3; orgDatai=orgDatai + i;}
             GData[GTop]=lexval;
             expect(']');
         }else {
             expect(']');
             if (iswidth != 1) error1("Only ByteArray allowed");
             printstring("\n");
-            printstring(symbol);
+            printstring(Symbol);
             printstring(" db ");
             isstrarr=1;
-            strcpy(doglobName, symbol);
+            strcpy(doglobName, Symbol);//save Symbol name
             expect('=');
             if (istoken(T_STRING)) {
                 prc(34);
-                prscomment(symbol);
+                prscomment(Symbol);
                 prc(34);
                 printstring(",0");
-                i=strlen(symbol);
+                i=strlen(Symbol);
                 GData[GTop]=i;
                 }
             else if (istoken('{' )) {
@@ -1452,7 +1519,7 @@ int doglob() {
         };
     }else { //expect('=');
         printstring("\n");
-        printstring(symbol);
+        printstring(Symbol);
         if (istype=='*') printstring(" dw ");
         else {
             if      (iswidth==1) printstring(" db ");
@@ -1468,31 +1535,33 @@ int doglob() {
     GSign[GTop]=issign;
     GWidth[GTop]=iswidth;
     GType[GTop]=istype;
-    pt=adrF(GNameField, GTop);
+    pt=getVarName(GTop);
     if (isstrarr) strcpy(pt, doglobName);
-        else strcpy(pt, symbol);
+        else strcpy(pt, Symbol);
+	if (isstrarr) strcpy(Symbol, doglobName);
+	storeVarName();
     GTop++;
     expect(';');
 }
 
 int dodefine() {
-    int i; int j; int fdtemp;
-    if (eqstr(symbol, "ORGDATA")) {
-        token=getlex();
-        ORGDATAORIG=lexval;
-        orgData=lexval;
-        return;
-    }
     expect(T_NAME);
     if (token==T_CONST) {
-        if (GTop >= LSTART) error1("global table (define) full");
-        i=strlen(symbol);
-        if (i>IDLENMAX) error1("Define name too long");
+        if (GTop >= VARMAX) error1("global table (define) full");
+        checknamelen();
+        if (checkName() != 0) error1("#Define var already defined");
+        if (eqstr(Symbol, "ORGDATA")) {
+            orgDataOriginal=lexval;
+            orgDatai=lexval;
+            expect(T_CONST);
+            return;
+        }
         GSign [GTop]='U';
         GWidth[GTop]=1;
         GType [GTop]='#';
-        pt=adrF(GNameField, GTop);
-        strcpy(pt, symbol);
+        pt=getVarName(GTop);
+        strcpy(pt, Symbol);
+        storeVarName();
         GData[GTop]=lexval;
         expect(T_CONST);
         GTop++;
@@ -1515,7 +1584,7 @@ int parse() {
 }
 
 char *arglen=0x80; char *argv=0x82;
-int main() {
+int getarguments() {
     int arglen1; unsigned int i; char *c;
     isPrint=1;
     arglen1=*arglen;
@@ -1529,13 +1598,14 @@ int main() {
     arglen1--;
     toupper(argv);
     strcpy(namein, argv);
-    if (instr1(namein, '.') == 0) strcat1(namein, ".C");
+    if (instr1(namein, '.') == 0) strcat(namein, ".C");
     strcpy(namelst, namein);
     i=strlen(namelst);
     i--;
     c=&namelst+i;
     *c='S';
-
+}
+int openfiles() {
     fdin=openR (namein);
     if(DOS_ERR){
         cputs("Source file missing (.C): ");
@@ -1552,29 +1622,53 @@ int main() {
     printstring(Version1);
     printstring(", Input: "); printstring(namein);
     printstring(", Output: "); printstring(namelst);
+}
+
+int epilog() {
+    unsigned int i;
+    isPrint=1;
+    GTop--;
+    printstring("\n;Glob. variables:"); printunsigned(GTop);
+    printstring(" (");                  printunsigned(VARMAX);
+    i = VarNamePtr - &VarNames;
+    printstring("):");                  printunsigned(i);
+    printstring(" (");					printunsigned(VARNAMESMAX);
+    printstring("), Functions:");       printunsigned(FunctionMaxIx);
+    printstring(" (");                  printunsigned(FUNCMAX);
+    i = FunctionNamePtr - &FunctionNames;
+    printstring("):");                  printunsigned(i);
+    printstring(" (");					printunsigned(FUNCTIONNAMESMAX);
+    printstring(")\n;Lines:");          printunsigned(lineno);
+    printstring(", Constant: ");        printunsigned(maxco);
+    printstring(" (");                  printunsigned(COMAX);
+    i = COMAX;
+    i = i - maxco;
+    if (i<=1000)printstring("\n ** Warning ** constant area too small");
+    printstring("), stacksize: ");
+    i=65535;
+    i=i-orgDatai;
+    printunsigned(i);
+    if (i <= 1000) printstring("\n *** Warning *** Stack too small");
+
+}
+
+int main() {
+    getarguments();
+    openfiles();
     isPrint=0;
     printstring("\norg  256 \njmp main");
-    orgData=ORGDATAORIG;
+
+	GTop = 1;
+    VarNamePtr= &VarNames;
+    FunctionNamePtr= &FunctionNames;
+    FunctionMaxIx=0;
+    orgDatai=orgDataOriginal;
     fgetsp=&fgetsdest;
     *fgetsp=0;
     thechar=fgets1();
+
     parse();
-    isPrint=1;
-    GTop--;
-    printstring("\n;Glob. variables:");     printunsigned(GTop);
-    printstring(" (");                      printunsigned(LSTART);
-    printstring("), Functions:");           printunsigned(FTop);
-    printstring(" (");                      printunsigned(FUNCMAX);
-    printstring("), Lines:");               printunsigned(lineno);
-    printstring("\n;Constant: ");           printunsigned(maxco);
-    printstring(" (");                      printunsigned(COMAX);
-    i=COMAX;
-    i=i-maxco;
-    if (i <= 1000)printstring("\n ** Warning ** constant area too small");
-    printstring("), stacksize: ");
-    i=65536;
-    i=i-orgData;
-    printunsigned(i);
-    if (i <= 1000) printstring("\n *** Warning *** Stack too small");
+
+    epilog();
     end1(0);
 }

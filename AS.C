@@ -62,8 +62,8 @@ int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
 char PrintRA;           //print * for forward relocative jmp
 
-#define LABELNAMESMAX 5969//next number - SYMBOLMAX
-char LabelNames[6000];  //space for names of all labels
+#define LABELNAMESMAX 6000//next number - SYMBOLMAX
+char LabelNames[LABELNAMESMAX];//space for names of all labels
 char *LabelNamePtr;     //first free position
 char *tmpLabelNamePtr;  //set after PROC to LabelNamePtr
 
@@ -73,8 +73,8 @@ int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
 int tmpLabelMaxIx;      //set after PROC to LabelMaxIx
 int LabelIx;            //actual # of just searched label
 
-#define JMPNAMESMAX 3969//next number - SYMBOLMAX
-char JmpNames[4000];    //space for names of jmp, call
+#define JMPNAMESMAX 4000//next number - SYMBOLMAX
+char JmpNames[JMPNAMESMAX];//space for names of jmp, call
 char *JmpNamePtr;       //first free position
 char *tmpJmpNamePtr;    //set after PROC to JmpNamePtr
 
@@ -864,6 +864,7 @@ int storeJmp() {
     JmpNamePtr=strcpy(JmpNamePtr, Symbol);
     JmpNamePtr++;
     i = JmpNamePtr - &JmpNames;
+    i += SYMBOLMAX;
     if ( i >= JMPNAMESMAX) error1("too many Jmp names");
     JmpAddr[JmpMaxIx] = PC;
 }
@@ -876,6 +877,7 @@ int storeLabel() {
     LabelNamePtr=strcpy(LabelNamePtr, Symbol);
     LabelNamePtr++;
     i = LabelNamePtr - &LabelNames;
+    i += SYMBOLMAX;
     if (i >= LABELNAMESMAX) error1("too many label names");
     LabelAddr[LabelMaxIx] = PC + Origin;
 }
