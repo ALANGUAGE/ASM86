@@ -1,9 +1,11 @@
-char Version1[]="ASM.C V1.0.2";//Assembler like NASM
-//todo: CS:with adr, not implemented: 14,15,16,41,51
-#define SYMBOLMAX    31
-char Symbol[SYMBOLMAX]; //next symbol to decode
-char SymbolUpper[SYMBOLMAX];//set toupper in getName
-char ProcName[SYMBOLMAX];//name of actual proc
+char Version1[]="ASM.C V1.2";//Assembler like NASM, 11801bytes. 8381 stack
+//todo CS:with adr, not implemented: 14,15,16,41,51
+//todo Seg override works for [mem|, not [es:2ch]
+//todo getDigit hex 0x1234
+#define IDLENMAX    31
+char Symbol[IDLENMAX];  //next symbol to decode
+char SymbolUpper[IDLENMAX];//set toupper in getName
+char ProcName[IDLENMAX];//name of actual proc
 char isPrint=1;         //print to screen on
 char isInProc=0;        //is inside a procedure
 unsigned int SymbolInt; //integer value set in getDigit
@@ -62,7 +64,7 @@ int OpPrintIndex;       //0-OPMAXLEN, pos to print opcode, by genCode8
 char *OpCodePtr;        //position in OpCodeTable by searchSymbol
 char PrintRA;           //print * for forward relocative jmp
 
-#define LABELNAMESMAX 6000//next number - SYMBOLMAX
+#define LABELNAMESMAX 6000
 char LabelNames[LABELNAMESMAX];//space for names of all labels
 char *LabelNamePtr;     //first free position
 char *tmpLabelNamePtr;  //set after PROC to LabelNamePtr
@@ -73,7 +75,7 @@ int LabelMaxIx=0;       //actual # of stored labels. 1 to LABELADRMAX-1
 int tmpLabelMaxIx;      //set after PROC to LabelMaxIx
 int LabelIx;            //actual # of just searched label
 
-#define JMPNAMESMAX 4000//next number - SYMBOLMAX
+#define JMPNAMESMAX 4000
 char JmpNames[JMPNAMESMAX];//space for names of jmp, call
 char *JmpNamePtr;       //first free position
 char *tmpJmpNamePtr;    //set after PROC to JmpNamePtr
@@ -431,7 +433,7 @@ int skipBlank() {
 
 int getDigit(unsigned char c) {//ret: SymbolInt
   unsigned int CastInt;
-  SymbolInt=0;
+  SymbolInt=0;//todo input hex with 0x1234 as digit in A.C
   do {
     c-='0';
     SymbolInt=SymbolInt*10;
@@ -453,7 +455,7 @@ int getName(unsigned char c) {//ret: Symbol, SymbolUpper, isLabel
     *p = c;
     p++;
     i = p - &Symbol;
-    if (i >= SYMBOLMAX) error1("symbol too long");
+    if (i >= IDLENMAX) error1("symbol too long");
   }
   if (c == ':') isLabel=1; else isLabel=0;
   p--;
@@ -864,7 +866,7 @@ int storeJmp() {
     JmpNamePtr=strcpy(JmpNamePtr, Symbol);
     JmpNamePtr++;
     i = JmpNamePtr - &JmpNames;
-    i += SYMBOLMAX;
+    i += IDLENMAX;
     if ( i >= JMPNAMESMAX) error1("too many Jmp names");
     JmpAddr[JmpMaxIx] = PC;
 }
@@ -877,7 +879,7 @@ int storeLabel() {
     LabelNamePtr=strcpy(LabelNamePtr, Symbol);
     LabelNamePtr++;
     i = LabelNamePtr - &LabelNames;
-    i += SYMBOLMAX;
+    i += IDLENMAX;
     if (i >= LABELNAMESMAX) error1("too many label names");
     LabelAddr[LabelMaxIx] = PC + Origin;
 }
