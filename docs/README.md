@@ -20,10 +20,8 @@ Adjust the following constants to your needs:
    all local labels will be destroyed after leaving the procedure. 
    it is roughly the number of the procedures and a bit for local names.
    LabelNames[6000] array for storing the label names
-   LABELNAMESMAX 5969 is LabelNames - SYMBOLMAX
 3. JMPMAX 200 max.jmp and call
    JmpNames[4000] space for names of jmp, call
-   JMPNAMESMAX 3969 is JmpNames - SYMBOLMAX
    
 The output com file must be the same with ASM86 and NASM.
 NASM must be calles the the options: -dPROC -dENDP
