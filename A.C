@@ -1,4 +1,5 @@
-char Version1[]="PLA compiler A.COM V1.0";//todo:op=reg not recognized
+char Version1[]="PLA compiler A.COM V1.0.1";//16759 bytes. 32905 stack
+//todo:op=reg not recognized
 #define IDLENMAX       31//max length of names
 #define COLUMNMAX     128//output, input is 100
 #define T_NAME        256//the following defines for better clearity
@@ -13,6 +14,7 @@ char Version1[]="PLA compiler A.COM V1.0";//todo:op=reg not recognized
 #define T_INT         517
 #define T_ASM         518
 #define T_ASMBLOCK    519
+#define T_ASMDIRECT   525
 #define T_EMIT        520
 #define T_GOTO        521
 #define T_VOID        529
@@ -69,7 +71,7 @@ char GType [VARMAX]; // 0=V, 1=*, 2=&,#
 char GSign [VARMAX]; // 0=U, 1=S
 char GWidth[VARMAX]; // 0, 1, 2, 4
 int  GData [VARMAX];
-#define VARNAMESMAX 4000//VARMAX * 10 - IDLENMAX
+#define VARNAMESMAX 4000
 char VarNames[VARNAMESMAX];//Space for global and local var names
 char *VarNamePtr;   //first free position
 int GTop=1;         //0 = empty
@@ -389,7 +391,7 @@ int storeVarName() {
     i += IDLENMAX;
     if (i > VARNAMESMAX) error1("too many variable names");
 }
-
+/*
 int searchVarName() {
 	char *p; int i;
 	p = &VarNames;
@@ -400,10 +402,9 @@ int searchVarName() {
 		p++;
 		i++;
 	}
-	return 0;	
-	
+	return 0;		
 }
-	
+*/	
 int getVarName(unsigned int i) {
 	int j; char *p;
 	j = 1;
@@ -417,7 +418,6 @@ int getVarName(unsigned int i) {
 		
 }
 		
-
 int printName(unsigned int i) {
     if (i < GTop) {
 	    i=getVarName(i);	    
@@ -549,6 +549,12 @@ g1: c=next();
     if (eqstr(Symbol,"char"    )) return T_CHAR;
     if (eqstr(Symbol,"asm"     )) return T_ASM;
     if (eqstr(Symbol,"__asm"   )) return T_ASMBLOCK;
+    if (eqstr(Symbol,"push"    )) return T_ASMDIRECT;
+    if (eqstr(Symbol,"pop"     )) return T_ASMDIRECT;
+    if (eqstr(Symbol,"iret"    )) return T_ASMDIRECT;
+    if (eqstr(Symbol,"ret"     )) return T_ASMDIRECT;
+    if (eqstr(Symbol,"cli"     )) return T_ASMDIRECT;
+    if (eqstr(Symbol,"sti"     )) return T_ASMDIRECT;
     if (eqstr(Symbol,"__emit__")) return T_EMIT;
     if (eqstr(Symbol,"return"  )) return T_RETURN;
     if (eqstr(Symbol,"if"      )) return T_IF;
@@ -1236,6 +1242,16 @@ int stmt() {
     }
     else if(token==T_ASM)     {
       printstring("\n");
+      c=next();
+      while(c != '\n') {
+        prc(c);
+        c=next();
+        };
+        token=getlex();
+    }
+    else if(token==T_ASMDIRECT)     {
+      printstring("\n");
+      printstring(Symbol);
       c=next();
       while(c != '\n') {
         prc(c);
