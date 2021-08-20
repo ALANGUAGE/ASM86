@@ -1,7 +1,11 @@
 char Version1[]="ASM.C V1.2.1";//Assembler like NASM, 11912bytes. 8381 stack
-//todo CS:with adr, not implemented: 14,15,16,41,51
-//todo Seg override works for [mem|, not [es:2ch]
-//todo getDigit hex 0x1234
+//todo mov ebx, 10 crash
+//todo 1. array[] Label not found
+//todo L=L+1 OK, L+=1 only byte added, L++ invalid op code
+//todo CS:seg override [mem] OK, [es:2Ch] not OK 
+//todo not implemented: 14,15,16,41,51
+//todo input hex as A.C getDigit 0x1234
+//fixed JmpMaxIx > 0 line 1007
 #define IDLENMAX    31
 char Symbol[IDLENMAX];  //next symbol to decode
 char SymbolUpper[IDLENMAX];//set toupper in getName
@@ -82,8 +86,8 @@ char *tmpJmpNamePtr;    //set after PROC to JmpNamePtr
 
 #define JMPMAX 200      //max. jmp and call
 unsigned int JmpAddr[JMPMAX];//addr to be fixed
-int JmpMaxIx=0;         //actual # of jmp, call. 1 to JMPMAX-1
-int tmpJmpMaxIx=0;      //set after PROC to JmpMaxIx
+unsigned int JmpMaxIx=0;     //actual # of jmp, call. 1 to JMPMAX-1
+unsigned int tmpJmpMaxIx=0;  //set after PROC to JmpMaxIx
 
 #define FILEBINMAX 25000
 char FileBin  [FILEBINMAX];//output binary file
@@ -387,7 +391,9 @@ int error1(char *s) {
     printstring(ProcName);
     epilog();
 }
-int notfounderror(){error1("label not found: ");}
+int notfounderror(){
+	printstring("\n  LabelIx:"); printunsigned(LabelIx);
+	error1("label not found: ");}
 int dataexit()     {error1("DB,DW,DD or RESB,W,D expected");}
 int addrerror()    {error1("address missing");}
 int immeerror()    {error1("immediate not allowed here");}
@@ -984,7 +990,7 @@ int FixOneJmp(unsigned int hex) {
     FileBin[hex] = disp;
 }
 int fixJmp() {
-    unsigned int hex; int i;
+    unsigned int hex; unsigned int i;
     char *p;
     p = &JmpNames;
     i = 1;
@@ -997,8 +1003,12 @@ int fixJmp() {
         i++;
     }
 }
-int fixJmpMain() {
-    if (JmpMaxIx ) error1("resting global jmp");
+int fixJmpMain() {        
+    if (JmpMaxIx > 0) {
+		printstring("  *** JmpMaxIx= ");
+    	printunsigned(JmpMaxIx);
+    	error1("resting global jmp");
+    }
     strcpy(Symbol, "main");
     FixOneJmp(1);//first instruction, PC=1
 }
@@ -1006,7 +1016,7 @@ int fixJmpMain() {
 
 int process() {
     char c;
-    int i;
+    unsigned int i;
     Op=Op2=R1Type=R2Type=R1No=R2No=dflag=wflag=rm=0;//char
     disp=imme=0;//int
     isDirect=1; //set in getMeM=0, need in WriteEA
@@ -1394,7 +1404,7 @@ int process() {
     }
     if (CodeType == 111) {//name: PROC
         if (isInProc == 0)  {
-            printstring("\nentering: ");
+            printstring("\n\nentering: ");
             printstring(ProcName);
             isInProc=1;
             tmpLabelNamePtr = LabelNamePtr;
@@ -1406,7 +1416,7 @@ int process() {
     }
     if (CodeType == 112) {//ENDP
         if (isInProc == 0) error1("not in PROC");
-        printstring("\nleaving: ");
+        printstring("\n\nleaving: ");
         printstring(ProcName);
         printstring(", loc labels: ");
         i = LabelMaxIx - tmpLabelMaxIx;
@@ -1420,6 +1430,8 @@ int process() {
         LabelMaxIx   = tmpLabelMaxIx;
         JmpNamePtr   = tmpJmpNamePtr;//delete local Jmp
         JmpMaxIx     = tmpJmpMaxIx;
+		printstring("      JmpMaxIx= ");
+    	printunsigned(JmpMaxIx);
         return;
     }
     if (CodeType == 200) {//db
